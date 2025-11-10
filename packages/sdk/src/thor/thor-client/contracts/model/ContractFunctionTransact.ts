@@ -11,6 +11,6 @@ export type ContractFunctionTransact<
     TFunctionNames extends string
 > = {
     [K in TFunctionNames]: (
-        ...args: AbiParameter[]
+        ...args: readonly unknown[]
     ) => Promise<Hex>;
 };

@@ -10,5 +10,5 @@ export type ContractFunctionClause<
     TAbi extends Abi,
     TFunctionNames extends string
 > = {
-    [K in TFunctionNames]: (...args: AbiParameter[]) => Clause;
+    [K in TFunctionNames]: (...args: readonly unknown[]) => Clause;
 };

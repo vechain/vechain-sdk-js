@@ -59,6 +59,7 @@ const erc20Abi = [
 // Mock PublicClient
 const createMockPublicClient = (): jest.Mocked<PublicClient> =>
     ({
+        network: 'https://testnet.vechain.org',
         call: (jest.fn() as any).mockResolvedValue({
             data: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000'
         }),
@@ -71,7 +72,7 @@ const createMockPublicClient = (): jest.Mocked<PublicClient> =>
                 }
             ]
         }),
-        estimateGas: (jest.fn() as any).mockResolvedValue(21000n),
+        estimateGas: (jest.fn() as any).mockResolvedValue(BigInt(21000)),
         watchEvent: (jest.fn() as any).mockReturnValue(() => {}),
         getLogs: (jest.fn() as any).mockResolvedValue([]),
         createEventFilter: (jest.fn() as any).mockReturnValue({
@@ -82,6 +83,7 @@ const createMockPublicClient = (): jest.Mocked<PublicClient> =>
 // Mock WalletClient
 const createMockWalletClient = (): jest.Mocked<WalletClient> =>
     ({
+        network: 'https://testnet.vechain.org',
         sendTransaction: (jest.fn() as any).mockResolvedValue({
             hash: '0x123456789abcdef',
             id: 'tx-1'
@@ -275,27 +277,16 @@ describe('getContract function', () => {
         );
     });
 
-    test('should handle empty ABI gracefully', () => {
+    test('should throw error for empty ABI', () => {
         const emptyAbi = [] as const satisfies Abi;
 
-        const contract = getContract({
-            address: contractAddress,
-            abi: emptyAbi,
-            publicClient: mockPublicClient
-        });
-
-        expect(contract.read).toBeDefined();
-        // expect(contract.write).toBeDefined(); -- Commented out because we don't have write methods in the Contract class
-        expect(contract.simulate).toBeDefined();
-        expect(contract.estimateGas).toBeDefined();
-        expect(contract.events).toBeDefined();
-
-        // All should be empty objects
-        expect(Object.keys(contract.read)).toHaveLength(0);
-        // expect(Object.keys(contract.write)).toHaveLength(0); -- Commented out because we don't have write methods in the Contract class
-        expect(Object.keys(contract.simulate)).toHaveLength(0);
-        expect(Object.keys(contract.estimateGas)).toHaveLength(0);
-        expect(Object.keys(contract.events)).toHaveLength(0);
+        expect(() => {
+            getContract({
+                address: contractAddress,
+                abi: emptyAbi,
+                publicClient: mockPublicClient
+            });
+        }).toThrow('Contract ABI cannot be empty');
     });
 
     test('should throw error when no clients provided', () => {

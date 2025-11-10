@@ -3,10 +3,16 @@
 import {
     type Abi,
     type AbiParameter,
+    type AbiFunction,
     encodeFunctionData,
     decodeFunctionResult,
     toEventSelector
 } from 'viem';
+import type {
+    ExtractAbiFunctionNames,
+    ExtractAbiFunction,
+    AbiParametersToPrimitiveTypes
+} from 'abitype';
 import { Address, Hex } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
@@ -23,9 +29,135 @@ import { Contract as VeChainContract } from '@thor/thor-client/contracts/model/c
 import { ContractCallOptions } from '@thor/thor-client/contracts/types';
 import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 import { log } from '@common/logging';
+import { IllegalArgumentError } from '@common/errors';
+import type { HttpClient } from '@common/http';
 
-// Type alias for function arguments
-type FunctionArgs = AbiParameter[];
+// Type alias for function arguments (runtime values, not ABI definitions)
+type FunctionArgs = readonly unknown[];
+
+/**
+ * Internal interface for accessing client properties
+ * This provides type-safe access to internal client state without using 'as any'
+ */
+interface ClientInternal {
+    httpClient?: HttpClient;
+    network?: string;
+    account?: {
+        address: Address;
+    };
+}
+
+/**
+ * Interface for full compiled contract JSON that includes ABI and metadata
+ */
+interface CompiledContract {
+    abi: Abi;
+    bytecode?: string;
+    metadata?: unknown;
+    [key: string]: unknown;
+}
+
+/**
+ * Type guard to check if an object is a CompiledContract
+ */
+function isCompiledContract(obj: unknown): obj is CompiledContract {
+    return (
+        obj !== null &&
+        typeof obj === 'object' &&
+        'abi' in obj &&
+        Array.isArray((obj as CompiledContract).abi)
+    );
+}
+
+/**
+ * Validates a contract address
+ * @param address - The address to validate
+ * @param context - Context for error messages
+ * @throws {IllegalArgumentError} If the address is invalid
+ */
+function validateContractAddress(address: Address, context: string): void {
+    const addrStr = address.toString();
+
+    // Length check (0x + 40 hex chars = 42 total)
+    if (addrStr.length !== 42) {
+        throw new IllegalArgumentError(
+            context,
+            'Invalid contract address length',
+            {
+                address: addrStr,
+                expectedLength: 42,
+                actualLength: addrStr.length
+            }
+        );
+    }
+
+    // Format check (0x followed by 40 hex characters)
+    if (!/^0x[0-9a-fA-F]{40}$/.test(addrStr)) {
+        throw new IllegalArgumentError(
+            context,
+            'Invalid contract address format (must be 0x followed by 40 hex characters)',
+            { address: addrStr }
+        );
+    }
+
+    // Zero address check
+    if (addrStr === '0x0000000000000000000000000000000000000000') {
+        throw new IllegalArgumentError(
+            context,
+            'Cannot use zero address as contract address',
+            { address: addrStr }
+        );
+    }
+}
+
+/**
+ * Extracts ABI array from either a raw ABI or a compiled contract JSON
+ * @param abi - The ABI or compiled contract
+ * @returns The extracted ABI array
+ */
+function extractAbi<TAbi extends Abi>(abi: TAbi | CompiledContract): TAbi {
+    if (isCompiledContract(abi)) {
+        return abi.abi as TAbi;
+    }
+    return abi;
+}
+
+/**
+ * Validates write parameters for security and correctness
+ * @param params - The parameters to validate
+ * @param context - Context for error messages
+ */
+function validateWriteParameters(
+    params: WriteContractParameters,
+    context: string
+): void {
+    // Validate value is non-negative
+    if (params.value !== undefined && params.value < 0n) {
+        throw new IllegalArgumentError(
+            context,
+            'Transaction value cannot be negative',
+            { value: params.value.toString() }
+        );
+    }
+
+    // Validate gas is reasonable
+    if (params.gas !== undefined) {
+        if (params.gas < 0n) {
+            throw new IllegalArgumentError(
+                context,
+                'Gas limit cannot be negative',
+                { gas: params.gas.toString() }
+            );
+        }
+        if (params.gas > 10_000_000n) {
+            throw new IllegalArgumentError(
+                context,
+                'Gas limit exceeds maximum reasonable value',
+                { gas: params.gas.toString(), max: '10000000' }
+            );
+        }
+    }
+}
 
 /**
  * Configuration for creating a contract instance
@@ -60,6 +192,46 @@ export interface WriteContractParameters {
 }
 
 /**
+ * Helper type to extract return type from ABI function
+ */
+type ContractFunctionReturnType<
+    TAbi extends Abi,
+    TFunctionName extends string
+> = AbiParametersToPrimitiveTypes<
+    ExtractAbiFunction<TAbi, TFunctionName>['outputs']
+>[0];
+
+/**
+ * Helper type to extract argument types from ABI function
+ */
+type ContractFunctionArgs<
+    TAbi extends Abi,
+    TFunctionName extends string
+> = AbiParametersToPrimitiveTypes<
+    ExtractAbiFunction<TAbi, TFunctionName>['inputs'],
+    'inputs'
+>;
+
+/**
+ * Type-safe read methods for view/pure functions
+ */
+type ContractReadMethods<TAbi extends Abi> = {
+    [TFunctionName in ExtractAbiFunctionNames<TAbi, 'view' | 'pure'>]: (
+        ...args: ContractFunctionArgs<TAbi, TFunctionName>
+    ) => Promise<ContractFunctionReturnType<TAbi, TFunctionName>>;
+};
+
+/**
+ * Type-safe write methods for state-changing functions
+ */
+type ContractWriteMethods<TAbi extends Abi> = {
+    [TFunctionName in ExtractAbiFunctionNames<
+        TAbi,
+        'payable' | 'nonpayable'
+    >]: (params?: WriteContractParameters) => ExecuteCodesRequestJSON;
+};
+
+/**
  * A contract instance with read, write, simulate, estimateGas, and event interfaces
  * Compatible with viem's getContract return type
  *
@@ -71,12 +243,9 @@ export interface Contract<TAbi extends Abi> {
     /** Contract ABI */
     abi: TAbi;
     /** Read-only contract methods (view/pure) - available when publicClient provided */
-    read: Record<string, (...args: FunctionArgs) => Promise<unknown>>;
+    read: ContractReadMethods<TAbi>;
     /** State-changing contract methods - available when walletClient provided */
-    write: Record<
-        string,
-        (params?: WriteContractParameters) => ExecuteCodesRequestJSON
-    >;
+    write: ContractWriteMethods<TAbi>;
     /** Simulate contract method calls - available when publicClient provided */
     simulate: Record<
         string,
@@ -115,6 +284,63 @@ export interface Contract<TAbi extends Abi> {
             }) => unknown; // EventFilter type
         }
     >;
+
+    /**
+     * Gets detailed parameter information for a specific function
+     *
+     * @param functionName - The name of the function to inspect
+     * @returns Object containing inputs, outputs, and stateMutability
+     *
+     * @example
+     * ```typescript
+     * const contract = getContract({ address, abi, publicClient });
+     * const info = contract.getParameterInfo('transfer');
+     * // Returns: {
+     * //   inputs: [{ name: 'to', type: 'address' }, { name: 'amount', type: 'uint256' }],
+     * //   outputs: [{ name: '', type: 'bool' }],
+     * //   stateMutability: 'nonpayable'
+     * // }
+     * ```
+     */
+    getParameterInfo: (functionName: string) => {
+        inputs: readonly AbiParameter[];
+        outputs: readonly AbiParameter[];
+        stateMutability: string;
+    };
+
+    /**
+     * Gets a formatted string representation of a function's signature
+     *
+     * @param functionName - The name of the function
+     * @returns A formatted string like "transfer(address to, uint256 amount) returns (bool)"
+     *
+     * @example
+     * ```typescript
+     * const contract = getContract({ address, abi, publicClient });
+     * const signature = contract.getFunctionSignature('transfer');
+     * // Returns: "transfer(address to, uint256 amount) returns (bool)"
+     * ```
+     */
+    getFunctionSignature: (functionName: string) => string;
+
+    /**
+     * Lists all available functions in the contract with their signatures
+     *
+     * @returns Array of function signature strings
+     *
+     * @example
+     * ```typescript
+     * const contract = getContract({ address, abi, publicClient });
+     * const functions = contract.listFunctions();
+     * // Returns: [
+     * //   "transfer(address to, uint256 amount) returns (bool)",
+     * //   "balanceOf(address account) returns (uint256)",
+     * //   "approve(address spender, uint256 amount) returns (bool)",
+     * //   ...
+     * // ]
+     * ```
+     */
+    listFunctions: () => string[];
 
     // Additional VeChain-specific functionality exposed through the viem interface
     /** Access to the underlying VeChain contract instance */
@@ -179,58 +405,83 @@ function getContract<const TAbi extends Abi>({
     publicClient,
     walletClient
 }: ContractConfig<TAbi>): Contract<TAbi> {
+    const context = 'ContractAdapter.getContract';
+
     // Validate that at least one client is provided
     if (publicClient == null && walletClient == null) {
-        const errorMessage =
-            'At least one of publicClient or walletClient must be provided';
-        log.error({
-            message: errorMessage,
-            source: 'ContractAdapter.getContract',
-            context: {
-                address: address.toString(),
-                hasPublicClient: publicClient != null,
-                hasWalletClient: walletClient != null
+        throw new IllegalArgumentError(
+            context,
+            'At least one of publicClient or walletClient must be provided',
+            {
+                hasPublicClient: false,
+                hasWalletClient: false
             }
-        });
-        throw new Error(errorMessage);
+        );
     }
 
-    // Create the underlying VeChain contract instance using ThorClient
-    // Use the HttpClient from the viem clients (either publicClient or walletClient)
+    // Validate contract address
+    validateContractAddress(address, context);
+
+    // Extract ABI array from full contract JSON if needed
+    const actualAbi = extractAbi(abi);
+
+    // Validate ABI is not empty
+    if (!Array.isArray(actualAbi) || actualAbi.length === 0) {
+        throw new IllegalArgumentError(
+            context,
+            'Contract ABI cannot be empty',
+            { abiLength: Array.isArray(actualAbi) ? actualAbi.length : 0 }
+        );
+    }
+
+    // Get HttpClient from clients with proper typing
+    const publicClientInternal = publicClient as ClientInternal | undefined;
+    const walletClientInternal = walletClient as ClientInternal | undefined;
+
     let httpClient =
-        (publicClient as any)?.httpClient || (walletClient as any)?.httpClient;
+        publicClientInternal?.httpClient || walletClientInternal?.httpClient;
 
-    // Fallback: create a real FetchHttpClient instead of mock
+    // If no httpClient, try to create one from network URL
     if (!httpClient) {
-        // Get the network URL from the clients
         const networkUrl =
-            (publicClient as any)?.network || (walletClient as any)?.network;
-        if (networkUrl) {
-            const { FetchHttpClient } = require('@common/http');
-            httpClient = new FetchHttpClient(new URL(networkUrl));
-        } else {
-            // Create a mock HttpClient for testing purposes
-            httpClient = {
-                get: async () => ({ ok: true, json: async () => ({}) }),
-                post: async () => ({ ok: true, json: async () => ({}) }),
-                put: async () => ({ ok: true, json: async () => ({}) }),
-                delete: async () => ({ ok: true, json: async () => ({}) })
-            } as any;
+            publicClientInternal?.network || walletClientInternal?.network;
+
+        if (!networkUrl) {
+            throw new IllegalArgumentError(
+                context,
+                'No HTTP client or network URL available from provided clients. ' +
+                    'Ensure your publicClient or walletClient is properly configured with network settings.',
+                {
+                    hasPublicClient: !!publicClient,
+                    hasWalletClient: !!walletClient,
+                    publicClientHasHttpClient:
+                        !!publicClientInternal?.httpClient,
+                    walletClientHasHttpClient:
+                        !!walletClientInternal?.httpClient,
+                    publicClientHasNetwork: !!publicClientInternal?.network,
+                    walletClientHasNetwork: !!walletClientInternal?.network
+                }
+            );
         }
+
+        // Dynamically import FetchHttpClient to create from network URL
+        const { FetchHttpClient } = require('@common/http');
+        httpClient = new FetchHttpClient(new URL(networkUrl));
+
+        log.debug({
+            message: 'Created HttpClient from network URL',
+            context: { networkUrl }
+        });
     }
 
-    const thorClient = ThorClient.at(httpClient);
-    const vechainContract = thorClient.contracts.load(address, abi);
+    const thorClient = ThorClient.at(httpClient!); // httpClient is guaranteed to exist or error thrown above
+    const vechainContract = thorClient.contracts.load(address, actualAbi);
 
     // Initialize properties
-    const readMethods: Record<
-        string,
-        (...args: FunctionArgs) => Promise<unknown>
-    > = {};
-    const writeMethods: Record<
-        string,
-        (params?: WriteContractParameters) => ExecuteCodesRequestJSON
-    > = {};
+    // Initialize with empty objects that will be populated dynamically
+    // Type safety is enforced at the interface level via ContractReadMethods/ContractWriteMethods
+    const readMethods: ContractReadMethods<TAbi> = {} as any;
+    const writeMethods: ContractWriteMethods<TAbi> = {} as any;
     const simulateMethods: Record<
         string,
         (params?: {
@@ -267,11 +518,11 @@ function getContract<const TAbi extends Abi>({
     // VeChain-specific functionality - delegate to the middle layer
     const vechainMethods = {
         contract: vechainContract,
-        setReadOptions: (options: unknown) => {
-            vechainContract.setContractReadOptions(options as any);
+        setReadOptions: (options: ContractCallOptions) => {
+            vechainContract.setContractReadOptions(options);
         },
-        setTransactOptions: (options: unknown) => {
-            vechainContract.setContractTransactOptions(options as any);
+        setTransactOptions: (options: TransactionRequest) => {
+            vechainContract.setContractTransactOptions(options);
         },
         clause: {} as Record<
             string,
@@ -300,17 +551,66 @@ function getContract<const TAbi extends Abi>({
     // Initialize contract object
     const contract: Contract<TAbi> = {
         address,
-        abi,
+        abi: actualAbi,
         read: readMethods,
         write: writeMethods,
         simulate: simulateMethods,
         estimateGas: estimateGasMethods,
         events: eventMethods,
+
+        // Signature introspection methods
+        getParameterInfo: (functionName: string) => {
+            const functionAbi = actualAbi.find(
+                (item): item is AbiFunction =>
+                    item.type === 'function' &&
+                    'name' in item &&
+                    item.name === functionName
+            );
+
+            if (!functionAbi) {
+                throw new IllegalArgumentError(
+                    'getParameterInfo',
+                    `Function ${functionName} not found in ABI`,
+                    { functionName, abi: actualAbi }
+                );
+            }
+
+            return {
+                inputs: functionAbi.inputs || [],
+                outputs: functionAbi.outputs || [],
+                stateMutability: functionAbi.stateMutability || 'nonpayable'
+            };
+        },
+
+        getFunctionSignature: (functionName: string) => {
+            const paramInfo = contract.getParameterInfo(functionName);
+
+            const inputsStr = paramInfo.inputs
+                .map(
+                    (param) =>
+                        `${param.type}${param.name ? ` ${param.name}` : ''}`
+                )
+                .join(', ');
+
+            const outputsStr =
+                paramInfo.outputs.length > 0
+                    ? ` returns (${paramInfo.outputs.map((param) => param.type).join(', ')})`
+                    : '';
+
+            return `${functionName}(${inputsStr})${outputsStr}`;
+        },
+
+        listFunctions: () => {
+            return actualAbi
+                .filter((item): item is AbiFunction => item.type === 'function')
+                .map((func) => contract.getFunctionSignature(func.name));
+        },
+
         _vechain: vechainMethods
     };
 
     // Process each ABI item to build the contract interface
-    for (const abiItem of abi) {
+    for (const abiItem of actualAbi) {
         // Handle functions
         if (abiItem.type === 'function') {
             const functionName = abiItem.name;
@@ -321,7 +621,22 @@ function getContract<const TAbi extends Abi>({
                     abiItem.stateMutability === 'pure') &&
                 publicClient != null
             ) {
-                contract.read[functionName] = async (...args: FunctionArgs) => {
+                (contract.read as any)[functionName] = async (
+                    ...args: FunctionArgs
+                ) => {
+                    // Validate argument count matches ABI
+                    if (args.length !== abiItem.inputs.length) {
+                        throw new IllegalArgumentError(
+                            `read.${functionName}`,
+                            `Expected ${abiItem.inputs.length} arguments, got ${args.length}`,
+                            {
+                                expected: abiItem.inputs.length,
+                                received: args.length,
+                                functionName
+                            }
+                        );
+                    }
+
                     // Preprocess arguments to convert Address objects to strings
                     const processedArgs = args.map((arg) => {
                         if (
@@ -340,9 +655,20 @@ function getContract<const TAbi extends Abi>({
                     });
 
                     // Delegate to the VeChain contract's read method
-                    return await (vechainContract.read as any)[functionName](
-                        ...(processedArgs as any)
-                    );
+                    type ReadMethod = (...args: unknown[]) => Promise<unknown>;
+                    const readMethod = (
+                        vechainContract.read as Record<string, ReadMethod>
+                    )[functionName];
+
+                    if (!readMethod) {
+                        throw new IllegalArgumentError(
+                            `read.${functionName}`,
+                            `Read method not found for function: ${functionName}`,
+                            { functionName }
+                        );
+                    }
+
+                    return await readMethod(...processedArgs);
                 };
             }
 
@@ -352,25 +678,69 @@ function getContract<const TAbi extends Abi>({
                     abiItem.stateMutability === 'payable') &&
                 walletClient != null
             ) {
-                contract.write[functionName] = ({
-                    args = [],
-                    value = 0n,
-                    gas,
-                    gasPriceCoef,
-                    maxFeePerGas,
-                    maxPriorityFeePerGas
-                } = {}) => {
+                (contract.write as any)[functionName] = (
+                    params: WriteContractParameters = {}
+                ) => {
+                    const {
+                        args = [],
+                        value = 0n,
+                        gas,
+                        gasPriceCoef,
+                        maxFeePerGas,
+                        maxPriorityFeePerGas
+                    } = params;
+
+                    // Validate write parameters
+                    validateWriteParameters(params, `write.${functionName}`);
+
+                    // Validate argument count matches ABI
+                    if (args.length !== abiItem.inputs.length) {
+                        throw new IllegalArgumentError(
+                            `write.${functionName}`,
+                            `Expected ${abiItem.inputs.length} arguments, got ${args.length}`,
+                            {
+                                expected: abiItem.inputs.length,
+                                received: args.length,
+                                functionName
+                            }
+                        );
+                    }
+
                     // Use the VeChain contract's clause building for transaction preparation
                     // Pass value as part of the args if it's not zero
-                    const clauseArgs =
-                        value > 0n ? [...args, { value: value }] : args;
-                    const clause = (vechainContract.clause as any)[
-                        functionName
-                    ](...(clauseArgs as any));
+                    const clauseArgs = value > 0n ? [...args, { value }] : args;
+
+                    // Get the clause method from VeChain contract
+                    type ClauseMethod = (...args: unknown[]) => {
+                        to: string;
+                        data: string;
+                        value: bigint;
+                        comment?: string;
+                    };
+
+                    const clauseMethod = (
+                        vechainContract.clause as Record<string, ClauseMethod>
+                    )[functionName];
+                    if (!clauseMethod) {
+                        throw new IllegalArgumentError(
+                            `write.${functionName}`,
+                            `Clause method not found for function: ${functionName}`,
+                            { functionName }
+                        );
+                    }
+
+                    const clause = clauseMethod(...clauseArgs);
 
                     // Return as ExecuteCodesRequestJSON format
+                    // Convert clause to proper format with value as string
+                    const clauseJSON = {
+                        to: clause.to,
+                        data: clause.data,
+                        value: clause.value.toString()
+                    };
+
                     return {
-                        clauses: [clause] as any,
+                        clauses: [clauseJSON],
                         gas: gas ? Number(gas) : undefined,
                         gasPriceCoef: gasPriceCoef
                             ? Number(gasPriceCoef)
@@ -393,7 +763,7 @@ function getContract<const TAbi extends Abi>({
                 } = {}) => {
                     // TODO: Delegate to vechainContract simulation methods
                     const data = encodeFunctionData({
-                        abi: abi as Abi,
+                        abi: actualAbi as Abi,
                         functionName,
                         args
                     });
@@ -430,16 +800,18 @@ function getContract<const TAbi extends Abi>({
                 } = {}) => {
                     // TODO: Delegate to vechainContract gas estimation
                     const data = encodeFunctionData({
-                        abi: abi as Abi,
+                        abi: actualAbi as Abi,
                         functionName,
                         args
                     });
 
                     const clause = new Clause(address, value, Hex.of(data));
 
-                    // estimateGas requires a caller address, use a default zero address if not provided
+                    // estimateGas requires a caller address, use account address if available
+                    const publicClientInternal =
+                        publicClient as unknown as ClientInternal;
                     const caller =
-                        (publicClient as any).account?.address ||
+                        publicClientInternal.account?.address ||
                         Address.of(
                             '0x0000000000000000000000000000000000000000'
                         );
@@ -455,7 +827,16 @@ function getContract<const TAbi extends Abi>({
 
             // Add VeChain-specific clause building - delegate to middle layer
             vechainMethods.clause[functionName] = (...args: AbiParameter[]) => {
-                return (vechainContract.clause as any)[functionName](...args);
+                type ClauseMethod = (...args: unknown[]) => {
+                    to: string;
+                    data: string;
+                    value: bigint;
+                    comment?: string;
+                };
+                const clauseMethod = (
+                    vechainContract.clause as Record<string, ClauseMethod>
+                )[functionName];
+                return clauseMethod(...args);
             };
         }
         // Handle events - delegate to VeChain contract
@@ -467,7 +848,8 @@ function getContract<const TAbi extends Abi>({
                 watch: ({ onLogs, onError, args = [], fromBlock }) => {
                     // TODO: Delegate to vechainContract event watching
                     const indexedInputs = abiItem.inputs.filter(
-                        (input) => input.indexed
+                        (input: AbiParameter & { indexed?: boolean }) =>
+                            input.indexed
                     );
                     const indexedArgs: Hex[] = [];
 
@@ -541,19 +923,35 @@ function getContract<const TAbi extends Abi>({
 
             // Add VeChain-specific event filters - delegate to middle layer
             vechainMethods.filters[eventName] = (...args: AbiParameter[]) => {
-                return (vechainContract.filters as any)[eventName](...args);
+                type FilterMethod = (...args: unknown[]) => {
+                    address: string;
+                    topics: string[];
+                };
+                const filterMethod = (
+                    vechainContract.filters as Record<string, FilterMethod>
+                )[eventName];
+                return filterMethod(...args);
             };
         }
     }
 
     // Populate VeChain-specific methods for functions
-    for (const abiItem of abi) {
+    for (const abiItem of actualAbi) {
         if (abiItem.type === 'function') {
             const functionName = abiItem.name;
 
             // Add VeChain-specific clause methods - delegate to middle layer
             vechainMethods.clause[functionName] = (...args: AbiParameter[]) => {
-                return (vechainContract.clause as any)[functionName](...args);
+                type ClauseMethod = (...args: unknown[]) => {
+                    to: string;
+                    data: string;
+                    value: bigint;
+                    comment?: string;
+                };
+                const clauseMethod = (
+                    vechainContract.clause as Record<string, ClauseMethod>
+                )[functionName];
+                return clauseMethod(...args);
             };
         }
     }
