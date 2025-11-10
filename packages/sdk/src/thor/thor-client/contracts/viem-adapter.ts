@@ -14,8 +14,8 @@ import type {
 } from './types';
 import { TransactionRequest } from '../../thor-client/model/transactions/TransactionRequest';
 
-// Proper function arguments type using VeChain SDK types
-type FunctionArgs = AbiParameter[];
+// Proper function arguments type using VeChain SDK types (runtime values, not ABI definitions)
+type FunctionArgs = readonly unknown[];
 
 /**
  * Viem-compatible contract interface
@@ -279,12 +279,26 @@ export function createViemContract<TAbi extends Abi>(
  * @param signer - Optional signer
  * @returns A viem-compatible contract
  */
+/**
+ * Type guard to check if an object is a CompiledContract
+ */
+function isCompiledContractFormat(obj: unknown): obj is { abi: Abi; [key: string]: unknown } {
+    return (
+        obj !== null &&
+        typeof obj === 'object' &&
+        'abi' in obj &&
+        Array.isArray((obj as { abi: unknown }).abi)
+    );
+}
+
 export function getContract<TAbi extends Abi>(
     contractsModule: ContractsModule,
     address: Address,
     abi: TAbi,
     signer?: Signer
 ): ViemContract<TAbi> {
-    const contract = contractsModule.load(address, abi, signer);
+    // Extract ABI array from full contract JSON if needed
+    const actualAbi = isCompiledContractFormat(abi) ? (abi.abi as TAbi) : abi;
+    const contract = contractsModule.load(address, actualAbi, signer);
     return createViemContract(contract);
 }

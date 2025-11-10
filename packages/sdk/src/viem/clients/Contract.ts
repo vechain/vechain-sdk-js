@@ -17,8 +17,8 @@ import {
 
 // Type alias for hex-convertible values
 
-// Type alias for function arguments
-type FunctionArgs = AbiParameter[];
+// Type alias for function arguments (runtime values, not ABI definitions)
+type FunctionArgs = readonly unknown[];
 
 /**
  * Configuration for creating a contract instance
