@@ -4,7 +4,7 @@ import { Address, Revision } from '@common/vcdm';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import { Clause, ThorClient } from '@thor/thor-client';
 import { TransactionBuilder } from '@thor/thor-client/transactions/TransactionBuilder';
-import { ThorNetworks } from '@thor/thorest/utils';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo

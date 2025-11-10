@@ -4,12 +4,13 @@ import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import { NewTransactionSubscription } from '@thor/thorest/subscriptions';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { afterEach, beforeEach, describe, test } from '@jest/globals';
-import { RetrieveExpandedBlock, ThorNetworks, type TXID } from '@thor/thorest';
+import { RetrieveExpandedBlock, type TXID } from '@thor/thorest';
 import { ClauseBuilder } from '@thor/thor-client/transactions';
 import { TransactionRequest } from '@thor/thor-client';
 import { PrivateKeySigner } from '@thor';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { log } from '@common/logging';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * VeChain beats subscription - solo

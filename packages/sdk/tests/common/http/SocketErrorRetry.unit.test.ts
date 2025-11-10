@@ -1,6 +1,6 @@
 import { FetchHttpClient } from '@common/http';
 import { describe, expect, jest, test } from '@jest/globals';
-import { ThorNetworks } from '@thor/thorest/utils';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group unit

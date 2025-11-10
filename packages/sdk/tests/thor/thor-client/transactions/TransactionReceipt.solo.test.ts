@@ -3,7 +3,7 @@ import { Hex } from '@common/vcdm';
 import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client';
 import { TransactionReceipt } from '@thor/thor-client/model/transactions';
-import { ThorNetworks } from '@thor/thorest/utils';
+import { ThorNetworks } from '@thor/utils/const/network';
 import { getConfigData } from '@vechain/sdk-solo-setup';
 
 /**

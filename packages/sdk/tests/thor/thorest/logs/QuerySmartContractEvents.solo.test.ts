@@ -4,12 +4,12 @@ import {
     EventLogsResponse,
     FilterOptionsRequest,
     FilterRangeRequest,
-    QuerySmartContractEvents,
-    ThorNetworks
+    QuerySmartContractEvents
 } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits';
 import { LogSort } from '@thor/thor-client/model/logs/LogSort';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo

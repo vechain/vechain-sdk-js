@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
-import { ThorNetworks } from '@thor/thorest';
 import { log } from '@common/logging';
 import { Clause, type EstimateGasOptions } from '@thor/thor-client/model';
 import { Address, Hex } from '@common/vcdm';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * Test suite for PublicClient fee estimation functionality

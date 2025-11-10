@@ -1,13 +1,12 @@
 import {
     RetrieveExpandedTransactionsFromTransactionPool,
-    ThorError,
-    ThorNetworks,
     Transactions
 } from '@thor/thorest';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { FetchHttpClient, HttpException } from '@common/http';
 import { expect } from '@jest/globals';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group testnet

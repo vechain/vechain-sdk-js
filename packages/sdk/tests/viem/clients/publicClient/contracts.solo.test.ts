@@ -2,12 +2,12 @@
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient } from '@viem/clients';
 import { log } from '@common/logging';
-import { ThorNetworks } from '@thor/thorest';
 import {
     Clause,
     type SimulateTransactionOptions
 } from '@thor/thor-client/model/transactions';
 import { Address, Hex } from '@common/vcdm';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * Test suite for PublicClient contract/call-related functionality
