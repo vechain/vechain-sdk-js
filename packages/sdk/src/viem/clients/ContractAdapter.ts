@@ -31,6 +31,7 @@ import { TransactionRequest } from '@thor/thor-client/model/transactions/Transac
 import { log } from '@common/logging';
 import { IllegalArgumentError } from '@common/errors';
 import type { HttpClient } from '@common/http';
+import { FetchHttpClient } from '@common/http';
 
 // Type alias for function arguments (runtime values, not ABI definitions)
 type FunctionArgs = readonly unknown[];
@@ -70,47 +71,6 @@ function isCompiledContract(obj: unknown): obj is CompiledContract {
 }
 
 /**
- * Validates a contract address
- * @param address - The address to validate
- * @param context - Context for error messages
- * @throws {IllegalArgumentError} If the address is invalid
- */
-function validateContractAddress(address: Address, context: string): void {
-    const addrStr = address.toString();
-
-    // Length check (0x + 40 hex chars = 42 total)
-    if (addrStr.length !== 42) {
-        throw new IllegalArgumentError(
-            context,
-            'Invalid contract address length',
-            {
-                address: addrStr,
-                expectedLength: 42,
-                actualLength: addrStr.length
-            }
-        );
-    }
-
-    // Format check (0x followed by 40 hex characters)
-    if (!/^0x[0-9a-fA-F]{40}$/.test(addrStr)) {
-        throw new IllegalArgumentError(
-            context,
-            'Invalid contract address format (must be 0x followed by 40 hex characters)',
-            { address: addrStr }
-        );
-    }
-
-    // Zero address check
-    if (addrStr === '0x0000000000000000000000000000000000000000') {
-        throw new IllegalArgumentError(
-            context,
-            'Cannot use zero address as contract address',
-            { address: addrStr }
-        );
-    }
-}
-
-/**
  * Extracts ABI array from either a raw ABI or a compiled contract JSON
  * @param abi - The ABI or compiled contract
  * @returns The extracted ABI array
@@ -147,13 +107,6 @@ function validateWriteParameters(
                 context,
                 'Gas limit cannot be negative',
                 { gas: params.gas.toString() }
-            );
-        }
-        if (params.gas > 10_000_000n) {
-            throw new IllegalArgumentError(
-                context,
-                'Gas limit exceeds maximum reasonable value',
-                { gas: params.gas.toString(), max: '10000000' }
             );
         }
     }
@@ -419,9 +372,6 @@ function getContract<const TAbi extends Abi>({
         );
     }
 
-    // Validate contract address
-    validateContractAddress(address, context);
-
     // Extract ABI array from full contract JSON if needed
     const actualAbi = extractAbi(abi);
 
@@ -464,8 +414,7 @@ function getContract<const TAbi extends Abi>({
             );
         }
 
-        // Dynamically import FetchHttpClient to create from network URL
-        const { FetchHttpClient } = require('@common/http');
+        // Create HttpClient from network URL
         httpClient = new FetchHttpClient(new URL(networkUrl));
 
         log.debug({
@@ -807,14 +756,18 @@ function getContract<const TAbi extends Abi>({
 
                     const clause = new Clause(address, value, Hex.of(data));
 
-                    // estimateGas requires a caller address, use account address if available
+                    // estimateGas requires a caller address
                     const publicClientInternal =
                         publicClient as unknown as ClientInternal;
-                    const caller =
-                        publicClientInternal.account?.address ||
-                        Address.of(
-                            '0x0000000000000000000000000000000000000000'
+                    const caller = publicClientInternal.account?.address;
+
+                    if (!caller) {
+                        throw new IllegalArgumentError(
+                            `estimateGas.${functionName}`,
+                            'estimateGas requires an account address. Provide a publicClient with an account or use a walletClient.',
+                            { functionName }
                         );
+                    }
 
                     const response = await publicClient.estimateGas(
                         [clause],
