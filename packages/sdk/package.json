@@ -1,5 +1,5 @@
 {
-  "name": "@vechain/sdk",
+  "name": "@vechain/sdk-temp",
   "version": "3.0.0-beta.1",
   "description": "VeChain SDK for Thor blockchain, for JavaScript and TypeScript development",
   "author": "VeChain Foundation",
@@ -40,6 +40,10 @@
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "build": "rm -rf ./dist && tsup",
     "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 15) exit 1}'",
@@ -95,5 +99,8 @@
     "tsd": "0.31.2",
     "tsup": "8.5.0",
     "whatwg-fetch": "3.6.20"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
