@@ -69,7 +69,7 @@ describe('WalletClient UNIT tests', () => {
 
         test('ok <- dynamic fee - signed then sponsored', async () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -118,7 +118,7 @@ describe('WalletClient UNIT tests', () => {
 
         test('ok <- dynamic fee - sponsored than signed', async () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -199,7 +199,7 @@ describe('WalletClient UNIT tests', () => {
 
         test('ok <- legacy - signed then sponsored', async () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -247,7 +247,7 @@ describe('WalletClient UNIT tests', () => {
 
         test('ok <- legacy - sponsored then signed', async () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [

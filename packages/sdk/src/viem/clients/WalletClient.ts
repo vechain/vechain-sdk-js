@@ -172,7 +172,7 @@ class WalletClient extends PublicClient {
                     : null
             );
             return new TransactionRequest({
-                beggar: request.beggar,
+                gasSponsorshipRequester: request.gasSponsorshipRequester,
                 blockRef: request.blockRef,
                 chainTag: request.chainTag,
                 clauses: [clause],
@@ -274,7 +274,7 @@ class WalletClient extends PublicClient {
     /**
      * Signs a transaction request.
      *
-     * For sponsored transactions, signs as origin (sender) or gas payer based on the beggar address.
+     * For sponsored transactions, signs as origin (sender) or gas payer based on the gas sponsorship requester address.
      * For regular transactions, signs as the origin.
      *
      * @param {TransactionRequest} transactionRequest - The transaction to sign.
@@ -285,9 +285,9 @@ class WalletClient extends PublicClient {
         transactionRequest: TransactionRequest
     ): Promise<Hex> {
         if (this.account !== null) {
-            if (transactionRequest.beggar !== undefined) {
+            if (transactionRequest.gasSponsorshipRequester !== undefined) {
                 if (
-                    transactionRequest.beggar.isEqual(
+                    transactionRequest.gasSponsorshipRequester.isEqual(
                         Address.of(this.account.address)
                     )
                 ) {
@@ -345,7 +345,8 @@ class WalletClient extends PublicClient {
         const gasPayerHash = Blake2b256.of(
             concatBytes(
                 transactionRequest.hash.bytes, // Origin hash.
-                transactionRequest.beggar?.bytes ?? new Uint8Array()
+                transactionRequest.gasSponsorshipRequester?.bytes ??
+                    new Uint8Array()
             )
         ).bytes;
         const gasPayerSignature = await WalletClient.signHash(
@@ -404,7 +405,7 @@ interface PrepareTransactionRequestRequest {
     comment?: string;
     abi?: Hex;
     // Transaction body
-    beggar?: Address;
+    gasSponsorshipRequester?: Address;
     blockRef: Hex;
     chainTag: number;
     dependsOn?: Hex;

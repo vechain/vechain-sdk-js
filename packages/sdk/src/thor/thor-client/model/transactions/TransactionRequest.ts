@@ -17,9 +17,9 @@ const FQP =
  */
 interface TransactionRequestParam {
     /**
-     * The address of the account begging to pay the gas fee.
+     * The origin account, only set if the transaction is intended to be sponsored.
      */
-    beggar?: Address;
+    gasSponsorshipRequester?: Address;
 
     /**
      * The first 8 bytes of the referenced block ID.
@@ -84,7 +84,7 @@ class TransactionRequest implements TransactionRequestParam {
     /**
      * The address of the account begging to pay the gas fee.
      */
-    public readonly beggar?: Address;
+    public readonly gasSponsorshipRequester?: Address;
 
     /**
      * The first 8 bytes of the referenced block ID.
@@ -152,8 +152,8 @@ class TransactionRequest implements TransactionRequestParam {
 
     /**
      * The transaction signature, equal to
-     * - originSignature, if the transaction is not intended to be sponsored, hence beggar is undefined;
-     * - originSignature concatenated with gasPayerSignature, if the transaction is intended to be sponsored, hence beggar is defined.
+     * - originSignature, if the transaction is not intended to be sponsored, hence gasSponsorshipRequester is undefined;
+     * - originSignature concatenated with gasPayerSignature, if the transaction is intended to be sponsored, hence gasSponsorshipRequester is defined.
      */
     public readonly signature: Uint8Array;
 
@@ -164,8 +164,8 @@ class TransactionRequest implements TransactionRequestParam {
      * @param {Uint8Array} [originSignature] - Optional origin signature for the transaction.
      * @param {Uint8Array} [gasPayerSignature] - Optional gas payer signature for the transaction.
      * @param {Uint8Array} [signature] - Optional transaction signature
-     * - If `beggar` is defined, the transaction is signed when both `originSignature` and `gasPayerSignature` are present.
-     * - If `beggar` is undefined, the transaction is signed when `originSignature` is present.
+     * - If `gasSponsorshipRequester` is defined, the transaction is signed when both `originSignature` and `gasPayerSignature` are present.
+     * - If `gasSponsorshipRequester` is undefined, the transaction is signed when `originSignature` is present.
      */
     public constructor(
         params: TransactionRequestParam,
@@ -177,7 +177,7 @@ class TransactionRequest implements TransactionRequestParam {
             TransactionRequest.isLegacy(params) ||
             TransactionRequest.isDynamicFee(params)
         ) {
-            this.beggar = params.beggar;
+            this.gasSponsorshipRequester = params.gasSponsorshipRequester;
             this.blockRef = params.blockRef;
             this.chainTag = params.chainTag;
             this.clauses = params.clauses;
@@ -226,10 +226,10 @@ class TransactionRequest implements TransactionRequestParam {
     /**
      * Computes and retrieves the Blake2b256 hash of the transaction request.
      *
-     * The hash ignores the `beggar`, `gasPayerSignature`, `originSignature` and `signature` fields
+     * The hash ignores the `gasSponsorshipRequester`, `gasPayerSignature`, `originSignature` and `signature` fields
      * because the signature fields need the hash to be computed beforehand;
-     * the `beggar` field is not part of the Thor protocol to accept a transaction request,
-     * the `beggar` address is encoded in the `signature` field once the transaction is signed.
+     * the `gasSponsorshipRequester` field is not part of the Thor protocol to accept a transaction request,
+     * the `gasSponsorshipRequester` address is encoded in the `signature` field once the transaction is signed.
      *
      * @return {Blake2b256} The Blake2b256 hash generated from the encoded transaction request.
      */
@@ -293,21 +293,21 @@ class TransactionRequest implements TransactionRequestParam {
     }
 
     /**
-     * Indicates if the `beggar` address asks the gas cost transaction is sponsored by a "gas payer".
+     * Indicates if the `gasSponsorshipRequester` address is set.
      */
     public get isIntendedToBeSponsored(): boolean {
-        return this.beggar !== undefined;
+        return this.gasSponsorshipRequester !== undefined;
     }
 
     /**
      * Determines whether the instance is signed by verifying the presence of signatures.
      *
      * @return {boolean} True if the required signatures are present, otherwise false.
-     * - If `beggar` is defined, the transaction is signed if both `originSignature` and `gasPayerSignature` are present.
-     * - If `beggar` is undefined, the transaction is signed if `originSignature` is present.
+     * - If `gasSponsorshipRequester` is defined, the transaction is signed if both `originSignature` and `gasPayerSignature` are present.
+     * - If `gasSponsorshipRequester` is undefined, the transaction is signed if `originSignature` is present.
      */
     public get isSigned(): boolean {
-        if (this.beggar === undefined) {
+        if (this.gasSponsorshipRequester === undefined) {
             return (
                 this.originSignature.length > 0 &&
                 this.signature.length === this.originSignature.length
@@ -328,7 +328,7 @@ class TransactionRequest implements TransactionRequestParam {
      */
     public toJSON(): TransactionRequestJSON {
         return {
-            beggar: this.beggar?.toString(),
+            gasSponsorshipRequester: this.gasSponsorshipRequester?.toString(),
             blockRef: this.blockRef.toString(),
             chainTag: this.chainTag,
             clauses: this.clauses.map((clause: Clause) => clause.toJSON()),

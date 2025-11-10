@@ -48,7 +48,7 @@ describe('TransactionRequest UNIT tests', () => {
     describe('constructor', () => {
         test('ok <- legacy transaction with all parameters', () => {
             const params = {
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -77,7 +77,9 @@ describe('TransactionRequest UNIT tests', () => {
                 signature
             );
 
-            expect(txRequest.beggar).toBe(params.beggar);
+            expect(txRequest.gasSponsorshipRequester).toBe(
+                params.gasSponsorshipRequester
+            );
             expect(txRequest.blockRef).toBe(params.blockRef);
             expect(txRequest.chainTag).toBe(params.chainTag);
             expect(txRequest.clauses).toEqual(params.clauses);
@@ -94,7 +96,7 @@ describe('TransactionRequest UNIT tests', () => {
 
         test('ok <- dynamic fee transaction with all parameters', () => {
             const params = {
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -114,7 +116,9 @@ describe('TransactionRequest UNIT tests', () => {
 
             const txRequest = new TransactionRequest(params);
 
-            expect(txRequest.beggar).toBe(params.beggar);
+            expect(txRequest.gasSponsorshipRequester).toBe(
+                params.gasSponsorshipRequester
+            );
             expect(txRequest.blockRef).toBe(params.blockRef);
             expect(txRequest.chainTag).toBe(params.chainTag);
             expect(txRequest.clauses).toEqual(params.clauses);
@@ -145,7 +149,7 @@ describe('TransactionRequest UNIT tests', () => {
 
             const txRequest = new TransactionRequest(params);
 
-            expect(txRequest.beggar).toBeUndefined();
+            expect(txRequest.gasSponsorshipRequester).toBeUndefined();
             expect(txRequest.blockRef).toBe(params.blockRef);
             expect(txRequest.chainTag).toBe(params.chainTag);
             expect(txRequest.clauses).toEqual(params.clauses);
@@ -544,7 +548,7 @@ describe('TransactionRequest UNIT tests', () => {
 
         test('ok <- dynamic fee - sponsored - unsigned', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -571,7 +575,7 @@ describe('TransactionRequest UNIT tests', () => {
 
         test('ok <- dynamic fee - sponsored - gas payer signed', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -602,7 +606,7 @@ describe('TransactionRequest UNIT tests', () => {
 
         test('ok <- dynamic fee - sponsored - origin signed', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -633,7 +637,7 @@ describe('TransactionRequest UNIT tests', () => {
 
         test('ok <- dynamic fee - sponsored - both signed', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -738,7 +742,7 @@ describe('TransactionRequest UNIT tests', () => {
 
         test('ok <- legacy - - sponsored - unsigned', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -763,7 +767,7 @@ describe('TransactionRequest UNIT tests', () => {
 
         test('ok <- legacy - - sponsored - gas payer signed', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -792,7 +796,7 @@ describe('TransactionRequest UNIT tests', () => {
 
         test('ok <- legacy - sponsored - origin signed', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -821,7 +825,7 @@ describe('TransactionRequest UNIT tests', () => {
 
         test('ok <- legacy - sponsored - both signed', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -948,11 +952,13 @@ describe('TransactionRequest UNIT tests', () => {
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- body.beggar defined creates Address using Address.of', () => {
-            // Create a transaction request with beggar address defined
-            const expectedBeggarAddress = Address.of(mockSenderAccount.address);
+        test('ok <- body.gasSponsorshipRequester defined creates Address using Address.of', () => {
+            // Create a transaction request with gas sponsorship requester address defined
+            const expectedGasSponsorshipRequester = Address.of(
+                mockSenderAccount.address
+            );
             const txRequest = new TransactionRequest({
-                beggar: expectedBeggarAddress,
+                gasSponsorshipRequester: expectedGasSponsorshipRequester,
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -972,21 +978,21 @@ describe('TransactionRequest UNIT tests', () => {
             const encoded = txRequest.encoded;
             const decoded = TransactionRequest.decode(encoded);
 
-            // Verify that the beggar address is properly reconstructed using Address.of
-            expect(decoded.beggar).toBeDefined();
-            expect(decoded.beggar?.toString()).toBe(
-                expectedBeggarAddress.toString()
+            // Verify that the gas sponsorship requester address is properly reconstructed using Address.of
+            expect(decoded.gasSponsorshipRequester).toBeDefined();
+            expect(decoded.gasSponsorshipRequester?.toString()).toBe(
+                expectedGasSponsorshipRequester.toString()
             );
             expect(decoded.isIntendedToBeSponsored).toBe(true);
-            expect(decoded.toJSON().beggar).toBe(
-                expectedBeggarAddress.toString()
+            expect(decoded.toJSON().gasSponsorshipRequester).toBe(
+                expectedGasSponsorshipRequester.toString()
             );
         });
 
-        test('ok <- body.beggar undefined results in params.beggar as undefined', () => {
-            // Create a transaction request without beggar address
+        test('ok <- body.gasSponsorshipRequester undefined results in params.gasSponsorshipRequester as undefined', () => {
+            // Create a transaction request without gas sponsorship requester address
             const txRequest = new TransactionRequest({
-                // beggar intentionally omitted
+                // gas sponsorship requester intentionally omitted
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -1006,10 +1012,10 @@ describe('TransactionRequest UNIT tests', () => {
             const encoded = txRequest.encoded;
             const decoded = TransactionRequest.decode(encoded);
 
-            // Verify that the beggar address is undefined
-            expect(decoded.beggar).toBeUndefined();
+            // Verify that the gas sponsorship requester address is undefined
+            expect(decoded.gasSponsorshipRequester).toBeUndefined();
             expect(decoded.isIntendedToBeSponsored).toBe(false);
-            expect(decoded.toJSON().beggar).toBeUndefined();
+            expect(decoded.toJSON().gasSponsorshipRequester).toBeUndefined();
         });
     });
 });

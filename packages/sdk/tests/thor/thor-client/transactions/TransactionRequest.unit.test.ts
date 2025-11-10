@@ -1,6 +1,9 @@
 import { expect } from '@jest/globals';
 import { Address, HexUInt, InvalidTransactionField, Quantity } from '@common';
-import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
+import {
+    Clause,
+    TransactionRequest
+} from '@thor/thor-client/model/transactions';
 
 /**
  * @group unit/thor/thor-client/transactions
@@ -10,7 +13,9 @@ describe('TransactionRequest', () => {
     const mockAddress = Address.of(
         '0x7567D83b7b8d80ADdCb281A71d54Fc7B3364ffed'
     );
-    const mockBeggar = Address.of('0x1234567890123456789012345678901234567890');
+    const mockGasSponsorshipRequester = Address.of(
+        '0x1234567890123456789012345678901234567890'
+    );
     const mockBlockRef = HexUInt.of('0x1234567890abcdef');
     const mockDependsOn = HexUInt.of(
         '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
@@ -52,14 +57,14 @@ describe('TransactionRequest', () => {
             expect(transaction.gas).toBe(mockGas);
             expect(transaction.gasPriceCoef).toBe(mockGasPriceCoef);
             expect(transaction.nonce).toBe(mockNonce);
-            expect(transaction.beggar).toBeUndefined();
+            expect(transaction.gasSponsorshipRequester).toBeUndefined();
             expect(transaction.maxFeePerGas).toBeUndefined();
             expect(transaction.maxPriorityFeePerGas).toBeUndefined();
         });
 
         test('ok <- dynamic with all parameters', () => {
             const params = {
-                beggar: mockBeggar,
+                gasSponsorshipRequester: mockGasSponsorshipRequester,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [new Clause(mockAddress, mockValue.bi)],
@@ -78,7 +83,9 @@ describe('TransactionRequest', () => {
                 mockSignature
             );
 
-            expect(transaction.beggar).toBe(mockBeggar);
+            expect(transaction.gasSponsorshipRequester).toBe(
+                mockGasSponsorshipRequester
+            );
             expect(transaction.blockRef).toBe(mockBlockRef);
             expect(transaction.chainTag).toBe(1);
             expect(transaction.clauses).toHaveLength(1);
@@ -95,7 +102,7 @@ describe('TransactionRequest', () => {
 
         test('ok <- legacy with all parameters', () => {
             const params = {
-                beggar: mockBeggar,
+                gasSponsorshipRequester: mockGasSponsorshipRequester,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [new Clause(mockAddress, mockValue.bi)],
@@ -113,7 +120,9 @@ describe('TransactionRequest', () => {
                 mockSignature
             );
 
-            expect(transaction.beggar).toBe(mockBeggar);
+            expect(transaction.gasSponsorshipRequester).toBe(
+                mockGasSponsorshipRequester
+            );
             expect(transaction.blockRef).toBe(mockBlockRef);
             expect(transaction.chainTag).toBe(1);
             expect(transaction.clauses).toHaveLength(1);
@@ -216,9 +225,9 @@ describe('TransactionRequest', () => {
     });
 
     describe('isIntendedToBeSponsored getter', () => {
-        test('true <- when beggar is defined', () => {
+        test('true <- when gas sponsorship requester is defined', () => {
             const params = {
-                beggar: mockBeggar,
+                gasSponsorshipRequester: mockGasSponsorshipRequester,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [],
@@ -233,7 +242,7 @@ describe('TransactionRequest', () => {
             expect(transaction.isIntendedToBeSponsored).toBe(true);
         });
 
-        test('false <- when beggar is undefined', () => {
+        test('false <- when gas sponsorship requester is undefined', () => {
             const params = {
                 blockRef: mockBlockRef,
                 chainTag: 1,
@@ -251,7 +260,7 @@ describe('TransactionRequest', () => {
     });
 
     describe('isSigned getter', () => {
-        test('false <- for unsigned transaction without beggar', () => {
+        test('false <- for unsigned transaction without gas sponsorship requester', () => {
             const params = {
                 blockRef: mockBlockRef,
                 chainTag: 1,
@@ -267,7 +276,7 @@ describe('TransactionRequest', () => {
             expect(transaction.isSigned).toBe(false);
         });
 
-        test('true <- for signed transaction without beggar', () => {
+        test('true <- for signed transaction without gas sponsorship requester', () => {
             const params = {
                 blockRef: mockBlockRef,
                 chainTag: 1,
@@ -290,7 +299,7 @@ describe('TransactionRequest', () => {
 
         test('false <- for partially signed sponsored transaction', () => {
             const params = {
-                beggar: mockBeggar,
+                gasSponsorshipRequester: mockGasSponsorshipRequester,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [],
@@ -319,7 +328,7 @@ describe('TransactionRequest', () => {
 
         test('true <- for fully signed sponsored transaction', () => {
             const params = {
-                beggar: mockBeggar,
+                gasSponsorshipRequester: mockGasSponsorshipRequester,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [],
@@ -363,7 +372,7 @@ describe('TransactionRequest', () => {
 
         test('false <- when signature length mismatch for sponsored', () => {
             const params = {
-                beggar: mockBeggar,
+                gasSponsorshipRequester: mockGasSponsorshipRequester,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [],
@@ -401,7 +410,7 @@ describe('TransactionRequest', () => {
             const transaction = new TransactionRequest(params);
             const json = transaction.toJSON();
 
-            expect(json.beggar).toBeUndefined();
+            expect(json.gasSponsorshipRequester).toBeUndefined();
             expect(json.blockRef).toBe(mockBlockRef.toString());
             expect(json.chainTag).toBe(1);
             expect(json.clauses).toHaveLength(1);
@@ -419,7 +428,7 @@ describe('TransactionRequest', () => {
 
         test('ok <- full dynamic transaction to JSON', () => {
             const params = {
-                beggar: mockBeggar,
+                gasSponsorshipRequester: mockGasSponsorshipRequester,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [new Clause(mockAddress, mockValue.bi)],
@@ -439,7 +448,9 @@ describe('TransactionRequest', () => {
             );
             const json = transaction.toJSON();
 
-            expect(json.beggar).toBe(mockBeggar.toString());
+            expect(json.gasSponsorshipRequester).toBe(
+                mockGasSponsorshipRequester.toString()
+            );
             expect(json.blockRef).toBe(mockBlockRef.toString());
             expect(json.chainTag).toBe(1);
             expect(json.clauses).toHaveLength(1);
@@ -460,7 +471,7 @@ describe('TransactionRequest', () => {
 
         test('ok <- full legacy transaction to JSON', () => {
             const params = {
-                beggar: mockBeggar,
+                gasSponsorshipRequester: mockGasSponsorshipRequester,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [new Clause(mockAddress, mockValue.bi)],
@@ -479,7 +490,9 @@ describe('TransactionRequest', () => {
             );
             const json = transaction.toJSON();
 
-            expect(json.beggar).toBe(mockBeggar.toString());
+            expect(json.gasSponsorshipRequester).toBe(
+                mockGasSponsorshipRequester.toString()
+            );
             expect(json.blockRef).toBe(mockBlockRef.toString());
             expect(json.chainTag).toBe(1);
             expect(json.clauses).toHaveLength(1);
@@ -558,7 +571,10 @@ describe('TransactionRequest', () => {
 
         test('ok <- handle multiple clauses', () => {
             const clause1 = new Clause(mockAddress, mockValue.bi);
-            const clause2 = new Clause(mockBeggar, mockValue.bi * 2n);
+            const clause2 = new Clause(
+                mockGasSponsorshipRequester,
+                mockValue.bi * 2n
+            );
             const params = {
                 blockRef: mockBlockRef,
                 chainTag: 1,
@@ -594,7 +610,7 @@ describe('TransactionRequest', () => {
 
             const transaction = new TransactionRequest(params);
 
-            expect(transaction.beggar).toBeUndefined();
+            expect(transaction.gasSponsorshipRequester).toBeUndefined();
             expect(transaction.dependsOn).toBeNull();
             expect(transaction.maxFeePerGas).toBeUndefined();
             expect(transaction.maxPriorityFeePerGas).toBeUndefined();

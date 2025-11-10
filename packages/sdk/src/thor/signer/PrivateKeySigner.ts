@@ -152,8 +152,8 @@ class PrivateKeySigner implements Signer {
     /**
      * Signs a transaction request.
      * - If the transaction is intended to be sponsored,
-     *   - if the beggar address is equal to the signer address, signs as origin/sender;
-     *   - if the beggar address differs from the signer address, signs as gas payer.
+     *   - if the gas sponsorship requester address is equal to the signer address, signs as origin/sender;
+     *   - if the gas sponsorship requester address differs from the signer address, signs as gas payer.
      * - If the transaction is not intended to be sponsored, signs as origin/sender.
      *
      * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
@@ -167,8 +167,12 @@ class PrivateKeySigner implements Signer {
      */
     public sign(transactionRequest: TransactionRequest): TransactionRequest {
         try {
-            if (transactionRequest.beggar !== undefined) {
-                if (transactionRequest.beggar.isEqual(this.address)) {
+            if (transactionRequest.gasSponsorshipRequester !== undefined) {
+                if (
+                    transactionRequest.gasSponsorshipRequester.isEqual(
+                        this.address
+                    )
+                ) {
                     return PrivateKeySigner.finalize(
                         this.signAsOrigin(transactionRequest)
                     );
@@ -215,7 +219,8 @@ class PrivateKeySigner implements Signer {
             const gasPayerHash = Blake2b256.of(
                 concatBytes(
                     transactionRequest.hash.bytes, // Origin hash.
-                    transactionRequest.beggar?.bytes ?? new Uint8Array()
+                    transactionRequest.gasSponsorshipRequester?.bytes ??
+                        new Uint8Array()
                 )
             ).bytes;
             return new TransactionRequest(

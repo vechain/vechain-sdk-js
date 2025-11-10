@@ -73,7 +73,7 @@ describe('unit tests', () => {
         } satisfies GetTxReceiptResponseJSON;
 
         const txRequest = new TransactionRequest({
-            beggar: sender.address,
+            gasSponsorshipRequester: sender.address,
             chainTag: mockChainTag,
             blockRef: BlockRef.of(mockBlockResponse.id),
             expiration: 0,
@@ -122,7 +122,7 @@ describe('unit tests', () => {
             false
         );
         const txA = new TransactionRequest({
-            beggar: sender.address,
+            gasSponsorshipRequester: sender.address,
             chainTag: mockChainTag,
             blockRef: BlockRef.of(latestBlock.id),
             expiration: 0,
@@ -142,7 +142,7 @@ describe('unit tests', () => {
         const hashA = Blake2b256.of(
             concatBytes(
                 ap.hash.bytes, // Origin hash.
-                ap.beggar?.bytes ?? new Uint8Array()
+                ap.gasSponsorshipRequester?.bytes ?? new Uint8Array()
             )
         ).bytes; // Gas payer hash.
         const isVerifiedA = nc_secp256k1.verify(
@@ -153,7 +153,7 @@ describe('unit tests', () => {
         expect(isVerifiedA).toBe(true);
 
         const txB = new TransactionRequest({
-            beggar: sender.address,
+            gasSponsorshipRequester: sender.address,
             chainTag: mockChainTag,
             blockRef: BlockRef.of(latestBlock.id),
             expiration: 0,
@@ -171,7 +171,7 @@ describe('unit tests', () => {
         const hashB = Blake2b256.of(
             concatBytes(
                 bp.hash.bytes, // Origin hash.
-                bp.beggar?.bytes ?? new Uint8Array()
+                bp.gasSponsorshipRequester?.bytes ?? new Uint8Array()
             )
         ).bytes; // Gas payer hash.
         const isVerifiedB = nc_secp256k1.verify(

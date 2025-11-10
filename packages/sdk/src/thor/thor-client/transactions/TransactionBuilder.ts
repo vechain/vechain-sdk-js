@@ -44,7 +44,7 @@ class TransactionBuilder {
 
     // starting values for the builder
     private readonly startingParams: TransactionRequestParam = {
-        beggar: undefined,
+        gasSponsorshipRequester: undefined,
         blockRef: TransactionBuilder.STARTING_BLOCK_REF,
         chainTag: TransactionBuilder.STARTING_CHAIN_TAG,
         clauses: [],
@@ -93,12 +93,12 @@ class TransactionBuilder {
     }
 
     /**
-     * Sets the requester for a gas sponsored transaction.
+     * Sets the origin account if the transaction is intended to be sponsored.
      * @param requester - The address of the requester.
      * @returns The builder instance.
      */
     public withSponsorReq(requester: Address): this {
-        this.params.beggar = requester;
+        this.params.gasSponsorshipRequester = requester;
         log.debug({
             message: 'TransactionBuilder.withSponsorReq',
             context: { requester }

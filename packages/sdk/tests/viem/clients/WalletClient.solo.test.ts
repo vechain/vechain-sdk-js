@@ -80,7 +80,7 @@ describe('WalletClient SOLO tests', () => {
             }
             const chainTag = await thorClient.nodes.getChainTag();
             const txRequest = new TransactionRequest({
-                beggar: Address.of(TRANSACTION_SENDER.address),
+                gasSponsorshipRequester: Address.of(TRANSACTION_SENDER.address),
                 blockRef: BlockRef.of(latestBlock.id),
                 chainTag,
                 clauses: [
@@ -132,7 +132,7 @@ describe('WalletClient SOLO tests', () => {
             }
             const chainTag = await thorClient.nodes.getChainTag();
             const txRequest = new TransactionRequest({
-                beggar: Address.of(TRANSACTION_SENDER.address),
+                gasSponsorshipRequester: Address.of(TRANSACTION_SENDER.address),
                 blockRef: BlockRef.of(latestBlock.id),
                 chainTag,
                 clauses: [
@@ -226,7 +226,7 @@ describe('WalletClient SOLO tests', () => {
             }
             const chainTag = await thorClient.nodes.getChainTag();
             const txRequest = new TransactionRequest({
-                beggar: Address.of(TRANSACTION_SENDER.address),
+                gasSponsorshipRequester: Address.of(TRANSACTION_SENDER.address),
                 blockRef: BlockRef.of(latestBlock.id),
                 chainTag,
                 clauses: [
@@ -277,7 +277,7 @@ describe('WalletClient SOLO tests', () => {
             }
             const chainTag = await thorClient.nodes.getChainTag();
             const txRequest = new TransactionRequest({
-                beggar: Address.of(TRANSACTION_SENDER.address),
+                gasSponsorshipRequester: Address.of(TRANSACTION_SENDER.address),
                 blockRef: BlockRef.of(latestBlock.id),
                 chainTag,
                 clauses: [

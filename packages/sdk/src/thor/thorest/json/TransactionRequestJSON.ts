@@ -4,7 +4,7 @@ import { type ClauseJSON } from '@thor/thorest/json/ClauseJSON';
  * Represents the content of a {@link TransactionRequest} object in JSON format.
  */
 interface TransactionRequestJSON {
-    beggar?: string; // hex string
+    gasSponsorshipRequester?: string; // hex string
     blockRef: string; // hex string
     chainTag: number;
     clauses: ClauseJSON[];

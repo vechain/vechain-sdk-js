@@ -189,7 +189,7 @@ describe('PrivateKeySigner UNIT test', () => {
 
         test('ok <- dynamic fee - signed then sponsored', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -235,7 +235,7 @@ describe('PrivateKeySigner UNIT test', () => {
 
         test('ok <- dynamic fee - sponsored than signed', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -279,7 +279,7 @@ describe('PrivateKeySigner UNIT test', () => {
 
         test('ok <- dynamic fee - x-flow aka ghostbuster test', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -344,7 +344,7 @@ describe('PrivateKeySigner UNIT test', () => {
 
         test('ok <- legacy - signed then sponsored', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -388,7 +388,7 @@ describe('PrivateKeySigner UNIT test', () => {
 
         test('ok <- legacy - sponsored then signed', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -432,7 +432,7 @@ describe('PrivateKeySigner UNIT test', () => {
 
         test('ok <- legacy - x-flow aka ghostbuster test', () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -467,7 +467,7 @@ describe('PrivateKeySigner UNIT test', () => {
         });
 
         test('ok <- not sponsored with zero-length origin signature returns original request', () => {
-            // Create a transaction request without sponsorship (no beggar) and no signatures
+            // Create a transaction request without sponsorship (no gas sponsorship requester) and no signatures
             const txRequest = new TransactionRequest({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -616,7 +616,7 @@ describe('PrivateKeySigner UNIT test', () => {
 
             // Create a sponsored transaction request
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
+                gasSponsorshipRequester: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [

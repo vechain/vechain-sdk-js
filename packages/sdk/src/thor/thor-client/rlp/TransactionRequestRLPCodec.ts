@@ -43,7 +43,10 @@ class TransactionRequestRLPCodec {
      * The RLP profile for sponsored albeit unsigned transaction request fields.
      */
     private static readonly RLP_UNSIGNED_STATE = [
-        { name: 'beggar', kind: new OptionalFixedHexBlobKind(20) },
+        {
+            name: 'gasSponsorshipRequester',
+            kind: new OptionalFixedHexBlobKind(20)
+        },
         { name: 'originSignature', kind: new BufferKind() },
         { name: 'gasPayerSignature', kind: new BufferKind() }
     ];
@@ -97,7 +100,7 @@ class TransactionRequestRLPCodec {
      * dynamic fee transaction request while both
      * the gas payer and origin haven't signed yet.
      *
-     * The `beggar`, `gasPayerSigture` and `originSignature` fields are included;
+     * The `gasSponsorshipRequester`, `gasPayerSigture` and `originSignature` fields are included;
      * the `signature` field is removed.
      */
     private static readonly RLP_DYNAMIC_FEE_UNSIGNED_REQUEST =
@@ -150,7 +153,7 @@ class TransactionRequestRLPCodec {
      * legacy transaction request while both
      * the gas payer and origin haven't signed yet.
      *
-     * The `beggar`, `gasPayerSignature` and `originSignature` fields are included;
+     * The `gasSponsorshipRequester`, `gasPayerSignature` and `originSignature` fields are included;
      * the `signature` field is removed.
      */
     private static readonly RLP_LEGACY_UNSIGNED_REQUEST =
@@ -360,7 +363,7 @@ class TransactionRequestRLPCodec {
 
     /**
      * Finalizes a decoded object into a TransactionRequest by processing the required fields,
-     * including the signature components and optionally calculating the beggar address
+     * including the signature components and optionally calculating the gas sponsorship requester address
      * if it is not explicitly provided in the decoded data.
      *
      * @param {RLPValidObject} decoded - The decoded RLP object containing the transaction details and signatures.
@@ -387,8 +390,11 @@ class TransactionRequestRLPCodec {
                 : (decoded.originSignature as Uint8Array);
 
         let beggar: Address | undefined;
-        if (decoded.beggar !== null && decoded.beggar !== undefined) {
-            beggar = Address.of(decoded.beggar as string);
+        if (
+            decoded.gasSponsorshipRequester !== null &&
+            decoded.gasSponsorshipRequester !== undefined
+        ) {
+            beggar = Address.of(decoded.gasSponsorshipRequester as string);
         } else if (signature?.length === Secp256k1.SIGNATURE_LENGTH * 2) {
             const hashData = isDynamicFee
                 ? new Uint8Array([
@@ -411,7 +417,7 @@ class TransactionRequestRLPCodec {
         return new TransactionRequest(
             {
                 ...TransactionRequestRLPCodec.mapBodyToTransactionRequest(body),
-                beggar
+                gasSponsorshipRequester: beggar
             },
             originSignature,
             gasPayerSignature,
@@ -436,8 +442,10 @@ class TransactionRequestRLPCodec {
         });
         // Create TransactionRequestParam object.
         const params = {
-            beggar:
-                body.beggar !== undefined ? Address.of(body.beggar) : undefined,
+            gasSponsorshipRequester:
+                body.gasSponsorshipRequester !== undefined
+                    ? Address.of(body.gasSponsorshipRequester)
+                    : undefined,
             blockRef: Hex.of(body.blockRef),
             chainTag: body.chainTag,
             clauses,
@@ -483,7 +491,8 @@ class TransactionRequestRLPCodec {
             }
         );
         const baseBody = {
-            beggar: transactionRequest.beggar?.toString(),
+            gasSponsorshipRequester:
+                transactionRequest.gasSponsorshipRequester?.toString(),
             blockRef: transactionRequest.blockRef.toString(),
             chainTag: transactionRequest.chainTag,
             clauses,
@@ -528,7 +537,7 @@ class TransactionRequestRLPCodec {
  * @remarks Not intended to be exported.
  */
 interface Body {
-    beggar?: string;
+    gasSponsorshipRequester?: string;
     blockRef: string;
     chainTag: number;
     clauses: Array<{
