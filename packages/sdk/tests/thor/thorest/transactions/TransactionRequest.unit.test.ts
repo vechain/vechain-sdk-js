@@ -409,6 +409,28 @@ describe('TransactionRequest UNIT tests', () => {
                 expect(invalidFieldError.args).toEqual({ params });
             }
         });
+
+        test('err <- throws InvalidTransactionField for sponsorship requester but remote gas payer url is provided', () => {
+            const params = {
+                gasSponsorshipRequester: undefined,
+                gasPayerServiceUrl: new URL('http://localhost:4000'),
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: undefined,
+                maxPriorityFeePerGas: undefined,
+                nonce: mockNonce
+            };
+
+            expect(() => {
+                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
+                new TransactionRequest(params);
+            }).toThrow(InvalidTransactionField);
+        });
     });
 
     describe('defensive copying of signatures', () => {

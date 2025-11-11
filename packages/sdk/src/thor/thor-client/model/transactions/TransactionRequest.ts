@@ -4,7 +4,8 @@ import {
     Blake2b256,
     type Hex,
     HexUInt,
-    InvalidTransactionField
+    InvalidTransactionField,
+    log
 } from '@common';
 import { TransactionRequestRLPCodec } from '@thor/thor-client/rlp/TransactionRequestRLPCodec';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
@@ -20,6 +21,11 @@ interface TransactionRequestParam {
      * The origin account, only set if the transaction is intended to be sponsored.
      */
     gasSponsorshipRequester?: Address;
+
+    /**
+     * The remote gas payer service URL.
+     */
+    gasPayerServiceUrl?: URL;
 
     /**
      * The first 8 bytes of the referenced block ID.
@@ -85,6 +91,11 @@ class TransactionRequest implements TransactionRequestParam {
      * The address of the account begging to pay the gas fee.
      */
     public readonly gasSponsorshipRequester?: Address;
+
+    /**
+     * The remote gas payer service URL.
+     */
+    public readonly gasPayerServiceUrl?: URL;
 
     /**
      * The first 8 bytes of the referenced block ID.
@@ -173,11 +184,30 @@ class TransactionRequest implements TransactionRequestParam {
         gasPayerSignature?: Uint8Array,
         signature?: Uint8Array
     ) {
+        // check if gas payer service url provided but no requester address
+        if (
+            params.gasPayerServiceUrl !== undefined &&
+            params.gasSponsorshipRequester === undefined
+        ) {
+            log.error({
+                message:
+                    'Invalid parameters: gas payer service url provided but no requester address',
+                source: 'TransactionRequest.constructor',
+                context: { params }
+            });
+            throw new InvalidTransactionField(
+                `${FQP}constructor(params: TransactionRequestParam, originSignature? Uint8Array, gasPayerSignature? Uint8Array, signature?: Uint8Array)`,
+                'Invalid parameters: gas payer service url provided but no requester address',
+                { params }
+            );
+        }
         if (
             TransactionRequest.isLegacy(params) ||
             TransactionRequest.isDynamicFee(params)
         ) {
+            // set the properties from the parameters
             this.gasSponsorshipRequester = params.gasSponsorshipRequester;
+            this.gasPayerServiceUrl = params.gasPayerServiceUrl;
             this.blockRef = params.blockRef;
             this.chainTag = params.chainTag;
             this.clauses = params.clauses;
@@ -195,6 +225,12 @@ class TransactionRequest implements TransactionRequestParam {
             // Defensive copy of the signatures to prevent accidental mutation.
             this.signature = new Uint8Array(signature ?? []);
         } else {
+            log.error({
+                message:
+                    'Invalid parameters: or gasPriceCoef >= 0 or maxFeePerGas > 0 or maxPriorityFeePerGas >= 0',
+                source: 'TransactionRequest.constructor',
+                context: { params }
+            });
             throw new InvalidTransactionField(
                 `${FQP}constructor(params: TransactionRequestParam, originSignature? Uint8Array, gasPayerSignature? Uint8Array, signature?: Uint8Array)`,
                 'Invalid parameters: or gasPriceCoef >= 0 or maxFeePerGas > 0 or maxPriorityFeePerGas >= 0',
@@ -329,6 +365,7 @@ class TransactionRequest implements TransactionRequestParam {
     public toJSON(): TransactionRequestJSON {
         return {
             gasSponsorshipRequester: this.gasSponsorshipRequester?.toString(),
+            gasPayerServiceUrl: this.gasPayerServiceUrl?.toString(),
             blockRef: this.blockRef.toString(),
             chainTag: this.chainTag,
             clauses: this.clauses.map((clause: Clause) => clause.toJSON()),

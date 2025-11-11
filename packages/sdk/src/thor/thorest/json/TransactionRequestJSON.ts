@@ -5,6 +5,7 @@ import { type ClauseJSON } from '@thor/thorest/json/ClauseJSON';
  */
 interface TransactionRequestJSON {
     gasSponsorshipRequester?: string; // hex string
+    gasPayerServiceUrl?: string; // url string
     blockRef: string; // hex string
     chainTag: number;
     clauses: ClauseJSON[];

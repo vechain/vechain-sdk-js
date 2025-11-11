@@ -446,6 +446,10 @@ class TransactionRequestRLPCodec {
                 body.gasSponsorshipRequester !== undefined
                     ? Address.of(body.gasSponsorshipRequester)
                     : undefined,
+            gasPayerServiceUrl:
+                body.gasPayerServiceUrl !== undefined
+                    ? (URL.parse(body.gasPayerServiceUrl) ?? undefined)
+                    : undefined,
             blockRef: Hex.of(body.blockRef),
             chainTag: body.chainTag,
             clauses,
@@ -493,6 +497,8 @@ class TransactionRequestRLPCodec {
         const baseBody = {
             gasSponsorshipRequester:
                 transactionRequest.gasSponsorshipRequester?.toString(),
+            gasPayerServiceUrl:
+                transactionRequest.gasPayerServiceUrl?.toString(),
             blockRef: transactionRequest.blockRef.toString(),
             chainTag: transactionRequest.chainTag,
             clauses,
@@ -538,6 +544,7 @@ class TransactionRequestRLPCodec {
  */
 interface Body {
     gasSponsorshipRequester?: string;
+    gasPayerServiceUrl?: string;
     blockRef: string;
     chainTag: number;
     clauses: Array<{
