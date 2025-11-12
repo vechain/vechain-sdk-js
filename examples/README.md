@@ -10,11 +10,11 @@ The `examples/viem` directory gives examples using the `viem` compatibility laye
 
 - Thor
     - Blocks
-        - [] example 1
-        - [] example 2
-        - [] example 3
+        - [ ] example 1
+        - [ ] example 2
+        - [ ] example 3
 - Viem
     - Blocks
-        - [] example 1
-        - [] example 2
-        - [] example 3
+        - [ ] example 1
+        - [ ] example 2
+        - [ ] example 3
