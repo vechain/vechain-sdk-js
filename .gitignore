@@ -36,4 +36,5 @@ examples/**/dist
 examples/**/node_modules
 examples/**/yarn.lock
 examples/**/index.js
+examples/**/.yarnrc.yml
 
