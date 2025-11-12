@@ -25,23 +25,15 @@ find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -
         continue
     fi
 
-    # Create .yarnrc.yml for node_modules mode
-    echo "⚙️  Configuring yarn for node_modules..."
-    echo "nodeLinker: node-modules" > "$yarnrc"
+    # Create .yarnrc.yml for node_modules mode if it doesn't exist
+    if [ ! -f "$yarnrc" ]; then
+        echo "⚙️  Configuring yarn for node_modules..."
+        echo "nodeLinker: node-modules" > "$yarnrc"
+    fi
 
     # Clean up old installations
-    rm -rf "$example_dir/node_modules" "$example_dir/yarn.lock" "$example_dir/.yarn"
+    rm -rf "$example_dir/node_modules"
 
-    # Check if yarn.lock exists and replace with an empty yarn.lock
-    yarn_lock="$example_dir/yarn.lock"
-    if [ -f "$yarn_lock" ]; then
-        echo "🧹 Removing old yarn.lock and creating empty yarn.lock..."
-        rm -f "$yarn_lock"
-        touch "$yarn_lock"
-    else
-        echo "ℹ️  No yarn.lock found, creating empty yarn.lock..."
-        touch "$yarn_lock"
-    fi
     
     # Install dependencies
     echo "📦 Installing dependencies..."
