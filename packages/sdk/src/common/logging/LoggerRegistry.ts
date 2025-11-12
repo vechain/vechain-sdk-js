@@ -1,3 +1,4 @@
+import { isBrowser } from '@common/utils/browser';
 import {
     type LoggerConfigSource,
     type Logger,
@@ -11,10 +12,19 @@ import {
 class LoggerRegistry {
     private static instance?: LoggerRegistry;
     private currentLogger?: Logger;
-    private static configSource: LoggerConfigSource = process.env;
+    private static configSource: LoggerConfigSource;
     public static readonly DEFAULT_LOG_VERBOSITY: LogVerbosity = 'info';
 
-    private constructor() {} // private for singleton
+    private constructor() {
+        // set the config source based on the environment
+        if (isBrowser) {
+            LoggerRegistry.configSource = {
+                SDK_LOG_VERBOSITY: 'info'
+            };
+        } else {
+            LoggerRegistry.configSource = process.env;
+        }
+    }
 
     /**
      * Get the instance of the logger registry.
@@ -74,10 +84,10 @@ class LoggerRegistry {
 
     /**
      * Set the config source.
-     * @param source - The source of the logger config. Defaults to process.env.
+     * @param source - The source of the logger config. Defaults to { SDK_LOG_VERBOSITY: 'info' }.
      */
     public static setConfigSource(
-        source: LoggerConfigSource = process.env
+        source: LoggerConfigSource = { SDK_LOG_VERBOSITY: 'info' }
     ): void {
         LoggerRegistry.configSource = source;
     }

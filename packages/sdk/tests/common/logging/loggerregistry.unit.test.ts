@@ -80,14 +80,12 @@ describe('LoggerRegistry', () => {
             verbosity: 'info'
         });
     });
-    test('when set config source is called, it defaults to process.env', () => {
-        delete process.env.SDK_LOG_VERBOSITY;
-        process.env.SDK_LOG_VERBOSITY = 'debug';
+    test('when set config source is called, it defaults to info level', () => {
         LoggerRegistry.setConfigSource();
         const testLogger = new TestLogger();
         LoggerRegistry.getInstance().registerLogger(testLogger);
         expect(testLogger.getConfig()).toEqual({
-            verbosity: 'debug'
+            verbosity: 'info'
         });
     });
     test('When logger is cleared, current logger is undefined', () => {
