@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-network",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "This module serves as the standard interface connecting decentralized applications (dApps) and users to the VeChainThor blockchain",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -46,16 +46,16 @@
   },
   "dependencies": {
     "@noble/curves": "^1.6.0",
-    "@vechain/sdk-core": "2.0.5",
-    "@vechain/sdk-errors": "2.0.5",
-    "@vechain/sdk-logging": "2.0.5",
+    "@vechain/sdk-core": "2.0.6",
+    "@vechain/sdk-errors": "2.0.6",
+    "@vechain/sdk-logging": "2.0.6",
     "abitype": "1.0.8",
     "viem": "^2.21.54",
     "ethers": "^6.14.0"
   },
   "devDependencies": {
     "@types/ws": "^8.5.13",
-    "@vechain/sdk-solo-setup": "2.0.5",
+    "@vechain/sdk-solo-setup": "2.0.6",
     "@vechain/vebetterdao-contracts": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "whatwg-fetch": "^3.6.20",
