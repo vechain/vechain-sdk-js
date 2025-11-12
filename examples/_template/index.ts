@@ -25,8 +25,8 @@ LoggerRegistry.getInstance().registerLogger(new PrettyLogger());
 const block = await client.blocks.getBlock(Revision.BEST);
 if (block === null) {
     log.error({ message: 'Failed to get current block' });
-    process.exit(1);
+} else {
+    log.info({ message: `Current block: ${block.number}` });
 }
-log.info({ message: `Current block: ${block.number}` });
 
-export default [`Block number: ${block.number}`];
+export default [`Block number: ${block?.number ?? 'unknown'}`];
