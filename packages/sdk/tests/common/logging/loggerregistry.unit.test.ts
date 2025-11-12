@@ -6,6 +6,7 @@ import {
     type LoggerConfig,
     type LogVerbosity
 } from '@common/logging';
+import { isBrowser } from '@common/utils/browser';
 
 // example callback logger
 class TestLogger extends Logger {
@@ -58,9 +59,15 @@ describe('LoggerRegistry', () => {
         const testLogger = new TestLogger();
         process.env.SDK_LOG_VERBOSITY = 'debug';
         LoggerRegistry.getInstance().registerLogger(testLogger);
-        expect(testLogger.getConfig()).toEqual({
-            verbosity: 'debug'
-        });
+        if (isBrowser) {
+            expect(testLogger.getConfig()).toEqual({
+                verbosity: 'info'
+            });
+        } else {
+            expect(testLogger.getConfig()).toEqual({
+                verbosity: 'debug'
+            });
+        }
     });
     test('when logger is registered, it receives the config from a user-defined source', () => {
         const configSource = { SDK_LOG_VERBOSITY: 'debug' };
