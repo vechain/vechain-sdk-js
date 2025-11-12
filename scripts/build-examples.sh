@@ -37,7 +37,7 @@ find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -
     
     # Install dependencies
     echo "📦 Installing dependencies..."
-    (cd "$example_dir" && corepack yarn install --mode=update-lockfile)
+    (cd "$example_dir" && YARN_NODE_LINKER=node-modules corepack yarn install --mode=update-lockfile)
     
     # Build (if build script exists)
     if grep -q '"build"' "$package_json"; then
