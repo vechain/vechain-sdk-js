@@ -18,3 +18,13 @@ The `examples/viem` directory gives examples using the `viem` compatibility laye
         - [ ] example 1
         - [ ] example 2
         - [ ] example 3
+
+
+## Adding an Example
+
+Two templates are provided:
+
+- `_vite_template`: For Vite web based examples
+- `_tsx_template`: For executable script examples
+
+Each example must include a `README.md` that explains the example, and gives a "open in Stackblitz" link. 
