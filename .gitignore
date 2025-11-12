@@ -35,4 +35,5 @@ unit-tests.html
 examples/**/dist
 examples/**/node_modules
 examples/**/yarn.lock
+examples/**/index.js
 
