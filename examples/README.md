@@ -28,3 +28,8 @@ Two templates are provided:
 - `_tsx_template`: For executable script examples
 
 Each example must include a `README.md` that explains the example, and gives a "open in Stackblitz" link. 
+
+
+## Opening in Stackblitz
+
+When you open a project in Stackblitz you will need to update the `package.json` dependency for the SDK to `@vechain/sdk-temp: "latest"`

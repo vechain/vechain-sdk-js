@@ -23,18 +23,6 @@ find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -
         echo "⚠️  No package.json found, skipping..."
         continue
     fi
-    
-    # Backup package.json
-    cp "$package_json" "$package_json.backup"
-    
-    # Replace the dependency
-    if grep -q '"@vechain/sdk-temp": "latest"' "$package_json"; then
-        echo "📝 Updating dependency to local portal..."
-        sed -i.tmp 's/"@vechain\/sdk-temp": "latest"/"@vechain\/sdk-temp": "portal:..\/..\/packages\/sdk"/g' "$package_json"
-        rm -f "$package_json.tmp"
-    else
-        echo "⚠️  '@vechain/sdk-temp': 'latest' not found in package.json"
-    fi
 
     # Check if yarn.lock exists and replace with an empty yarn.lock
     yarn_lock="$example_dir/yarn.lock"
