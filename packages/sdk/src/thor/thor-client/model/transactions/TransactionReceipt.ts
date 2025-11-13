@@ -59,7 +59,6 @@ class TransactionReceipt {
      * @param {TransactionReceiptOutput[]} outputs - An array of outputs produced by the transaction.
      * @param {TransactionReceiptMeta} meta - The transaction receipt metadata.
      */
-    // eslint-disable-next-line sonarjs/sonar-max-params
     constructor(
         type: number | null,
         gasUsed: bigint,

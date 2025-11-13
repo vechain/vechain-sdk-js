@@ -211,11 +211,11 @@ const encodeBigIntToBuffer = (
 const decodeBufferToNumberOrHex = (buffer: Uint8Array): number | string => {
     if (buffer.length === 0) return 0;
 
-    const bi = Hex.of(buffer).bi;
+    const { bi } = Hex.of(buffer);
     const num = Number(bi);
 
     // Return number or hex based on integer safety
-    return Number.isSafeInteger(num) ? num : '0x' + bi.toString(16);
+    return Number.isSafeInteger(num) ? num : `0x${bi.toString(16)}`;
 };
 
 export {

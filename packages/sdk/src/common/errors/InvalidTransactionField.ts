@@ -12,7 +12,7 @@ class InvalidTransactionField extends VeChainSDKError {
      * @param args - Optional additional context
      * @param cause - Optional underlying cause
      */
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+
     constructor(
         fqn: string,
         message: string,
