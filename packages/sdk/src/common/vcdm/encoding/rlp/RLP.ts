@@ -49,7 +49,7 @@ class RLP implements VeChainDataModel<RLP> {
      * @returns {number} The number representation of the encoded data.
      */
     get n(): number {
-        const bi = this.bi;
+        const { bi } = this;
         if (bi <= Number.MAX_SAFE_INTEGER) {
             return Number(bi);
         }
@@ -166,8 +166,8 @@ class RLP implements VeChainDataModel<RLP> {
         profile: RLPProfile,
         context: string
     ): RLPInput {
-        context = context !== '' ? context + '.' + profile.name : profile.name;
-        const kind = profile.kind;
+        context = context !== '' ? `${context}.${profile.name}` : profile.name;
+        const { kind } = profile;
 
         // ScalarKind: direct encoding using the provided method.
         if (kind instanceof ScalarKind) {
@@ -198,11 +198,11 @@ class RLP implements VeChainDataModel<RLP> {
 
         // ArrayKind: recursively pack each array item based on the shared item profile.
         if ('item' in kind && Array.isArray(obj)) {
-            const item = kind.item;
+            const { item } = kind;
             return obj.map((part, i) =>
                 this.packData(
                     part as RLPValidObject,
-                    { name: '#' + i, kind: item },
+                    { name: `#${i}`, kind: item },
                     context
                 )
             );
@@ -225,9 +225,9 @@ class RLP implements VeChainDataModel<RLP> {
         profile: RLPProfile,
         context: string
     ): RLPValueType {
-        context = context !== '' ? context + '.' + profile.name : profile.name;
+        context = context !== '' ? `${context}.${profile.name}` : profile.name;
 
-        const kind = profile.kind;
+        const { kind } = profile;
 
         // ScalarKind: Direct decoding using the provided method.
         if (kind instanceof ScalarKind) {
@@ -298,12 +298,12 @@ class RLP implements VeChainDataModel<RLP> {
 
         // ArrayKind: Recursively unpack each array item based on the shared item profile.
         if ('item' in kind && Array.isArray(packed)) {
-            const item = kind.item;
+            const { item } = kind;
 
             return packed.map((part, index) =>
                 this.unpackData(
                     part,
-                    { name: '#' + index, kind: item },
+                    { name: `#${index}`, kind: item },
                     context
                 )
             ) as RLPValueType;

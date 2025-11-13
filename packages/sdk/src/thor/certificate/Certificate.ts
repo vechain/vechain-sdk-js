@@ -140,18 +140,20 @@ class Certificate implements CertificateData {
                         e instanceof Error ? e : undefined
                     );
                 }
-            } else
+            } else {
                 throw new IllegalArgumentError(
                     `${FQP}Certificate.constructor(purpose: string, payload: { type: string; content: string }, domain: string, timestamp: number, signer: string, signature?: string)`,
                     'signer is not an address',
                     { signer }
                 );
-        } else
+            }
+        } else {
             throw new IllegalArgumentError(
                 `${FQP}Certificate.constructor(purpose: string, payload: { type: string; content: string }, domain: string, timestamp: number, signer: string, signature?: string)`,
                 'not positive safe integer timestamp',
                 { timestamp }
             );
+        }
     }
 
     /**
@@ -288,12 +290,13 @@ class Certificate implements CertificateData {
      * * Follow links for additional security notes.
      */
     public verify(): void {
-        if (!this.isSigned())
+        if (!this.isSigned()) {
             throw new InvalidSignatureError(
                 `${FQP}<Certificate>.verify(privateKey: Uint8Array): void`,
                 'signature missing',
                 { certificate: this }
             );
+        }
         const signer = Address.ofPublicKey(
             Secp256k1.recover(
                 Blake2b256.of(this.encode()).bytes,

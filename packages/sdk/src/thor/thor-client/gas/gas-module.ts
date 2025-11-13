@@ -57,7 +57,7 @@ class GasModule extends AbstractThorModule {
                 } else {
                     sum += GasModule.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION;
                 }
-                const data = clause.data;
+                const { data } = clause;
                 if (data !== null) {
                     sum +=
                         GasModule.GAS_CONSTANTS.ZERO_GAS_DATA *
@@ -218,7 +218,7 @@ class GasModule extends AbstractThorModule {
      */
     public async getSuggestedMaxPriorityFeePerGas(): Promise<bigint> {
         const query = SuggestPriorityFee.of();
-        const response = (await query.askTo(this.httpClient)).response;
+        const { response } = await query.askTo(this.httpClient);
         return response.maxPriorityFeePerGas;
     }
 
@@ -384,7 +384,7 @@ class GasModule extends AbstractThorModule {
             query = query.withRewardPercentiles(rewardPercentiles);
         }
 
-        const response = (await query.askTo(this.httpClient)).response;
+        const { response } = await query.askTo(this.httpClient);
         return response;
     }
 
@@ -455,7 +455,7 @@ class GasModule extends AbstractThorModule {
                 { revision }
             );
         }
-        const baseFeePerGas = block.baseFeePerGas;
+        const { baseFeePerGas } = block;
         if (baseFeePerGas === undefined) {
             log.error({
                 message: 'Base fee per gas is not available',

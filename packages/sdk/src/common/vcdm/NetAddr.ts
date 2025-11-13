@@ -309,7 +309,7 @@ class NetAddr implements VeChainDataModel<NetAddr> {
         }
 
         const joinedParts = parts.join(':');
-        return joinedParts.startsWith(':') ? ':' + joinedParts : joinedParts;
+        return joinedParts.startsWith(':') ? `:${joinedParts}` : joinedParts;
     }
 }
 
