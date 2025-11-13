@@ -15,7 +15,7 @@ interface TransactionRequestJSON {
     gasPriceCoef?: bigint;
     maxFeePerGas?: bigint;
     maxPriorityFeePerGas?: bigint;
-    nonce: number;
+    nonce: string; // hex string
     originSignature?: string; // hex string
     signature?: string; // hex string
 }

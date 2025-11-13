@@ -5,7 +5,7 @@ import {
     ThorClient,
     ThorNetworks
 } from '@thor';
-import { Address, BlockRef, FetchHttpClient, Revision } from '@common';
+import { Address, BlockRef, FetchHttpClient, HexUInt, Revision } from '@common';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { Clause, TransactionRequest } from '@thor/thor-client';
 import { createWalletClient } from '@viem/clients';
@@ -112,7 +112,7 @@ describe('WalletClient SOLO tests', () => {
                 )
             });
             const txid = await gasPayerWallet.sendTransaction(
-                TransactionRequest.decode(encodedSaS)
+                TransactionRequest.decode(HexUInt.of(encodedSaS))
             );
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -166,7 +166,7 @@ describe('WalletClient SOLO tests', () => {
                 )
             });
             const txid = await originWallet.sendTransaction(
-                TransactionRequest.decode(encodedSaGP)
+                TransactionRequest.decode(HexUInt.of(encodedSaGP))
             );
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -257,7 +257,7 @@ describe('WalletClient SOLO tests', () => {
                 )
             });
             const txid = await gasPayerWallet.sendTransaction(
-                TransactionRequest.decode(encodedSaS)
+                TransactionRequest.decode(HexUInt.of(encodedSaS))
             );
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -310,7 +310,7 @@ describe('WalletClient SOLO tests', () => {
                 )
             });
             const txid = await originWallet.sendTransaction(
-                TransactionRequest.decode(encodedSaGP)
+                TransactionRequest.decode(HexUInt.of(encodedSaGP))
             );
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));

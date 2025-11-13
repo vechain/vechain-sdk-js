@@ -42,7 +42,7 @@ describe('TransactionRequest UNIT tests', () => {
     const mockGasPriceCoef = 128n; // 123n
     const mockMaxFeePerGas = 10027000000000n; // 20 Gwei
     const mockMaxPriorityFeePerGas = 27000000000n; // 5 Gwei
-    const mockNonce = 3;
+    const mockNonce = 3n;
     const mockValue = 10n ** 15n; // .001 VET
 
     describe('constructor', () => {
@@ -505,7 +505,9 @@ describe('TransactionRequest UNIT tests', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
             });
-            const actual = TransactionRequest.decode(txRequest.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(txRequest.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(false);
@@ -534,7 +536,9 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const expected = originSigner.sign(txRequest);
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(false);
@@ -561,7 +565,9 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             });
             const expected = txRequest;
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
@@ -592,7 +598,9 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
             const expected = gasPayerSigner.sign(txRequest);
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
@@ -623,7 +631,9 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
             const expected = originSIgner.sign(txRequest);
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
@@ -657,7 +667,9 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
             const expected = originSigner.sign(gasPayerSigner.sign(txRequest));
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(true);
             expect(actual.isIntendedToBeSponsored).toBe(true);
@@ -677,7 +689,7 @@ describe('TransactionRequest UNIT tests', () => {
             ]);
 
             expect(() => {
-                TransactionRequest.decode(malformedDynamicFeeData);
+                TransactionRequest.decode(HexUInt.of(malformedDynamicFeeData));
             }).toThrow('invalid encoded transaction request');
         });
     });
@@ -700,7 +712,9 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             });
             const expected = txRequest;
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(false);
@@ -728,7 +742,9 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const expected = originSigner.sign(txRequest);
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(false);
@@ -753,7 +769,9 @@ describe('TransactionRequest UNIT tests', () => {
                 gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce
             });
-            const actual = TransactionRequest.decode(txRequest.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(txRequest.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
@@ -782,7 +800,9 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
             );
             const expected = gasPayerSigner.sign(txRequest);
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
@@ -811,7 +831,9 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const expected = originSIgner.sign(txRequest);
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
@@ -843,7 +865,9 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
             const expected = originSigner.sign(gasPayerSigner.sign(txRequest));
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.hash.bytes).toEqual(txRequest.hash.bytes);
             expect(actual.isDynamicFee).toBe(false);
             expect(actual.isIntendedToBeSponsored).toBe(true);
@@ -862,7 +886,7 @@ describe('TransactionRequest UNIT tests', () => {
             ]);
 
             expect(() => {
-                TransactionRequest.decode(malformedEncodedData);
+                TransactionRequest.decode(HexUInt.of(malformedEncodedData));
             }).toThrow(InvalidEncodingError);
         });
     });
@@ -879,7 +903,9 @@ describe('TransactionRequest UNIT tests', () => {
                 gasPriceCoef: 0n,
                 nonce: mockNonce
             });
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -901,7 +927,9 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             });
 
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.clauses).toHaveLength(1);
             expect(actual.clauses[0].data).toBeNull();
             expect(actual.clauses[0].toJSON().data).toBe('0x'); // Should be Hex.PREFIX
@@ -920,7 +948,9 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             });
 
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -944,7 +974,9 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             });
 
-            const actual = TransactionRequest.decode(expected.encoded);
+            const actual = TransactionRequest.decode(
+                HexUInt.of(expected.encoded)
+            );
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
@@ -970,7 +1002,7 @@ describe('TransactionRequest UNIT tests', () => {
 
             // Encode and then decode to test the mapBodyToTransactionRequest method
             const encoded = txRequest.encoded;
-            const decoded = TransactionRequest.decode(encoded);
+            const decoded = TransactionRequest.decode(HexUInt.of(encoded));
 
             // Verify that the beggar address is properly reconstructed using Address.of
             expect(decoded.beggar).toBeDefined();
@@ -1004,7 +1036,7 @@ describe('TransactionRequest UNIT tests', () => {
 
             // Encode and then decode to test the mapBodyToTransactionRequest method
             const encoded = txRequest.encoded;
-            const decoded = TransactionRequest.decode(encoded);
+            const decoded = TransactionRequest.decode(HexUInt.of(encoded));
 
             // Verify that the beggar address is undefined
             expect(decoded.beggar).toBeUndefined();

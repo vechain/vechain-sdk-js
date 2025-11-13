@@ -381,7 +381,7 @@ class ContractsModule extends AbstractThorModule {
                       clauses: [clause],
                       gas: 21000n,
                       gasPriceCoef: 0n,
-                      nonce: 0,
+                      nonce: 0n,
                       blockRef: Hex.of('0x0000000000000000'),
                       chainTag: 0x27,
                       dependsOn: null,
@@ -392,7 +392,7 @@ class ContractsModule extends AbstractThorModule {
             const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction to Hex
-            const encodedTransaction = Hex.of(signedTransaction.encoded);
+            const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
             const transactionId =
@@ -550,7 +550,7 @@ class ContractsModule extends AbstractThorModule {
                       clauses: transactionClauses as Clause[],
                       gas: 21000n,
                       gasPriceCoef: 0n,
-                      nonce: 0,
+                      nonce: 0n,
                       blockRef: Hex.of('0x0000000000000000'),
                       chainTag: 0x27,
                       dependsOn: null,
@@ -561,7 +561,7 @@ class ContractsModule extends AbstractThorModule {
             const signedTransaction = signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction to Hex
-            const encodedTransaction = Hex.of(signedTransaction.encoded);
+            const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
             const transactionId =

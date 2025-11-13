@@ -23,7 +23,7 @@ describe('PrivateKeySigner SOLO test', () => {
     const mockGasPriceCoef = 128n;
     const mockMaxFeePerGas = 10027000000000n; // 20 Gwei
     const mockMaxPriorityFeePerGas = 27000000000n; // 5 Gwei
-    const mockNonce = 3;
+    const mockNonce = 3n;
     const mockValue = 10n ** 15n; // 0.001 VET
 
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
@@ -58,8 +58,9 @@ describe('PrivateKeySigner SOLO test', () => {
         const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
-        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
-            .response;
+        const txId = (
+            await SendTransaction.of(encodedTx.bytes).askTo(httpClient)
+        ).response;
         expect(txId).toBeDefined();
         expect(txId).toBeInstanceOf(TXID);
         await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -89,7 +90,7 @@ describe('PrivateKeySigner SOLO test', () => {
             gas: mockGas,
             maxFeePerGas: mockMaxFeePerGas,
             maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
-            nonce: mockNonce + 1
+            nonce: mockNonce + 1n
         });
         // Sign as Sender. Partial signature.
         const originSigner = new PrivateKeySigner(
@@ -104,8 +105,9 @@ describe('PrivateKeySigner SOLO test', () => {
         const encodedTx = txRequestSaGP.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
-        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
-            .response;
+        const txId = (
+            await SendTransaction.of(encodedTx.bytes).askTo(httpClient)
+        ).response;
         expect(txId).toBeDefined();
         expect(txId).toBeInstanceOf(TXID);
         await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -135,7 +137,7 @@ describe('PrivateKeySigner SOLO test', () => {
             gas: mockGas,
             maxFeePerGas: mockMaxFeePerGas,
             maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
-            nonce: mockNonce + 2
+            nonce: mockNonce + 2n
         });
         // Sign as Gas Payer. Partial signature.
         const gasPayerSigner = new PrivateKeySigner(
@@ -150,8 +152,9 @@ describe('PrivateKeySigner SOLO test', () => {
         const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
-        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
-            .response;
+        const txId = (
+            await SendTransaction.of(encodedTx.bytes).askTo(httpClient)
+        ).response;
         expect(txId).toBeDefined();
         expect(txId).toBeInstanceOf(TXID);
         await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -179,7 +182,7 @@ describe('PrivateKeySigner SOLO test', () => {
             expiration: mockExpiration,
             gas: mockGas,
             gasPriceCoef: mockGasPriceCoef,
-            nonce: mockNonce + 3
+            nonce: mockNonce + 3n
         });
         // Sign as Sender. Finalized signature.
         const signer = new PrivateKeySigner(
@@ -189,8 +192,9 @@ describe('PrivateKeySigner SOLO test', () => {
         const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
-        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
-            .response;
+        const txId = (
+            await SendTransaction.of(encodedTx.bytes).askTo(httpClient)
+        ).response;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;
@@ -217,7 +221,7 @@ describe('PrivateKeySigner SOLO test', () => {
             expiration: mockExpiration,
             gas: mockGas,
             gasPriceCoef: mockGasPriceCoef,
-            nonce: mockNonce + 4
+            nonce: mockNonce + 4n
         });
         expect(txRequest.isSigned).toBe(false);
         // Sign as Sender. Partial signature.
@@ -233,8 +237,9 @@ describe('PrivateKeySigner SOLO test', () => {
         const encodedTx = txRequestSaGP.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
-        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
-            .response;
+        const txId = (
+            await SendTransaction.of(encodedTx.bytes).askTo(httpClient)
+        ).response;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;
@@ -261,7 +266,7 @@ describe('PrivateKeySigner SOLO test', () => {
             expiration: mockExpiration,
             gas: mockGas,
             gasPriceCoef: mockGasPriceCoef,
-            nonce: mockNonce + 5
+            nonce: mockNonce + 5n
         });
         expect(txRequest.isSigned).toBe(false);
         // Sign as Gas Payer. Partial signature.
@@ -277,8 +282,9 @@ describe('PrivateKeySigner SOLO test', () => {
         const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
-        const txId = (await SendTransaction.of(encodedTx).askTo(httpClient))
-            .response;
+        const txId = (
+            await SendTransaction.of(encodedTx.bytes).askTo(httpClient)
+        ).response;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
             .response;
