@@ -51,7 +51,8 @@ class GasModule extends AbstractThorModule {
      */
     public static computeIntrinsicGas(clauses: Clause[]): bigint {
         if (clauses.length > 0) {
-            const totalGas = clauses.reduce((sum: bigint, clause: Clause) => {
+            const totalGas = clauses.reduce((acc: bigint, clause: Clause) => {
+                let sum = acc;
                 if (clause.to !== null) {
                     sum += GasModule.GAS_CONSTANTS.CLAUSE_GAS;
                 } else {

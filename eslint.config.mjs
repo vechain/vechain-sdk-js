@@ -58,7 +58,7 @@ export default [{
             caughtErrorsIgnorePattern: "^_|^e$|^error$", // Allow common error variable names
         }],
 
-        "@typescript-eslint/explicit-function-return-type": "warn", // Too strict, TypeScript infers types well
+                "@typescript-eslint/explicit-function-return-type": "off", // Too strict, TypeScript infers types well, too many false positives
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-non-null-assertion": "error",
         "@typescript-eslint/no-unnecessary-type-assertion": "error",
@@ -125,7 +125,7 @@ export default [{
         "no-return-await": "off", // Use @typescript-eslint/return-await instead
         "require-await": "error",
         "no-async-promise-executor": "error",
-        "no-await-in-loop": "warn", // Sometimes sequential processing is necessary
+        "no-await-in-loop": "off", // Sequential processing is necessary in pollers, TransactionBuilder, etc.
         "no-promise-executor-return": "error",
         "no-new": "off",
         "no-array-constructor": "error",
@@ -161,8 +161,8 @@ export default [{
                 "baseURL",
                 "entry",
                 "obj",
-                "sum",
-                "segments"
+                "sum", // Accumulator in reduce functions
+                "segments" // Array manipulation
             ]
         }],
         "no-return-assign": "error",
@@ -191,7 +191,7 @@ export default [{
             "properties": true
         }],
         "no-new-object": "error",
-        "no-nested-ternary": "warn", // Sometimes acceptable for simple cases
+        "no-nested-ternary": "off", // Acceptable for simple cases, TypeScript makes them readable
         "no-unneeded-ternary": "error",
         "one-var": ["error", "never"],
         "operator-assignment": ["error", "always"],

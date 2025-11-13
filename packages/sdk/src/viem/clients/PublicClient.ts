@@ -1060,9 +1060,7 @@ class PublicClient {
                         const txHash = data.id.toString();
 
                         if (txHash != null) {
-                            if (txFilter.txQueue == null) {
-                                txFilter.txQueue = [];
-                            }
+                            txFilter.txQueue ??= [];
                             txFilter.txQueue.push(txHash);
                         }
                     },
