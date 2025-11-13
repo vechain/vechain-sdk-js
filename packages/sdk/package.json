@@ -72,8 +72,7 @@
     "test:node": "rm -rf ./coverage && ENFORCE_COVERAGE=true jest --group=-quarantine --coverage --coverageDirectory=coverage",
     "test:browser": "rm -rf ./coverage && ENFORCE_COVERAGE=true jest --group=-quarantine --coverage --coverageDirectory=coverage --config ./jest.config.browser.js",
     "test:node:e2e": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test:node && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo",
-    "test:browser:e2e": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test:browser && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo",
-    "example:contracts": "tsx examples/contract-type-safety-example.ts"
+    "test:browser:e2e": "(corepack yarn start-thor-solo && corepack yarn seed-thor-solo && corepack yarn test:browser && corepack yarn stop-thor-solo) || corepack yarn stop-thor-solo"
   },
   "dependencies": {
     "@ethereumjs/rlp": "5.0.2",
