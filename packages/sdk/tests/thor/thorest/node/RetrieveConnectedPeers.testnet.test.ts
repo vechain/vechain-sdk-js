@@ -1,8 +1,9 @@
 import { describe, test } from '@jest/globals';
-import { RetrieveConnectedPeers, ThorNetworks } from '@thor/thorest';
+import { RetrieveConnectedPeers } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import log from 'loglevel';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 describe('RetrieveConnectedPeers TESTNET tests', () => {
     test('ok <- askTo', async () => {

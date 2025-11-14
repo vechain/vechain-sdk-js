@@ -1,7 +1,7 @@
 import * as nc_utils from '@noble/curves/utils';
 import { concatBytes } from '@noble/curves/utils';
 import { type Account } from 'viem';
-import { type ThorNetworks } from '@thor/thorest';
+import type { ThorNetworks } from '@thor/utils/const';
 import {
     Clause,
     TransactionRequest

@@ -1,3 +1,3 @@
-export * from './RetrieveExpandedBlock';
-export * from './RetrieveRawBlock';
-export * from './RetrieveRegularBlock';
+export { RetrieveExpandedBlock } from './RetrieveExpandedBlock';
+export { RetrieveRawBlock } from './RetrieveRawBlock';
+export { RetrieveRegularBlock } from './RetrieveRegularBlock';

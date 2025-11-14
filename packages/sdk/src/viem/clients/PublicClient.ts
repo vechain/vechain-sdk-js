@@ -6,11 +6,11 @@ import {
     EventsSubscription,
     NewTransactionSubscription,
     type SubscriptionEventResponse,
-    type ThorNetworks,
     type TransfersSubscription
 } from '@thor/thorest';
 import type { TXID } from '@thor/thorest/transactions';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
+import type { ThorNetworks } from '@thor/utils/const';
 import {
     BlockNotFoundError,
     TransactionNotFoundError,
@@ -153,7 +153,7 @@ class PublicClient {
             if (accountDetails === null) {
                 throw new InvalidAddressError({ address: address.toString() });
             }
-            const balance = accountDetails.balance;
+            const { balance } = accountDetails;
             return balance;
         } catch (error) {
             // Log the error
@@ -319,7 +319,7 @@ class PublicClient {
      * @param {SimulateTransactionOptions} options - Simulation options.
      * @returns {Promise<ClauseSimulationResult>} The simulation result.
      */
-    // eslint-disable-next-line sonarjs/no-identical-functions
+
     public async call(
         clause: Clause,
         options?: SimulateTransactionOptions
@@ -515,7 +515,7 @@ class PublicClient {
                 slot
             );
             // If no value exists, return 32 bytes of zeros (EVM default)
-            return data ?? Hex.of('0x' + '00'.repeat(32));
+            return data ?? Hex.of(`0x${'00'.repeat(32)}`);
         } catch (error) {
             log.error({
                 message: `Failed to get storage at ${slot.toString()} for address ${address.toString()}`,
@@ -1055,14 +1055,12 @@ class PublicClient {
 
                 const listener: WebSocketListener<TXID> = {
                     onMessage: (event: MessageEvent<TXID>) => {
-                        const data = event.data;
+                        const { data } = event;
                         // Extract the transaction hash from TXID
                         const txHash = data.id.toString();
 
                         if (txHash != null) {
-                            if (txFilter.txQueue == null) {
-                                txFilter.txQueue = [];
-                            }
+                            txFilter.txQueue ??= [];
                             txFilter.txQueue.push(txHash);
                         }
                     },

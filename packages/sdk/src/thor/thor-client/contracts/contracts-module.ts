@@ -27,7 +27,8 @@ import { type WaitForTransactionReceiptOptions } from '../model/transactions/Wai
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
-type FunctionArgs = AbiParameter[];
+// Type alias for function arguments (runtime values, not ABI definitions)
+type FunctionArgs = readonly unknown[];
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -45,13 +46,28 @@ class ContractsModule extends AbstractThorModule {
         super(httpClient);
     }
 
+    /**
+     * Type guard to check if an object is a CompiledContract
+     */
+    private isCompiledContract(obj: unknown): obj is { abi: Abi; [key: string]: unknown } {
+        return (
+            obj !== null &&
+            typeof obj === 'object' &&
+            'abi' in obj &&
+            Array.isArray((obj as { abi: unknown }).abi)
+        );
+    }
+
     public createContractFactory<TAbi extends Abi>(
         abi: TAbi,
         bytecode: string,
         signer: Signer
     ): ContractFactory<TAbi> {
+        // Extract ABI array from full contract JSON if needed
+        const actualAbi = this.isCompiledContract(abi) ? (abi.abi as TAbi) : abi;
+
         return new ContractFactory<TAbi>(
-            abi,
+            actualAbi,
             bytecode as `0x${string}`,
             signer,
             this
@@ -71,7 +87,9 @@ class ContractsModule extends AbstractThorModule {
         abi: TAbi,
         signer?: Signer
     ): Contract<TAbi> {
-        return new Contract<TAbi>(address, abi, this, signer);
+        // Extract ABI array from full contract JSON if needed
+        const actualAbi = this.isCompiledContract(abi) ? (abi.abi as TAbi) : abi;
+        return new Contract<TAbi>(address, actualAbi, this, signer);
     }
 
     /**

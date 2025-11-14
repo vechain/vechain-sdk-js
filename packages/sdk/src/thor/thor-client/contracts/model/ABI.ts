@@ -92,9 +92,9 @@ abstract class ABIItem implements VeChainDataModel<ABIItem> {
  */
 class ABI implements VeChainDataModel<ABI> {
     private readonly _types: AbiParameter[];
-    private readonly _values: AbiParameter[];
+    private readonly _values: readonly unknown[];
 
-    constructor(types: AbiParameter[], values: AbiParameter[]) {
+    constructor(types: AbiParameter[], values: readonly unknown[]) {
         this._types = types;
         this._values = values;
     }
@@ -103,7 +103,7 @@ class ABI implements VeChainDataModel<ABI> {
         return this._types;
     }
 
-    get values(): AbiParameter[] {
+    get values(): readonly unknown[] {
         return this._values;
     }
 
@@ -157,7 +157,7 @@ class ABI implements VeChainDataModel<ABI> {
      */
     encode(): Uint8Array {
         try {
-            const encoded = encodeAbiParameters(this._types, this._values);
+            const encoded = encodeAbiParameters(this._types, [...this._values] as AbiParameter[]);
             return new Uint8Array(Buffer.from(encoded.slice(2), 'hex'));
         } catch (error) {
             throw new IllegalArgumentError(
@@ -226,7 +226,7 @@ class ABI implements VeChainDataModel<ABI> {
     /**
      * Get all decoded values
      */
-    getValues(): AbiParameter[] {
+    getValues(): readonly unknown[] {
         return [...this._values];
     }
 }
@@ -286,7 +286,7 @@ class ABIFunction<
     /**
      * Encode function data
      */
-    encodeData(args: AbiParameter[]): string {
+    encodeData(args: readonly unknown[]): string {
         try {
             return encodeAbiParameters(
                 this._abi as readonly AbiParameter[],
@@ -397,7 +397,7 @@ class ABIEvent<
     /**
      * Encode event log data
      */
-    encodeEventLog(dataToEncode: AbiParameter[]): {
+    encodeEventLog(dataToEncode: readonly unknown[]): {
         data: string;
         topics: string[];
     } {

@@ -49,7 +49,7 @@ class RLP implements VeChainDataModel<RLP> {
      * @returns {number} The number representation of the encoded data.
      */
     get n(): number {
-        const bi = this.bi;
+        const { bi } = this;
         if (bi <= Number.MAX_SAFE_INTEGER) {
             return Number(bi);
         }
@@ -166,12 +166,13 @@ class RLP implements VeChainDataModel<RLP> {
         profile: RLPProfile,
         context: string
     ): RLPInput {
-        context = context !== '' ? context + '.' + profile.name : profile.name;
-        const kind = profile.kind;
+        const currentContext =
+            context !== '' ? `${context}.${profile.name}` : profile.name;
+        const { kind } = profile;
 
         // ScalarKind: direct encoding using the provided method.
         if (kind instanceof ScalarKind) {
-            return kind.data(obj, context).encode();
+            return kind.data(obj, currentContext).encode();
         }
 
         // StructKind: recursively pack each struct member based on its profile.
@@ -185,9 +186,9 @@ class RLP implements VeChainDataModel<RLP> {
         if (!Array.isArray(obj)) {
             throw new InvalidEncodingError(
                 `${FQP}RLP.packData(obj: RLPValidObject, profile: RLPProfile, context: string): RLPInput`,
-                `Validation error: Expected an array in ${context}.`,
+                `Validation error: Expected an array in ${currentContext}.`,
                 {
-                    context,
+                    context: currentContext,
                     data: {
                         obj,
                         profile
@@ -198,11 +199,11 @@ class RLP implements VeChainDataModel<RLP> {
 
         // ArrayKind: recursively pack each array item based on the shared item profile.
         if ('item' in kind && Array.isArray(obj)) {
-            const item = kind.item;
+            const { item } = kind;
             return obj.map((part, i) =>
                 this.packData(
                     part as RLPValidObject,
-                    { name: '#' + i, kind: item },
+                    { name: `#${i}`, kind: item },
                     context
                 )
             );
@@ -225,9 +226,10 @@ class RLP implements VeChainDataModel<RLP> {
         profile: RLPProfile,
         context: string
     ): RLPValueType {
-        context = context !== '' ? context + '.' + profile.name : profile.name;
+        const currentContext =
+            context !== '' ? `${context}.${profile.name}` : profile.name;
 
-        const kind = profile.kind;
+        const { kind } = profile;
 
         // ScalarKind: Direct decoding using the provided method.
         if (kind instanceof ScalarKind) {
@@ -237,7 +239,7 @@ class RLP implements VeChainDataModel<RLP> {
                     `${FQP}RLP.unpackData(packed: RLPInput, profile: RLPProfile, context: string): RLPValueType`,
                     `Unpacking error: Expected data type is Uint8Array.`,
                     {
-                        context,
+                        context: currentContext,
                         data: {
                             packed,
                             profile
@@ -246,7 +248,7 @@ class RLP implements VeChainDataModel<RLP> {
                 );
             }
 
-            return kind.buffer(packed, context).decode();
+            return kind.buffer(packed, currentContext).decode();
         }
 
         // StructKind: Recursively unpack each struct member based on its profile.
@@ -258,7 +260,7 @@ class RLP implements VeChainDataModel<RLP> {
                     `${FQP}RLP.unpackData(packed: RLPInput, profile: RLPProfile, context: string): RLPValueType`,
                     `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,
                     {
-                        context,
+                        context: currentContext,
                         data: {
                             packed,
                             profile
@@ -285,9 +287,9 @@ class RLP implements VeChainDataModel<RLP> {
         if (!Array.isArray(packed)) {
             throw new InvalidEncodingError(
                 `${FQP}RLP.unpackData(packed: RLPInput, profile: RLPProfile, context: string): RLPValueType`,
-                `Validation error: Expected an array in ${context}.`,
+                `Validation error: Expected an array in ${currentContext}.`,
                 {
-                    context,
+                    context: currentContext,
                     data: {
                         packed,
                         profile
@@ -298,12 +300,12 @@ class RLP implements VeChainDataModel<RLP> {
 
         // ArrayKind: Recursively unpack each array item based on the shared item profile.
         if ('item' in kind && Array.isArray(packed)) {
-            const item = kind.item;
+            const { item } = kind;
 
             return packed.map((part, index) =>
                 this.unpackData(
                     part,
-                    { name: '#' + index, kind: item },
+                    { name: `#${index}`, kind: item },
                     context
                 )
             ) as RLPValueType;

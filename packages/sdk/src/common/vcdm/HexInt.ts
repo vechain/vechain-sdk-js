@@ -28,7 +28,7 @@ class HexInt extends Hex {
      * @remarks This class makes equal instances created from the same value as number or as bigint.
      */
     public override get n(): number {
-        const bi = this.bi;
+        const { bi } = this;
         if (Number.MIN_SAFE_INTEGER <= bi && bi <= Number.MAX_SAFE_INTEGER) {
             return Number(bi);
         }

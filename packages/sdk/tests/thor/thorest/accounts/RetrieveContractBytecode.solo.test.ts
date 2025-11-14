@@ -1,7 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address } from '@common/vcdm';
-import { RetrieveContractBytecode, ThorNetworks } from '@thor/thorest';
+import { RetrieveContractBytecode } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * VeChain retrieve contract bytecode - solo

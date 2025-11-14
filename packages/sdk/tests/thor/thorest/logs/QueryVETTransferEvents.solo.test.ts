@@ -1,14 +1,11 @@
 import { describe, expect } from '@jest/globals';
-import {
-    QueryVETTransferEvents,
-    ThorNetworks,
-    TransferLogsResponse
-} from '@thor/thorest';
+import { QueryVETTransferEvents, TransferLogsResponse } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
 import { FilterRange } from '@thor/thor-client/model/logs/FilterRange';
 import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits';
 import { LogSort } from '@thor/thor-client/model/logs/LogSort';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo

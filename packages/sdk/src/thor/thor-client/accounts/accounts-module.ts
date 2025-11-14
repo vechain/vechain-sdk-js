@@ -24,7 +24,7 @@ class AccountsModule extends AbstractThorModule {
         revision?: Revision
     ): Promise<AccountDetail> {
         const query = RetrieveAccountDetails.of(address, revision);
-        const response = (await query.askTo(this.httpClient)).response;
+        const { response } = await query.askTo(this.httpClient);
         return new AccountDetail(response);
     }
 
@@ -40,7 +40,7 @@ class AccountsModule extends AbstractThorModule {
         revision?: Revision
     ): Promise<HexUInt> {
         const query = RetrieveContractBytecode.of(address, revision);
-        const response = (await query.askTo(this.httpClient)).response;
+        const { response } = await query.askTo(this.httpClient);
         return HexUInt.of(response.code);
     }
 
@@ -62,7 +62,7 @@ class AccountsModule extends AbstractThorModule {
             position,
             revision
         );
-        const response = (await query.askTo(this.httpClient)).response;
+        const { response } = await query.askTo(this.httpClient);
         return HexUInt.of(response.value);
     }
 }

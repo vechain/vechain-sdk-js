@@ -1,10 +1,7 @@
 import { FetchHttpClient } from '@common/http';
-import {
-    GetFeesPriorityResponse,
-    SuggestPriorityFee,
-    ThorNetworks
-} from '@thor/thorest';
+import { GetFeesPriorityResponse, SuggestPriorityFee } from '@thor/thorest';
 import { expect } from '@jest/globals';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo/thor/fees

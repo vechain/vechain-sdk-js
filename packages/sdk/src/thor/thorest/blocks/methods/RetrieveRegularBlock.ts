@@ -1,9 +1,5 @@
-import {
-    RegularBlockResponse,
-    ThorError,
-    type ThorRequest,
-    type ThorResponse
-} from '@thor/thorest';
+import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { RegularBlockResponse } from '@thor/thorest/blocks/response';
 import { type RegularBlockResponseJSON } from '@thor/thorest/json';
 import { type HttpClient, type HttpPath } from '@common/http';
 import { handleHttpError } from '@thor/thorest/utils';

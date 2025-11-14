@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from '@jest/globals';
 import { createPublicClient, BlockReponseType } from '@viem/clients';
-import { ThorNetworks } from '@thor/thorest';
 import { Hex, Revision } from '@common/vcdm';
 import { FetchHttpClient } from '@common/http';
 import { log } from '@common/logging';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * Test suite for PublicClient block-related functionality

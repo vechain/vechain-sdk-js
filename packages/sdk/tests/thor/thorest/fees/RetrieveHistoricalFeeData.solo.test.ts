@@ -5,9 +5,9 @@ import {
     GetFeesHistoryResponse,
     RetrieveHistoricalFeeData,
     RetrieveRegularBlock,
-    ThorError,
-    ThorNetworks
+    ThorError
 } from '@thor/thorest';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo/thor/fees

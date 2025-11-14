@@ -7,7 +7,8 @@ import { type TransactionRequest } from '../../thor-client/model/transactions/Tr
 import { type SimulateTransactionOptions } from '../../thor-client/model/transactions/SimulateTransactionOptions';
 
 // Proper function arguments type using VeChain SDK types
-type FunctionArgs = AbiParameter[];
+// Type alias for function arguments (runtime values, not ABI definitions)
+type FunctionArgs = readonly unknown[];
 
 /* --------- Viem Compatibility Types Start --------- */
 
