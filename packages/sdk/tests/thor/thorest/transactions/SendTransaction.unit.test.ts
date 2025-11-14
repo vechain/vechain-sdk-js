@@ -69,14 +69,14 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
             gasPriceCoef: 0n,
             gas: 100000n,
             dependsOn: null,
-            nonce: 8
+            nonce: 8n
         });
         const signer = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
         const signedTx = signer.sign(expectedTxBody);
         const actualTXID = (
-            await SendTransaction.of(signedTx.encoded).askTo(
+            await SendTransaction.of(signedTx.encoded.bytes).askTo(
                 mockHttpClient(expectedTXID, 'post')
             )
         ).response;

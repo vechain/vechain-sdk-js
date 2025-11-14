@@ -36,9 +36,15 @@
   "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
-      "common": ["dist/common.d.ts"],
-      "thor": ["dist/thor.d.ts"],
-      "viem": ["dist/viem.d.ts"]
+      "common": [
+        "dist/common.d.ts"
+      ],
+      "thor": [
+        "dist/thor.d.ts"
+      ],
+      "viem": [
+        "dist/viem.d.ts"
+      ]
     }
   },
   "files": [
