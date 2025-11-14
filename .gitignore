@@ -23,8 +23,16 @@ junit.xml
 
 # docs
 api-docs/
-index.html
+
+# Test files
 unit-tests.html
 
 # IDE
 .idea
+.yarn
+
+# Examples
+examples/**/dist
+examples/**/node_modules
+examples/**/index.js
+

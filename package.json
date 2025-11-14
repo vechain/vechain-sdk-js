@@ -55,7 +55,8 @@
         "merge-coverage": "corepack yarn exec ts-node scripts/merge-coverage.ts",
         "check:tests-naming": "corepack yarn exec ts-node scripts/check-tests-naming.ts",
         "count-quarantine": "grep -r '@group quarantine' packages/sdk/tests/ --include='*.test.*' | wc -l",
-        "list-quarantine": "grep -r '@group quarantine' packages/sdk/tests/ --include='*.test.*'"
+        "list-quarantine": "grep -r '@group quarantine' packages/sdk/tests/ --include='*.test.*'",
+        "build-examples": "chmod +x ./scripts/build-examples.sh && ./scripts/build-examples.sh"
     },
     "devDependencies": {
         "@changesets/cli": "2.29.7",

@@ -35,6 +35,11 @@ jobs:
     needs: [build]
     uses: ./.github/workflows/test-browser.yml
 
+  build_examples:
+    name: Build Examples
+    needs: [build]
+    uses: ./.github/workflows/examples.yml
+
   sonar:
     name: SonarCloud
     needs: [tests_node]
