@@ -101,7 +101,7 @@ class Tx {
     /**
      * The transaction nonce is a 64-bit unsigned integer that is determined by the transaction sender.
      */
-    readonly nonce: bigint; // hex int
+    readonly nonce: bigint;
 
     /**
      * Constructs an instance of the class using the provided JSON object.

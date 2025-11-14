@@ -39,7 +39,7 @@ class TransactionBuilder {
     public static readonly DEFAULT_GAS_PRICE_COEF = 0n;
     private static readonly STARTING_BLOCK_REF = Hex.of('0x0');
     private static readonly STARTING_CHAIN_TAG = 0;
-    private static readonly STARTING_NONCE = 0;
+    private static readonly STARTING_NONCE = 0n;
     private static readonly STARTING_GAS = 0n;
 
     // starting values for the builder
@@ -252,7 +252,7 @@ class TransactionBuilder {
      * @returns The builder instance.
      * @throws IllegalArgumentError if the nonce is negative.
      */
-    public withNonce(nonce: number): this {
+    public withNonce(nonce: bigint): this {
         if (nonce < 0) {
             throw new IllegalArgumentError(
                 'TransactionBuilder.withNonce',
@@ -373,7 +373,7 @@ class TransactionBuilder {
      * @returns The builder instance.
      */
     public withRandomNonce(): this {
-        this.params.nonce = Number(Hex.random(4).toString());
+        this.params.nonce = Hex.random(4).bi;
         log.debug({
             message: 'TransactionBuilder.withRandomNonce',
             context: { nonce: this.params.nonce }

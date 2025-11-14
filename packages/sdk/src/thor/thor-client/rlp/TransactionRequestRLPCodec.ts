@@ -221,7 +221,7 @@ class TransactionRequestRLPCodec {
                 decoded.maxPriorityFeePerGas !== null
                     ? BigInt(decoded.maxPriorityFeePerGas as bigint)
                     : undefined,
-            nonce: decoded.nonce as number,
+            nonce: decoded.nonce as bigint,
             originSignature: Uint8Array.of(),
             reserved: decoded.reserved as Uint8Array[],
             signature: decoded.signature as Uint8Array
@@ -541,7 +541,7 @@ interface Body {
     gas: bigint;
     gasPayerSignature: Uint8Array;
     gasPriceCoef?: bigint; // Optional for dynamic fee transactions
-    nonce: number;
+    nonce: bigint;
     maxFeePerGas?: bigint; // For EIP-1559 dynamic fee transactions
     maxPriorityFeePerGas?: bigint; // For EIP-1559 dynamic fee transactions
     originSignature: Uint8Array;
