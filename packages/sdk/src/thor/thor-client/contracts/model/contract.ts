@@ -26,7 +26,7 @@ type ContractReadResult<
       >;
 import { encodeFunctionData, toEventSelector } from 'viem';
 import { type Signer } from '@thor/signer';
-import { type Address, type Hex, Revision } from '@common/vcdm';
+import { type Address, Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { log } from '@common/logging';
 import type { ContractCallOptions } from '../types';
@@ -35,6 +35,15 @@ import type { TransactionRequest } from '../../model/transactions/TransactionReq
 
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
+
+type RevisionLike = Revision | bigint | number | string;
+
+type ContractReadOptionsInput = Omit<ContractCallOptions, 'revision'> & {
+    revision?: RevisionLike;
+};
+
+const HEX_REVISION_REGEX = /^0x[0-9a-fA-F]+$/;
+const DECIMAL_REVISION_REGEX = /^\d+$/;
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -135,9 +144,10 @@ class Contract<TAbi extends Abi> {
      * @returns The updated contract call options.
      */
     public setContractReadOptions(
-        options: ContractCallOptions
+        options: ContractReadOptionsInput
     ): ContractCallOptions {
-        this.contractCallOptions = options;
+        this.contractCallOptions =
+            this.normalizeContractCallOptions(options);
         return this.contractCallOptions;
     }
 
@@ -154,6 +164,57 @@ class Contract<TAbi extends Abi> {
      */
     public clearContractReadOptions(): void {
         this.contractCallOptions = {};
+    }
+
+    private normalizeContractCallOptions(
+        options: ContractReadOptionsInput
+    ): ContractCallOptions {
+        if (options.revision == null) {
+            return options as ContractCallOptions;
+        }
+
+        return {
+            ...options,
+            revision: this.normalizeRevisionInput(options.revision)
+        };
+    }
+
+    private normalizeRevisionInput(revision: RevisionLike): Revision {
+        if (revision instanceof Revision) {
+            return revision;
+        }
+
+        if (typeof revision === 'number' || typeof revision === 'bigint') {
+            return Revision.of(revision);
+        }
+
+        if (typeof revision === 'string') {
+            const trimmed = revision.trim();
+
+            if (trimmed.length === 0) {
+                throw new IllegalArgumentError(
+                    'Contract.normalizeRevisionInput',
+                    'revision cannot be empty',
+                    { revision }
+                );
+            }
+
+            if (HEX_REVISION_REGEX.test(trimmed)) {
+                return Revision.of(Hex.of(trimmed));
+            }
+
+            if (DECIMAL_REVISION_REGEX.test(trimmed)) {
+                return Revision.of(BigInt(trimmed));
+            }
+
+            return Revision.of(trimmed.toLowerCase());
+        }
+
+        throw new IllegalArgumentError(
+            'Contract.normalizeRevisionInput',
+            'Unsupported revision type',
+            { revision }
+        );
     }
 
     /**
