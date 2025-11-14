@@ -159,7 +159,7 @@ abstract class BaseTransaction implements BaseTransactionParams {
             this.maxFeePerGas > 0n &&
             this.maxPriorityFeePerGas !== undefined &&
             this.maxPriorityFeePerGas >= 0n &&
-            this.gasPriceCoef === null
+            this.gasPriceCoef === undefined
         );
     }
 
