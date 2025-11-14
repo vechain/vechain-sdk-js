@@ -25,11 +25,8 @@ export const dataUtils = {
         }
 
         // Convert to hex string
-        return (
-            '0x' +
-            Array.from(padded)
-                .map((b) => b.toString(16).padStart(2, '0'))
-                .join('')
-        );
+        return `0x${Array.from(padded)
+            .map((b) => b.toString(16).padStart(2, '0'))
+            .join('')}`;
     }
 };

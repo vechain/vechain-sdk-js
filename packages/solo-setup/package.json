@@ -3,6 +3,7 @@
   "version": "3.0.0-beta.1",
   "description": "VeChain Thor solo blockchain development environment CLI",
   "main": "dist/index.js",
+  "private": true,
   "license": "MIT",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

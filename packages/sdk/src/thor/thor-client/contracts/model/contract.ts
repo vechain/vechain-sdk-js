@@ -33,8 +33,8 @@ import type { ContractCallOptions } from '../types';
 import type { ContractsModule } from '../contracts-module';
 import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
 import { RevisionLike } from '@common/vcdm';
-// Proper function arguments type using VeChain SDK types
-type FunctionArgs = AbiParameter[];
+// Proper function arguments type using VeChain SDK types (runtime values, not ABI definitions)
+type FunctionArgs = readonly unknown[];
 
 type ContractReadOptionsInput = Omit<ContractCallOptions, 'revision'> & {
     revision?: RevisionLike;

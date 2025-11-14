@@ -51,13 +51,14 @@ class GasModule extends AbstractThorModule {
      */
     public static computeIntrinsicGas(clauses: Clause[]): bigint {
         if (clauses.length > 0) {
-            const totalGas = clauses.reduce((sum: bigint, clause: Clause) => {
+            const totalGas = clauses.reduce((acc: bigint, clause: Clause) => {
+                let sum = acc;
                 if (clause.to !== null) {
                     sum += GasModule.GAS_CONSTANTS.CLAUSE_GAS;
                 } else {
                     sum += GasModule.GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION;
                 }
-                const data = clause.data;
+                const { data } = clause;
                 if (data !== null) {
                     sum +=
                         GasModule.GAS_CONSTANTS.ZERO_GAS_DATA *
@@ -218,7 +219,7 @@ class GasModule extends AbstractThorModule {
      */
     public async getSuggestedMaxPriorityFeePerGas(): Promise<bigint> {
         const query = SuggestPriorityFee.of();
-        const response = (await query.askTo(this.httpClient)).response;
+        const { response } = await query.askTo(this.httpClient);
         return response.maxPriorityFeePerGas;
     }
 
@@ -384,7 +385,7 @@ class GasModule extends AbstractThorModule {
             query = query.withRewardPercentiles(rewardPercentiles);
         }
 
-        const response = (await query.askTo(this.httpClient)).response;
+        const { response } = await query.askTo(this.httpClient);
         return response;
     }
 
@@ -455,7 +456,7 @@ class GasModule extends AbstractThorModule {
                 { revision }
             );
         }
-        const baseFeePerGas = block.baseFeePerGas;
+        const { baseFeePerGas } = block;
         if (baseFeePerGas === undefined) {
             log.error({
                 message: 'Base fee per gas is not available',

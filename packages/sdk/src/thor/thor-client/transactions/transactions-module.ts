@@ -185,7 +185,7 @@ class TransactionsModule extends AbstractThorModule {
         }
         // setup for polling
         const waitOptions: WaitUntilOptions<TransactionReceipt | null> = {
-            task: async () => this.getTransactionReceipt(transactionId),
+            task: async () => await this.getTransactionReceipt(transactionId),
             predicate: (receipt: TransactionReceipt | null): boolean => {
                 return receipt !== null;
             },

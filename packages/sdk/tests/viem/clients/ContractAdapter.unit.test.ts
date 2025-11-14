@@ -35,6 +35,7 @@ const erc20Abi = [
 
 // Mock clients
 const mockPublicClient = {
+    network: 'https://testnet.vechain.org',
     call: jest.fn(),
     simulateCalls: jest.fn(),
     estimateGas: jest.fn(),
@@ -44,6 +45,7 @@ const mockPublicClient = {
 } as any;
 
 const mockWalletClient = {
+    network: 'https://testnet.vechain.org',
     account: Address.of('0x1234567890123456789012345678901234567890'),
     sendTransaction: jest.fn()
 } as any;
@@ -54,7 +56,7 @@ const mockWalletClient = {
 describe('ContractAdapter Integration', () => {
     test('Should create contract with viem-compatible interface', () => {
         const contract = getContract({
-            address: Address.of('0x0000000000000000000000000000000000000000'),
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
             abi: erc20Abi,
             publicClient: mockPublicClient
         });
@@ -78,7 +80,7 @@ describe('ContractAdapter Integration', () => {
 
     test('Should have read methods for view functions', () => {
         const contract = getContract({
-            address: Address.of('0x0000000000000000000000000000000000000000'),
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
             abi: erc20Abi,
             publicClient: mockPublicClient
         });
@@ -89,7 +91,7 @@ describe('ContractAdapter Integration', () => {
 
     test('Should have write methods for state-changing functions', () => {
         const contract = getContract({
-            address: Address.of('0x0000000000000000000000000000000000000000'),
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
             abi: erc20Abi,
             publicClient: mockPublicClient,
             walletClient: mockWalletClient
@@ -101,7 +103,7 @@ describe('ContractAdapter Integration', () => {
 
     test('Should have simulate methods', () => {
         const contract = getContract({
-            address: Address.of('0x0000000000000000000000000000000000000000'),
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
             abi: erc20Abi,
             publicClient: mockPublicClient
         });
@@ -114,7 +116,7 @@ describe('ContractAdapter Integration', () => {
 
     test('Should have estimateGas methods', () => {
         const contract = getContract({
-            address: Address.of('0x0000000000000000000000000000000000000000'),
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
             abi: erc20Abi,
             publicClient: mockPublicClient
         });
@@ -127,7 +129,7 @@ describe('ContractAdapter Integration', () => {
 
     test('Should have event methods', () => {
         const contract = getContract({
-            address: Address.of('0x0000000000000000000000000000000000000000'),
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
             abi: erc20Abi,
             publicClient: mockPublicClient
         });
@@ -145,7 +147,7 @@ describe('ContractAdapter Integration', () => {
 
     test('Should have VeChain-specific clause methods', () => {
         const contract = getContract({
-            address: Address.of('0x0000000000000000000000000000000000000000'),
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
             abi: erc20Abi,
             publicClient: mockPublicClient
         });
@@ -158,7 +160,7 @@ describe('ContractAdapter Integration', () => {
 
     test('Should have VeChain-specific filter methods', () => {
         const contract = getContract({
-            address: Address.of('0x0000000000000000000000000000000000000000'),
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
             abi: erc20Abi,
             publicClient: mockPublicClient
         });
@@ -171,7 +173,7 @@ describe('ContractAdapter Integration', () => {
         expect(() => {
             getContract({
                 address: Address.of(
-                    '0x0000000000000000000000000000000000000000'
+                    '0x0000000000000000000000000000456E65726779'
                 ),
                 abi: erc20Abi
             });
@@ -182,7 +184,7 @@ describe('ContractAdapter Integration', () => {
 
     test('VeChain-specific methods should work', () => {
         const contract = getContract({
-            address: Address.of('0x0000000000000000000000000000000000000000'),
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
             abi: erc20Abi,
             publicClient: mockPublicClient
         });

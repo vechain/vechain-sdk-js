@@ -21,7 +21,7 @@ const FQP = 'packages/sdk/src/common/cryptography/secp256k1/Secp256k1.ts!';
  * including compressing and inflating public keys,
  * generating private keys, and validating message hashes and private keys.
  */
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+
 class Secp256k1 {
     /**
      * This value is used to identify compressed public key.
@@ -284,19 +284,21 @@ class Secp256k1 {
                 { messageHash }
             );
         }
-        if (sig.length !== Secp256k1.SIGNATURE_LENGTH)
+        if (sig.length !== Secp256k1.SIGNATURE_LENGTH) {
             throw new InvalidSignatureError(
                 `${FQP}Secp256k1.recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array`,
                 'Invalid signature given as input. Length must be exactly 65 bytes.',
                 { signature: sig }
             );
+        }
         const recovery = sig[64];
-        if (recovery !== 0 && recovery !== 1)
+        if (recovery !== 0 && recovery !== 1) {
             throw new InvalidSignatureError(
                 `${FQP}Secp256k1.recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array`,
                 'Invalid signature recovery value. Signature bytes at position 64 must be 0 or 1.',
                 { signature: sig, recovery }
             );
+        }
         return nc_secp256k1.Signature.fromCompact(sig.slice(0, 64))
             .addRecoveryBit(recovery)
             .recoverPublicKey(messageHash)

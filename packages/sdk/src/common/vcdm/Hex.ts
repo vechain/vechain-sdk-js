@@ -155,7 +155,7 @@ class Hex implements VeChainDataModel<Hex> {
     public alignToBytes(): Hex {
         return this.digits.length % 2 === 0
             ? this
-            : new Hex(this.sign, '0' + this.digits);
+            : new Hex(this.sign, `0${this.digits}`);
     }
 
     /**
@@ -380,7 +380,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @returns {number} The number of zero bytes in the hexadecimal string.
      */
     public countZeroBytes(): number {
-        const bytes = this.bytes;
+        const { bytes } = this;
         let count = 0;
         for (const byte of bytes) {
             if (byte === 0) {
@@ -396,7 +396,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @returns {number} The number of non-zero bytes in the hexadecimal string.
      */
     public countNonZeroBytes(): number {
-        const bytes = this.bytes;
+        const { bytes } = this;
         let count = 0;
         for (const byte of bytes) {
             if (byte !== 0) {

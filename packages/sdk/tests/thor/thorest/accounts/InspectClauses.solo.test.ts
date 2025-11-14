@@ -1,15 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    ExecuteCodesRequest,
-    InspectClauses,
-    ThorNetworks
-} from '@thor/thorest';
+import { ExecuteCodesRequest, InspectClauses } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
 import { Address, BlockRef, Hex, HexUInt } from '@common/vcdm';
 import {
     Clause,
     type SimulateTransactionOptions
 } from '@thor/thor-client/model/transactions';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * VeChain inspect clauses - solo

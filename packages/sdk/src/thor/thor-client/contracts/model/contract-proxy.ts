@@ -25,8 +25,8 @@ import type { ContractFunctionTransact } from './ContractFunctionTransact';
 /**
  * Extracts and removes additional options from function arguments
  */
-function extractAndRemoveAdditionalOptions(args: AbiParameter[]): {
-    args: AbiParameter[];
+function extractAndRemoveAdditionalOptions(args: readonly unknown[]): {
+    args: readonly unknown[];
     clauseAdditionalOptions?: ContractClauseOptions;
 } {
     // Ensure args is an array
@@ -84,11 +84,11 @@ function buildCriteriaObject<TAbi extends Abi>(
     eventName: string | symbol,
     args?:
         | Record<string, string | number | bigint | boolean>
-        | AbiParameter[]
+        | readonly unknown[]
         | undefined
 ): {
     eventName: string;
-    args: AbiParameter[];
+    args: readonly unknown[];
     address: string;
     topics: string[];
 } {
@@ -191,7 +191,7 @@ function getTransactProxy<TAbi extends Abi>(
 > {
     return new Proxy(contract.transact, {
         get: (_target, prop) => {
-            return async (...args: AbiParameter[]) => {
+            return async (...args: readonly unknown[]) => {
                 if (contract.getSigner() === undefined) {
                     throw new InvalidTransactionField(
                         'ContractProxy.getTransactProxy',
@@ -278,7 +278,7 @@ function getClauseProxy<TAbi extends Abi>(
     return new Proxy(contract.clause as any, {
         get: (_target, prop) => {
             return (
-                ...args: AbiParameter[]
+                ...args: readonly unknown[]
             ): {
                 to: string;
                 data: string;
@@ -344,11 +344,11 @@ function getCriteriaProxy<TAbi extends Abi>(
             return (
                 args?:
                     | Record<string, string | number | bigint | boolean>
-                    | AbiParameter[]
+                    | readonly unknown[]
                     | undefined
             ): {
                 eventName: string;
-                args: AbiParameter[];
+                args: readonly unknown[];
                 address: string;
                 topics: string[];
             } => {

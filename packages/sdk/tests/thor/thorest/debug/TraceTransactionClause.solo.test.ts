@@ -1,7 +1,8 @@
 import { FetchHttpClient } from '@common/http';
-import { ThorError, ThorNetworks, TraceTransactionClause } from '@thor/thorest';
+import { ThorError, TraceTransactionClause } from '@thor/thorest';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
 import { expect } from '@jest/globals';
+import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
  * @group solo/thor/debug

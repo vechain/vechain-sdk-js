@@ -1,6 +1,5 @@
-import { type Abi } from '@viem';
+import { type Abi, decodeErrorResult } from '@viem';
 import type { Hex } from '@common/vcdm';
-import { decodeErrorResult } from '@viem';
 import { ABIDecodeError } from '@common/errors/ABIDecodeError';
 import { log } from '@common/logging';
 

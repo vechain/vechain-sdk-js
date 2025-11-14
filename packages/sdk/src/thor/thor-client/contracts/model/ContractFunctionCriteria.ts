@@ -12,11 +12,11 @@ export type ContractFunctionCriteria<
     [K in TEventNames]: (
         args?:
             | Record<string, string | number | bigint | boolean>
-            | AbiParameter[]
+            | readonly unknown[]
             | undefined
     ) => {
         eventName: string;
-        args: AbiParameter[];
+        args: readonly unknown[];
         address: string;
         topics: string[];
     };
