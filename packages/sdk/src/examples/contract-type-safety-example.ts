@@ -111,13 +111,21 @@ async function demonstrateTypeSafety(): Promise<void> {
 
 // Helper function for dynamic UI
 function getInputType(solidityType: string): string {
-    if (solidityType === 'address') return 'text (hex address)';
-    if (solidityType.startsWith('uint') || solidityType.startsWith('int'))
+    if (solidityType === 'address') {
+        return 'text (hex address)';
+    }
+    if (solidityType.startsWith('uint') || solidityType.startsWith('int')) {
         return 'number';
-    if (solidityType === 'bool') return 'checkbox';
-    if (solidityType === 'string') return 'text';
-    if (solidityType === 'bytes' || solidityType.startsWith('bytes'))
+    }
+    if (solidityType === 'bool') {
+        return 'checkbox';
+    }
+    if (solidityType === 'string') {
+        return 'text';
+    }
+    if (solidityType === 'bytes' || solidityType.startsWith('bytes')) {
         return 'text (hex)';
+    }
     return 'text';
 }
 
