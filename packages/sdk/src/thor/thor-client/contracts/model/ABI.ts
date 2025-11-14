@@ -5,7 +5,10 @@ import { IllegalArgumentError } from '@common/errors';
 import {
     encodeAbiParameters,
     decodeAbiParameters,
-    parseAbiParameters
+    parseAbiParameters,
+    encodeFunctionData,
+    decodeFunctionData,
+    decodeEventLog
 } from 'viem';
 import type { AbiParameter } from 'viem';
 
@@ -477,11 +480,10 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
     }
 
     /**
-     * Get function by name
+     * Get function by name - returns the plain ABI function object
+     * This is compatible with executeCall() and other methods that expect raw ABI items
      */
-    getFunction<TFunctionName extends string>(
-        name: TFunctionName
-    ): ABIFunction<TAbi, TFunctionName> {
+    getFunction<TFunctionName extends string>(name: TFunctionName): any {
         const functionAbi = (this._viemABI as unknown as any[]).find(
             (item: any) => item.type === 'function' && item.name === name
         );
@@ -494,16 +496,16 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
             );
         }
 
-        const signature = `${name}(${functionAbi.inputs?.map((input: any) => input.type).join(',') || ''})`;
-        return new ABIFunction(this._viemABI, name, signature);
+        // Return the plain ABI function object directly
+        // This makes it compatible with executeCall() and encodeFunctionData()
+        return functionAbi;
     }
 
     /**
-     * Get event by name
+     * Get event by name - returns the plain ABI event object
+     * This is compatible with event filtering and decoding methods
      */
-    getEvent<TEventName extends string>(
-        name: TEventName
-    ): ABIEvent<TAbi, TEventName> {
+    getEvent<TEventName extends string>(name: TEventName): any {
         const eventAbi = (this._viemABI as unknown as any[]).find(
             (item: any) => item.type === 'event' && item.name === name
         );
@@ -516,52 +518,100 @@ class ABIContract<TAbi extends readonly any[] = readonly any[]> extends ABI {
             );
         }
 
-        const signature = `${name}(${eventAbi.inputs?.map((input: any) => input.type).join(',') || ''})`;
-        return new ABIEvent(this._viemABI, name, signature);
+        // Return the plain ABI event object directly
+        return eventAbi;
     }
 
     /**
-     * Encode function data
+     * Encode function data using viem
      */
     encodeFunctionData<TFunctionName extends string>(
         functionName: TFunctionName,
-        args: readonly unknown[]
+        args: any[]
     ): string {
-        const func = this.getFunction(functionName);
-        return func.encodeData(args);
+        try {
+            return encodeFunctionData({
+                abi: this._viemABI as any,
+                functionName: functionName as any,
+                args: args as any
+            });
+        } catch (error) {
+            throw new IllegalArgumentError(
+                'ABIContract.encodeFunctionData',
+                'Failed to encode function data',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    functionName,
+                    args
+                }
+            );
+        }
     }
 
     /**
-     * Decode function data
+     * Decode function data using viem
      */
     decodeFunctionData<TFunctionName extends string>(
         functionName: TFunctionName,
         data: string | Uint8Array
-    ): AbiParameter[] {
-        const func = this.getFunction(functionName);
-        return func.decodeData(data);
+    ): any {
+        try {
+            const dataStr =
+                typeof data === 'string'
+                    ? data
+                    : '0x' + Buffer.from(data).toString('hex');
+
+            return decodeFunctionData({
+                abi: this._viemABI as any,
+                data: dataStr as `0x${string}`
+            });
+        } catch (error) {
+            throw new IllegalArgumentError(
+                'ABIContract.decodeFunctionData',
+                'Failed to decode function data',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    functionName,
+                    data: typeof data === 'string' ? data : 'Uint8Array'
+                }
+            );
+        }
     }
 
     /**
-     * Encode event log
-     */
-    encodeEventLog<TEventName extends string>(
-        eventName: TEventName,
-        eventArgs: readonly unknown[]
-    ): { data: string; topics: string[] } {
-        const event = this.getEvent(eventName);
-        return event.encodeEventLog(eventArgs);
-    }
-
-    /**
-     * Decode event log
+     * Decode event log using viem
      */
     decodeEventLog<TEventName extends string>(
         eventName: TEventName,
         eventToDecode: { data: string; topics: string[] }
-    ): AbiParameter[] {
-        const event = this.getEvent(eventName);
-        return event.decodeEventLog(eventToDecode);
+    ): any {
+        try {
+            const eventAbi = this.getEvent(eventName);
+            return decodeEventLog({
+                abi: [eventAbi] as any,
+                data: eventToDecode.data as `0x${string}`,
+                topics: eventToDecode.topics as any
+            });
+        } catch (error) {
+            throw new IllegalArgumentError(
+                'ABIContract.decodeEventLog',
+                'Failed to decode event log',
+                {
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Unknown error',
+                    eventName,
+                    eventToDecode
+                }
+            );
+        }
     }
 }
 
