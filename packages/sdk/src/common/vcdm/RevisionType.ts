@@ -1,3 +1,5 @@
+import { Revision } from './Revision';
+
 /**
  * The type of a Revision.
  */
@@ -10,4 +12,6 @@ enum RevisionType {
     BlockId = 2
 }
 
-export { RevisionType };
+type RevisionLike = Revision | bigint | number | string;
+
+export { RevisionType, type RevisionLike };

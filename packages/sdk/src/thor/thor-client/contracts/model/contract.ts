@@ -32,11 +32,9 @@ import { log } from '@common/logging';
 import type { ContractCallOptions } from '../types';
 import type { ContractsModule } from '../contracts-module';
 import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
-
+import { RevisionLike } from '@common/vcdm';
 // Proper function arguments type using VeChain SDK types
 type FunctionArgs = AbiParameter[];
-
-type RevisionLike = Revision | bigint | number | string;
 
 type ContractReadOptionsInput = Omit<ContractCallOptions, 'revision'> & {
     revision?: RevisionLike;
@@ -146,8 +144,7 @@ class Contract<TAbi extends Abi> {
     public setContractReadOptions(
         options: ContractReadOptionsInput
     ): ContractCallOptions {
-        this.contractCallOptions =
-            this.normalizeContractCallOptions(options);
+        this.contractCallOptions = this.normalizeContractCallOptions(options);
         return this.contractCallOptions;
     }
 
