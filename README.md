@@ -287,6 +287,7 @@ To aid debugging of http request to thor blockchain, if the environment variable
 ## Contact information
 
 - Discord https://discord.com/invite/vechain
+- X/Twitter https://x.com/vechainofficial
 - Support https://support.vechain.org
 
                               @@@@@@@@@@@@@@                     /@@@@@                   
