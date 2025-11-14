@@ -309,7 +309,7 @@ class NetAddr implements VeChainDataModel<NetAddr> {
         }
 
         const joinedParts = parts.join(':');
-        return joinedParts.startsWith(':') ? ':' + joinedParts : joinedParts;
+        return joinedParts.startsWith(':') ? `:${joinedParts}` : joinedParts;
     }
 }
 
@@ -376,13 +376,13 @@ function processIPv6Segments(ip: string): string[] {
 }
 
 function handleStartingDoubleColon(segments: string[]): string[] {
-    segments = segments.filter((s) => s !== '');
-    return fillWithZeros(segments, true);
+    const filtered = segments.filter((s) => s !== '');
+    return fillWithZeros(filtered, true);
 }
 
 function handleEndingDoubleColon(segments: string[]): string[] {
-    segments = segments.filter((s) => s !== '');
-    return fillWithZeros(segments, false);
+    const filtered = segments.filter((s) => s !== '');
+    return fillWithZeros(filtered, false);
 }
 
 function handleMiddleDoubleColon(ip: string): string[] {

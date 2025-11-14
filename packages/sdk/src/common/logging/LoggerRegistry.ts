@@ -31,9 +31,7 @@ class LoggerRegistry {
      * @returns The instance of the logger registry.
      */
     public static getInstance(): LoggerRegistry {
-        if (LoggerRegistry.instance === undefined) {
-            LoggerRegistry.instance = new LoggerRegistry();
-        }
+        LoggerRegistry.instance ??= new LoggerRegistry();
         return LoggerRegistry.instance;
     }
 

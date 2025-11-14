@@ -39,7 +39,7 @@ class Address extends HexUInt {
                     : stringAddress[i];
         }
 
-        return '0x' + checksum;
+        return `0x${checksum}`;
     }
 
     /**

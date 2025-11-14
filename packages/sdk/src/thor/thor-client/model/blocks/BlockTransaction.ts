@@ -1,7 +1,9 @@
 import { type Address, type Hex } from '@common/vcdm';
-import { type Clause } from '@thor/thor-client/model/transactions';
+import {
+    type Clause,
+    TransactionReceiptOutput
+} from '@thor/thor-client/model/transactions';
 import { type TxWithReceipt } from '@thor/thorest/transactions/model';
-import { TransactionReceiptOutput } from '@thor/thor-client/model/transactions';
 import { type OutputResponse } from '@thor/thorest/common';
 
 /**
