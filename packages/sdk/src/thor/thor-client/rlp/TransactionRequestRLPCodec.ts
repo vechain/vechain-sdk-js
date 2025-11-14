@@ -17,14 +17,14 @@ import {
     RLPProfiler,
     type RLPValidObject,
     Secp256k1
-} from '@common'; // eslint-disable-next-line @typescript-eslint/no-extraneous-class
+} from '@common';
 
 const FQP = 'packages/sdk/src/thor/signer/TransactionRequestRLPCodec.ts!';
 
 /**
  * Class representing a codec for encoding and decoding transaction requests using Recursive Length Prefix (RLP) encoding.
  */
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+
 class TransactionRequestRLPCodec {
     /**
      * The prefix for dynamic fee transactions request.

@@ -1,6 +1,6 @@
 import { type Address, type Hex } from '@common/vcdm';
-import { type TxWithReceipt } from '@thor/thorest/transactions/model';
 import { TransactionReceiptOutput } from '@thor/thor-client/model/transactions';
+import { type TxWithReceipt } from '@thor/thorest/transactions/model';
 import { type OutputResponse } from '@thor/thorest/common';
 import { BaseTransaction } from '@thor/thor-client/model/transactions/BaseTransaction';
 
