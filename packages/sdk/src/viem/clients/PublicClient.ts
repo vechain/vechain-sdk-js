@@ -47,7 +47,8 @@ import {
     type ExpandedBlock,
     type RawBlock
 } from '@thor/thor-client/model/blocks';
-import { RevisionLike, RevisionType } from '@common/vcdm/RevisionType';
+import { RevisionType } from '@common/vcdm/RevisionType';
+import { RevisionLike } from '@common/vcdm';
 import {
     TimeoutError as ThorTimeoutError,
     IllegalArgumentError
