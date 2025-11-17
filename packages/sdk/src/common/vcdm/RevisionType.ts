@@ -1,5 +1,3 @@
-import { Revision } from './Revision';
-
 /**
  * The type of a Revision.
  */
