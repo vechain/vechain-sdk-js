@@ -136,7 +136,7 @@ class PublicClient {
     constructor(network: URL | ThorNetworks, transport: HttpClient) {
         this.network = network;
         this.httpClient = transport;
-        this.thorClient = ThorClient.at(this.httpClient);
+        this.thorClient = ThorClient.at(this.network.toString());
     }
 
     /**
@@ -413,9 +413,8 @@ class PublicClient {
      */
     public async suggestPriorityFeeRequest(): Promise<bigint> {
         // viem specific
-        const thorClient = ThorClient.at(this.httpClient);
-        const gasModule = thorClient.gas;
-        const gas = await gasModule.getSuggestedMaxPriorityFeePerGas();
+        const gas =
+            await this.thorClient.gas.getSuggestedMaxPriorityFeePerGas();
         return gas;
     }
 

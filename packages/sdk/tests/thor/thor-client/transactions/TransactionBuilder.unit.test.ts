@@ -1,4 +1,4 @@
-import { FetchHttpClient, Hex, IllegalArgumentError } from '@common';
+import { Hex, IllegalArgumentError } from '@common';
 import { describe, expect, jest, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client';
 import { TransactionBuilder } from '@thor/thor-client/transactions/TransactionBuilder';
@@ -11,9 +11,7 @@ import { RetrieveRegularBlock } from '@thor/thorest/blocks';
  */
 describe('TransactionBuilder UNIT tests', () => {
     test('legacy tx with explicit parameters', async () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         const transaction = await builder
             .withSponsorReq(
@@ -41,9 +39,7 @@ describe('TransactionBuilder UNIT tests', () => {
         expect(transaction.maxPriorityFeePerGas).toBeUndefined();
     });
     test('dynamic fee gasPriceCoef is undefined', async () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         const transaction = await builder
             .withClauses([new Clause(Address.of('0x0'), 1n)])
@@ -58,9 +54,7 @@ describe('TransactionBuilder UNIT tests', () => {
         expect(transaction.gasPriceCoef).toBeUndefined();
     });
     test('default expiration', async () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient)
             .withClauses([new Clause(Address.of('0x0'), 1n)])
             .withBlockRef(Hex.of('0x1234'))
@@ -73,9 +67,7 @@ describe('TransactionBuilder UNIT tests', () => {
         );
     });
     test('with default BlockRef throws error if best block is not available', async () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         // mock the retrieveRegularBlock method to return null
         const query = RetrieveRegularBlock.of(Revision.BEST);
         const mockRetrieveRegularBlock = jest.spyOn(query, 'askTo');
@@ -92,46 +84,34 @@ describe('TransactionBuilder UNIT tests', () => {
         await expect(async () => await builder.build()).rejects.toThrow();
     });
     test('with invalid chain tag throws error', () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient).withClauses([
             new Clause(Address.of('0x0'), 1n)
         ]);
         expect(() => builder.withChainTag(-1)).toThrow(IllegalArgumentError);
     });
     test('with empty clauses throws error', () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         expect(() => builder.withClauses([])).toThrow(IllegalArgumentError);
     });
     test('with invalid expiration throws error', () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         expect(() => builder.withExpiration(-1)).toThrow(IllegalArgumentError);
     });
     test('with invalid gas throws error', () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         expect(() => builder.withGas(-1n)).toThrow(IllegalArgumentError);
     });
     test('with invalid gas throws error', () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         expect(() => builder.withGas(-1n)).toThrow(IllegalArgumentError);
     });
     test('with invalid gas price coef throws error', () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         expect(() => builder.withGasPriceCoef(-1n)).toThrow(
             IllegalArgumentError
@@ -141,25 +121,19 @@ describe('TransactionBuilder UNIT tests', () => {
         );
     });
     test('with invalid nonce throws error', () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         expect(() => builder.withNonce(-1)).toThrow(IllegalArgumentError);
     });
     test('with invalid max fee per gas throws error', () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         expect(() => builder.withMaxFeePerGas(-1n)).toThrow(
             IllegalArgumentError
         );
     });
     test('with invalid max priority fee per gas throws error', () => {
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL('http://localhost:8669'))
-        );
+        const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         expect(() => builder.withMaxPriorityFeePerGas(-1n)).toThrow(
             IllegalArgumentError

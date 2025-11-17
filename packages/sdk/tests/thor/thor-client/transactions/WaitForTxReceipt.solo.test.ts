@@ -1,5 +1,4 @@
 import { TimeoutError } from '@common/errors';
-import { FetchHttpClient } from '@common/http';
 import { Address, Hex, Revision } from '@common/vcdm';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import { PrivateKeySigner } from '@thor/signer';
@@ -14,9 +13,7 @@ import { ThorNetworks } from '@thor/utils/const/network';
 describe('WaitForTxReceipt SOLO tests', () => {
     let thorClient: ThorClient;
     beforeAll(() => {
-        thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-        );
+        thorClient = ThorClient.at(ThorNetworks.SOLONET);
     });
 
     test('wait for a historic tx receipt', async () => {
