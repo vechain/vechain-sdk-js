@@ -97,10 +97,7 @@ class Revision {
             }
 
             if (Revision.HEX_REVISION_REGEX.test(trimmed)) {
-                return new Revision(
-                    Hex.of(trimmed),
-                    RevisionType.BlockId
-                );
+                return new Revision(Hex.of(trimmed), RevisionType.BlockId);
             }
         }
         // If not a valid revision, throw an error
