@@ -47,7 +47,7 @@ import {
     type ExpandedBlock,
     type RawBlock
 } from '@thor/thor-client/model/blocks';
-import { RevisionType } from '@common/vcdm/RevisionType';
+import { RevisionLike, RevisionType } from '@common/vcdm/RevisionType';
 import {
     TimeoutError as ThorTimeoutError,
     IllegalArgumentError
@@ -179,9 +179,10 @@ class PublicClient {
      * @throws {BlockNotFoundError} If the block doesn't exist.
      */
     public async getBlock(
-        revision: Revision = Revision.BEST, // vechain specific
+        revisionType: RevisionLike = Revision.BEST, // vechain specific
         type: BlockReponseType = BlockReponseType.regular // vechain specific
     ): Promise<ExpandedBlock | RawBlock | Block | null> {
+        const revision = Revision.of(revisionType);
         const blockNumber =
             revision.revisionType === RevisionType.BlockNumber
                 ? BigInt(revision.toString())

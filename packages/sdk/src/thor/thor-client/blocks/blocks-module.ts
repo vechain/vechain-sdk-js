@@ -1,4 +1,4 @@
-import { type BlockRef, Revision } from '@common/vcdm';
+import { type BlockRef, Revision, RevisionLike } from '@common/vcdm';
 import { AbstractThorModule } from '../AbstractThorModule';
 import {
     RetrieveExpandedBlock,
@@ -23,9 +23,10 @@ class BlocksModule extends AbstractThorModule {
      * Defaults to the best block when no revision is supplied.
      */
     public async getBlock(
-        revision: Revision = Revision.BEST
+        revision: RevisionLike = Revision.BEST
     ): Promise<Block | null> {
-        const response = await this.fetchBlock(revision);
+        const rev = Revision.of(revision);
+        const response = await this.fetchBlock(rev);
         return Block.fromResponse(response);
     }
 
@@ -34,9 +35,10 @@ class BlocksModule extends AbstractThorModule {
      * Defaults to the best block when no revision is supplied.
      */
     public async getBlockExpanded(
-        revision: Revision = Revision.BEST
+        revision: RevisionLike = Revision.BEST
     ): Promise<ExpandedBlock | null> {
-        const response = await this.fetchExpandedBlock(revision);
+        const rev = Revision.of(revision);
+        const response = await this.fetchExpandedBlock(rev);
         return ExpandedBlock.fromResponse(response);
     }
 

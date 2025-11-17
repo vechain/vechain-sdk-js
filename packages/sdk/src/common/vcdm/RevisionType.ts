@@ -12,6 +12,4 @@ enum RevisionType {
     BlockId = 2
 }
 
-type RevisionLike = Revision | bigint | number | string;
-
-export { RevisionType, type RevisionLike };
+export { RevisionType };

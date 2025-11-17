@@ -172,46 +172,8 @@ class Contract<TAbi extends Abi> {
 
         return {
             ...options,
-            revision: this.normalizeRevisionInput(options.revision)
+            revision: Revision.of(options.revision)
         };
-    }
-
-    private normalizeRevisionInput(revision: RevisionLike): Revision {
-        if (revision instanceof Revision) {
-            return revision;
-        }
-
-        if (typeof revision === 'number' || typeof revision === 'bigint') {
-            return Revision.of(revision);
-        }
-
-        if (typeof revision === 'string') {
-            const trimmed = revision.trim();
-
-            if (trimmed.length === 0) {
-                throw new IllegalArgumentError(
-                    'Contract.normalizeRevisionInput',
-                    'revision cannot be empty',
-                    { revision }
-                );
-            }
-
-            if (HEX_REVISION_REGEX.test(trimmed)) {
-                return Revision.of(Hex.of(trimmed));
-            }
-
-            if (DECIMAL_REVISION_REGEX.test(trimmed)) {
-                return Revision.of(BigInt(trimmed));
-            }
-
-            return Revision.of(trimmed.toLowerCase());
-        }
-
-        throw new IllegalArgumentError(
-            'Contract.normalizeRevisionInput',
-            'Unsupported revision type',
-            { revision }
-        );
     }
 
     /**

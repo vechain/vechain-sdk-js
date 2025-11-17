@@ -50,7 +50,10 @@ class Revision {
      * @returns {Revision} - The created Revision object
      * @throws {IllegalArgumentError} if the given value is not a valid revision
      */
-    public static of(value: bigint | number | string | Hex): Revision {
+    public static of(value: Revision | bigint | number | string | Hex): Revision {
+        if (value instanceof Revision) {
+            return value;
+        }
         // If Hex, its a block Id
         if (value instanceof Hex) {
             if (value.bi >= BigInt(0)) {
@@ -77,7 +80,7 @@ class Revision {
         }
         // If not a valid revision, throw an error
         throw new IllegalArgumentError(
-            `${FQP}Revision.of(value: bigint | number | string | Hex): Revision`,
+            `${FQP}Revision.of(value: Revision | bigint | number | string | Hex): Revision`,
             'not a valid revision',
             {
                 value: `${value}`
