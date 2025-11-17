@@ -413,7 +413,7 @@ interface PrepareTransactionRequestRequest {
     gasPriceCoef: number;
     maxFeePerGas?: bigint;
     maxPriorityFeePerGas?: bigint;
-    nonce: number;
+    nonce: bigint;
 }
 
 /**

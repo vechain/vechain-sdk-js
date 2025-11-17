@@ -69,7 +69,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 gas: 21000000n,
                 gasPriceCoef: 128n,
                 // eslint-disable-next-line sonarjs/pseudo-random
-                nonce: Math.floor(Math.random() * 1000000)
+                nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
             // Verify it's detected as legacy
@@ -85,11 +85,12 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
 
             // Encode and verify no type prefix
             const encoded = signedTx.encoded;
-            expect(encoded[0]).not.toBe(0x51);
+            expect(encoded.bytes[0]).not.toBe(0x51);
 
             // Send to solo network
-            const txResponse =
-                await SendTransaction.of(encoded).askTo(httpClient);
+            const txResponse = await SendTransaction.of(encoded.bytes).askTo(
+                httpClient
+            );
             expect(txResponse.response).toBeDefined();
             expect(txResponse.response.id).toBeDefined();
 
@@ -127,7 +128,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 maxFeePerGas: 10027000000000n, // 20 Gwei
                 maxPriorityFeePerGas: 27000000000n, // 5 Gwei
                 // eslint-disable-next-line sonarjs/pseudo-random
-                nonce: Math.floor(Math.random() * 1000000)
+                nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
             // Verify it's detected as dynamic fee
@@ -144,11 +145,12 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
 
             // Encode and verify 0x51 type prefix
             const encoded = signedTx.encoded;
-            expect(encoded[0]).toBe(0x51);
+            expect(encoded.bytes[0]).toBe(0x51);
 
             // Send to solo network
-            const txResponse =
-                await SendTransaction.of(encoded).askTo(httpClient);
+            const txResponse = await SendTransaction.of(encoded.bytes).askTo(
+                httpClient
+            );
             expect(txResponse.response).toBeDefined();
             expect(txResponse.response.id).toBeDefined();
 
@@ -183,7 +185,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 maxFeePerGas: 10027000000000n, // 15 Gwei,
                 maxPriorityFeePerGas: 0n,
                 // eslint-disable-next-line sonarjs/pseudo-random
-                nonce: Math.floor(Math.random() * 1000000)
+                nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
             // Should still be detected as dynamic fee
@@ -194,11 +196,12 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             // Sign and encode
             const signedTx = fromSigner.sign(dynamicTx);
             const encoded = signedTx.encoded;
-            expect(encoded[0]).toBe(0x51);
+            expect(encoded.bytes[0]).toBe(0x51);
 
             // Send to solo network
-            const txResponse =
-                await SendTransaction.of(encoded).askTo(httpClient);
+            const txResponse = await SendTransaction.of(encoded.bytes).askTo(
+                httpClient
+            );
             expect(txResponse.response).toBeDefined();
             expect(txResponse.response.id).toBeDefined();
 
@@ -222,7 +225,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 gas: 210000n,
                 gasPriceCoef: 255n, // Max legacy coefficient
                 // eslint-disable-next-line sonarjs/pseudo-random
-                nonce: Math.floor(Math.random() * 1000000)
+                nonce: BigInt(Math.floor(Math.random() * 1000000))
                 // No dynamic fee fields at all
             });
 
@@ -237,11 +240,12 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
 
             // Should encode without type prefix
             const encoded = signedTx.encoded;
-            expect(encoded[0]).not.toBe(0x51);
+            expect(encoded.bytes[0]).not.toBe(0x51);
 
             // Should send successfully to solo network
-            const txResponse =
-                await SendTransaction.of(encoded).askTo(httpClient);
+            const txResponse = await SendTransaction.of(encoded.bytes).askTo(
+                httpClient
+            );
             expect(txResponse.response).toBeDefined();
             expect(txResponse.response.id).toBeDefined();
 
@@ -265,7 +269,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 gas: 21000n,
                 gasPriceCoef: 100n,
                 // eslint-disable-next-line sonarjs/pseudo-random
-                nonce: Math.floor(Math.random() * 1000000)
+                nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
             const dynamicTx = new TransactionRequest({
@@ -278,7 +282,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 maxFeePerGas: 10027000000000n,
                 maxPriorityFeePerGas: 27000000000n,
                 // eslint-disable-next-line sonarjs/pseudo-random
-                nonce: Math.floor(Math.random() * 1000000)
+                nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
             // Verify different detection
@@ -294,19 +298,21 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             const dynamicEncoded = signedDynamic.encoded;
 
             // Verify different encoding
-            expect(legacyEncoded[0]).not.toBe(0x51);
-            expect(dynamicEncoded[0]).toBe(0x51);
+            expect(legacyEncoded.bytes[0]).not.toBe(0x51);
+            expect(dynamicEncoded.bytes[0]).toBe(0x51);
             expect(legacyEncoded).not.toEqual(dynamicEncoded);
 
             // Send both to solo network
-            const legacyResponse =
-                await SendTransaction.of(legacyEncoded).askTo(httpClient);
+            const legacyResponse = await SendTransaction.of(
+                legacyEncoded.bytes
+            ).askTo(httpClient);
             expect(legacyResponse.response).toBeDefined();
             console.log(`Legacy tx: ${legacyResponse.response.id.toString()}`);
 
             // Send dynamic fee transaction
-            const dynamicResponse =
-                await SendTransaction.of(dynamicEncoded).askTo(httpClient);
+            const dynamicResponse = await SendTransaction.of(
+                dynamicEncoded.bytes
+            ).askTo(httpClient);
             expect(dynamicResponse.response).toBeDefined();
             console.log(
                 `Dynamic tx: ${dynamicResponse.response.id.toString()}`

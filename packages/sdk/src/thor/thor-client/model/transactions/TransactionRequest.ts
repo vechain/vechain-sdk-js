@@ -2,143 +2,43 @@ import { type Clause } from './Clause';
 import {
     type Address,
     Blake2b256,
-    type Hex,
+    Hex,
     HexUInt,
     InvalidTransactionField
 } from '@common';
 import { TransactionRequestRLPCodec } from '@thor/thor-client/rlp/TransactionRequestRLPCodec';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
+import { BaseTransaction, type BaseTransactionParams } from './BaseTransaction';
 
 const FQP =
     'packages/sdk/src/thor/thor-client/model/transactions/TransactionRequest.ts!';
 
 /**
  * Represents the parameters required to create a {@link TransactionRequest} instance.
+ * Extends BaseTransactionParams with TransactionRequest-specific fields.
  */
-interface TransactionRequestParam {
+interface TransactionRequestParam extends BaseTransactionParams {
     /**
      * The address of the account begging to pay the gas fee.
+     * If specified, this transaction requires sponsored transaction (VIP-191).
      */
     beggar?: Address;
-
-    /**
-     * The first 8 bytes of the referenced block ID.
-     */
-    blockRef: Hex;
-
-    /**
-     * The last byte of the genesis block ID.
-     */
-    chainTag: number;
-
-    /**
-     * An array of clauses that are executed by the transaction.
-     */
-    clauses: Clause[];
-
-    /**
-     * The transaction ID that this transaction depends on.
-     */
-    dependsOn: Hex | null;
-
-    /**
-     * The expiration of the transaction, represented as the number of blocks after the blockRef
-     */
-    expiration: number;
-
-    /**
-     * The max amount of gas that can be used by the transaction.
-     */
-    gas: bigint;
-
-    /**
-     * The coefficient used to calculate the final gas price of the transaction.
-     */
-    gasPriceCoef?: bigint;
-
-    /**
-     * The maximum fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
-     * If specified, this transaction uses dynamic fee pricing instead of gasPriceCoef.
-     */
-    maxFeePerGas?: bigint;
-
-    /**
-     * The maximum priority fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
-     * This is the tip paid to validators for transaction inclusion priority.
-     */
-    maxPriorityFeePerGas?: bigint;
-
-    /**
-     * The transaction nonce is a 64-bit unsigned integer that is determined by the transaction sender.
-     */
-    nonce: number;
 }
 
 /**
  * Represents a transaction request to **Thor** blockchain system.
  * Encapsulates all information required to process and execute a transaction.
  */
-class TransactionRequest implements TransactionRequestParam {
+class TransactionRequest
+    extends BaseTransaction
+    implements TransactionRequestParam
+{
     // Inherited from TransactionRequestParam, used to compute the transaction request signature.
 
     /**
      * The address of the account begging to pay the gas fee.
      */
     public readonly beggar?: Address;
-
-    /**
-     * The first 8 bytes of the referenced block ID.
-     */
-    public readonly blockRef: Hex;
-
-    /**
-     * The last byte of the genesis block ID.
-     */
-    public readonly chainTag: number;
-
-    /**
-     * An array of clauses that are executed by the transaction.
-     */
-    public readonly clauses: Clause[];
-
-    /**
-     * The transaction ID that this transaction depends on.
-     */
-    public readonly dependsOn: Hex | null;
-
-    /**
-     * The expiration of the transaction, represented as the number of blocks after the blockRef
-     */
-    public readonly expiration: number;
-
-    /**
-     * The max amount of gas that can be used by the transaction.
-     */
-    public readonly gas: bigint;
-
-    /**
-     * The coefficient used to calculate the final gas price of the transaction.
-     */
-    public readonly gasPriceCoef?: bigint;
-
-    /**
-     * The transaction nonce is a 64-bit unsigned integer that is determined by the transaction sender.
-     */
-    public readonly nonce: number;
-
-    /**
-     * The maximum fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
-     * If specified, this transaction uses dynamic fee pricing instead of gasPriceCoef.
-     */
-    public readonly maxFeePerGas?: bigint;
-
-    /**
-     * The maximum priority fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
-     * This is the tip paid to validators for transaction inclusion priority.
-     */
-    public readonly maxPriorityFeePerGas?: bigint;
-
-    // TransactionRequest specific properties
 
     /**
      * The signature of the sponsor delegated to pay the gas to execute the transaction request.
@@ -173,21 +73,12 @@ class TransactionRequest implements TransactionRequestParam {
         gasPayerSignature?: Uint8Array,
         signature?: Uint8Array
     ) {
+        super(params);
         if (
             TransactionRequest.isLegacy(params) ||
             TransactionRequest.isDynamicFee(params)
         ) {
             this.beggar = params.beggar;
-            this.blockRef = params.blockRef;
-            this.chainTag = params.chainTag;
-            this.clauses = params.clauses;
-            this.dependsOn = params.dependsOn;
-            this.expiration = params.expiration;
-            this.gas = params.gas;
-            this.gasPriceCoef = params.gasPriceCoef;
-            this.nonce = params.nonce;
-            this.maxFeePerGas = params.maxFeePerGas;
-            this.maxPriorityFeePerGas = params.maxPriorityFeePerGas;
             // Defensive copy of the signatures to prevent accidental mutation.
             this.originSignature = new Uint8Array(originSignature ?? []);
             // Defensive copy of the signatures to prevent accidental mutation.
@@ -204,23 +95,12 @@ class TransactionRequest implements TransactionRequestParam {
     }
 
     /**
-     * Decodes an encoded transaction request into a TransactionRequest object.
-     *
-     * @param {Uint8Array} encoded - The encoded transaction request as a Uint8Array.
-     * @return {TransactionRequest} The decoded transaction request.
-     * @throws {InvalidEncodingError} If the encoded data does not match the expected format.
-     */
-    public static decode(encoded: Uint8Array): TransactionRequest {
-        return TransactionRequestRLPCodec.decode(encoded);
-    }
-
-    /**
      * Encodes a given transaction request into a RLP serialized format.
      *
-     * @return {Uint8Array} The serialized and encoded transaction request.
+     * @return {Hex} The serialized and encoded transaction request.
      */
-    public get encoded(): Uint8Array {
-        return TransactionRequestRLPCodec.encode(this);
+    public get encoded(): Hex {
+        return Hex.of(TransactionRequestRLPCodec.encode(this));
     }
 
     /**
@@ -342,7 +222,7 @@ class TransactionRequest implements TransactionRequestParam {
             gasPriceCoef: this.gasPriceCoef,
             maxFeePerGas: this.maxFeePerGas,
             maxPriorityFeePerGas: this.maxPriorityFeePerGas,
-            nonce: this.nonce,
+            nonce: HexUInt.of(this.nonce).toString(),
             originSignature:
                 this.originSignature.length > 0
                     ? HexUInt.of(this.originSignature).toString()

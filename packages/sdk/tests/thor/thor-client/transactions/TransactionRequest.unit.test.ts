@@ -1,6 +1,9 @@
 import { expect } from '@jest/globals';
 import { Address, HexUInt, InvalidTransactionField, Quantity } from '@common';
-import { Clause, TransactionRequest } from '@thor/thor-client/model/transactions';
+import {
+    Clause,
+    TransactionRequest
+} from '@thor/thor-client/model/transactions';
 
 /**
  * @group unit/thor/thor-client/transactions
@@ -20,7 +23,7 @@ describe('TransactionRequest', () => {
     const mockGasPriceCoef = 123n;
     const mockMaxFeePerGas = 20000000000n; // 20 Gwei
     const mockMaxPriorityFeePerGas = 5000000000n; // 5 Gwei
-    const mockNonce = 3;
+    const mockNonce = 3n;
     const mockValue = Quantity.of(1000);
     const mockGasPayerSignature = new Uint8Array(65).fill(0xbe);
     const mockOriginSignature = new Uint8Array(65).fill(0xba);
@@ -409,7 +412,7 @@ describe('TransactionRequest', () => {
             expect(json.expiration).toBe(mockExpiration);
             expect(json.gas).toBe(mockGas);
             expect(json.gasPriceCoef).toBe(mockGasPriceCoef);
-            expect(json.nonce).toBe(mockNonce);
+            expect(json.nonce).toBe(HexUInt.of(mockNonce).toString());
             expect(json.maxFeePerGas).toBeUndefined();
             expect(json.maxPriorityFeePerGas).toBeUndefined();
             expect(json.originSignature).toBeUndefined();
@@ -447,7 +450,7 @@ describe('TransactionRequest', () => {
             expect(json.expiration).toBe(mockExpiration);
             expect(json.gas).toBe(mockGas);
             expect(json.gasPriceCoef).toBe(undefined);
-            expect(json.nonce).toBe(mockNonce);
+            expect(json.nonce).toBe(HexUInt.of(mockNonce).toString());
             expect(json.maxPriorityFeePerGas).toBe(mockMaxPriorityFeePerGas);
             expect(json.originSignature).toBe(
                 HexUInt.of(mockOriginSignature).toString()
@@ -487,7 +490,7 @@ describe('TransactionRequest', () => {
             expect(json.expiration).toBe(mockExpiration);
             expect(json.gas).toBe(mockGas);
             expect(json.gasPriceCoef).toBe(mockGasPriceCoef);
-            expect(json.nonce).toBe(mockNonce);
+            expect(json.nonce).toBe(HexUInt.of(mockNonce).toString());
             expect(json.maxFeePerGas).toBe(undefined);
             expect(json.maxPriorityFeePerGas).toBe(undefined);
             expect(json.originSignature).toBe(
@@ -630,7 +633,7 @@ describe('TransactionRequest', () => {
                 expiration: 0,
                 gas: 0n,
                 gasPriceCoef: 0n,
-                nonce: 0
+                nonce: 0n
             };
 
             const transaction = new TransactionRequest(params);
@@ -638,7 +641,7 @@ describe('TransactionRequest', () => {
             expect(transaction.expiration).toBe(0);
             expect(transaction.gas).toBe(0n);
             expect(transaction.gasPriceCoef).toBe(0n);
-            expect(transaction.nonce).toBe(0);
+            expect(transaction.nonce).toBe(0n);
         });
     });
 });

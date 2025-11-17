@@ -185,7 +185,7 @@ export function createViemContract<TAbi extends Abi>(
                         clauses: [], // Will be set by the contract method
                         gas: params.gas ?? 21000n,
                         gasPriceCoef: params.gasPriceCoef ?? 0n,
-                        nonce: 0,
+                        nonce: 0n,
                         blockRef: Hex.of('0x0000000000000000'),
                         chainTag: 0x27,
                         dependsOn: null,

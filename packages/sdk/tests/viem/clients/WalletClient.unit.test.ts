@@ -31,7 +31,7 @@ describe('WalletClient UNIT tests', () => {
     const mockGasPriceCoef = 128n; // 123n
     const mockMaxFeePerGas = 10027000000000n; // 20 Gwei
     const mockMaxPriorityFeePerGas = 27000000000n; // 5 Gwei
-    const mockNonce = 3;
+    const mockNonce = 3n;
     const mockValue = 10n ** 15n; // .001 VET
 
     describe('signTransaction', () => {
@@ -64,7 +64,7 @@ describe('WalletClient UNIT tests', () => {
             const expected = originSigner.sign(txRequest).encoded;
             const actual = (await originWallet.signTransaction(txRequest))
                 .bytes;
-            expect(actual).toEqual(expected);
+            expect(actual).toEqual(expected.bytes);
         });
 
         test('ok <- dynamic fee - signed then sponsored', async () => {
@@ -97,7 +97,7 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaS = (await originWallet.signTransaction(txRequest))
                 .bytes;
-            expect(encodedSaS).toEqual(txRequestSaS.encoded);
+            expect(encodedSaS).toEqual(txRequestSaS.encoded.bytes);
             // Sign as Gas Payer. Finalized signature.
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
@@ -110,10 +110,10 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(
-                    TransactionRequest.decode(encodedSaS)
+                    TransactionRequest.decode(HexUInt.of(encodedSaS))
                 )
             ).bytes;
-            expect(encodedSaGP).toEqual(txRequestSaGP.encoded);
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded.bytes);
         });
 
         test('ok <- dynamic fee - sponsored than signed', async () => {
@@ -147,7 +147,7 @@ describe('WalletClient UNIT tests', () => {
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(txRequest)
             ).bytes;
-            expect(encodedSaGP).toEqual(txRequestSaGP.encoded);
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded.bytes);
             // Sign as Sender. Finalized signature.
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
@@ -160,10 +160,10 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaS = (
                 await originWallet.signTransaction(
-                    TransactionRequest.decode(encodedSaGP)
+                    TransactionRequest.decode(HexUInt.of(encodedSaGP))
                 )
             ).bytes;
-            expect(encodedSaS).toEqual(txRequestSaS.encoded);
+            expect(encodedSaS).toEqual(txRequestSaS.encoded.bytes);
         });
 
         test('ok <- legacy - no sponsored', async () => {
@@ -194,7 +194,7 @@ describe('WalletClient UNIT tests', () => {
             const expected = originSigner.sign(txRequest).encoded;
             const actual = (await originWallet.signTransaction(txRequest))
                 .bytes;
-            expect(actual).toEqual(expected);
+            expect(actual).toEqual(expected.bytes);
         });
 
         test('ok <- legacy - signed then sponsored', async () => {
@@ -226,7 +226,7 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaS = (await originWallet.signTransaction(txRequest))
                 .bytes;
-            expect(encodedSaS).toEqual(txRequestSaS.encoded);
+            expect(encodedSaS).toEqual(txRequestSaS.encoded.bytes);
             // Sign as Gas Payer. Finalized signature.
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
@@ -239,10 +239,10 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(
-                    TransactionRequest.decode(encodedSaS)
+                    TransactionRequest.decode(HexUInt.of(encodedSaS))
                 )
             ).bytes;
-            expect(encodedSaGP).toEqual(txRequestSaGP.encoded);
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded.bytes);
         });
 
         test('ok <- legacy - sponsored then signed', async () => {
@@ -275,7 +275,7 @@ describe('WalletClient UNIT tests', () => {
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(txRequest)
             ).bytes;
-            expect(encodedSaGP).toEqual(txRequestSaGP.encoded);
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded.bytes);
             // Sign as Sender. Finalized signature.
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
@@ -288,10 +288,10 @@ describe('WalletClient UNIT tests', () => {
             );
             const encodedSaS = (
                 await originWallet.signTransaction(
-                    TransactionRequest.decode(encodedSaGP)
+                    TransactionRequest.decode(HexUInt.of(encodedSaGP))
                 )
             ).bytes;
-            expect(encodedSaS).toEqual(txRequestSaS.encoded);
+            expect(encodedSaS).toEqual(txRequestSaS.encoded.bytes);
         });
     });
 });
