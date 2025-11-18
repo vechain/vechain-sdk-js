@@ -11,6 +11,7 @@ export * from './Int';
 export * from './Mnemonic';
 export * from './NetAddr';
 export * from './Quantity';
+export * from './AddressLike';
 export * from './Revision';
 export * from './Txt';
 export * from './UInt';

@@ -2,7 +2,7 @@
 // TODO: This module is pending rework - lint errors will be fixed during refactor
 import { type Abi, type AbiFunction } from 'abitype';
 import { type Signer } from '../../../thor/signer';
-import { Address, Hex, Revision } from '../../../common/vcdm';
+import { Address, AddressLike, Hex, Revision } from '../../../common/vcdm';
 import { type HttpClient } from '@common/http';
 import { AbstractThorModule } from '../AbstractThorModule';
 import { Contract, ContractFactory } from './model';
@@ -49,7 +49,9 @@ class ContractsModule extends AbstractThorModule {
     /**
      * Type guard to check if an object is a CompiledContract
      */
-    private isCompiledContract(obj: unknown): obj is { abi: Abi; [key: string]: unknown } {
+    private isCompiledContract(
+        obj: unknown
+    ): obj is { abi: Abi; [key: string]: unknown } {
         return (
             obj !== null &&
             typeof obj === 'object' &&
@@ -64,7 +66,9 @@ class ContractsModule extends AbstractThorModule {
         signer: Signer
     ): ContractFactory<TAbi> {
         // Extract ABI array from full contract JSON if needed
-        const actualAbi = this.isCompiledContract(abi) ? (abi.abi as TAbi) : abi;
+        const actualAbi = this.isCompiledContract(abi)
+            ? (abi.abi as TAbi)
+            : abi;
 
         return new ContractFactory<TAbi>(
             actualAbi,
@@ -83,13 +87,16 @@ class ContractsModule extends AbstractThorModule {
      * @returns A new instance of the Contract, initialized with the provided parameters.
      */
     public load<TAbi extends Abi>(
-        address: Address,
+        address: AddressLike,
         abi: TAbi,
         signer?: Signer
     ): Contract<TAbi> {
+        const normalizedAddress = Address.of(address);
         // Extract ABI array from full contract JSON if needed
-        const actualAbi = this.isCompiledContract(abi) ? (abi.abi as TAbi) : abi;
-        return new Contract<TAbi>(address, actualAbi, this, signer);
+        const actualAbi = this.isCompiledContract(abi)
+            ? (abi.abi as TAbi)
+            : abi;
+        return new Contract<TAbi>(normalizedAddress, actualAbi, this, signer);
     }
 
     /**
@@ -206,7 +213,7 @@ class ContractsModule extends AbstractThorModule {
 
             const clause = new Clause(
                 contractAddress,
-                0n,
+                options?.value ?? 0n,
                 Hex.of(data),
                 options?.comment ?? null,
                 null
@@ -219,8 +226,13 @@ class ContractsModule extends AbstractThorModule {
             });
 
             const simulationOptions = {
-                caller: options?.caller,
-                revision: options?.revision
+                caller:
+                    options?.caller !== undefined
+                        ? Address.of(options.caller)
+                        : undefined,
+                revision: options?.revision,
+                gas: options?.gas,
+                gasPrice: options?.gasPrice
             };
 
             const simulationResults =
@@ -383,7 +395,8 @@ class ContractsModule extends AbstractThorModule {
                       gas: transactionRequest.gas,
                       gasPriceCoef: transactionRequest.gasPriceCoef,
                       maxFeePerGas: transactionRequest.maxFeePerGas,
-                      maxPriorityFeePerGas: transactionRequest.maxPriorityFeePerGas,
+                      maxPriorityFeePerGas:
+                          transactionRequest.maxPriorityFeePerGas,
                       nonce: transactionRequest.nonce
                   })
                 : new TransactionRequest({
@@ -444,7 +457,7 @@ class ContractsModule extends AbstractThorModule {
             functionAbi?: AbiFunction;
             functionData?: FunctionArgs;
         }[],
-        options?: { caller?: Address; revision?: Revision }
+        options?: { caller?: AddressLike; revision?: Revision }
     ): Promise<ContractCallResult[]> {
         try {
             // Validate clauses

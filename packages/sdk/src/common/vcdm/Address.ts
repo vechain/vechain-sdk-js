@@ -66,8 +66,11 @@ class Address extends HexUInt {
      * @throws {IllegalArgumentError} If the expression is not a valid hexadecimal positive integer expression.
      */
     public static of(
-        exp: bigint | number | string | Uint8Array | HexUInt
+        exp: bigint | number | string | Uint8Array | HexUInt | Address
     ): Address {
+        if (exp instanceof Address) {
+            return exp;
+        }
         try {
             const huint = HexUInt.of(exp);
             const pad = HexUInt.of(huint.digits.padStart(40, '0'));

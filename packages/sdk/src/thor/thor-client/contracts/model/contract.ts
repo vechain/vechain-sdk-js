@@ -14,7 +14,10 @@ import {
 // Custom type to handle single vs multiple outputs like viem
 type ContractReadResult<
     TAbi extends Abi,
-    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'view' | 'pure'>
+    TFunctionName extends ExtractAbiFunctionNames<
+        TAbi,
+        'view' | 'pure' | 'nonpayable' | 'payable'
+    >
 > = ExtractAbiFunction<TAbi, TFunctionName>['outputs'] extends readonly [any]
     ? AbiParametersToPrimitiveTypes<
           ExtractAbiFunction<TAbi, TFunctionName>['outputs'],
@@ -51,7 +54,10 @@ class Contract<TAbi extends Abi> {
     private signer?: Signer;
 
     public read: {
-        [K in ExtractAbiFunctionNames<TAbi, 'view' | 'pure'>]: (
+        [K in ExtractAbiFunctionNames<
+            TAbi,
+            'view' | 'pure' | 'nonpayable' | 'payable'
+        >]: (
             ...args: AbiParametersToPrimitiveTypes<
                 ExtractAbiFunction<TAbi, K>['inputs'],
                 'inputs'
@@ -357,16 +363,19 @@ class Contract<TAbi extends Abi> {
      * This replaces the complex proxy system with simple object initialization
      */
     private initializeProxies(): void {
-        // Initialize read methods for view/pure functions
+        // Initialize read methods for all callable functions (view/pure and simulated state-changing)
         for (const abiItem of this.abi) {
             if (abiItem.type === 'function') {
                 const functionName = abiItem.name;
 
-                // Read methods (view/pure) - use ThorClient for blockchain calls
-                if (
+                const isReadableFunction =
                     abiItem.stateMutability === 'view' ||
-                    abiItem.stateMutability === 'pure'
-                ) {
+                    abiItem.stateMutability === 'pure' ||
+                    abiItem.stateMutability === 'nonpayable' ||
+                    abiItem.stateMutability === 'payable';
+
+                // Read methods (simulated calls) - use ThorClient for blockchain calls
+                if (isReadableFunction) {
                     (this.read as any)[functionName] = async (
                         ...args: any[]
                     ) => {

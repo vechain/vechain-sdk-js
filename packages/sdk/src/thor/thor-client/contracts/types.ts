@@ -1,7 +1,13 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
 import type { Abi, AbiParameter } from 'abitype';
-import { BlockRef, type Address, type Hex, Revision } from '@common/vcdm';
+import {
+    BlockRef,
+    type Address,
+    type AddressLike,
+    type Hex,
+    Revision
+} from '@common/vcdm';
 import { type EstimateGasOptions } from '../../thor-client/model/gas/EstimateGasOptions';
 import { type TransactionRequest } from '../../thor-client/model/transactions/TransactionRequest';
 import { type SimulateTransactionOptions } from '../../thor-client/model/transactions/SimulateTransactionOptions';
@@ -85,9 +91,9 @@ export interface SimulationResult {
         | number
         | bigint
         | boolean
-        | Address
+        | AddressLike
         | Hex
-        | (string | number | bigint | boolean | Address | Hex)[];
+        | (string | number | bigint | boolean | AddressLike | Hex)[];
 
     /**
      * Gas used in the simulation
@@ -124,7 +130,7 @@ export interface ContractDeploymentOptions {
 
 declare module 'abitype' {
     export interface Register {
-        AddressType: Address;
+        AddressType: AddressLike;
     }
 }
 
@@ -137,7 +143,12 @@ type ContractCallOptions = EstimateGasOptions & {
     /**
      * Caller address
      */
-    caller?: Address;
+    caller?: AddressLike;
+
+    /**
+     * Optional value (wei) to include in the simulated call
+     */
+    value?: bigint;
 
     /**
      * Comment for the call
@@ -171,10 +182,10 @@ interface ContractCallResult {
             | number
             | bigint
             | boolean
-            | Address
+            | AddressLike
             | Hex
-            | (string | number | bigint | boolean | Address | Hex)[]; // Success result as a plain value or array
-        array?: (string | number | bigint | boolean | Address | Hex)[]; // Success result as an array
+            | (string | number | bigint | boolean | AddressLike | Hex)[]; // Success result as a plain value or array
+        array?: (string | number | bigint | boolean | AddressLike | Hex)[]; // Success result as an array
         errorMessage?: string;
     };
 }

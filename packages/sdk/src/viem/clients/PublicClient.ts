@@ -1,4 +1,11 @@
-import { Address, Hex, Revision } from '@common/vcdm';
+import {
+    Address,
+    Hex,
+    Revision,
+    RevisionLike,
+    RevisionType,
+    AddressLike
+} from '@common/vcdm';
 import { type HttpClient, FetchHttpClient } from '@common/http';
 import {
     type BeatsSubscription,
@@ -47,12 +54,40 @@ import {
     type ExpandedBlock,
     type RawBlock
 } from '@thor/thor-client/model/blocks';
-import { RevisionType } from '@common/vcdm/RevisionType';
-import { RevisionLike } from '@common/vcdm';
+
 import {
     TimeoutError as ThorTimeoutError,
     IllegalArgumentError
 } from '@common/errors';
+
+function normalizeAddressLike(address: AddressLike): Address {
+    try {
+        return Address.of(address);
+    } catch {
+        const addressString =
+            address instanceof Address ? address.toString() : String(address);
+        throw new InvalidAddressError({ address: addressString });
+    }
+}
+
+function normalizeOptionalAddressLike(
+    address?: AddressLike
+): Address | undefined {
+    if (address == null) {
+        return undefined;
+    }
+    return normalizeAddressLike(address);
+}
+
+function normalizeAddressLikeInput(
+    address?: AddressLike | AddressLike[]
+): Address[] | undefined {
+    if (address == null) {
+        return undefined;
+    }
+    const list = Array.isArray(address) ? address : [address];
+    return list.map((entry) => normalizeAddressLike(entry));
+}
 
 /**
  * Filter types for viem compatibility.
@@ -143,28 +178,31 @@ class PublicClient {
     /**
      * Gets the balance of an address in wei.
      *
-     * @param {Address} address - The address to query.
+     * @param {AddressLike} address - The address to query.
      * @returns {Promise<bigint>} The balance in wei.
      * @throws {InvalidAddressError} If the address is invalid.
      */
-    public async getBalance(address: Address): Promise<bigint> {
+    public async getBalance(address: AddressLike): Promise<bigint> {
+        const normalizedAddress = normalizeAddressLike(address);
         try {
             const accountDetails =
-                await this.thorClient.accounts.getAccount(address);
+                await this.thorClient.accounts.getAccount(normalizedAddress);
             if (accountDetails === null) {
-                throw new InvalidAddressError({ address: address.toString() });
+                throw new InvalidAddressError({
+                    address: normalizedAddress.toString()
+                });
             }
             const { balance } = accountDetails;
             return balance;
         } catch (error) {
             // Log the error
             log.error({
-                message: `Failed to get balance for address ${address.toString()}`,
+                message: `Failed to get balance for address ${normalizedAddress.toString()}`,
                 source: 'PublicClient.getBalance',
                 context: {
                     error:
                         error instanceof Error ? error.message : String(error),
-                    address: address.toString()
+                    address: normalizedAddress.toString()
                 }
             });
             throw error;
@@ -394,17 +432,21 @@ class PublicClient {
      * Estimates the gas required for transaction clauses.
      *
      * @param {Clause[]} clauses - The clauses to estimate gas for.
-     * @param {Address} caller - The address calling the transaction.
+     * @param {AddressLike} caller - The address calling the transaction.
      * @param {EstimateGasOptions} options - Estimation options.
      * @returns {Promise<EstimateGasResult>} The gas estimation result.
      */
     public async estimateGas(
         clauses: Clause[],
-        caller: Address,
+        caller: AddressLike,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
         const gasModule = this.thorClient.gas;
-        const gas = await gasModule.estimateGas(clauses, caller, options);
+        const gas = await gasModule.estimateGas(
+            clauses,
+            normalizeAddressLike(caller),
+            options
+        );
         return gas;
     }
 
@@ -472,21 +514,23 @@ class PublicClient {
     /**
      * Gets the bytecode of a contract.
      *
-     * @param {Address} address - The contract address.
+     * @param {AddressLike} address - The contract address.
      * @returns {Promise<Hex>} The contract bytecode.
      */
-    public async getBytecode(address: Address): Promise<Hex> {
+    public async getBytecode(address: AddressLike): Promise<Hex> {
+        const normalizedAddress = normalizeAddressLike(address);
         try {
-            const data = await this.thorClient.accounts.getBytecode(address);
+            const data =
+                await this.thorClient.accounts.getBytecode(normalizedAddress);
             return data;
         } catch (error) {
             log.error({
-                message: `Failed to get bytecode for address ${address.toString()}`,
+                message: `Failed to get bytecode for address ${normalizedAddress.toString()}`,
                 source: 'PublicClient.getBytecode',
                 context: {
                     error:
                         error instanceof Error ? error.message : String(error),
-                    address: address.toString()
+                    address: normalizedAddress.toString()
                 }
             });
             throw error;
@@ -496,36 +540,37 @@ class PublicClient {
     /**
      * Gets the code of a contract (alias for getBytecode).
      *
-     * @param {Address} address - The contract address.
+     * @param {AddressLike} address - The contract address.
      * @returns {Promise<Hex>} The contract code.
      */
-    public async getCode(address: Address): Promise<Hex> {
+    public async getCode(address: AddressLike): Promise<Hex> {
         return await this.getBytecode(address);
     }
 
     /**
      * Gets the storage value at a specific slot for a contract.
      *
-     * @param {Address} address - The contract address.
+     * @param {AddressLike} address - The contract address.
      * @param {Hex} slot - The storage slot.
      * @returns {Promise<Hex>} The storage value (32 bytes).
      */
-    public async getStorageAt(address: Address, slot: Hex): Promise<Hex> {
+    public async getStorageAt(address: AddressLike, slot: Hex): Promise<Hex> {
+        const normalizedAddress = normalizeAddressLike(address);
         try {
             const data = await this.thorClient.accounts.getStorageAt(
-                address,
+                normalizedAddress,
                 slot
             );
             // If no value exists, return 32 bytes of zeros (EVM default)
             return data ?? Hex.of(`0x${'00'.repeat(32)}`);
         } catch (error) {
             log.error({
-                message: `Failed to get storage at ${slot.toString()} for address ${address.toString()}`,
+                message: `Failed to get storage at ${slot.toString()} for address ${normalizedAddress.toString()}`,
                 source: 'PublicClient.getStorageAt',
                 context: {
                     error:
                         error instanceof Error ? error.message : String(error),
-                    address: address.toString(),
+                    address: normalizedAddress.toString(),
                     slot: slot.toString()
                 }
             });
@@ -551,19 +596,22 @@ class PublicClient {
      * For transaction uniqueness and replay protection in VeChain, use the transaction's
      * `nonce` field when building transactions via {@link TransactionBuilder.withNonce}.
      *
-     * @param {Address} address - The address to get the transaction count for.
+     * @param {AddressLike} address - The address to get the transaction count for.
      * @returns {Promise<number>} Always returns 0 for VeChain addresses.
      * @throws {InvalidAddressError} If the address is invalid or account doesn't exist.
      *
      * @see {@link https://docs.vechain.org/core-concepts/transactions/transaction-model | VeChain Transaction Model}
      */
-    public async getTransactionCount(address: Address): Promise<number> {
+    public async getTransactionCount(address: AddressLike): Promise<number> {
+        const normalizedAddress = normalizeAddressLike(address);
         try {
             // Validate that the address exists by fetching account details
             const accountDetails =
-                await this.thorClient.accounts.getAccount(address);
+                await this.thorClient.accounts.getAccount(normalizedAddress);
             if (accountDetails === null) {
-                throw new InvalidAddressError({ address: address.toString() });
+                throw new InvalidAddressError({
+                    address: normalizedAddress.toString()
+                });
             }
             // VeChain does not track sequential transaction counts per account.
             // Nonces in VeChain are user-defined values used for replay protection,
@@ -572,12 +620,12 @@ class PublicClient {
         } catch (error) {
             // Log the error
             log.error({
-                message: `Failed to get transaction count for address ${address.toString()}`,
+                message: `Failed to get transaction count for address ${normalizedAddress.toString()}`,
                 source: 'PublicClient.getTransactionCount',
                 context: {
                     error:
                         error instanceof Error ? error.message : String(error),
-                    address: address.toString()
+                    address: normalizedAddress.toString()
                 }
             });
             throw error;
@@ -592,11 +640,11 @@ class PublicClient {
      * **Note:** In VeChain, nonces are user-defined and not sequential like Ethereum.
      * See {@link getTransactionCount} for more details on VeChain's nonce handling.
      *
-     * @param {Address} address - The address to get the nonce for.
+     * @param {AddressLike} address - The address to get the nonce for.
      * @returns {Promise<number>} Always returns 0 for VeChain addresses.
      * @throws {InvalidAddressError} If the address is invalid or account doesn't exist.
      */
-    public async getNonce(address: Address): Promise<number> {
+    public async getNonce(address: AddressLike): Promise<number> {
         return await this.getTransactionCount(address);
     }
 
@@ -622,7 +670,7 @@ class PublicClient {
      * @param {object} params - Event watch parameters.
      * @param {Function} params.onLogs - Callback for new logs.
      * @param {Function} params.onError - Error callback (optional).
-     * @param {Address} params.address - Contract address filter (optional).
+     * @param {AddressLike} params.address - Contract address filter (optional).
      * @param {Hex} params.event - Event signature (topic 0) (optional).
      * @param {Hex[]} params.args - Indexed parameters (topics 1-3) (optional).
      * @param {Hex} params.fromBlock - Starting block position (optional).
@@ -631,12 +679,13 @@ class PublicClient {
     public watchEvent(params: {
         onLogs: (logs: SubscriptionEventResponse[]) => void;
         onError?: (error: Error) => void;
-        address?: Address;
+        address?: AddressLike;
         event?: Hex; // t0 - event signature
         args?: Hex[]; // t1, t2, t3 - indexed parameters
         fromBlock?: Hex; // pos - starting block position
     }): () => void {
         const { onLogs, onError, address, event, args, fromBlock } = params;
+        const normalizedAddress = normalizeOptionalAddressLike(address);
 
         // Create WebSocket client
         const webSocketClient = new MozillaWebSocketClient(
@@ -647,8 +696,8 @@ class PublicClient {
         let subscription = EventsSubscription.at(webSocketClient);
 
         // Apply filters if provided
-        if (address !== undefined) {
-            subscription = subscription.withContractAddress(address);
+        if (normalizedAddress !== undefined) {
+            subscription = subscription.withContractAddress(normalizedAddress);
         }
 
         if (fromBlock !== undefined) {
@@ -739,7 +788,7 @@ class PublicClient {
      * Creates a filter for querying event logs.
      *
      * @param {object} params - Filter parameters (optional).
-     * @param {Address | Address[]} params.address - Contract address(es) (optional).
+     * @param {AddressLike | AddressLike[]} params.address - Contract address(es) (optional).
      * @param {AbiEvent} params.event - Event ABI definition (optional).
      * @param {Hex[]} params.args - Indexed event arguments (optional).
      * @param {bigint} params.fromBlock - Starting block (optional).
@@ -747,7 +796,7 @@ class PublicClient {
      * @returns {EventFilter} The event filter.
      */
     public createEventFilter(params?: {
-        address?: Address | Address[];
+        address?: AddressLike | AddressLike[];
         event?: AbiEvent;
         args?: Hex[];
         fromBlock?: bigint;
@@ -781,12 +830,9 @@ class PublicClient {
         const filterOptions = new FilterOptions();
         // create an EventCriteria for each address
         const criteriaSet: EventCriteria[] = [];
-        if (address instanceof Address) {
-            // user specified a single address
-            const eventCriteria = new EventCriteria(address, ...topics);
-            criteriaSet.push(eventCriteria);
-        } else if (Array.isArray(address)) {
-            address.forEach((addr) => {
+        const normalizedAddresses = normalizeAddressLikeInput(address);
+        if (normalizedAddresses) {
+            normalizedAddresses.forEach((addr) => {
                 const eventCriteria = new EventCriteria(addr, ...topics);
                 criteriaSet.push(eventCriteria);
             });

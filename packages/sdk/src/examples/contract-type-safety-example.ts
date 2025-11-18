@@ -107,6 +107,13 @@ async function demonstrateTypeSafety(): Promise<void> {
         Address.of(TEST_ACCOUNT.address)
     );
     console.log('Balance at block 1,000,000:', balanceAtBlock);
+
+    console.log('\n=== 9. Simulate State-Changing Function (transfer) ===');
+    const simulatedTransfer = await contract.read.transfer(
+        Address.of(TEST_ACCOUNT.address),
+        1n
+    );
+    console.log('Transfer simulation result:', simulatedTransfer);
 }
 
 // Helper function for dynamic UI

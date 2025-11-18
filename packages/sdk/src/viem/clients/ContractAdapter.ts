@@ -13,7 +13,7 @@ import type {
     ExtractAbiFunction,
     AbiParametersToPrimitiveTypes
 } from 'abitype';
-import { Address, Hex } from '@common/vcdm';
+import { Address, AddressLike, Hex } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type ExecuteCodesRequestJSON } from '@thor/thorest/json';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
@@ -28,6 +28,7 @@ import { ThorClient } from '@thor/thor-client/ThorClient';
 import { Contract as VeChainContract } from '@thor/thor-client/contracts/model/contract';
 import { ContractCallOptions } from '@thor/thor-client/contracts/types';
 import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
+import { type SimulateTransactionOptions } from '@thor/thor-client/model/transactions/SimulateTransactionOptions';
 import { log } from '@common/logging';
 import { IllegalArgumentError } from '@common/errors';
 import type { HttpClient } from '@common/http';
@@ -117,7 +118,7 @@ function validateWriteParameters(
  */
 export interface ContractConfig<TAbi extends Abi> {
     /** The contract address */
-    address: Address;
+    address: AddressLike;
     /** The contract ABI */
     abi: TAbi;
     /** PublicClient instance for blockchain interaction (optional if walletClient provided) */
@@ -166,10 +167,13 @@ type ContractFunctionArgs<
 >;
 
 /**
- * Type-safe read methods for view/pure functions
+ * Type-safe read methods for view/pure functions plus simulated access to state-changing functions
  */
 type ContractReadMethods<TAbi extends Abi> = {
-    [TFunctionName in ExtractAbiFunctionNames<TAbi, 'view' | 'pure'>]: (
+    [TFunctionName in ExtractAbiFunctionNames<
+        TAbi,
+        'view' | 'pure' | 'payable' | 'nonpayable'
+    >]: (
         ...args: ContractFunctionArgs<TAbi, TFunctionName>
     ) => Promise<ContractFunctionReturnType<TAbi, TFunctionName>>;
 };
@@ -195,7 +199,7 @@ export interface Contract<TAbi extends Abi> {
     address: Address;
     /** Contract ABI */
     abi: TAbi;
-    /** Read-only contract methods (view/pure) - available when publicClient provided */
+    /** Read-only contract methods (view/pure) plus simulated state-changing functions - available when publicClient provided */
     read: ContractReadMethods<TAbi>;
     /** State-changing contract methods - available when walletClient provided */
     write: ContractWriteMethods<TAbi>;
@@ -353,11 +357,12 @@ export interface Contract<TAbi extends Abi> {
  * ```
  */
 function getContract<const TAbi extends Abi>({
-    address,
+    address: addressLike,
     abi,
     publicClient,
     walletClient
 }: ContractConfig<TAbi>): Contract<TAbi> {
+    const address = Address.of(addressLike);
     const context = 'ContractAdapter.getContract';
 
     // Validate that at least one client is provided
@@ -618,6 +623,125 @@ function getContract<const TAbi extends Abi>({
                     }
 
                     return await readMethod(...processedArgs);
+                };
+            }
+
+            // Simulated read access for state-changing functions
+            if (
+                (abiItem.stateMutability === 'nonpayable' ||
+                    abiItem.stateMutability === 'payable') &&
+                publicClient != null
+            ) {
+                (contract.read as any)[functionName] = async (
+                    ...args: FunctionArgs
+                ) => {
+                    if (args.length !== abiItem.inputs.length) {
+                        throw new IllegalArgumentError(
+                            `read.${functionName}`,
+                            `Expected ${abiItem.inputs.length} arguments, got ${args.length}`,
+                            {
+                                expected: abiItem.inputs.length,
+                                received: args.length,
+                                functionName
+                            }
+                        );
+                    }
+
+                    const processedArgs = args.map((arg) => {
+                        if (
+                            arg &&
+                            typeof arg === 'object' &&
+                            'toString' in arg &&
+                            typeof arg.toString === 'function'
+                        ) {
+                            const str = arg.toString();
+                            if (str.startsWith('0x') && str.length === 42) {
+                                return str;
+                            }
+                        }
+                        return arg;
+                    });
+
+                    const data = encodeFunctionData({
+                        abi: actualAbi as Abi,
+                        functionName,
+                        args: processedArgs
+                    });
+
+                    const clause = new Clause(address, 0n, Hex.of(data));
+                    const readOptions =
+                        vechainContract.getContractReadOptions();
+
+                    const caller =
+                        (readOptions.caller
+                            ? Address.of(readOptions.caller)
+                            : undefined) ||
+                        publicClientInternal?.account?.address ||
+                        walletClientInternal?.account?.address;
+
+                    const simulationOptions: SimulateTransactionOptions = {};
+
+                    if (readOptions.revision != null) {
+                        simulationOptions.revision = readOptions.revision;
+                    }
+                    if (readOptions.gas != null) {
+                        simulationOptions.gas = readOptions.gas;
+                    }
+                    if (readOptions.gasPrice != null) {
+                        simulationOptions.gasPrice = readOptions.gasPrice;
+                    }
+                    if (caller) {
+                        simulationOptions.caller = caller;
+                    }
+
+                    const [result] = await publicClient.simulateCalls(
+                        [clause],
+                        Object.keys(simulationOptions).length > 0
+                            ? simulationOptions
+                            : undefined
+                    );
+
+                    if (!result) {
+                        throw new IllegalArgumentError(
+                            `read.${functionName}`,
+                            'No simulation result returned',
+                            { functionName }
+                        );
+                    }
+
+                    if (result.reverted) {
+                        throw new IllegalArgumentError(
+                            `read.${functionName}`,
+                            result.vmError || 'Simulated transaction reverted',
+                            {
+                                functionName,
+                                vmError: result.vmError
+                            }
+                        );
+                    }
+
+                    const resultData = result.data?.toString();
+
+                    if (
+                        !abiItem.outputs ||
+                        abiItem.outputs.length === 0 ||
+                        !resultData ||
+                        resultData === '0x'
+                    ) {
+                        return undefined;
+                    }
+
+                    const decoded = decodeFunctionResult({
+                        abi: actualAbi as Abi,
+                        functionName,
+                        data: resultData as `0x${string}`
+                    });
+
+                    if (Array.isArray(decoded)) {
+                        return decoded.length === 1 ? decoded[0] : decoded;
+                    }
+
+                    return decoded;
                 };
             }
 
