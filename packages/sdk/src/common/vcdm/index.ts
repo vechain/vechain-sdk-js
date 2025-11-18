@@ -1,4 +1,3 @@
-export * from './account';
 export * from './Address';
 export * from './BlockRef';
 export * from './encoding';
