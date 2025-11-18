@@ -27,7 +27,7 @@ describe('WalletClient SOLO tests', () => {
     const mockValue = 10n ** 15n; // 0.001 VET
 
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
-    const thorClient = ThorClient.at(httpClient);
+    const thorClient = ThorClient.fromHttpClient(httpClient);
 
     describe('sendTransaction', () => {
         test('ok <- dynamic fee - no sponsored', async () => {

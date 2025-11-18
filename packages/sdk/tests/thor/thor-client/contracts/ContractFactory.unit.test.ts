@@ -34,7 +34,7 @@ const createMockHttpClient = () => ({
 });
 
 // Helper to create ThorClient for tests
-const createThorClient = () => ThorClient.at(createMockHttpClient() as any);
+const createThorClient = () => ThorClient.fromHttpClient(createMockHttpClient() as any);
 
 // Mock signer
 const createMockSigner = () => ({

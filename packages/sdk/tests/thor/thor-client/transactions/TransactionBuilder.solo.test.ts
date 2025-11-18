@@ -23,7 +23,7 @@ describe('TransactionBuilder SOLO tests', () => {
         // receiver is 1st solo account
         receiver = Address.of('0xf077b491b355e64048ce21e3a6fc4751eeea77fa');
         clauses = [new Clause(receiver, 1n)];
-        thorClient = ThorClient.at(httpClient);
+        thorClient = ThorClient.fromHttpClient(httpClient);
     });
 
     test('create transaction with all defaults', async () => {
