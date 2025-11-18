@@ -1,4 +1,10 @@
-import { Address, Hex, Revision } from '@common/vcdm';
+import {
+    Address,
+    Hex,
+    Revision,
+    RevisionLike,
+    RevisionType
+} from '@common/vcdm';
 import { type HttpClient, FetchHttpClient } from '@common/http';
 import {
     type BeatsSubscription,
@@ -47,8 +53,6 @@ import {
     type ExpandedBlock,
     type RawBlock
 } from '@thor/thor-client/model/blocks';
-import { RevisionType } from '@common/vcdm/RevisionType';
-import { RevisionLike } from '@common/vcdm';
 import {
     TimeoutError as ThorTimeoutError,
     IllegalArgumentError
