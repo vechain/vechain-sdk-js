@@ -60,35 +60,6 @@ import {
     IllegalArgumentError
 } from '@common/errors';
 
-function normalizeAddressLike(address: AddressLike): Address {
-    try {
-        return Address.of(address);
-    } catch {
-        const addressString =
-            address instanceof Address ? address.toString() : String(address);
-        throw new InvalidAddressError({ address: addressString });
-    }
-}
-
-function normalizeOptionalAddressLike(
-    address?: AddressLike
-): Address | undefined {
-    if (address == null) {
-        return undefined;
-    }
-    return normalizeAddressLike(address);
-}
-
-function normalizeAddressLikeInput(
-    address?: AddressLike | AddressLike[]
-): Address[] | undefined {
-    if (address == null) {
-        return undefined;
-    }
-    const list = Array.isArray(address) ? address : [address];
-    return list.map((entry) => normalizeAddressLike(entry));
-}
-
 /**
  * Filter types for viem compatibility.
  */
@@ -183,7 +154,8 @@ class PublicClient {
      * @throws {InvalidAddressError} If the address is invalid.
      */
     public async getBalance(address: AddressLike): Promise<bigint> {
-        const normalizedAddress = normalizeAddressLike(address);
+        const normalizedAddress = Address.of(address);
+
         try {
             const accountDetails =
                 await this.thorClient.accounts.getAccount(normalizedAddress);
@@ -434,6 +406,7 @@ class PublicClient {
      * @param {Clause[]} clauses - The clauses to estimate gas for.
      * @param {AddressLike} caller - The address calling the transaction.
      * @param {EstimateGasOptions} options - Estimation options.
+     * @note Providing an accurate `caller` is strongly recommended; omitting it can lead to imprecise estimates because the execution context (msg.sender) affects gas usage.
      * @returns {Promise<EstimateGasResult>} The gas estimation result.
      */
     public async estimateGas(
@@ -441,10 +414,12 @@ class PublicClient {
         caller: AddressLike,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
+        const normalizedCaller = Address.of(caller);
+
         const gasModule = this.thorClient.gas;
         const gas = await gasModule.estimateGas(
             clauses,
-            normalizeAddressLike(caller),
+            normalizedCaller,
             options
         );
         return gas;
@@ -517,7 +492,8 @@ class PublicClient {
      * @returns {Promise<Hex>} The contract bytecode.
      */
     public async getBytecode(address: AddressLike): Promise<Hex> {
-        const normalizedAddress = normalizeAddressLike(address);
+        const normalizedAddress = Address.of(address);
+
         try {
             const data =
                 await this.thorClient.accounts.getBytecode(normalizedAddress);
@@ -554,7 +530,8 @@ class PublicClient {
      * @returns {Promise<Hex>} The storage value (32 bytes).
      */
     public async getStorageAt(address: AddressLike, slot: Hex): Promise<Hex> {
-        const normalizedAddress = normalizeAddressLike(address);
+        const normalizedAddress = Address.of(address);
+
         try {
             const data = await this.thorClient.accounts.getStorageAt(
                 normalizedAddress,
@@ -602,7 +579,8 @@ class PublicClient {
      * @see {@link https://docs.vechain.org/core-concepts/transactions/transaction-model | VeChain Transaction Model}
      */
     public async getTransactionCount(address: AddressLike): Promise<number> {
-        const normalizedAddress = normalizeAddressLike(address);
+        const normalizedAddress = Address.of(address);
+
         try {
             // Validate that the address exists by fetching account details
             const accountDetails =
@@ -684,7 +662,10 @@ class PublicClient {
         fromBlock?: Hex; // pos - starting block position
     }): () => void {
         const { onLogs, onError, address, event, args, fromBlock } = params;
-        const normalizedAddress = normalizeOptionalAddressLike(address);
+        let normalizedAddress: Address | undefined;
+        if (address !== undefined) {
+            normalizedAddress = Address.of(address);
+        }
 
         // Create WebSocket client
         const webSocketClient = new MozillaWebSocketClient(
@@ -829,10 +810,15 @@ class PublicClient {
         const filterOptions = new FilterOptions();
         // create an EventCriteria for each address
         const criteriaSet: EventCriteria[] = [];
-        const normalizedAddresses = normalizeAddressLikeInput(address);
-        if (normalizedAddresses) {
-            normalizedAddresses.forEach((addr) => {
-                const eventCriteria = new EventCriteria(addr, ...topics);
+        if (address !== undefined) {
+            const addresses = Array.isArray(address) ? address : [address];
+            addresses.forEach((addrValue) => {
+                const normalizedAddress = Address.of(addrValue);
+
+                const eventCriteria = new EventCriteria(
+                    normalizedAddress,
+                    ...topics
+                );
                 criteriaSet.push(eventCriteria);
             });
         }
