@@ -1,6 +1,6 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
-import { Address, Hex, Revision } from '@common/vcdm';
+import { Address, AddressLike, Hex, Revision } from '@common/vcdm';
 import type { AbiParameter } from 'abitype';
 import { IllegalArgumentError, InvalidTransactionField } from '@common/errors';
 import { log } from '@common/logging';
@@ -109,7 +109,10 @@ function buildCriteriaObject<TAbi extends Abi>(
  */
 function getReadProxy<TAbi extends Abi>(
     contract: Contract<TAbi>
-): ContractFunctionRead<TAbi, ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>> {
+): ContractFunctionRead<
+    TAbi,
+    ExtractAbiFunctionNames<TAbi, 'pure' | 'view' | 'payable' | 'nonpayable'>
+> {
     return new Proxy(contract.read, {
         get: (_target, prop) => {
             return async (
@@ -118,7 +121,7 @@ function getReadProxy<TAbi extends Abi>(
                     'inputs'
                 >
             ): Promise<
-                (string | number | bigint | boolean | Address | Hex)[]
+                (string | number | bigint | boolean | AddressLike | Hex)[]
             > => {
                 // Check if the clause comment is provided as an argument
                 const extractOptionsResult = extractAndRemoveAdditionalOptions(
@@ -174,7 +177,7 @@ function getReadProxy<TAbi extends Abi>(
         }
     }) as ContractFunctionRead<
         TAbi,
-        ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+        ExtractAbiFunctionNames<TAbi, 'pure' | 'view' | 'payable' | 'nonpayable'>
     >;
 }
 

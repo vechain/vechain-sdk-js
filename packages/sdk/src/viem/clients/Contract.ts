@@ -1,14 +1,14 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
-import {
-    type Abi,
-    type AbiParameter
-} from 'viem';
-import { type Address, Revision } from '@common/vcdm';
+import { type Abi, type AbiParameter } from 'viem';
+import { type Address, AddressLike, Revision } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
 import { type DecodedEventLog } from '@/thor/thor-client/model/logs/DecodedEventLog';
-import { type ClauseSimulationResult, type SimulateTransactionOptions } from '@thor/thor-client';
+import {
+    type ClauseSimulationResult,
+    type SimulateTransactionOptions
+} from '@thor/thor-client';
 // Import the new adapter layer
 import {
     getContract as getContractAdapter,
@@ -25,7 +25,7 @@ type FunctionArgs = readonly unknown[];
  */
 export interface ContractConfig<TAbi extends Abi> {
     /** The contract address */
-    address: Address;
+    address: AddressLike;
     /** The contract ABI */
     abi: TAbi;
     /** PublicClient instance for blockchain interaction (optional if walletClient provided) */
@@ -61,7 +61,7 @@ export interface Contract<TAbi extends Abi> {
     address: Address;
     /** Contract ABI */
     abi: TAbi;
-    /** Read-only contract methods (view/pure) - available when publicClient provided */
+    /** Read-only contract methods (view/pure) plus simulated state-changing functions - available when publicClient provided */
     read: Record<string, (...args: FunctionArgs) => Promise<unknown>>;
     /** State-changing contract methods - available when walletClient provided */
     write: Record<

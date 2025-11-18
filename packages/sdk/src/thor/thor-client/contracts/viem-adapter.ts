@@ -1,7 +1,7 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
 import type { Abi, AbiParameter } from 'abitype';
-import { Address, Hex } from '@common/vcdm';
+import { Address, AddressLike, Hex } from '@common/vcdm';
 import { type Signer } from '@thor/signer';
 import { toEventSelector } from 'viem';
 import { type Contract } from './model/contract';
@@ -32,13 +32,13 @@ export interface ViemContract<TAbi extends Abi> {
     abi: TAbi;
 
     /**
-     * Read methods for view/pure functions
+     * Read methods for all ABI functions (state-changing ones are simulated)
      */
     read: Record<
         string,
         (
             ...args: FunctionArgs
-        ) => Promise<(string | number | bigint | boolean | Address | Hex)[]>
+        ) => Promise<(string | number | bigint | boolean | AddressLike | Hex)[]>
     >;
 
     /**
@@ -114,7 +114,7 @@ export function createViemContract<TAbi extends Abi>(
             string,
             (
                 ...args: FunctionArgs
-            ) => Promise<(string | number | bigint | boolean | Address | Hex)[]>
+            ) => Promise<(string | number | bigint | boolean | AddressLike | Hex)[]>
         >,
         write: {} as Record<
             string,
@@ -150,7 +150,9 @@ export function createViemContract<TAbi extends Abi>(
         if (
             abiItem.type === 'function' &&
             (abiItem.stateMutability === 'view' ||
-                abiItem.stateMutability === 'pure')
+                abiItem.stateMutability === 'pure' ||
+                abiItem.stateMutability === 'nonpayable' ||
+                abiItem.stateMutability === 'payable')
         ) {
             (viemContract.read as any)[abiItem.name] = async (
                 ...args: FunctionArgs

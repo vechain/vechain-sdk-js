@@ -227,9 +227,9 @@ describe('getContract function', () => {
         const readMethodNames = Object.keys(contract.read);
         expect(readMethodNames).toContain('balanceOf');
 
-        // Should only have view/pure functions in read
-        expect(readMethodNames).not.toContain('transfer');
-        expect(readMethodNames).not.toContain('approve');
+        // Should include simulated access to state-changing functions
+        expect(readMethodNames).toContain('transfer');
+        expect(readMethodNames).toContain('approve');
     });
 
     test('should create proper method signatures for write functions', () => {
@@ -337,12 +337,15 @@ describe('getContract function', () => {
             walletClient: mockWalletClient
         });
 
-        // Read methods should only have view/pure functions
         const readMethods = Object.keys(contract.read);
-        expect(readMethods).toContain('viewFunction');
-        expect(readMethods).toContain('pureFunction');
-        expect(readMethods).not.toContain('nonpayableFunction');
-        expect(readMethods).not.toContain('payableFunction');
+        expect(readMethods).toEqual(
+            expect.arrayContaining([
+                'viewFunction',
+                'pureFunction',
+                'nonpayableFunction',
+                'payableFunction'
+            ])
+        );
 
         // Commented out because we don't have write methods in the Contract class
         // Write methods should only have nonpayable/payable functions

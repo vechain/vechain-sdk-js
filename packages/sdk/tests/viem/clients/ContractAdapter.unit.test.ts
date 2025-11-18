@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, test } from '@jest/globals';
 import { getContract } from '../../../src/viem/clients/Contract';
-import { Address } from '../../../src/common/vcdm';
+import { Address, Hex } from '../../../src/common/vcdm';
 
 // Simple ERC20 ABI for testing
 const erc20Abi = [
@@ -89,6 +89,35 @@ describe('ContractAdapter Integration', () => {
         expect(typeof contract.read.balanceOf).toBe('function');
     });
 
+    test('Should expose simulated read methods for state-changing functions', async () => {
+        mockPublicClient.simulateCalls.mockResolvedValue([
+            {
+                data: Hex.of(
+                    '0x0000000000000000000000000000000000000000000000000000000000000001'
+                ),
+                events: [],
+                transfers: [],
+                gasUsed: 21000n,
+                reverted: false,
+                vmError: ''
+            }
+        ] as any);
+
+        const contract = getContract({
+            address: Address.of('0x0000000000000000000000000000456E65726779'),
+            abi: erc20Abi,
+            publicClient: mockPublicClient
+        });
+
+        const result = await (contract.read as any).transfer(
+            Address.of('0x0000000000000000000000000000000000000001'),
+            1n
+        );
+
+        expect(mockPublicClient.simulateCalls).toHaveBeenCalledTimes(1);
+        expect(result).toBe(true);
+    });
+
     test('Should have write methods for state-changing functions', () => {
         const contract = getContract({
             address: Address.of('0x0000000000000000000000000000456E65726779'),
@@ -99,6 +128,20 @@ describe('ContractAdapter Integration', () => {
 
         expect(contract.write).toHaveProperty('transfer');
         expect(typeof contract.write.transfer).toBe('function');
+    });
+
+    test('Should accept plain string addresses in configuration', () => {
+        const rawAddress =
+            '0x0000000000000000000000000000456e65726779' as const;
+        const contract = getContract({
+            address: rawAddress,
+            abi: erc20Abi,
+            publicClient: mockPublicClient
+        });
+
+        expect(contract.address.toString().toLowerCase()).toBe(
+            rawAddress.toLowerCase()
+        );
     });
 
     test('Should have simulate methods', () => {

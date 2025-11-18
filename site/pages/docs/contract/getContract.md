@@ -187,6 +187,8 @@ If you pass in a [`publicClient`](https://viem.sh/docs/clients/public), the foll
 - [`simulate`](/docs/contract/simulateContract)
 - [`watchEvent`](/docs/contract/watchContractEvent)
 
+> **Note:** With SDK v2, `contract.read` now also exposes functions that are `nonpayable` or `payable`. Invoking them performs a simulated transaction (dry-run) using your public client and returns the decoded result without broadcasting a transaction.
+
 #### With Wallet Client
 
 If you pass in a [`walletClient`](/docs/clients/wallet), the following methods are available:

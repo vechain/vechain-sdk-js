@@ -6,10 +6,10 @@ import type {
     AbiParametersToPrimitiveTypes,
     ExtractAbiFunction
 } from 'abitype';
-import type { Address, Hex } from '@common/vcdm';
+import type { AddressLike, Hex } from '@common/vcdm';
 
 /**
- * Contract function read interface - for view/pure functions
+ * Contract function read interface - simulated calls for all ABI functions
  */
 export type ContractFunctionRead<
     TAbi extends Abi,
@@ -20,5 +20,5 @@ export type ContractFunctionRead<
             ExtractAbiFunction<TAbi, K>['inputs'],
             'inputs'
         >
-    ) => Promise<(string | number | bigint | boolean | Address | Hex)[]>;
+    ) => Promise<(string | number | bigint | boolean | AddressLike | Hex)[]>;
 };
