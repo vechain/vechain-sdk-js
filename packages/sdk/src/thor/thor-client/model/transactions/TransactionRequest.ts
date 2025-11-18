@@ -9,6 +9,7 @@ import {
 import { TransactionRequestRLPCodec } from '@thor/thor-client/rlp/TransactionRequestRLPCodec';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
 import { BaseTransaction, type BaseTransactionParams } from './BaseTransaction';
+import { PrivateKeySigner } from '@thor/signer';
 
 const FQP =
     'packages/sdk/src/thor/thor-client/model/transactions/TransactionRequest.ts!';
@@ -199,6 +200,24 @@ class TransactionRequest
             this.signature.length ===
                 this.originSignature.length + this.gasPayerSignature.length
         );
+    }
+
+    /**
+     * Signs the transaction request using a raw private key for backward compatibility.
+     *
+     * Internally instantiates a {@link PrivateKeySigner}, delegates the signing flow,
+     * and disposes the signer afterwards to avoid keeping the private key in memory.
+     *
+     * @param {Uint8Array} privateKey - Secp256k1 private key bytes.
+     * @returns {TransactionRequest} A new, signed transaction request.
+     */
+    public sign(privateKey: Uint8Array): TransactionRequest {
+        const signer = new PrivateKeySigner(privateKey);
+        try {
+            return signer.sign(this);
+        } finally {
+            signer.dispose();
+        }
     }
 
     /**
