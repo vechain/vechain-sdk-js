@@ -10,7 +10,7 @@ import {
     type WaitForTransactionReceiptOptions
 } from '@thor/thor-client/model/transactions';
 import { AbstractThorModule } from '../AbstractThorModule';
-import { Hex, Revision } from '@common/vcdm';
+import { Address, Hex, Revision } from '@common/vcdm';
 import {
     type ExecuteCodeResponse,
     ExecuteCodesRequest,
@@ -24,6 +24,9 @@ import { TransactionRequestRLPCodec } from '../rlp/TransactionRequestRLPCodec';
 import { type TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 import { IllegalArgumentError, TimeoutError } from '@common/errors';
 import { waitUntil, type WaitUntilOptions } from '@common/utils/poller';
+import { TransactionBuilder } from './TransactionBuilder';
+import { type TransactionBodyOptions } from '../model/transactions/TransactionBodyOptions';
+import { log } from '@common/logging';
 
 /**
  * The transactions module of the VeChain Thor blockchain.
@@ -201,6 +204,76 @@ class TransactionsModule extends AbstractThorModule {
                     'Transaction receipt not found within the timeout period'
                 );
             }
+            throw error;
+        }
+    }
+
+    /**
+     * Builds a transaction request from the given options
+     * This method uses the TransactionBuilder class to build the transaction request.
+     * If the options are not provided, the transaction request will be built with the default values.
+     * @param clauses - The clauses of the transaction to build the request for.
+     * @param gas - The gas of the transaction to build the request for.
+     * @param options - The options for building the transaction request.
+     * @returns The transaction request.
+     * @throws {InvalidTransactionField} If the transaction request is invalid
+     * @throws {IllegalArgumentError} If the options are invalid
+     */
+    public async buildTransactionBody(
+        clauses: Clause[],
+        gas: number,
+        options?: TransactionBodyOptions
+    ): Promise<TransactionRequest> {
+        try {
+            const txBuilder = TransactionBuilder.create(this.thorClient);
+            // add clauses and gas
+            txBuilder.withClauses(clauses);
+            txBuilder.withGas(BigInt(gas));
+            // if option are provided, apply them to the builder
+            // blockref
+            if (options?.blockRef !== undefined) {
+                txBuilder.withBlockRef(Hex.of(options.blockRef));
+            }
+            // chain tag
+            if (options?.chainTag !== undefined) {
+                txBuilder.withChainTag(options.chainTag);
+            }
+            // expiration
+            if (options?.expiration !== undefined) {
+                txBuilder.withExpiration(options.expiration);
+            }
+            // gas price coef
+            if (options?.gasPriceCoef !== undefined) {
+                txBuilder.withGasPriceCoef(BigInt(options.gasPriceCoef));
+            }
+            // max fee per gas
+            if (options?.maxFeePerGas !== undefined) {
+                txBuilder.withMaxFeePerGas(BigInt(options.maxFeePerGas));
+            }
+            // max priority fee per gas
+            if (options?.maxPriorityFeePerGas !== undefined) {
+                txBuilder.withMaxPriorityFeePerGas(
+                    BigInt(options.maxPriorityFeePerGas)
+                );
+            }
+            // nonce
+            if (options?.nonce !== undefined) {
+                txBuilder.withNonce(BigInt(options.nonce));
+            }
+            // with gas sponsor requester
+            if (options?.gasSponsorRequester !== undefined) {
+                txBuilder.withSponsorReq(
+                    Address.of(options.gasSponsorRequester)
+                );
+            }
+            // build the transaction request
+            return await txBuilder.build();
+        } catch (error) {
+            log.error({
+                message:
+                    'TransactionsModule.buildTransactionBody: Failed to build transaction request',
+                context: { error }
+            });
             throw error;
         }
     }

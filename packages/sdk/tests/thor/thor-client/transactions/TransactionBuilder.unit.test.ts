@@ -24,7 +24,7 @@ describe('TransactionBuilder UNIT tests', () => {
             .withExpiration(1)
             .withGas(1n)
             .withGasPriceCoef(2n)
-            .withNonce(9)
+            .withNonce(9n)
             .build();
         expect(transaction.blockRef.toString()).toBe('0x1234');
         expect(transaction.chainTag).toBe(1);
@@ -33,7 +33,7 @@ describe('TransactionBuilder UNIT tests', () => {
         expect(transaction.expiration).toBe(1);
         expect(transaction.gas).toBe(1n);
         expect(transaction.gasPriceCoef).toBe(2n);
-        expect(transaction.nonce).toBe(9);
+        expect(transaction.nonce).toBe(9n);
         expect(transaction.isIntendedToBeSponsored).toBe(true);
         expect(transaction.maxFeePerGas).toBeUndefined();
         expect(transaction.maxPriorityFeePerGas).toBeUndefined();
@@ -123,7 +123,7 @@ describe('TransactionBuilder UNIT tests', () => {
     test('with invalid nonce throws error', () => {
         const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
-        expect(() => builder.withNonce(-1)).toThrow(IllegalArgumentError);
+        expect(() => builder.withNonce(-1n)).toThrow(IllegalArgumentError);
     });
     test('with invalid max fee per gas throws error', () => {
         const thorClient = ThorClient.at('http://localhost:8669');
