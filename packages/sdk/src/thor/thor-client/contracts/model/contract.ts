@@ -26,15 +26,19 @@ type ContractReadResult<
       >;
 import { encodeFunctionData, toEventSelector } from 'viem';
 import { type Signer } from '@thor/signer';
-import { type Address, type Hex, Revision } from '@common/vcdm';
+import { type Address, Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { log } from '@common/logging';
 import type { ContractCallOptions } from '../types';
 import type { ContractsModule } from '../contracts-module';
 import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
-
+import { RevisionLike } from '@common/vcdm';
 // Proper function arguments type using VeChain SDK types (runtime values, not ABI definitions)
 type FunctionArgs = readonly unknown[];
+
+type ContractReadOptionsInput = Omit<ContractCallOptions, 'revision'> & {
+    revision?: RevisionLike;
+};
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -135,9 +139,9 @@ class Contract<TAbi extends Abi> {
      * @returns The updated contract call options.
      */
     public setContractReadOptions(
-        options: ContractCallOptions
+        options: ContractReadOptionsInput
     ): ContractCallOptions {
-        this.contractCallOptions = options;
+        this.contractCallOptions = this.normalizeContractCallOptions(options);
         return this.contractCallOptions;
     }
 
@@ -154,6 +158,19 @@ class Contract<TAbi extends Abi> {
      */
     public clearContractReadOptions(): void {
         this.contractCallOptions = {};
+    }
+
+    private normalizeContractCallOptions(
+        options: ContractReadOptionsInput
+    ): ContractCallOptions {
+        if (options.revision == null) {
+            return options as ContractCallOptions;
+        }
+
+        return {
+            ...options,
+            revision: Revision.of(options.revision)
+        };
     }
 
     /**

@@ -5,6 +5,7 @@ import {
     type LoggedItem,
     JSONLogger
 } from '@common/logging';
+import { isBrowser } from '@common/utils/browser';
 
 /**
  * @group unit
@@ -27,9 +28,15 @@ describe('JSONLogger', () => {
         const testLogger = new JSONLogger();
         process.env.SDK_LOG_VERBOSITY = 'debug';
         testLogger.register();
-        expect(testLogger.getConfig()).toEqual({
-            verbosity: 'debug'
-        });
+        if (isBrowser) {
+            expect(testLogger.getConfig()).toEqual({
+                verbosity: 'info'
+            });
+        } else {
+            expect(testLogger.getConfig()).toEqual({
+                verbosity: 'debug'
+            });
+        }
     });
     test('console output <- all fields <- ok', () => {
         const testLogger = new JSONLogger();
