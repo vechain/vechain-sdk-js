@@ -1,5 +1,6 @@
 import { Hex } from './Hex';
 import { type HexUInt } from './HexUInt';
+import { RevisionLike } from './RevisionLike';
 import { RevisionType } from './RevisionType';
 import { IllegalArgumentError } from '@common/errors';
 
@@ -38,19 +39,24 @@ class Revision {
     }
 
     /**
-     * Regular expression pattern for revision labels.
+     * Regular expression patterns for revision parsing from strings.
      */
     private static readonly VALID_REVISION_LABEL_REGEX =
         /^(best|finalized|next|justified)$/;
+    private static readonly DECIMAL_REVISION_REGEX = /^\d+$/;
+    private static readonly HEX_REVISION_REGEX = /^0x[0-9a-fA-F]+$/;
 
     /**
      * Creates a new Revision object from the given value.
      *
-     * @param {bigint | number | string | Hex } value - The value to create the Revision from
+     * @param {RevisionLike Hex } value - The value to create the Revision from
      * @returns {Revision} - The created Revision object
      * @throws {IllegalArgumentError} if the given value is not a valid revision
      */
-    public static of(value: bigint | number | string | Hex): Revision {
+    public static of(value: RevisionLike | Hex): Revision {
+        if (value instanceof Revision) {
+            return value;
+        }
         // If Hex, its a block Id
         if (value instanceof Hex) {
             if (value.bi >= BigInt(0)) {
@@ -69,15 +75,34 @@ class Revision {
                 return new Revision(value, RevisionType.BlockNumber);
             }
         }
-        // If string, its a label
+        // If string, determine by pattern
         if (typeof value === 'string') {
-            if (Revision.VALID_REVISION_LABEL_REGEX.test(value)) {
-                return new Revision(value, RevisionType.Label);
+            const trimmed = value.trim();
+            if (trimmed.length === 0) {
+                throw new IllegalArgumentError(
+                    `${FQP}Revision.of(value: RevisionLike | Hex): Revision`,
+                    'revision string cannot be empty',
+                    { value }
+                );
+            }
+
+            const lowerCased = trimmed.toLowerCase();
+            if (Revision.VALID_REVISION_LABEL_REGEX.test(lowerCased)) {
+                return new Revision(lowerCased, RevisionType.Label);
+            }
+
+            if (Revision.DECIMAL_REVISION_REGEX.test(trimmed)) {
+                const numericValue = BigInt(trimmed);
+                return new Revision(numericValue, RevisionType.BlockNumber);
+            }
+
+            if (Revision.HEX_REVISION_REGEX.test(trimmed)) {
+                return new Revision(Hex.of(trimmed), RevisionType.BlockId);
             }
         }
         // If not a valid revision, throw an error
         throw new IllegalArgumentError(
-            `${FQP}Revision.of(value: bigint | number | string | Hex): Revision`,
+            `${FQP}Revision.of(value: RevisionLike | Hex): Revision`,
             'not a valid revision',
             {
                 value: `${value}`

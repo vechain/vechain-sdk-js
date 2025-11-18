@@ -1,5 +1,5 @@
 import { RetrieveHistoricalFeeData, SuggestPriorityFee } from '@thor/thorest';
-import { type Address, HexUInt, Revision } from '@common/vcdm';
+import { type Address, HexUInt, Revision, RevisionLike } from '@common/vcdm';
 import { IllegalArgumentError, NoSuchElementError } from '@common/errors';
 import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
 import { type FeeHistory } from '../model/gas/FeeHistory';
@@ -428,8 +428,9 @@ class GasModule extends AbstractThorModule {
      * @throws {IllegalArgumentError} If the revision is Next , block is not available, or block is prior to galactica hardfork
      */
     public async getBaseFeePerGas(
-        revision: Revision = Revision.BEST
+        revisionLike: RevisionLike = Revision.BEST
     ): Promise<bigint> {
+        const revision = Revision.of(revisionLike);
         if (revision === Revision.NEXT) {
             log.error({
                 message: 'Next block base fee is not available',

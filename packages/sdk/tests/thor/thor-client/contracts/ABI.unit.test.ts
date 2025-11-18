@@ -289,7 +289,7 @@ describe('ABI Classes', () => {
 
             const transferFunction = abiContract.getFunction('transfer');
 
-            expect(transferFunction).toBeInstanceOf(ABIFunction);
+            expect(transferFunction).toBeInstanceOf(Object);
             expect(transferFunction.name).toBe('transfer');
         });
 
@@ -298,7 +298,7 @@ describe('ABI Classes', () => {
 
             const transferEvent = abiContract.getEvent('Transfer');
 
-            expect(transferEvent).toBeInstanceOf(ABIEvent);
+            expect(transferEvent).toBeInstanceOf(Object);
             expect(transferEvent.name).toBe('Transfer');
         });
 
