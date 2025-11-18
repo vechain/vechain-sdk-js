@@ -40,9 +40,6 @@ type ContractReadOptionsInput = Omit<ContractCallOptions, 'revision'> & {
     revision?: RevisionLike;
 };
 
-const HEX_REVISION_REGEX = /^0x[0-9a-fA-F]+$/;
-const DECIMAL_REVISION_REGEX = /^\d+$/;
-
 /**
  * A class representing a smart contract deployed on the blockchain.
  * This is the middle-layer contract that provides VeChain-specific functionality.
