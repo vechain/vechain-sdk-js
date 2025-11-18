@@ -21,7 +21,7 @@ const TEST_ACCOUNT = {
 
 async function demonstrateTypeSafety(): Promise<void> {
     // Initialize ThorClient
-    const thorClient = ThorClient.fromUrl('https://testnet.vechain.org');
+    const thorClient = ThorClient.at('https://testnet.vechain.org');
 
     const tokenAddress = Address.of(VTHO_ADDRESS);
 
@@ -140,7 +140,7 @@ function getInputType(solidityType: string): string {
 async function typeSafeInteraction(): Promise<void> {
     console.log('\n=== Type-Safe Contract Interaction with Transactions ===');
 
-    const thorClient = ThorClient.fromUrl('https://testnet.vechain.org');
+    const thorClient = ThorClient.at('https://testnet.vechain.org');
     const tokenAddress = Address.of(
         '0x0000000000000000000000000000456E65726779' // VTHO token
     );
@@ -218,7 +218,7 @@ async function typeSafeInteraction(): Promise<void> {
 async function demonstrateReadOptions(): Promise<void> {
     console.log('\n=== Contract Read Options Examples ===');
 
-    const thorClient = ThorClient.fromUrl('https://testnet.vechain.org');
+    const thorClient = ThorClient.at('https://testnet.vechain.org');
     const tokenAddress = Address.of(VTHO_ADDRESS);
     const contract = thorClient.contracts.load(tokenAddress, ERC20_ABI);
 
