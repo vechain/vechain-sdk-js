@@ -90,12 +90,13 @@ class GasModule extends AbstractThorModule {
      * Estimates the gas required for executing the given request.
      *
      * @param request - The execute codes request containing transaction details.
+     * @remarks Providing a representative `caller` address is strongly recommended since the simulated execution context (msg.sender) can influence gas usage; omitting it may lead to less accurate estimates.
      * @returns The execution response containing gas usage and other details.
      * @throws {IllegalArgumentError} If clauses are empty or options are invalid.
      */
     public async estimateGas(
         clauses: Clause[],
-        caller: Address,
+        caller?: Address,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
         // check if clauses are empty

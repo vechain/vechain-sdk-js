@@ -1,6 +1,6 @@
 import { Hex } from './Hex';
 import { type HexUInt } from './HexUInt';
-import { RevisionLike } from './RevisionLike';
+import type { RevisionLike } from './RevisionLike';
 import { RevisionType } from './RevisionType';
 import { IllegalArgumentError } from '@common/errors';
 
