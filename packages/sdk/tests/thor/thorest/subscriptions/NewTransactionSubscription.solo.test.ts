@@ -20,7 +20,7 @@ import { ThorNetworks } from '@thor/utils/const/network';
 describe('NewTransactionSubscription solo tests', () => {
     let subscription: NewTransactionSubscription;
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
-    const thorClient = ThorClient.at(httpClient);
+    const thorClient = ThorClient.fromHttpClient(httpClient);
 
     // Account seeded by solo setup (default account[1])
     const toAddress = '0x435933c8064b4ae76be665428e0307ef2ccfbd68';

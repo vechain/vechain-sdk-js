@@ -20,7 +20,7 @@ import { ThorNetworks } from '@thor/utils/const/network';
  */
 describe('TransactionRequest Dynamic Fee Support - Solo', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
-    const thorClient = ThorClient.at(httpClient);
+    const thorClient = ThorClient.fromHttpClient(httpClient);
 
     // Solo network test addresses
     const toAddress = '0xf077b491b355e64048ce21e3a6fc4751eeea77fa'; // Solo default account[1]

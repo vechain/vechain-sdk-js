@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
-import { FetchHttpClient } from '@common/http';
 import { Address, Hex, Revision } from '@common/vcdm';
 import { getConfigData } from '@vechain/sdk-solo-setup';
 import { ThorNetworks } from '@thor/utils/const/network';
@@ -12,9 +11,7 @@ import { ThorNetworks } from '@thor/utils/const/network';
 describe('AccountsModule', () => {
     describe('getAccount', () => {
         test('should be able to get account details with default revision', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             // 1st account from solo
             const account = await thorClient.accounts.getAccount(
                 Address.of('0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa')
@@ -27,9 +24,7 @@ describe('AccountsModule', () => {
         });
 
         test('should be able to get account details with BEST revision', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             // 1st account from solo
             const account = await thorClient.accounts.getAccount(
                 Address.of('0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'),
@@ -42,9 +37,7 @@ describe('AccountsModule', () => {
             expect(account.energy).toBeGreaterThan(0n);
         });
         test('check hasCode for VTHO token contract', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             // VTHO token contract
             const account = await thorClient.accounts.getAccount(
                 Address.of('0x0000000000000000000000000000456E65726779')
@@ -54,9 +47,7 @@ describe('AccountsModule', () => {
     });
     describe('getBytecode', () => {
         test('should be able to get bytecode with default revision', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             // VTHO token contract
             const bytecode = await thorClient.accounts.getBytecode(
                 Address.of('0x0000000000000000000000000000456E65726779')
@@ -67,9 +58,7 @@ describe('AccountsModule', () => {
     });
     describe('getStorageAt', () => {
         test('should be able to get storage at with default revision', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             const soloConfig = getConfigData();
             const storage = await thorClient.accounts.getStorageAt(
                 Address.of(soloConfig.TEST_TOKEN_ADDRESS),
@@ -81,9 +70,7 @@ describe('AccountsModule', () => {
             expect(storage.toString().length).toBeGreaterThan(0);
         });
         test('should be able to get storage at with BEST revision', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             const soloConfig = getConfigData();
             const storage = await thorClient.accounts.getStorageAt(
                 Address.of(soloConfig.TEST_TOKEN_ADDRESS),

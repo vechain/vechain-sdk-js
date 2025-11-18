@@ -1,4 +1,4 @@
-import { FetchHttpClient, Hex } from '@common';
+import { Hex } from '@common';
 import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client';
 import { getConfigData } from '@vechain/sdk-solo-setup';
@@ -12,9 +12,7 @@ describe('TransactionsModule-GetRawTransaction', () => {
     test('should get a raw transaction', async () => {
         const config = getConfigData();
         const txID = Hex.of(config.SEED_TEST_TOKEN_TX_ID);
-        const thorClient = ThorClient.at(
-            FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-        );
+        const thorClient = ThorClient.at(ThorNetworks.SOLONET);
         const txDetails = await thorClient.transactions.getRawTransaction(
             txID,
             {

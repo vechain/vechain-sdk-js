@@ -1,6 +1,5 @@
 import { describe, expect, test, beforeAll } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
-import { FetchHttpClient } from '@common/http';
 import { Address, Hex, Revision } from '@common/vcdm';
 import { GasModule } from '@thor/thor-client/gas/gas-module';
 import { Clause, type EstimateGasOptions } from '@thor/thor-client/model';
@@ -16,9 +15,7 @@ import { ThorNetworks } from '@thor/utils/const/network';
  * @group solo
  */
 describe('GasModule Solo Tests', () => {
-    const thorClient = ThorClient.at(
-        FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-    );
+    const thorClient = ThorClient.at(ThorNetworks.SOLONET);
     const gasModule = thorClient.gas;
 
     describe('calculateIntrinsicGas', () => {

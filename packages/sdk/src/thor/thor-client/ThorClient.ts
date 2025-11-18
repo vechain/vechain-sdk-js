@@ -1,5 +1,9 @@
 import { AccountsModule } from './accounts/accounts-module';
-import { FetchHttpClient, type HttpClient } from '@common/http';
+import {
+    FetchHttpClient,
+    type HttpOptions,
+    type HttpClient
+} from '@common/http';
 import { BlocksModule } from './blocks/blocks-module';
 import { LogsModule } from './logs/logs-module';
 import { GasModule } from './gas/gas-module';
@@ -76,26 +80,26 @@ class ThorClient {
     }
 
     /**
-     * Creates a new `ThorClient` instance from a given URL.
+     * Creates a new `ThorClient` instance given a network URL.
      *
-     * @param {HttpClient} httpClient - The HTTP client instance used for making network requests.
+     * @param {string} networkUrl - The URL of the network to connect to.
+     * @param {HttpOptions} options - The options to use for the created HTTP client.
      * @return {ThorClient} A ThorClient instance connected to the specified network URL.
      */
-    public static at(httpClient: HttpClient): ThorClient {
-        return new ThorClient(httpClient);
+    public static at(networkUrl: string, options?: HttpOptions): ThorClient {
+        return new ThorClient(
+            new FetchHttpClient(new URL(networkUrl), options)
+        );
     }
 
     /**
-     * Creates a ThorClient instance from a URL.
+     * Creates a ThorClient instance given a HTTP client.
      *
-     * @param {string} networkUrl - The URL of the network to connect to.
-     * @param {BlocksModuleOptions} [options] - Optional configuration settings for the Blocks module.
-     * @return {ThorClient} A ThorClient instance connected to the specified network URL.
-     *
-     * @deprecated Use {@link ThorClient.at} instead.
+     * @param {HttpClient} httpClient - The HTTP client instance used for making network requests.
+     * @return {ThorClient} A ThorClient instance connected to the specified HTTP client.
      */
-    public static fromUrl(networkUrl: string): ThorClient {
-        return ThorClient.at(new FetchHttpClient(new URL(networkUrl)));
+    public static fromHttpClient(httpClient: HttpClient): ThorClient {
+        return new ThorClient(httpClient);
     }
 }
 

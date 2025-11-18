@@ -32,7 +32,7 @@ const createMockHttpClient = () =>
     }) as any;
 
 const createContract = () => {
-    const thorClient = ThorClient.at(createMockHttpClient());
+    const thorClient = ThorClient.fromHttpClient(createMockHttpClient() as any);
     return new Contract(contractAddress, minimalAbi, thorClient.contracts);
 };
 
