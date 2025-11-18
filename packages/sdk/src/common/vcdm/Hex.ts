@@ -5,6 +5,8 @@ import {
     UnsupportedOperationError
 } from '@common/errors';
 import { type VeChainDataModel } from '@common/vcdm';
+import { isBrowser } from '@common/utils/browser';
+import { log } from '@common/logging/log';
 
 /**
  * Full Qualified Path
@@ -422,5 +424,41 @@ class Hex implements VeChainDataModel<Hex> {
         return this.toString() as `0x${string}`;
     }
 }
+
+/**
+ * Add the inspect hook to the Hex class
+ * This is a Node.js only feature to allow the Hex class to be inspected by the console.log method.
+ */
+const addInspectHook = (): void => {
+    // Check if we're in Node.js environment
+    if (!isBrowser) {
+        try {
+            // Use require for synchronous loading in Node.js
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const util = require('util');
+            Object.defineProperty(Hex.prototype, util.inspect.custom, {
+                value(this: Hex) {
+                    return this.toString();
+                },
+                writable: false,
+                enumerable: false,
+                configurable: true
+            });
+            log.debug({
+                message: `${FQP}addInspectHook(): Inspect hook added to Hex class`
+            });
+        } catch {
+            // Ignore errors
+            log.warn({
+                message: `${FQP}addInspectHook(): Failed to add inspect hook to Hex class`
+            });
+        }
+    } else {
+        log.debug({
+            message: `${FQP}addInspectHook(): Browser environment, skipping adding inspect hook`
+        });
+    }
+};
+addInspectHook(); // no await needed
 
 export { Hex };
