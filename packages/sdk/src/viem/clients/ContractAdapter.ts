@@ -668,9 +668,10 @@ function getContract<const TAbi extends Abi>({
                         args: processedArgs
                     });
 
-                    const clause = new Clause(address, 0n, Hex.of(data));
                     const readOptions =
                         vechainContract.getContractReadOptions();
+                    const value = readOptions.value != null ? readOptions.value : 0n;
+                    const clause = new Clause(address, value, Hex.of(data));
 
                     const caller =
                         (readOptions.caller
