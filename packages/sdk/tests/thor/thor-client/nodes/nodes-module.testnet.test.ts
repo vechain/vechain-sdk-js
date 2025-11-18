@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { ThorNetworks } from '@thor/utils/const/network';
-import { FetchHttpClient } from '@common/http';
 
 /**
  * NodesModule tests for testnet network
@@ -10,9 +9,7 @@ import { FetchHttpClient } from '@common/http';
 describe('NodesModule', () => {
     describe('getNodes', () => {
         test('should be able to get connected peers list', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.TESTNET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.TESTNET);
 
             const connectedPeers = await thorClient.nodes.getNodes();
 
@@ -21,9 +18,7 @@ describe('NodesModule', () => {
         });
 
         test('should return empty array when no peers are connected', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.TESTNET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.TESTNET);
 
             const connectedPeers = await thorClient.nodes.getNodes();
 
@@ -36,9 +31,7 @@ describe('NodesModule', () => {
 
     describe('isHealthy', () => {
         test('should be able to check node health status', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.TESTNET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.TESTNET);
 
             const isHealthy = await thorClient.nodes.isHealthy();
 

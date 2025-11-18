@@ -1,4 +1,4 @@
-import { Address, FetchHttpClient, Hex, Revision } from '@common';
+import { Address, Hex, Revision } from '@common';
 import { describe, expect, test } from '@jest/globals';
 import { Clause, ThorClient } from '@thor/thor-client';
 import { TransactionBuilder } from '@thor/thor-client/transactions/TransactionBuilder';
@@ -29,9 +29,7 @@ const gasPayerSigner = new PrivateKeySigner(gasPayerPrivateKey.bytes);
 describe('SendTransaction SOLO tests', () => {
     describe('unsponsored transactions', () => {
         test('should send a dynamic fee unsponsored VET transfer transaction', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             // create tx request to send 1 wei VET to receiver
             const clauses = [new Clause(receiver, 1n)];
             const builder = TransactionBuilder.create(thorClient);
@@ -59,9 +57,7 @@ describe('SendTransaction SOLO tests', () => {
             expect(retrievedTx?.id.toString()).toEqual(txId.toString());
         });
         test('should send a legacy unsponsored VET transfer transaction', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             // create tx request to send 1 wei VET to receiver
             const clauses = [new Clause(receiver, 1n)];
             const builder = TransactionBuilder.create(thorClient);
@@ -93,9 +89,7 @@ describe('SendTransaction SOLO tests', () => {
     });
     describe('sponsored transactions', () => {
         test('should send a dynamic fee sponsored VET transfer transaction', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             // create tx request to send 1 wei VET to receiver
             const clauses = [new Clause(receiver, 1n)];
             const builder = TransactionBuilder.create(thorClient);
@@ -133,9 +127,7 @@ describe('SendTransaction SOLO tests', () => {
             );
         });
         test('should send a legacy sponsored VET transfer transaction', async () => {
-            const thorClient = ThorClient.at(
-                FetchHttpClient.at(new URL(ThorNetworks.SOLONET))
-            );
+            const thorClient = ThorClient.at(ThorNetworks.SOLONET);
             // create tx request to send 1 wei VET to receiver
             const clauses = [new Clause(receiver, 1n)];
             const builder = TransactionBuilder.create(thorClient);

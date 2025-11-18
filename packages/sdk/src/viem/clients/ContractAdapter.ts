@@ -428,7 +428,7 @@ function getContract<const TAbi extends Abi>({
         });
     }
 
-    const thorClient = ThorClient.at(httpClient!); // httpClient is guaranteed to exist or error thrown above
+    const thorClient = ThorClient.fromHttpClient(httpClient!); // httpClient is guaranteed to exist or error thrown above
     const vechainContract = thorClient.contracts.load(address, actualAbi);
 
     // Initialize properties
