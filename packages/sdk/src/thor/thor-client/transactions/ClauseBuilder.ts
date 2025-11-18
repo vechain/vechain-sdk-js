@@ -1,6 +1,6 @@
 import { IllegalArgumentError } from '@common/errors';
-import { Hex, type Address, type HexUInt } from '@common/vcdm';
-import { ERC721_ABI, VIP180_ABI } from '@thor/utils';
+import { Address, Hex, type HexUInt } from '@common/vcdm';
+import { ERC721_ABI, VIP180_ABI, VTHO_ADDRESS } from '@thor/utils';
 import {
     encodeAbiParameters,
     encodeFunctionData,
@@ -170,6 +170,34 @@ const getTransferVetClause = (
 };
 
 /**
+ * Builds a clause that transfers native VTHO to a recipient.
+ */
+const getTransferVTHOClause = (
+    recipientAddress: Address,
+    value: bigint,
+    metadata?: ClauseOptions
+): Clause => {
+    if (value < ZERO_VALUE) {
+        throw new IllegalArgumentError(
+            `${FQP}transferVTHO(recipientAddress: Address, value: bigint, metadata?: ClauseOptions)`,
+            'negative value is not allowed',
+            { value: `${value}` }
+        );
+    }
+
+    const vthoAddress = Address.of(VTHO_ADDRESS);
+
+    return getFunctionCallClause(
+        vthoAddress,
+        VIP180_ABI,
+        TRANSFER_TOKEN_FUNCTION,
+        [recipientAddress.toString(), value],
+        ZERO_VALUE,
+        metadata
+    );
+};
+
+/**
  * Helper functions for constructing common transaction clauses.
  */
 const ClauseBuilder = {
@@ -178,6 +206,7 @@ const ClauseBuilder = {
     transferNFT: getTransferNftClause,
     transferToken: getTransferTokenClause,
     transferVET: getTransferVetClause,
+    transferVTHO: getTransferVTHOClause,
     getFunctionCallClause,
     getDeployContractClause,
     getTransferNftClause,
