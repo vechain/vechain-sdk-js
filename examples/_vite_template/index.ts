@@ -1,20 +1,17 @@
 import {
-    FetchHttpClient,
     LoggerRegistry,
     Revision,
     log,
     PrettyLogger
 } from '@vechain/sdk-temp/common';
-import { ThorClient } from '@vechain/sdk-temp/thor';
+import { ThorClient, ThorNetworks } from '@vechain/sdk-temp/thor';
 
 /**
  * SETUP:
  * - create a testnet client
  * - setup console logger
  */
-const client = ThorClient.at(
-    FetchHttpClient.at(new URL('https://testnet.vechain.org'))
-);
+const client = ThorClient.at(ThorNetworks.TESTNET);
 LoggerRegistry.getInstance().registerLogger(new PrettyLogger());
 
 /**
