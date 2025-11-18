@@ -1,4 +1,4 @@
-import { Revision } from './Revision';
+import type { Revision } from './Revision';
 
 /**
  * Union of values accepted by `Revision.of` and other APIs that consume

@@ -4,6 +4,7 @@ import {
     IllegalArgumentError,
     UnsupportedOperationError
 } from '@common/errors';
+import { isBrowser } from '@common/utils/browser';
 
 /**
  * Test Hex class.
@@ -337,6 +338,30 @@ describe('Hex class tests', () => {
         test('Return the number of non-zero bytes in the hexadecimal string', () => {
             const hex = Hex.of('0x000000000000000000000000000caca0');
             expect(hex.countNonZeroBytes()).toEqual(3);
+        });
+    });
+    describe('inspect method tests', () => {
+        test('Return the string representation of the Hex instance', () => {
+            if (!isBrowser) {
+                const hex = Hex.of('0x000000000000000000000000000caca0');
+
+                // Test 1: Direct console.log to see inspect hook in action
+                console.log('Hex with inspect hook:', hex);
+
+                // Test 2: Verify util.inspect is using custom method
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const util = require('util');
+                const inspected = util.inspect(hex);
+                expect(inspected).toBe('0x000000000000000000000000000caca0');
+
+                // Test 3: Verify it matches toString()
+                expect(inspected).toBe(hex.toString());
+            } else {
+                console.log(
+                    'Browser environment, skipping inspect method tests'
+                );
+                expect(true).toBeTruthy();
+            }
         });
     });
 });
