@@ -434,9 +434,8 @@ const addInspectHook = (): void => {
     if (!isBrowser) {
         try {
             // Use require for synchronous loading in Node.js
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const util = require('util');
-            Object.defineProperty(Hex.prototype, util.inspect.custom, {
+            const inspectSymbol = Symbol.for('nodejs.util.inspect.custom');
+            Object.defineProperty(Hex.prototype, inspectSymbol, {
                 value(this: Hex) {
                     return this.toString();
                 },
