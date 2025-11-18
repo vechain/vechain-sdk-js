@@ -433,7 +433,6 @@ const addInspectHook = (): void => {
     // Check if we're in Node.js environment
     if (!isBrowser) {
         try {
-            // Use require for synchronous loading in Node.js
             const inspectSymbol = Symbol.for('nodejs.util.inspect.custom');
             Object.defineProperty(Hex.prototype, inspectSymbol, {
                 value(this: Hex) {
