@@ -601,7 +601,7 @@ function getContract<const TAbi extends Abi>({
                         ) {
                             // Check if it's an Address object by checking for toString method and if it returns a hex string
                             const str = arg.toString();
-                            if (str.startsWith('0x') && str.length === 42) {
+                            if (Address.isValid(str)) {
                                 return str;
                             }
                         }
@@ -655,7 +655,7 @@ function getContract<const TAbi extends Abi>({
                             typeof arg.toString === 'function'
                         ) {
                             const str = arg.toString();
-                            if (str.startsWith('0x') && str.length === 42) {
+                            if (Address.isValid(str)) {
                                 return str;
                             }
                         }

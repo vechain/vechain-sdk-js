@@ -168,9 +168,9 @@ class ContractsModule extends AbstractThorModule {
                     'toString' in arg &&
                     typeof arg.toString === 'function'
                 ) {
-                    // Check if it's an Address object by checking for toString method and if it returns a hex string
+                    // Check if it's an Address-like object by validating string representation
                     const str = arg.toString();
-                    if (str.startsWith('0x') && str.length === 42) {
+                    if (Address.isValid(str)) {
                         return str;
                     }
                 }
