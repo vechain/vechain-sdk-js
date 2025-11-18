@@ -221,7 +221,7 @@ class TransactionsModule extends AbstractThorModule {
      */
     public async buildTransactionBody(
         clauses: Clause[],
-        gas: BigInt | number,
+        gas: number | bigint,
         options?: TransactionBodyOptions
     ): Promise<TransactionRequest> {
         try {
