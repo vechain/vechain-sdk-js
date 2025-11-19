@@ -1,7 +1,7 @@
 import { type WebSocketClient, type WebSocketListener } from '@thor/ws';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions';
 import { type HttpPath, type HttpQuery } from '@common/http';
-import { Address, type AddressLike, type Hex } from '@common/vcdm';
+import { type Address, type Hex } from '@common/vcdm';
 import { ThorError } from '@thor/thorest';
 
 /**
@@ -212,15 +212,11 @@ class EventsSubscription
      * @param {Address} contractAddress - The contract address to initialize the instance with.
      * @return {EventsSubscription} - The instance of the class.
      */
-    withContractAddress(contractAddress?: AddressLike): EventsSubscription {
-        const normalizedAddress =
-            contractAddress !== undefined
-                ? Address.of(contractAddress)
-                : undefined;
+    withContractAddress(contractAddress?: Address): EventsSubscription {
         return new EventsSubscription(
             this.wsc,
             new EventsSubscriptionQuery(
-                normalizedAddress ?? this.query.addr,
+                contractAddress ?? this.query.addr,
                 this.query.pos,
                 this.query.t0,
                 this.query.t1,

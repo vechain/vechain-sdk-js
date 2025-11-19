@@ -1,6 +1,6 @@
 import type { HttpQuery, HttpClient, HttpPath } from '@common/http';
 import { handleHttpError } from '@thor/thorest/utils';
-import { Address, type AddressLike, type Revision } from '@common/vcdm';
+import type { Address, Revision } from '@common/vcdm';
 import { type ContractBytecodeJSON } from '@thor/thorest/json';
 import { ContractBytecode } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
@@ -85,13 +85,9 @@ class RetrieveContractBytecode
      * @param {Address} address - The address used to generate the contract bytecode's path.
      * @return {RetrieveContractBytecode} A new instance of RetrieveContractBytecode with the specified path.
      */
-    static of(
-        address: AddressLike,
-        revision?: Revision
-    ): RetrieveContractBytecode {
-        const normalizedAddress = Address.of(address);
+    static of(address: Address, revision?: Revision): RetrieveContractBytecode {
         return new RetrieveContractBytecode(
-            new RetrieveContractBytecodePath(normalizedAddress),
+            new RetrieveContractBytecodePath(address),
             new RetrieveContractBytecodeQuery(revision)
         );
     }

@@ -1,7 +1,7 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
 import { GetAccountResponse } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
-import { Address, type AddressLike, type Revision } from '@common/vcdm';
+import { type Address, type Revision } from '@common/vcdm';
 import { type GetAccountResponseJSON } from '../json';
 import { handleHttpError } from '@thor/thorest/utils';
 
@@ -87,13 +87,9 @@ class RetrieveAccountDetails
      * @param {Revision} [revision] - The revision to be set. If not provided, no revision query parameter will be added.
      * @return {RetrieveAccountDetails} A new instance of RetrieveAccountDetails with the specified path and query.
      */
-    static of(
-        address: AddressLike,
-        revision?: Revision
-    ): RetrieveAccountDetails {
-        const normalizedAddress = Address.of(address);
+    static of(address: Address, revision?: Revision): RetrieveAccountDetails {
         return new RetrieveAccountDetails(
-            new RetrieveAccountDetailsPath(normalizedAddress),
+            new RetrieveAccountDetailsPath(address),
             new RetrieveAccountDetailsQuery(revision)
         );
     }

@@ -1,10 +1,5 @@
 import { type HttpQuery, type HttpClient, type HttpPath } from '@common/http';
-import {
-    Address,
-    type AddressLike,
-    type Hex,
-    type Revision
-} from '@common/vcdm';
+import { type Revision, type Address, type Hex } from '@common/vcdm';
 import { GetStorageResponse } from '@thor/thorest';
 import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { type GetStorageResponseJSON } from '@thor/thorest/json';
@@ -93,13 +88,12 @@ class RetrieveStoragePositionValue
      * @return {RetrieveStoragePositionValue} A new instance of RetrieveStoragePositionValue with the specified path.
      */
     static of(
-        address: AddressLike,
+        address: Address,
         key: Hex,
         revision?: Revision
     ): RetrieveStoragePositionValue {
-        const normalizedAddress = Address.of(address);
         return new RetrieveStoragePositionValue(
-            new RetrieveStoragePositionValuePath(normalizedAddress, key),
+            new RetrieveStoragePositionValuePath(address, key),
             new RetrieveStoragePositionValueQuery(revision)
         );
     }
