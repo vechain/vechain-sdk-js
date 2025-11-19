@@ -27,6 +27,8 @@ import { waitUntil, type WaitUntilOptions } from '@common/utils/poller';
 import { TransactionBuilder } from './TransactionBuilder';
 import { type TransactionBodyOptions } from '../model/transactions/TransactionBodyOptions';
 import { log } from '@common/logging';
+import { type Signer } from '@thor/signer/Signer';
+import { type EstimateGasOptions } from '../model/gas';
 
 /**
  * The transactions module of the VeChain Thor blockchain.
@@ -278,6 +280,53 @@ class TransactionsModule extends AbstractThorModule {
             });
             throw error;
         }
+    }
+
+    /**
+     * Executes a set of clauses using a signer.
+     * @param clauses - The clauses to execute.
+     * @param signer - The signer to use for signing the transaction.
+     * @param gasEstimateOptions - The options for estimating the gas.
+     * @param txOptions - The options for building the transaction request.
+     * @returns The transaction ID.
+     * @throws {IllegalArgumentError} If the gas estimation reverted
+     */
+    public async executeClauses(
+        clauses: Clause[],
+        signer: Signer,
+        gasEstimateOptions: EstimateGasOptions,
+        txOptions?: TransactionBodyOptions
+    ): Promise<Hex> {
+        // estimate the gas
+        const gasEstimate = await this.thorClient.gas.estimateGas(
+            clauses,
+            signer.address,
+            gasEstimateOptions
+        );
+        if (gasEstimate.reverted) {
+            log.warn({
+                message: 'Gas estimation reverted',
+                source: 'TransactionsModule.executeClauses',
+                context: { gasEstimate }
+            });
+            throw new IllegalArgumentError(
+                'executeClauses(clauses, signer, gasEstimateOptions, txOptions)',
+                'Gas estimation reverted',
+                { gasEstimate }
+            );
+        }
+        // build the transaction request
+        const txRequest = await this.buildTransactionBody(
+            clauses,
+            gasEstimate.totalGas,
+            txOptions
+        );
+        // sign the transaction
+        const signedTransaction = signer.sign(txRequest);
+        // encode the signed transaction
+        const encodedTransaction = signedTransaction.encoded;
+        // send the transaction to the network
+        return await this.sendRawTransaction(encodedTransaction);
     }
 }
 
