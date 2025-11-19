@@ -130,7 +130,7 @@ class ContractsModule extends AbstractThorModule {
      * @returns A Promise that resolves to the contract call result.
      */
     public async executeCall(
-        contractAddress: Address,
+        contractAddress: AddressLike,
         functionAbi: AbiFunction,
         functionData: FunctionArgs,
         options?: ContractCallOptions
@@ -211,8 +211,10 @@ class ContractsModule extends AbstractThorModule {
                 throw error;
             }
 
+            const clauseContractAddress = Address.of(contractAddress);
+
             const clause = new Clause(
-                contractAddress,
+                clauseContractAddress,
                 options?.value ?? 0n,
                 Hex.of(data),
                 options?.comment ?? null,
