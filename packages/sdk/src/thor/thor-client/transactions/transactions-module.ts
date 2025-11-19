@@ -221,14 +221,16 @@ class TransactionsModule extends AbstractThorModule {
      */
     public async buildTransactionBody(
         clauses: Clause[],
-        gas: number,
+        gas: number | bigint,
         options?: TransactionBodyOptions
     ): Promise<TransactionRequest> {
         try {
             const txBuilder = TransactionBuilder.create(this.thorClient);
             // add clauses and gas
             txBuilder.withClauses(clauses);
-            txBuilder.withGas(BigInt(gas));
+            txBuilder.withGas(
+                typeof gas === 'bigint' ? gas : BigInt(Number(gas))
+            );
             // if option are provided, apply them to the builder
             // blockref
             if (options?.blockRef !== undefined) {
