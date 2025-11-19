@@ -29,7 +29,7 @@ type ContractReadResult<
       >;
 import { encodeFunctionData, toEventSelector } from 'viem';
 import { type Signer } from '@thor/signer';
-import { type Address, Hex, Revision } from '@common/vcdm';
+import { Address, AddressLike, Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { log } from '@common/logging';
 import type { ContractCallOptions } from '../types';
@@ -49,7 +49,7 @@ type ContractReadOptionsInput = Omit<ContractCallOptions, 'revision'> & {
  */
 class Contract<TAbi extends Abi> {
     readonly contractsModule: ContractsModule;
-    readonly address: Address;
+    readonly address: AddressLike;
     readonly abi: TAbi;
     private signer?: Signer;
 
@@ -127,13 +127,13 @@ class Contract<TAbi extends Abi> {
      * @param deployTransactionReceipt Optional transaction receipt from deployment.
      */
     constructor(
-        address: Address,
+        address: AddressLike,
         abi: TAbi,
         contractsModule: ContractsModule,
         signer?: Signer
     ) {
         this.abi = abi;
-        this.address = address;
+        this.address = Address.of(address);
         this.contractsModule = contractsModule;
         this.signer = signer;
         this.initializeProxies();

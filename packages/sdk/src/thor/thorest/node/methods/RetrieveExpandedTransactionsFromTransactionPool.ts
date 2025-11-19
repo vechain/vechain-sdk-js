@@ -1,5 +1,5 @@
 import type { HttpClient, HttpPath, HttpQuery } from '@common/http';
-import type { Address } from '@common/vcdm';
+import { Address, type AddressLike } from '@common/vcdm';
 import {
     Transactions,
     ThorError,
@@ -106,10 +106,12 @@ class RetrieveExpandedTransactionsFromTransactionPool
      * @return {RetrieveExpandedTransactionsFromTransactionPool} A new instance of RetrieveExpandedTransactionsFromTransactionPool.
      */
     static of(
-        origin?: Address
+        origin?: AddressLike
     ): RetrieveExpandedTransactionsFromTransactionPool {
+        const normalizedOrigin =
+            origin !== undefined ? Address.of(origin) : undefined;
         return new RetrieveExpandedTransactionsFromTransactionPool(
-            new Query(origin)
+            new Query(normalizedOrigin)
         );
     }
 }

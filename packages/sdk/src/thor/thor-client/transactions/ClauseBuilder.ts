@@ -1,5 +1,5 @@
 import { IllegalArgumentError } from '@common/errors';
-import { Address, Hex, type HexUInt } from '@common/vcdm';
+import { Address, type AddressLike, Hex, type HexUInt } from '@common/vcdm';
 import { ERC721_ABI, VIP180_ABI, VTHO_ADDRESS } from '@thor/utils';
 import {
     encodeAbiParameters,
@@ -42,13 +42,15 @@ const withAbi = (
  * Builds a clause that invokes a smart-contract function with the provided arguments.
  */
 const getFunctionCallClause = (
-    contractAddress: Address,
+    contractAddress: AddressLike,
     contractAbi: Abi,
     functionName: string,
     args: readonly unknown[],
     value: bigint = ZERO_VALUE,
     metadata?: ClauseOptions
 ): Clause => {
+    const normalizedContractAddress = Address.of(contractAddress);
+
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
             `${FQP}callFunction(contractAddress: Address, contractAbi: Abi, functionName: string, args: unknown[], value: bigint, metadata?: ClauseOptions)`,
@@ -58,7 +60,7 @@ const getFunctionCallClause = (
     }
 
     return new Clause(
-        contractAddress,
+        normalizedContractAddress,
         value,
         Hex.of(
             encodeFunctionData({
@@ -102,30 +104,42 @@ const getDeployContractClause = (
  * Builds a clause that transfers an NFT using the standard ERC-721 ABI.
  */
 const getTransferNftClause = (
-    contractAddress: Address,
-    senderAddress: Address,
-    recipientAddress: Address,
+    contractAddress: AddressLike,
+    senderAddress: AddressLike,
+    recipientAddress: AddressLike,
     tokenId: bigint,
     metadata?: ClauseOptions
-): Clause =>
-    getFunctionCallClause(
-        contractAddress,
+): Clause => {
+    const normalizedContractAddress = Address.of(contractAddress);
+    const normalizedSenderAddress = Address.of(senderAddress);
+    const normalizedRecipientAddress = Address.of(recipientAddress);
+
+    return getFunctionCallClause(
+        normalizedContractAddress,
         ERC721_ABI,
         TRANSFER_NFT_FUNCTION,
-        [senderAddress.toString(), recipientAddress.toString(), tokenId],
+        [
+            normalizedSenderAddress.toString(),
+            normalizedRecipientAddress.toString(),
+            tokenId
+        ],
         ZERO_VALUE,
         metadata
     );
+};
 
 /**
  * Builds a clause that transfers VIP-180 tokens to a recipient.
  */
 const getTransferTokenClause = (
-    tokenAddress: Address,
-    recipientAddress: Address,
+    tokenAddress: AddressLike,
+    recipientAddress: AddressLike,
     value: bigint,
     metadata?: ClauseOptions
 ): Clause => {
+    const normalizedTokenAddress = Address.of(tokenAddress);
+    const normalizedRecipientAddress = Address.of(recipientAddress);
+
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
             `${FQP}transferToken(tokenAddress: Address, recipientAddress: Address, value: bigint, metadata?: ClauseOptions)`,
@@ -135,10 +149,10 @@ const getTransferTokenClause = (
     }
 
     return getFunctionCallClause(
-        tokenAddress,
+        normalizedTokenAddress,
         VIP180_ABI,
         TRANSFER_TOKEN_FUNCTION,
-        [recipientAddress.toString(), value],
+        [normalizedRecipientAddress.toString(), value],
         ZERO_VALUE,
         metadata
     );
@@ -148,10 +162,12 @@ const getTransferTokenClause = (
  * Builds a clause that transfers native VET to a recipient.
  */
 const getTransferVetClause = (
-    recipientAddress: Address,
+    recipientAddress: AddressLike,
     value: bigint,
     metadata?: ClauseOptions
 ): Clause => {
+    const normalizedRecipientAddress = Address.of(recipientAddress);
+
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
             `${FQP}transferVET(recipientAddress: Address, value: bigint, metadata?: ClauseOptions)`,
@@ -161,7 +177,7 @@ const getTransferVetClause = (
     }
 
     return new Clause(
-        recipientAddress,
+        normalizedRecipientAddress,
         value,
         Hex.of(NO_DATA),
         metadata?.comment ?? null,
@@ -173,10 +189,12 @@ const getTransferVetClause = (
  * Builds a clause that transfers native VTHO to a recipient.
  */
 const getTransferVTHOClause = (
-    recipientAddress: Address,
+    recipientAddress: AddressLike,
     value: bigint,
     metadata?: ClauseOptions
 ): Clause => {
+    const normalizedRecipientAddress = Address.of(recipientAddress);
+
     if (value < ZERO_VALUE) {
         throw new IllegalArgumentError(
             `${FQP}transferVTHO(recipientAddress: Address, value: bigint, metadata?: ClauseOptions)`,
@@ -191,7 +209,7 @@ const getTransferVTHOClause = (
         vthoAddress,
         VIP180_ABI,
         TRANSFER_TOKEN_FUNCTION,
-        [recipientAddress.toString(), value],
+        [normalizedRecipientAddress.toString(), value],
         ZERO_VALUE,
         metadata
     );

@@ -1,4 +1,4 @@
-import { type Address, type Hex } from '@common/vcdm';
+import { Address, type AddressLike, type Hex } from '@common/vcdm';
 
 /**
  * [EventCriteria](http://localhost:8669/doc/stoplight-ui/#/schemas/EventCriteria)
@@ -72,15 +72,17 @@ class EventCriteria {
      * @return {EventCriteria} A new EventCriteria instance.
      */
     static of(
-        address?: Address,
+        address?: AddressLike,
         topic0?: Hex,
         topic1?: Hex,
         topic2?: Hex,
         topic3?: Hex,
         topic4?: Hex
     ): EventCriteria {
+        const normalizedAddress =
+            address !== undefined ? Address.of(address) : undefined;
         return new EventCriteria(
-            address,
+            normalizedAddress,
             topic0,
             topic1,
             topic2,

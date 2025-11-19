@@ -1,5 +1,11 @@
 import { IllegalArgumentError, InvalidTransactionField } from '@common';
-import { type Address, BlockRef, Hex, Revision } from '@common/vcdm';
+import {
+    Address,
+    type AddressLike,
+    BlockRef,
+    Hex,
+    Revision
+} from '@common/vcdm';
 import { type EstimateGasOptions, type ThorClient } from '@thor/thor-client';
 import {
     type Clause,
@@ -97,11 +103,12 @@ class TransactionBuilder {
      * @param requester - The address of the requester.
      * @returns The builder instance.
      */
-    public withSponsorReq(requester: Address): this {
-        this.params.beggar = requester;
+    public withSponsorReq(requester: AddressLike): this {
+        const normalizedRequester = Address.of(requester);
+        this.params.beggar = normalizedRequester;
         log.debug({
             message: 'TransactionBuilder.withSponsorReq',
-            context: { requester }
+            context: { requester: normalizedRequester }
         });
         return this;
     }
@@ -407,13 +414,14 @@ class TransactionBuilder {
      * @returns The builder instance.
      */
     public withEstimatedGas(
-        caller: Address,
+        caller: AddressLike,
         options: EstimateGasOptions
     ): this {
+        const normalizedCaller = Address.of(caller);
         const task: () => Promise<void> = async () => {
             const estimate = await this.thorClient.gas.estimateGas(
                 this.params.clauses,
-                caller,
+                normalizedCaller,
                 options
             );
             this.params.gas = estimate.totalGas;

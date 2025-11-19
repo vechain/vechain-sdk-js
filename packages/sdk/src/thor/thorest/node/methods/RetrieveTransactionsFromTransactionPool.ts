@@ -1,5 +1,5 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
-import { type Address } from '@common/vcdm';
+import { Address, type AddressLike } from '@common/vcdm';
 import {
     ThorError,
     type ThorRequest,
@@ -94,8 +94,12 @@ class RetrieveTransactionsFromTransactionPool
      * @param {Address} [origin] - The origin address to initialize the query with. This parameter is optional.
      * @return {RetrieveTransactionsFromTransactionPool} A new instance of RetrieveTransactionsFromTransactionPool initialized with the provided query.
      */
-    static of(origin?: Address): RetrieveTransactionsFromTransactionPool {
-        return new RetrieveTransactionsFromTransactionPool(new Query(origin));
+    static of(origin?: AddressLike): RetrieveTransactionsFromTransactionPool {
+        const normalizedOrigin =
+            origin !== undefined ? Address.of(origin) : undefined;
+        return new RetrieveTransactionsFromTransactionPool(
+            new Query(normalizedOrigin)
+        );
     }
 }
 
