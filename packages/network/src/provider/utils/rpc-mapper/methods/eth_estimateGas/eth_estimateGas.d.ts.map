@@ -1,0 +1,1 @@
+{"version":3,"file":"eth_estimateGas.d.ts","sourceRoot":"","sources":["eth_estimateGas.ts"],"names":[],"mappings":"AAQA,OAAO,EAEH,KAAK,UAAU,EAClB,MAAM,4BAA4B,CAAC;AAKpC;;;;;;;;;;;;;GAaG;AACH,QAAA,MAAM,cAAc,GAChB,YAAY,UAAU,EACtB,QAAQ,OAAO,EAAE,KAClB,OAAO,CAAC,MAAM,CA6GhB,CAAC;AAEF,OAAO,EAAE,cAAc,EAAE,CAAC"}

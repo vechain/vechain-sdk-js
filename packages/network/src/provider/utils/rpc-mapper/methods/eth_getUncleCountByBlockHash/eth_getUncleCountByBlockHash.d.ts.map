@@ -1,0 +1,1 @@
+{"version":3,"file":"eth_getUncleCountByBlockHash.d.ts","sourceRoot":"","sources":["eth_getUncleCountByBlockHash.ts"],"names":[],"mappings":"AAIA;;;;;GAKG;AACH,QAAA,MAAM,2BAA2B,GAC7B,QAAQ,OAAO,EAAE,KAClB,OAAO,CAAC,MAAM,CAchB,CAAC;AAEF,OAAO,EAAE,2BAA2B,EAAE,CAAC"}

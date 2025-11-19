@@ -1,0 +1,1 @@
+{"version":3,"file":"eth_getBlockByNumber.d.ts","sourceRoot":"","sources":["eth_getBlockByNumber.ts"],"names":[],"mappings":"AAKA,OAAO,EAAE,KAAK,UAAU,EAAE,MAAM,4BAA4B,CAAC;AAG7D,OAAO,EAAmB,KAAK,SAAS,EAAE,MAAM,oBAAoB,CAAC;AAGrE;;;;;;;;;;;;;;;GAeG;AACH,QAAA,MAAM,mBAAmB,GACrB,YAAY,UAAU,EACtB,QAAQ,OAAO,EAAE,KAClB,OAAO,CAAC,SAAS,GAAG,IAAI,CA0C1B,CAAC;AAEF,OAAO,EAAE,mBAAmB,EAAE,CAAC"}

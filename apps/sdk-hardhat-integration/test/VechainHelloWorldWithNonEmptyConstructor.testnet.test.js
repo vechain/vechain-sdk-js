@@ -1,0 +1,43 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const chai_1 = require("chai");
+const hardhat_1 = require("hardhat");
+/**
+ * Tests for the 'VechainHelloWorldWithNonEmptyConstructor' contract
+ */
+describe('VechainHelloWorldWithNonEmptyConstructor', function () {
+    it('should set the correct owner and simpleParameter', async function () {
+        const [owner] = await hardhat_1.ethers.getSigners();
+        const simpleParameter = 42;
+        const VechainHelloWorldWithNonEmptyConstructor = await hardhat_1.ethers.getContractFactory('VechainHelloWorldWithNonEmptyConstructor');
+        const contract = await VechainHelloWorldWithNonEmptyConstructor.deploy(simpleParameter, { value: hardhat_1.ethers.parseEther('1') });
+        // Check the owner and simpleParameter values
+        (0, chai_1.expect)(await contract.owner()).to.equal(owner.address);
+        (0, chai_1.expect)(await contract.simpleParameter()).to.equal(simpleParameter);
+    });
+    it('sayHello() should return the correct message', async function () {
+        const VechainHelloWorldWithNonEmptyConstructor = await hardhat_1.ethers.getContractFactory('VechainHelloWorldWithNonEmptyConstructor');
+        const contract = await VechainHelloWorldWithNonEmptyConstructor.deploy(42, { value: hardhat_1.ethers.parseEther('1') });
+        // Call the sayHello function and check the return value
+        const helloMessage = await contract.sayHello();
+        (0, chai_1.expect)(helloMessage).to.equal('Hello world from Vechain!');
+    });
+    it('should break with an specific error due to insufficient VTHO', async function () {
+        const signers = await hardhat_1.ethers.getSigners();
+        const accountWithNoVTHO = await hardhat_1.ethers.getSigner(signers[signers.length - 1].address);
+        const VechainHelloWorldWithNonEmptyConstructor = await hardhat_1.ethers.getContractFactory('VechainHelloWorldWithNonEmptyConstructor', accountWithNoVTHO);
+        try {
+            await VechainHelloWorldWithNonEmptyConstructor.deploy(42, {
+                value: hardhat_1.ethers.parseEther('1'),
+                from: accountWithNoVTHO.address
+            });
+            fail('should not get here');
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                (0, chai_1.expect)(error.message.startsWith("Error on request eth_sendTransaction: HardhatPluginError: Error on request eth_sendRawTransaction: Error: Method 'HttpClient.http()' failed.")).to.be.true;
+            }
+        }
+    });
+});

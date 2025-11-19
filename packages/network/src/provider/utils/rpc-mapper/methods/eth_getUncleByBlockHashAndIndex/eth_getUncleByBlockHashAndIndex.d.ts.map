@@ -1,0 +1,1 @@
+{"version":3,"file":"eth_getUncleByBlockHashAndIndex.d.ts","sourceRoot":"","sources":["eth_getUncleByBlockHashAndIndex.ts"],"names":[],"mappings":"AAGA;;;;;;;;;;;;;;;GAeG;AACH,QAAA,MAAM,8BAA8B,GAChC,QAAQ,OAAO,EAAE,KAClB,OAAO,CAAC,MAAM,GAAG,IAAI,CAevB,CAAC;AAEF,OAAO,EAAE,8BAA8B,EAAE,CAAC"}

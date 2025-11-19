@@ -1,0 +1,50 @@
+import { Coin } from './Coin';
+import { FixedPointNumber } from '../FixedPointNumber';
+import { Txt } from '../Txt';
+import { Units } from './Units';
+/**
+ * Represents a
+ * [VeChain VeThor](https://docs.vechain.org/introduction-to-vechain/dual-token-economic-model/vethor-vtho)
+ * monetary amount.
+ *
+ * @extends Coin
+ */
+declare class VTHO extends Coin {
+    /**
+     * The code for VET is the sequence of Unicode
+     * - U+1D64D - mathematical double strike capital letter 'V',
+     * - U+0054 - Latin capital letter 'T',
+     * - U+0048 - Latin capital letter 'H',
+     * - U+004F - Latin capital letter 'O'.
+     */
+    static readonly CODE: Txt;
+    /**
+     * Wei fractional digits to express this value.
+     */
+    private static readonly WEI_FD;
+    /**
+     * Represents this monetary amount in terms of {@link Units.wei}.
+     *
+     * @type {bigint}
+     */
+    readonly wei: bigint;
+    /**
+     * Create a new instance with the given `value`.
+     *
+     * @param {FixedPointNumber} value The value to be used for initializing the instance.
+     */
+    protected constructor(value: FixedPointNumber);
+    /**
+     * Return a new VTHO instance with the specified value and unit.
+     *
+     * @param {bigint | number | string | FixedPointNumber} value - The numerical value for the VTHO instance.
+     * @param {Units} unit - The unit for the value.
+     *                       Defaults to {@link Units.ether} if not provided.
+     * @return {VTHO} A new VTHO instance with the provided value and unit.
+     *
+     * @throws {InvalidDataType} If `value` is not a numeric expression.
+     */
+    static of(value: bigint | number | string | FixedPointNumber, unit?: Units): VTHO;
+}
+export { VTHO };
+//# sourceMappingURL=VTHO.d.ts.map

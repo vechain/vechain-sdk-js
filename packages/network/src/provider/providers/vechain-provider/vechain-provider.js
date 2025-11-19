@@ -1,0 +1,247 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VeChainProvider = void 0;
+const sdk_core_1 = require("@vechain/sdk-core");
+const sdk_errors_1 = require("@vechain/sdk-errors");
+const events_1 = require("events");
+const utils_1 = require("../../../utils");
+const utils_2 = require("../../utils");
+/**
+ * Our core provider class for VeChain
+ */
+class VeChainProvider extends events_1.EventEmitter {
+    thorClient;
+    wallet;
+    enableDelegation;
+    subscriptionManager = {
+        logSubscriptions: new Map(),
+        currentBlockNumber: 0
+    };
+    /**
+     * Poll instance for subscriptions
+     *
+     * @private
+     */
+    pollInstance;
+    /**
+     * Constructor for VeChainProvider
+     *
+     * @param thorClient - ThorClient instance.
+     * @param wallet - ProviderInternalWallet instance. It is optional because the majority of the methods do not require a wallet.
+     * @param enableDelegation - Enable fee delegation or not.
+     * @throws {JSONRPCInvalidParams}
+     *
+     */
+    constructor(thorClient, wallet, enableDelegation = false) {
+        super();
+        this.thorClient = thorClient;
+        this.wallet = wallet;
+        this.enableDelegation = enableDelegation;
+    }
+    /**
+     * Destroys the provider by closing the thorClient and stopping the provider poll instance if present.
+     * This is because thorClient and the provider might be initialized with a polling interval.
+     */
+    destroy() {
+        this.thorClient.destroy();
+        if (this.pollInstance !== undefined) {
+            this.pollInstance.stopListen();
+            this.pollInstance = undefined;
+        }
+    }
+    /**
+     * This method is used to send a request to the provider.
+     * Basically, it is a wrapper around the RPCMethodsMap.
+     *
+     * @param args - Method and parameters to be used for the request.
+     * @returns The result of the request.
+     * @throws {JSONRPCMethodNotFound}
+     */
+    async request(args) {
+        // Check if the method is supported
+        if (!Object.values(utils_2.RPC_METHODS)
+            .map((key) => key.toString())
+            .includes(args.method)) {
+            const error = new sdk_errors_1.JSONRPCMethodNotFound('VeChainProvider.request()', 'Method not found', { code: -32601, message: 'Method not found' });
+            // Override the error message with our custom formatted message
+            throw error;
+        }
+        const methodsMap = (0, utils_2.RPCMethodsMap)(this.thorClient, this);
+        // If method is in enum but not in map, throw "not implemented"
+        if (!(args.method in methodsMap)) {
+            throw new sdk_errors_1.JSONRPCMethodNotImplemented(args.method, 'Method not implemented', {
+                code: -32004,
+                message: 'Method not supported'
+            });
+        }
+        // Get the method from the RPCMethodsMap and call it
+        return await methodsMap[args.method](args.params);
+    }
+    /**
+     * Initializes and starts the polling mechanism for subscription events.
+     * This method sets up an event poll that periodically checks for new events related to active
+     * subscriptions, such as 'newHeads' or log subscriptions. When new data is available, it emits
+     * these events to listeners.
+     *
+     * This method leverages the `Poll.createEventPoll` utility to create the polling mechanism,
+     * which is then started by invoking `startListen` on the poll instance.
+     */
+    startSubscriptionsPolling() {
+        let result = false;
+        if (this.pollInstance === undefined) {
+            this.pollInstance = utils_1.Poll.createEventPoll(async () => {
+                const data = [];
+                const currentBlock = await this.getCurrentBlock();
+                if (currentBlock !== null) {
+                    if (this.subscriptionManager.newHeadsSubscription !==
+                        undefined) {
+                        data.push({
+                            method: 'eth_subscription',
+                            params: {
+                                subscription: this.subscriptionManager
+                                    .newHeadsSubscription.subscriptionId,
+                                result: currentBlock
+                            }
+                        });
+                    }
+                    if (this.subscriptionManager.logSubscriptions.size > 0) {
+                        const logs = await this.getLogsRPC();
+                        data.push(...logs);
+                    }
+                    this.subscriptionManager.currentBlockNumber++;
+                }
+                return data;
+            }, utils_2.POLLING_INTERVAL).onData((subscriptionEvents) => {
+                subscriptionEvents.forEach((event) => {
+                    this.emit('message', event);
+                });
+            });
+            this.pollInstance.startListen();
+            result = true;
+        }
+        return result;
+    }
+    /**
+     * Stops the polling mechanism for subscription events.
+     * This method stops the polling mechanism for subscription events, if it is active.
+     *
+     * @returns {boolean} A boolean indicating whether the polling mechanism was stopped.
+     */
+    stopSubscriptionsPolling() {
+        let result = false;
+        if (this.pollInstance !== undefined) {
+            this.pollInstance.stopListen();
+            this.pollInstance = undefined;
+            result = true;
+        }
+        return result;
+    }
+    /**
+     * Checks if there are active subscriptions.
+     * This method checks if there are any active log subscriptions or a new heads subscription.
+     *
+     * @returns {boolean} A boolean indicating whether there are active subscriptions.
+     */
+    isThereActiveSubscriptions() {
+        return (this.subscriptionManager.logSubscriptions.size > 0 ||
+            this.subscriptionManager.newHeadsSubscription !== undefined);
+    }
+    /**
+     * Returns the poll instance for subscriptions.
+     */
+    getPollInstance() {
+        return this.pollInstance;
+    }
+    /**
+     * Fetches logs for all active log subscriptions managed by `subscriptionManager`.
+     * This method iterates over each log subscription, constructs filter options based on the
+     * subscription details, and then queries for logs using these filter options.
+     *
+     * Each log query is performed asynchronously, and the method waits for all queries to complete
+     * before returning. The result for each subscription is encapsulated in a `SubscriptionEvent`
+     * object, which includes the subscription ID and the fetched logs.
+     *
+     * This function is intended to be called when there's a need to update or fetch the latest
+     * logs for all active subscriptions, typically in response to a new block being mined or
+     * at regular intervals to keep subscription data up to date.
+     *
+     * @returns {Promise<SubscriptionEvent[]>} A promise that resolves to an array of `SubscriptionEvent`
+     * objects, each containing the subscription ID and the corresponding logs fetched for that
+     * subscription. The promise resolves to an empty array if there are no active log subscriptions.
+     */
+    async getLogsRPC() {
+        // Convert the logSubscriptions Map to an array of promises, each promise corresponds to a log fetch operation
+        const promises = Array.from(this.subscriptionManager.logSubscriptions.entries()).map(async ([subscriptionId, subscriptionDetails]) => {
+            const currentBlock = sdk_core_1.HexInt.of(this.subscriptionManager.currentBlockNumber).toString();
+            // Construct filter options for the Ethereum logs query based on the subscription details
+            const filterOptions = {
+                address: subscriptionDetails.options?.address, // Contract address to filter the logs by
+                fromBlock: currentBlock,
+                toBlock: currentBlock,
+                topics: subscriptionDetails.options?.topics // Topics to filter the logs by
+            };
+            // Fetch logs based on the filter options and construct a SubscriptionEvent object
+            return {
+                method: 'eth_subscription',
+                params: {
+                    subscription: subscriptionId, // Subscription ID
+                    result: await (0, utils_2.ethGetLogs)(this.thorClient, [filterOptions]) // The actual log data fetched from Ethereum node
+                }
+            };
+        });
+        // Wait for all log fetch operations to complete and return an array of SubscriptionEvent objects
+        const subscriptionEvents = await Promise.all(promises);
+        // Filter out empty results
+        return subscriptionEvents.filter((event) => event.params.result.length > 0);
+    }
+    /**
+     * Fetches the current block details from the VeChain node.
+     *
+     * @private
+     */
+    async getCurrentBlock() {
+        // Initialize the result to null, indicating no block found initially
+        let result = null;
+        // Proceed only if there are active log subscriptions or a new heads subscription is present
+        if (this.isThereActiveSubscriptions()) {
+            // Fetch the block details for the current block number
+            const block = await this.thorClient.blocks.getBlockCompressed(this.subscriptionManager.currentBlockNumber);
+            // If the block is successfully fetched (not undefined or null), update the result.
+            if (block !== undefined && block !== null) {
+                result = block; // Set the fetched block as the result
+            }
+        }
+        // Return the fetched block details or null if no block was fetched
+        return result;
+    }
+    /**
+     * Get a signer into the internal wallet provider
+     * for the given address.
+     *
+     * @param addressOrIndex - Address of index of the account.
+     * @returns The signer for the given address.
+     */
+    async getSigner(addressOrIndex) {
+        if (this.wallet === undefined) {
+            return null;
+        }
+        return await this.wallet?.getSigner(this, addressOrIndex);
+    }
+    /**
+     * Use vet.domains to resolve name to address
+     * @param vnsName - The name to resolve
+     * @returns the address for a name or null
+     */
+    async resolveName(vnsName) {
+        return await utils_1.vnsUtils.resolveName(this.thorClient, vnsName);
+    }
+    /**
+     * Use vet.domains to look up a verified primary name for an address
+     * @param address - The address to lookup
+     * @returns the primary name for an address or null
+     */
+    async lookupAddress(address) {
+        return await utils_1.vnsUtils.lookupAddress(this.thorClient, address);
+    }
+}
+exports.VeChainProvider = VeChainProvider;

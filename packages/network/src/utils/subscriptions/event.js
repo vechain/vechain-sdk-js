@@ -1,0 +1,39 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getEventSubscriptionUrl = void 0;
+const sdk_core_1 = require("@vechain/sdk-core");
+const thorest_1 = require("../thorest");
+/**
+ * Returns the URL for subscribing to an event through a websocket connection.
+ *
+ * @param baseURL - The URL of the node to request the subscription from.
+ * @param event - The event to subscribe to.
+ *                Can be an event object or a string representing an event.
+ *                @see [Viem Parse ABI Item](https://viem.sh/docs/abi/parseAbiItem.html)
+ *
+ * @param indexedValues - The values of the indexed parameters to construct the topic filters.
+ * @param options - (optional) other optional parameters for the request.
+ *                  `blockID` - The block id to start from, defaults to the best block.
+ *                  `address` - The contract address to filter events by.
+ *
+ * @returns The websocket subscription URL.
+ *
+ * @throws Will throw an error if the event is not a valid event or if the indexed values to encode are invalid.
+ */
+const getEventSubscriptionUrl = (baseURL, event, indexedValues, options) => {
+    const ev = typeof event === 'string'
+        ? new sdk_core_1.ABIEvent(event)
+        : new sdk_core_1.ABIEvent(event);
+    // Encode the indexed parameters to construct the topic filters
+    const encodedTopics = ev.encodeFilterTopicsNoNull(indexedValues ?? []);
+    return thorest_1.thorest.subscriptions.get.EVENT(baseURL, {
+        position: options?.blockID,
+        contractAddress: options?.address,
+        topic0: encodedTopics[0],
+        topic1: encodedTopics[1],
+        topic2: encodedTopics[2],
+        topic3: encodedTopics[3],
+        topic4: encodedTopics[4]
+    });
+};
+exports.getEventSubscriptionUrl = getEventSubscriptionUrl;

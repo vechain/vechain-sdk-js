@@ -1,0 +1,1 @@
+{"version":3,"file":"TransactionTraceTarget.d.ts","sourceRoot":"","sources":["TransactionTraceTarget.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,OAAO,EAAE,MAAM,mBAAmB,CAAC;AAEjD;;GAEG;AACH,MAAM,WAAW,sBAAsB;IACnC;;OAEG;IACH,OAAO,EAAE,OAAO,CAAC;IACjB;;OAEG;IACH,WAAW,EAAE,MAAM,CAAC;IACpB;;OAEG;IACH,WAAW,EAAE,MAAM,GAAG,OAAO,CAAC;CACjC"}

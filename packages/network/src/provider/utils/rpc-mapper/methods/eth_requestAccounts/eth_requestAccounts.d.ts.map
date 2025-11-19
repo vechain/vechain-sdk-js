@@ -1,0 +1,1 @@
+{"version":3,"file":"eth_requestAccounts.d.ts","sourceRoot":"","sources":["eth_requestAccounts.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,KAAK,eAAe,EAAE,MAAM,wCAAwC,CAAC;AAG9E;;;;;GAKG;AACH,QAAA,MAAM,kBAAkB,GACpB,WAAW,eAAe,KAC3B,OAAO,CAAC,MAAM,EAAE,CAkBlB,CAAC;AAEF,OAAO,EAAE,kBAAkB,EAAE,CAAC"}

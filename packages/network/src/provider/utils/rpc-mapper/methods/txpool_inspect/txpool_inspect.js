@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.txPoolInspect = void 0;
+/**
+ * RPC Method txpool_inspect implementation
+ *
+ * @link [txpool_inspect](https://www.quicknode.com/docs/ethereum/txpool_inspect)
+ *
+ * @note
+ *  * We return a constant empty object for now.
+ *
+ * @returns The transaction pool status
+ */
+const txPoolInspect = async () => {
+    return await Promise.resolve({});
+};
+exports.txPoolInspect = txPoolInspect;

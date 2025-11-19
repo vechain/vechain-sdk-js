@@ -1,0 +1,1 @@
+{"version":3,"file":"eth_getBlockTransactionCountByHash.d.ts","sourceRoot":"","sources":["eth_getBlockTransactionCountByHash.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,4BAA4B,CAAC;AAM7D;;;;;;;;;;GAUG;AACH,QAAA,MAAM,iCAAiC,GACnC,YAAY,UAAU,EACtB,QAAQ,OAAO,EAAE,KAClB,OAAO,CAAC,MAAM,CAgBhB,CAAC;AAEF,OAAO,EAAE,iCAAiC,EAAE,CAAC"}
