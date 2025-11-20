@@ -9,4 +9,5 @@ yarn install
 yarn lint
 yarn check:circular-dependencies
 yarn test:unit && git add docs
+yarn workspace @vechain/sdk-network jest packages/network/tests/thor-client/contracts/contract.balance-history.mainnet.test.ts
 yarn check:tests-naming

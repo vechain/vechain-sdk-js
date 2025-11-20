@@ -82,13 +82,6 @@ describe('ThorClient - Contracts balance history (mainnet)', () => {
         expect(beforeCallResult.success).toBe(true);
         const beforePlain = beforeCallResult.result.plain as bigint;
 
-        console.log(
-            'Balance before: load ',
-            await contract.read.balanceOf(TARGET_ACCOUNT),
-            ' executeCall ',
-            afterCallResult.result.plain
-        );
-
         expect(beforeLoadResult).toEqual([beforePlain]);
 
         expect(afterPlain).not.toEqual(beforePlain);
