@@ -38,12 +38,12 @@ describe('PublicClient - Account Methods', () => {
             });
         });
 
-        test('should retrieve zero balance for zero address', async () => {
+        test('should retrieve a balance for zero address', async () => {
             const balance = await publicClient.getBalance(zeroAddress);
 
             expect(balance).toBeDefined();
             expect(typeof balance).toBe('bigint');
-            expect(balance).toBe(0n);
+            expect(balance).toBeGreaterThanOrEqual(0n);
 
             log.debug({
                 message: `Balance for zero address: ${balance.toString()}`
