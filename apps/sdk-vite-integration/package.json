@@ -1,7 +1,7 @@
 {
   "name": "sdk-vite-integration",
   "private": true,
-  "version": "2.0.6",
+  "version": "2.0.7",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,8 +12,8 @@
     "test:jsdom": "vitest --config vitest.jsdom.config.js"
   },
   "dependencies": {
-    "@vechain/sdk-core": "2.0.6",
-    "@vechain/sdk-network": "2.0.6",
+    "@vechain/sdk-core": "2.0.7",
+    "@vechain/sdk-network": "2.0.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0"
