@@ -4,17 +4,17 @@ class TransferCriteria {
     /**
      * The address from which the transaction was sent.
      */
-    readonly txOrigin: Address | null;
+    readonly txOrigin?: Address;
 
     /**
      * The address that sent the VET.
      */
-    readonly sender: Address | null;
+    readonly sender?: Address;
 
     /**
      * The address that received the VET.
      */
-    readonly recipient: Address | null;
+    readonly recipient?: Address;
 
     /**
      * Constructs a new TransferCriteria instance.
@@ -23,7 +23,7 @@ class TransferCriteria {
      * @param sender - The address that sent the VET.
      * @param recipient - The address that received the VET.
      */
-    constructor(txOrigin: Address, sender: Address, recipient: Address) {
+    constructor(txOrigin?: Address, sender?: Address, recipient?: Address) {
         this.txOrigin = txOrigin;
         this.sender = sender;
         this.recipient = recipient;
@@ -37,9 +37,9 @@ class TransferCriteria {
      * @param recipient - The address that received the VET.
      */
     static of(
-        txOrigin: Address,
-        sender: Address,
-        recipient: Address
+        txOrigin?: Address,
+        sender?: Address,
+        recipient?: Address
     ): TransferCriteria {
         return new TransferCriteria(txOrigin, sender, recipient);
     }
