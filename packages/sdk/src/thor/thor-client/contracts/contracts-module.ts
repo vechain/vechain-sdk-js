@@ -20,7 +20,6 @@ import type { ContractCallOptions, ContractCallResult } from './types';
 import { EventLogFilter } from '../model/logs/EventLogFilter';
 import { EventCriteria } from '../model/logs/EventCriteria';
 import { FilterRange } from '../model/logs/FilterRange';
-import { FilterRangeUnits } from '../model/logs/FilterRangeUnits';
 import { QuerySmartContractEvents, type EventLogResponse } from '@thor/thorest';
 import { type TransactionReceipt } from '../model/transactions/TransactionReceipt';
 import { type WaitForTransactionReceiptOptions } from '../model/transactions/WaitForTransactionReceiptOptions';
@@ -728,7 +727,7 @@ class ContractsModule extends AbstractThorModule {
             // Create the filter for the contract events
             const range =
                 fromBlock !== undefined && toBlock !== undefined
-                    ? FilterRange.of(FilterRangeUnits.block, fromBlock, toBlock)
+                    ? FilterRange.of('block', fromBlock, toBlock)
                     : null;
 
             const criteria = EventCriteria.of(address);

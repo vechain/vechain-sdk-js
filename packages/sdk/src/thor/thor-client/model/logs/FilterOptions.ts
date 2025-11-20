@@ -1,18 +1,22 @@
 export class FilterOptions {
     /**
-     Defaults to all results at the API level if not set
+     * The limit of the number of results to return.
+     * Defaults to all results if not set
+     * This actual number of results returned may be less depending on thor configuration
      **/
-    readonly limit: number | null;
+    readonly limit?: number;
 
     /**
-     Defaults to 0 at the API level if not set
+     * The offset for the results (allows for pagination).
+     * Defaults to 0 if not set
      **/
-    readonly offset: number | null;
+    readonly offset?: number;
 
     /**
-     Defaults to false at the API level if not set
+     * Whether to include transaction and log indexes in the results.
+     * Defaults to false if not set
      **/
-    readonly includeIndexes: boolean | null;
+    readonly includeIndexes?: boolean;
 
     /**
      * Constructs a new FilterOptions instance.
@@ -22,9 +26,9 @@ export class FilterOptions {
      * @param includeIndexes - Whether to include indexes in the filter options.
      */
     constructor(limit?: number, offset?: number, includeIndexes?: boolean) {
-        this.limit = limit ?? null;
-        this.offset = offset ?? null;
-        this.includeIndexes = includeIndexes ?? null;
+        this.limit = limit;
+        this.offset = offset;
+        this.includeIndexes = includeIndexes;
     }
 
     /**
@@ -35,9 +39,9 @@ export class FilterOptions {
      * @param includeIndexes - Whether to include indexes in the filter options.
      */
     static of(
-        limit: number,
-        offset: number,
-        includeIndexes: boolean
+        limit?: number,
+        offset?: number,
+        includeIndexes?: boolean
     ): FilterOptions {
         return new FilterOptions(limit, offset, includeIndexes);
     }

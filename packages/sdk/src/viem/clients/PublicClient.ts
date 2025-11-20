@@ -2,9 +2,9 @@ import {
     Address,
     Hex,
     Revision,
-    RevisionLike,
+    type RevisionLike,
     RevisionType,
-    AddressLike
+    type AddressLike
 } from '@common/vcdm';
 import { type HttpClient, FetchHttpClient } from '@common/http';
 import {
@@ -33,7 +33,6 @@ import { ThorClient } from '@thor/thor-client/ThorClient';
 import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import { FilterRange } from '@thor/thor-client/model/logs/FilterRange';
-import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits';
 import { FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
 import { EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
 import { type AbiEvent, toEventSelector } from 'viem';
@@ -791,7 +790,7 @@ class PublicClient {
 
         // create the EventLogFilter
         const filterRange = new FilterRange(
-            FilterRangeUnits.block,
+            'block',
             Number(fromBlock),
             Number(toBlock)
         );
