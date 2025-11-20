@@ -7,22 +7,22 @@ export class TransferLogFilter {
     /**
      * Defines the range for filtering. Setting values to null indicates the entire range.
      */
-    readonly range: FilterRange | null;
+    readonly range?: FilterRange;
 
     /**
      * Include these parameters to receive filtered results in a paged format.
      */
-    readonly options: FilterOptions | null;
+    readonly options?: FilterOptions;
 
     /**
      * Transfer criteria.
      */
-    readonly criteriaSet: TransferCriteria[] | null;
+    readonly criteriaSet?: TransferCriteria[];
 
     /**
      * Specifies the order of the results. Use asc for ascending order, and desc for descending order.
      */
-    readonly order: LogSort | null;
+    readonly order?: LogSort;
 
     /**
      * Constructs a new TransferLogFilterRequest instance.
@@ -33,10 +33,10 @@ export class TransferLogFilter {
      * @param order - The order of the results.
      */
     constructor(
-        range: FilterRange | null,
-        options: FilterOptions | null,
-        criteriaSet: TransferCriteria[] | null,
-        order: LogSort | null
+        range?: FilterRange,
+        options?: FilterOptions,
+        criteriaSet?: TransferCriteria[],
+        order?: LogSort
     ) {
         this.range = range;
         this.options = options;
@@ -53,10 +53,10 @@ export class TransferLogFilter {
      * @param order - The order of the results.
      */
     static of(
-        range: FilterRange | null,
-        options: FilterOptions | null,
-        criteriaSet: TransferCriteria[] | null,
-        order: LogSort | null
+        range?: FilterRange,
+        options?: FilterOptions,
+        criteriaSet?: TransferCriteria[],
+        order?: LogSort
     ): TransferLogFilter {
         return new TransferLogFilter(range, options, criteriaSet, order);
     }
