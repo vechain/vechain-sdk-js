@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "private": true,
   "description": "Official documentation for the VeChain TypeScript SDK with examples",
   "author": "VeChain Foundation",
@@ -17,8 +17,8 @@
     "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@vechain/sdk-core": "2.0.6",
-    "@vechain/sdk-network": "2.0.6",
+    "@vechain/sdk-core": "2.0.7",
+    "@vechain/sdk-network": "2.0.7",
     "ws": "^8.18.1"
   },
   "devDependencies": {
