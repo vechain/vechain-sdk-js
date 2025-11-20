@@ -1,4 +1,4 @@
-import { type Address } from '@common/vcdm';
+import { Address, type AddressLike } from '@common/vcdm';
 
 class TransferCriteria {
     /**
@@ -37,11 +37,18 @@ class TransferCriteria {
      * @param recipient - The address that received the VET.
      */
     static of(
-        txOrigin: Address,
-        sender: Address,
-        recipient: Address
+        txOrigin: AddressLike,
+        sender: AddressLike,
+        recipient: AddressLike
     ): TransferCriteria {
-        return new TransferCriteria(txOrigin, sender, recipient);
+        const normalizedTxOrigin = Address.of(txOrigin);
+        const normalizedSender = Address.of(sender);
+        const normalizedRecipient = Address.of(recipient);
+        return new TransferCriteria(
+            normalizedTxOrigin,
+            normalizedSender,
+            normalizedRecipient
+        );
     }
 }
 

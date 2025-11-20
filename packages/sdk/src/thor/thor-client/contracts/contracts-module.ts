@@ -369,7 +369,7 @@ class ContractsModule extends AbstractThorModule {
      */
     public async executeTransaction(
         signer: Signer,
-        contractAddress: Address,
+        contractAddress: AddressLike,
         functionAbi: AbiFunction,
         functionData: FunctionArgs,
         transactionRequest?: TransactionRequest,
@@ -617,7 +617,7 @@ class ContractsModule extends AbstractThorModule {
      * @returns Contract information.
      */
     public async getContractInfo(
-        address: Address,
+        address: AddressLike,
         revision?: Revision
     ): Promise<{
         address: string;
@@ -626,14 +626,16 @@ class ContractsModule extends AbstractThorModule {
         code?: string;
         isContract?: boolean;
     }> {
+        const addr = Address.of(address);
+
         try {
             // Get account details and bytecode using ThorClient accounts module
             const accountDetails = await this.thorClient.accounts.getAccount(
-                address,
+                addr,
                 revision
             );
             const bytecode = await this.thorClient.accounts.getBytecode(
-                address,
+                addr,
                 revision
             );
 
@@ -642,7 +644,7 @@ class ContractsModule extends AbstractThorModule {
                 bytecode.toString() !== '0x' && bytecode.toString() !== '0x0';
 
             return {
-                address: address.toString(),
+                address: addr.toString(),
                 code: bytecode.toString(),
                 bytecode: bytecode.toString(),
                 isContract
@@ -652,7 +654,7 @@ class ContractsModule extends AbstractThorModule {
                 'ContractsModule.getContractInfo',
                 'Failed to get contract information',
                 {
-                    address: address.toString(),
+                    address: addr.toString(),
                     error:
                         error instanceof Error ? error.message : 'Unknown error'
                 }
@@ -665,9 +667,10 @@ class ContractsModule extends AbstractThorModule {
      * @param address - The address to check.
      * @returns True if the address is a contract, false otherwise.
      */
-    public async isContract(address: Address): Promise<boolean> {
+    public async isContract(address: AddressLike): Promise<boolean> {
+        const addr = Address.of(address);
         try {
-            const info = await this.getContractInfo(address);
+            const info = await this.getContractInfo(addr);
             return info.isContract ?? false;
         } catch (error) {
             return false;
@@ -681,13 +684,14 @@ class ContractsModule extends AbstractThorModule {
      * @returns The contract bytecode.
      */
     public async getContractBytecode(
-        address: Address,
+        address: AddressLike,
         revision?: Revision
     ): Promise<string> {
+        const addr = Address.of(address);
         try {
             // Use ThorClient accounts module to get bytecode
             const bytecode = await this.thorClient.accounts.getBytecode(
-                address,
+                addr,
                 revision
             );
             return bytecode.toString();
@@ -696,7 +700,7 @@ class ContractsModule extends AbstractThorModule {
                 'ContractsModule.getContractBytecode',
                 'Failed to get contract bytecode',
                 {
-                    address: address.toString(),
+                    address: addr.toString(),
                     error:
                         error instanceof Error ? error.message : 'Unknown error'
                 }
@@ -712,7 +716,7 @@ class ContractsModule extends AbstractThorModule {
      * @returns Array of contract events.
      */
     public async getContractEvents(
-        address: Address,
+        address: AddressLike,
         fromBlock?: number,
         toBlock?: number
     ): Promise<
@@ -724,6 +728,7 @@ class ContractsModule extends AbstractThorModule {
             transactionHash: string;
         }[]
     > {
+        const addr = Address.of(address);
         try {
             // Create the filter for the contract events
             const range =
@@ -731,7 +736,7 @@ class ContractsModule extends AbstractThorModule {
                     ? FilterRange.of(FilterRangeUnits.block, fromBlock, toBlock)
                     : null;
 
-            const criteria = EventCriteria.of(address);
+            const criteria = EventCriteria.of(addr);
             const filter = EventLogFilter.of(range, null, [criteria], null);
 
             // Use thorest to get raw event logs directly
@@ -751,7 +756,7 @@ class ContractsModule extends AbstractThorModule {
                 'ContractsModule.getContractEvents',
                 'Failed to get contract events',
                 {
-                    address: address.toString(),
+                    address: addr.toString(),
                     fromBlock,
                     toBlock,
                     error:

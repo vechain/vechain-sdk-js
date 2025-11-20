@@ -1,5 +1,11 @@
 import { RetrieveHistoricalFeeData, SuggestPriorityFee } from '@thor/thorest';
-import { type Address, HexUInt, Revision, RevisionLike } from '@common/vcdm';
+import {
+    Address,
+    AddressLike,
+    HexUInt,
+    Revision,
+    RevisionLike
+} from '@common/vcdm';
 import { IllegalArgumentError, NoSuchElementError } from '@common/errors';
 import { AbstractThorModule } from '@thor/thor-client/AbstractThorModule';
 import { type FeeHistory } from '../model/gas/FeeHistory';
@@ -96,9 +102,13 @@ class GasModule extends AbstractThorModule {
      */
     public async estimateGas(
         clauses: Clause[],
-        caller?: Address,
+        caller?: AddressLike,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
+        let addressCaller: Address | undefined;
+        if (caller) {
+            addressCaller = Address.of(caller);
+        }
         // check if clauses are empty
         if (clauses.length === 0) {
             log.warn({
@@ -130,7 +140,7 @@ class GasModule extends AbstractThorModule {
         }
         // simulate the clauses
         const simulationOptions: SimulateTransactionOptions = {
-            caller,
+            caller: addressCaller,
             revision: options?.revision,
             gas: options?.gas,
             gasPrice: options?.gasPrice
