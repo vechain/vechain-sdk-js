@@ -1,4 +1,4 @@
-import { type Address } from '@common/vcdm';
+import { Address } from '@common/vcdm';
 import { type TransferCriteriaJSON } from '@thor/thorest/json';
 import { type TransferCriteria } from '@thor/thor-client/model/logs/TransferCriteria';
 
@@ -42,9 +42,13 @@ class TransferCriteriaRequest {
      */
     static of(criteria: TransferCriteria): TransferCriteriaRequest {
         return new TransferCriteriaRequest(
-            criteria.txOrigin ?? undefined,
-            criteria.sender ?? undefined,
-            criteria.recipient ?? undefined
+            criteria.txOrigin != null
+                ? Address.of(criteria.txOrigin)
+                : undefined,
+            criteria.sender != null ? Address.of(criteria.sender) : undefined,
+            criteria.recipient != null
+                ? Address.of(criteria.recipient)
+                : undefined
         );
     }
 

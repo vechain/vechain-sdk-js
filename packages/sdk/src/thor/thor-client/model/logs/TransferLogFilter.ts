@@ -3,7 +3,10 @@ import { type FilterOptions } from './FilterOptions';
 import { type TransferCriteria } from './TransferCriteria';
 import { type LogSort } from './LogSort';
 
-export class TransferLogFilter {
+/**
+ * Filter options for transfer logs.
+ */
+export interface TransferLogFilter {
     /**
      * Defines the range for filtering. Setting values to null indicates the entire range.
      */
@@ -23,41 +26,4 @@ export class TransferLogFilter {
      * Specifies the order of the results. Use asc for ascending order, and desc for descending order.
      */
     readonly order?: LogSort;
-
-    /**
-     * Constructs a new TransferLogFilterRequest instance.
-     *
-     * @param range - The range for filtering.
-     * @param options - The filter options.
-     * @param criteriaSet - The transfer criteria.
-     * @param order - The order of the results.
-     */
-    constructor(
-        range?: FilterRange,
-        options?: FilterOptions,
-        criteriaSet?: TransferCriteria[],
-        order?: LogSort
-    ) {
-        this.range = range;
-        this.options = options;
-        this.criteriaSet = criteriaSet;
-        this.order = order;
-    }
-
-    /**
-     * Creates a new TransferLogFilterRequest instance.
-     *
-     * @param range - The range for filtering.
-     * @param options - The filter options.
-     * @param criteriaSet - The transfer criteria.
-     * @param order - The order of the results.
-     */
-    static of(
-        range?: FilterRange,
-        options?: FilterOptions,
-        criteriaSet?: TransferCriteria[],
-        order?: LogSort
-    ): TransferLogFilter {
-        return new TransferLogFilter(range, options, criteriaSet, order);
-    }
 }

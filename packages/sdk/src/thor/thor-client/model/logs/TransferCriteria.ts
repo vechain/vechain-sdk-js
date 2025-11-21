@@ -1,48 +1,23 @@
-import { type Address } from '@common/vcdm';
+import { type AddressLike } from '@common/vcdm';
 
-class TransferCriteria {
+/**
+ * Transfer criteria for filtering transfer logs.
+ */
+interface TransferCriteria {
     /**
      * The address from which the transaction was sent.
      */
-    readonly txOrigin?: Address;
+    readonly txOrigin?: AddressLike;
 
     /**
      * The address that sent the VET.
      */
-    readonly sender?: Address;
+    readonly sender?: AddressLike;
 
     /**
      * The address that received the VET.
      */
-    readonly recipient?: Address;
-
-    /**
-     * Constructs a new TransferCriteria instance.
-     *
-     * @param txOrigin - The address from which the transaction was sent.
-     * @param sender - The address that sent the VET.
-     * @param recipient - The address that received the VET.
-     */
-    constructor(txOrigin?: Address, sender?: Address, recipient?: Address) {
-        this.txOrigin = txOrigin;
-        this.sender = sender;
-        this.recipient = recipient;
-    }
-
-    /**
-     * Creates a new TransferCriteria instance.
-     *
-     * @param txOrigin - The address from which the transaction was sent.
-     * @param sender - The address that sent the VET.
-     * @param recipient - The address that received the VET.
-     */
-    static of(
-        txOrigin?: Address,
-        sender?: Address,
-        recipient?: Address
-    ): TransferCriteria {
-        return new TransferCriteria(txOrigin, sender, recipient);
-    }
+    readonly recipient?: AddressLike;
 }
 
-export { TransferCriteria };
+export type { TransferCriteria };
