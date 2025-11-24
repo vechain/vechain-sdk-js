@@ -1,4 +1,4 @@
-import { type Address, type Hex } from '@common/vcdm';
+import { type AddressLike, type Hex } from '@common/vcdm';
 
 /**
  * Criteria for filtering event logs.
@@ -7,7 +7,7 @@ interface EventCriteria {
     /**
      * The address of the contract that emits the event.
      */
-    readonly address?: Address;
+    readonly address?: AddressLike;
 
     /**
      * The keccak256 hash representing the event signature.
