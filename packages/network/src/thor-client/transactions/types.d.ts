@@ -19,12 +19,14 @@ type SimulateTransactionClause = TransactionClause;
 interface WaitForTransactionOptions {
     /**
      * Timeout in milliseconds.
-     * After this time, the method will throw an error.
+     * After this time, the method will return `null` if the transaction is not included in a block.
+     * If not specified, a default timeout of 30 seconds will be used.
      */
     timeoutMs?: number;
     /**
      * Interval in milliseconds.
      * The method will check the transaction status every `intervalMs` milliseconds.
+     * If not specified, a default interval of 1000 milliseconds (1 second) will be used.
      */
     intervalMs?: number;
 }
@@ -212,7 +214,9 @@ interface SendTransactionResult {
      */
     id: string;
 
-    wait: () => Promise<TransactionReceipt | null>;
+    wait: (
+        options?: WaitForTransactionOptions
+    ) => Promise<TransactionReceipt | null>;
 }
 
 /**

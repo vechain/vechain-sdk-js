@@ -10,7 +10,11 @@ import {
 import { TEST_ACCOUNTS } from '../../fixture';
 import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { THOR_SOLO_URL, ThorClient } from '../../../src';
+import {
+    THOR_SOLO_URL,
+    ThorClient,
+    type TransactionReceipt
+} from '../../../src';
 import { retryOperation } from '../../test-utils';
 
 /**
@@ -161,6 +165,114 @@ describe('ThorClient - Transactions Module', () => {
             expect(txReceipt).toBeDefined();
             expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
         });
+
+        /**
+         * Test that wait() method accepts timeout options
+         */
+        test('wait() should accept timeout options and pass them to waitForTransaction', async () => {
+            // Estimate the gas required for the transfer transaction
+            const gasResult = await retryOperation(
+                async () =>
+                    await thorSoloClient.transactions.estimateGas(
+                        [transfer1VTHOClause],
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                    )
+            );
+
+            const nonce =
+                transactionNonces.waitForTransactionTestCases[0] + 1000; // Use a unique nonce
+
+            const txBody =
+                await thorSoloClient.transactions.buildTransactionBody(
+                    [transfer1VTHOClause],
+                    gasResult.totalGas,
+                    { nonce }
+                );
+
+            const tx = Transaction.of(txBody).sign(
+                HexUInt.of(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                ).bytes
+            );
+
+            const sendTransactionResult =
+                await thorSoloClient.transactions.sendTransaction(tx);
+
+            // Wait with custom timeout options
+            const txReceipt = await sendTransactionResult.wait({
+                timeoutMs: 10000,
+                intervalMs: 500
+            });
+
+            expect(txReceipt).toBeDefined();
+            expect(txReceipt).not.toBeNull();
+        }, 15000);
+
+        /**
+         * Test that wait() uses default timeout when no options are provided
+         */
+        test('wait() should use default timeout of 30 seconds when no options provided', async () => {
+            // Use a non-existent transaction ID to test timeout
+            const nonExistentTxId =
+                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+
+            // Create a mock SendTransactionResult
+            const mockSendResult = {
+                id: nonExistentTxId,
+                wait: async (options?: {
+                    timeoutMs?: number;
+                    intervalMs?: number;
+                }): Promise<TransactionReceipt | null> => {
+                    return await thorSoloClient.transactions.waitForTransaction(
+                        nonExistentTxId,
+                        options
+                    );
+                }
+            };
+
+            const startTime = Date.now();
+            const receipt = await mockSendResult.wait(); // Should use default 30s timeout
+            const endTime = Date.now();
+
+            // Should return null due to timeout
+            expect(receipt).toBeNull();
+
+            // Should have taken approximately 30 seconds (with tolerance)
+            expect(endTime - startTime).toBeGreaterThanOrEqual(29000);
+            expect(endTime - startTime).toBeLessThan(35000);
+        }, 40000);
+
+        /**
+         * Test that wait() times out correctly with custom timeout
+         */
+        test('wait() should timeout correctly with custom timeout options', async () => {
+            const nonExistentTxId =
+                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+
+            const mockSendResult = {
+                id: nonExistentTxId,
+                wait: async (options?: {
+                    timeoutMs?: number;
+                    intervalMs?: number;
+                }): Promise<TransactionReceipt | null> => {
+                    return await thorSoloClient.transactions.waitForTransaction(
+                        nonExistentTxId,
+                        options
+                    );
+                }
+            };
+
+            const startTime = Date.now();
+            const receipt = await mockSendResult.wait({
+                timeoutMs: 2000,
+                intervalMs: 100
+            });
+            const endTime = Date.now();
+
+            expect(receipt).toBeNull();
+            expect(endTime - startTime).toBeGreaterThanOrEqual(1900);
+            expect(endTime - startTime).toBeLessThan(3000);
+        }, 5000);
 
         /**
          * waitForTransaction test cases that should not return a transaction receipt
