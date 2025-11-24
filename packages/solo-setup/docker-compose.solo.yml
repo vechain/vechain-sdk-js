@@ -1,0 +1,38 @@
+services:
+    thor-solo:
+        image: ghcr.io/vechain/thor:release-hayabusa-latest
+        container_name: thor-solo
+        user: root
+        ports:
+            - 8669:8669
+        logging:
+            driver: json-file
+            options:
+                max-size: '100m'
+                max-file: '3'
+                tag: 'thor-solo'
+        volumes:
+            - ./data:/data/thor
+            - ./logs:/var/log/thor
+        command:
+            - solo
+            - --on-demand # create new block when there is pending transaction
+            - --api-addr=0.0.0.0:8669 # Enable remote connections
+            - --api-cors=* # comma separated list of domains to accept cross-origin requests to API
+            - --txpool-limit-per-account=256 # limit txpool size per account
+            - --cache=2048 # megabytes of ram allocated to trie nodes cache
+            - --api-allowed-tracers=all
+            - --verbosity=9
+            - --persist
+            - --api-enable-deprecated
+            - --api-call-gas-limit=150000000
+            - --gas-limit=150000000
+            - --api-timeout=240000
+            - --hayabusa
+        healthcheck:
+            # We run the health check using standard UNIX tools so we don't have to
+            # install additional dependencies in the container.
+            test: wget -O- http://127.0.0.1:8669/blocks/1
+            interval: 5s
+            timeout: 20s
+            retries: 10

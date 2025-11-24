@@ -4,6 +4,7 @@ import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import localRules from "eslint-plugin-local-rules";
 import sonarjs from "eslint-plugin-sonarjs";
+import importPlugin from "eslint-plugin-import";
 import globals from "globals";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,13 +18,12 @@ const compat = new FlatCompat({
 });
 
 export default [{
-    ignores: ["**/node_modules/", "**/dist/", "**/coverage/", "**/coverageUnit/", "**/jest.config.*", "**/eslint.config.mjs", "**/jest.browser-setup.js"],
+    ignores: ["**/node_modules/", "**/dist/", "**/coverage/", "**/coverageUnit/", "**/jest.config.*", "**/eslint.config.mjs", "**/jest.browser-setup.js", "**/jest.global-setup.js"],
 }, ...compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:prettier/recommended",
-    "standard-with-typescript",
     "prettier",
     "plugin:sonarjs/recommended-legacy",
     "plugin:security/recommended-legacy",
@@ -33,6 +33,7 @@ export default [{
         "@typescript-eslint": typescriptEslint,
         "local-rules": localRules,
         sonarjs,
+        import: importPlugin,
     },
 
     languageOptions: {
@@ -66,8 +67,6 @@ export default [{
         "@typescript-eslint/restrict-template-expressions": "off",
         "@typescript-eslint/ban-types": "off",
         "@typescript-eslint/no-throw-literal": "off",
-        "@typescript-eslint/lines-between-class-members": "off",
-
         "prettier/prettier": ["error", {
             singleQuote: true,
             trailingComma: "none",
@@ -90,11 +89,13 @@ export default [{
         "security/detect-non-literal-fs-filename": "off",
         "sonarjs/sonar-no-unused-vars": "off",
         "sonarjs/sonar-no-fallthrough": "off",
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}]
+        "sonarjs/deprecation": "off",
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}],
     }
 }, {
     files: ["**/tests/**/*.ts"],
     rules: {
         "import/no-extraneous-dependencies": "off",
+        "sonarjs/no-unused-expressions": "off",
     }
 }];

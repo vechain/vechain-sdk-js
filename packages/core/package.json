@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-core",
-  "version": "1.1.0",
+  "version": "2.0.7",
   "description": "This module is crafted for dApp development and various blockchain operations that seamlessly unfold offline",
   "author": "VeChain Foundation",
   "license": "MIT",
@@ -27,7 +27,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
     "check:circular-dependencies": "npx madge --circular --extensions ts src",
     "lint": "eslint",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
@@ -44,10 +44,10 @@
     "@scure/base": "^1.2.4",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.5.1",
-    "@vechain/sdk-errors": "1.1.0",
-    "@vechain/sdk-logging": "1.1.0",
+    "@vechain/sdk-errors": "2.0.7",
+    "@vechain/sdk-logging": "2.0.7",
     "abitype": "^1.0.6",
-    "ethers": "6.13.4",
+    "ethers": "^6.14.0",
     "fast-json-stable-stringify": "^2.1.0",
     "viem": "^2.21.45"
   },

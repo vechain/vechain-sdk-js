@@ -1,4 +1,8 @@
-import { type ABIFunction } from '@vechain/sdk-core';
+import {
+    TransactionClause,
+    type ABIFunction,
+    type ContractClause
+} from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
 import { type VeChainSigner } from '../../signer/signers/types';
 import {
@@ -9,7 +13,6 @@ import { Contract, ContractFactory } from './model';
 import type {
     ContractCallOptions,
     ContractCallResult,
-    ContractClause,
     ContractTransactionOptions
 } from './types';
 import { type TransactionsModule } from '../transactions';
@@ -79,6 +82,12 @@ class ContractsModule {
         clauses: ContractClause[],
         options?: SimulateTransactionOptions
     ): Promise<ContractCallResult[]> {
+        if (clauses.every((clause) => 'clause' in clause)) {
+            return await this.transactionsModule.executeMultipleClausesCall(
+                clauses,
+                options
+            );
+        }
         return await this.transactionsModule.executeMultipleClausesCall(
             clauses,
             options
@@ -110,7 +119,7 @@ class ContractsModule {
      * Use {@link TransactionsModule.executeMultipleClausesTransaction} instead.
      */
     public async executeMultipleClausesTransaction(
-        clauses: ContractClause[],
+        clauses: ContractClause[] | TransactionClause[],
         signer: VeChainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
@@ -123,10 +132,10 @@ class ContractsModule {
 
     /**
      * This method is going to be deprecated in the next release.
-     * Use {@link TransactionsModule.getBaseGasPrice} instead.
+     * Use {@link TransactionsModule.getLegacyBaseGasPrice} instead.
      */
-    public async getBaseGasPrice(): Promise<ContractCallResult> {
-        return await this.transactionsModule.getBaseGasPrice();
+    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
+        return await this.transactionsModule.getLegacyBaseGasPrice();
     }
 }
 

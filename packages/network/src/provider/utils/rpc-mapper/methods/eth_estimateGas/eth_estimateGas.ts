@@ -1,15 +1,18 @@
+import { HexUInt } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
+    JSONRPCTransactionRevertError,
+    HttpNetworkError,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type TransactionObjectInput } from './types';
 import {
     type SimulateTransactionClause,
     type ThorClient
 } from '../../../../../thor-client';
-import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
+import { type TransactionObjectInput } from './types';
 
 /**
  * RPC Method eth_estimateGas implementation
@@ -23,14 +26,14 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
  *                 * params[0]: The transaction call object.
  *                 * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
  * @returns A hexadecimal number representing the estimation of the gas for a given transaction.
- * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError, JSONRPCTransactionRevertError}
  */
 const ethEstimateGas = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<string> => {
     // Input validation
-    if (params.length !== 2 || typeof params[0] !== 'object')
+    if (params.length < 1 || params.length > 2 || typeof params[0] !== 'object')
         throw new JSONRPCInvalidParams(
             'eth_estimateGas',
             `Invalid input params for "eth_estimateGas" method. See ${RPC_DOCUMENTATION_URL} for details.`,
@@ -38,6 +41,9 @@ const ethEstimateGas = async (
         );
 
     try {
+        if (params.length === 1) {
+            params.push('latest');
+        }
         // NOTE: The standard requires block parameter.
         // Here it is ignored and can be added in the future compatibility reasons.
         // (INPUT CHECK TAKE CARE OF THIS)
@@ -47,7 +53,7 @@ const ethEstimateGas = async (
         ];
         const revision = DefaultBlockToRevision(defaultBlock);
 
-        const estimatedGas = await thorClient.gas.estimateGas(
+        const estimatedGas = await thorClient.transactions.estimateGas(
             [
                 {
                     to: inputOptions.to ?? null,
@@ -57,13 +63,73 @@ const ethEstimateGas = async (
             ],
             inputOptions.from,
             {
-                revision: revision.toString()
+                revision: revision
             }
         );
 
+        // Check if the transaction would revert and throw error if so
+        if (estimatedGas.reverted) {
+            // To get the proper custom error data, we need to run the simulation ourselves
+            // because estimateGas doesn't provide access to the raw simulation data
+            const simulations =
+                await thorClient.transactions.simulateTransaction(
+                    [
+                        {
+                            to: inputOptions.to ?? null,
+                            value: inputOptions.value ?? '0x0',
+                            data: inputOptions.data ?? '0x'
+                        } satisfies SimulateTransactionClause
+                    ],
+                    {
+                        revision: revision,
+                        caller: inputOptions.from
+                    }
+                );
+
+            // Find the first non-empty revert reason or VM error
+            const revertReason =
+                estimatedGas.revertReasons.find((reason) => reason !== '') ??
+                estimatedGas.vmErrors.find((error) => error !== '') ??
+                'execution reverted';
+
+            // Use the raw simulation data as revert data for hardhat-chai-matchers
+            // This should contain the encoded custom error information
+            let revertData = simulations[0].data || '0x';
+
+            // Make sure revertData is a valid hex string
+            if (!revertData.startsWith('0x')) {
+                revertData = '0x' + revertData;
+            }
+
+            throw new JSONRPCTransactionRevertError(
+                revertReason.toString(),
+                revertData
+            );
+        }
+
         // Convert intrinsic gas to hex string and return
-        return '0x' + estimatedGas.totalGas.toString(16);
+        return HexUInt.of(estimatedGas.totalGas).toString(true);
     } catch (e) {
+        // Re-throw JSONRPCTransactionRevertError as-is
+        if (e instanceof JSONRPCTransactionRevertError) {
+            throw e;
+        }
+
+        // Check if this is a network communication error
+        if (e instanceof HttpNetworkError) {
+            throw new JSONRPCInternalError(
+                'eth_estimateGas()',
+                'Method "eth_estimateGas" failed due to network communication error.',
+                {
+                    params: stringifyData(params),
+                    url: thorClient.httpClient.baseURL,
+                    networkError: true,
+                    networkErrorType: e.data.networkErrorType,
+                    innerError: stringifyData(e)
+                }
+            );
+        }
+
         throw new JSONRPCInternalError(
             'eth_estimateGas()',
             'Method "eth_estimateGas" failed.',

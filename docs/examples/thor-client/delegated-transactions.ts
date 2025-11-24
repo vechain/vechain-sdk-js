@@ -45,15 +45,17 @@ const clauses = [
 ];
 
 // Get gas estimate
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorSoloClient.transactions.estimateGas(
     clauses,
     senderAccount.address
 );
 
+const chainTag = await thorSoloClient.nodes.getChaintag();
+
 //  4 - Create delegated transaction
 
 const delegatedTransactionBody = {
-    chainTag: 0xf6,
+    chainTag: chainTag,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
     clauses,

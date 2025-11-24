@@ -4,6 +4,7 @@ import { HexUInt, Transaction } from '@vechain/sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataType, stringifyData } from '@vechain/sdk-errors';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
+import { retryOperation } from '../../test-utils';
 
 /**
  * ThorClient class tests.
@@ -32,18 +33,28 @@ describe('ThorClient - Transactions Module', () => {
                 // 1- Init transaction
 
                 // Get latest block
-                const latestBlock =
-                    await thorSoloClient.blocks.getBestBlockCompressed();
-
-                // Estimate the gas required for the transfer transaction
-                const gasResult = await thorSoloClient.gas.estimateGas(
-                    testCase.transaction.clauses,
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                const latestBlock = await retryOperation(
+                    async () =>
+                        await thorSoloClient.blocks.getBestBlockCompressed()
                 );
 
+                // Estimate the gas required for the transfer transaction
+                const gasResult = await retryOperation(
+                    async () =>
+                        await thorSoloClient.transactions.estimateGas(
+                            testCase.transaction.clauses,
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                        )
+                );
+
+                const chainTagId = await thorSoloClient.nodes.getChaintag();
+
+                if (!chainTagId) {
+                    throw new Error('Chain tag not found');
+                }
                 // Create transactions
                 const transactionBody = {
-                    chainTag: 0xf6,
+                    chainTag: chainTagId,
                     blockRef:
                         latestBlock !== null
                             ? latestBlock.id.slice(0, 18)
@@ -57,7 +68,7 @@ describe('ThorClient - Transactions Module', () => {
                 };
 
                 const delegatedTransactionBody = {
-                    chainTag: 0xf6,
+                    chainTag: chainTagId,
                     blockRef:
                         latestBlock !== null
                             ? latestBlock.id.slice(0, 18)
@@ -92,23 +103,29 @@ describe('ThorClient - Transactions Module', () => {
 
                 // 2 - Send transaction
                 for (const raw of [rawNormalSigned, rawDelegatedSigned]) {
-                    const send =
-                        await thorSoloClient.transactions.sendRawTransaction(
-                            HexUInt.of(raw).toString()
-                        );
+                    const send = await retryOperation(
+                        async () =>
+                            await thorSoloClient.transactions.sendRawTransaction(
+                                HexUInt.of(raw).toString()
+                            )
+                    );
                     expect(send).toBeDefined();
                     expect(send).toHaveProperty('id');
                     expect(HexUInt.isValid0x(send.id)).toBe(true);
 
                     // 3 - Get transaction AND transaction receipt
-                    const transaction =
-                        await thorSoloClient.transactions.getTransaction(
-                            send.id
-                        );
-                    const transactionReceipt =
-                        await thorSoloClient.transactions.getTransactionReceipt(
-                            send.id
-                        );
+                    const transaction = await retryOperation(
+                        async () =>
+                            await thorSoloClient.transactions.getTransaction(
+                                send.id
+                            )
+                    );
+                    const transactionReceipt = await retryOperation(
+                        async () =>
+                            await thorSoloClient.transactions.getTransactionReceipt(
+                                send.id
+                            )
+                    );
 
                     expect(transaction).toBeDefined();
                     expect(transactionReceipt).toBeDefined();
@@ -140,13 +157,15 @@ describe('ThorClient - Transactions Module', () => {
         simulateTransaction.correct.transfer.forEach(
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
-                    const simulatedTx =
-                        await thorSoloClient.transactions.simulateTransaction(
-                            transaction.clauses,
-                            {
-                                ...transaction.simulateTransactionOptions
-                            }
-                        );
+                    const simulatedTx = await retryOperation(
+                        async () =>
+                            await thorSoloClient.transactions.simulateTransaction(
+                                transaction.clauses,
+                                {
+                                    ...transaction.simulateTransactionOptions
+                                }
+                            )
+                    );
 
                     expect(simulatedTx).toBeDefined();
                     /**
@@ -175,13 +194,15 @@ describe('ThorClient - Transactions Module', () => {
         simulateTransaction.correct.smartContractCall.forEach(
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
-                    const simulatedTx =
-                        await thorSoloClient.transactions.simulateTransaction(
-                            transaction.clauses,
-                            {
-                                ...transaction.simulateTransactionOptions
-                            }
-                        );
+                    const simulatedTx = await retryOperation(
+                        async () =>
+                            await thorSoloClient.transactions.simulateTransaction(
+                                transaction.clauses,
+                                {
+                                    ...transaction.simulateTransactionOptions
+                                }
+                            )
+                    );
 
                     expect(simulatedTx).toBeDefined();
 
@@ -200,10 +221,12 @@ describe('ThorClient - Transactions Module', () => {
         simulateTransaction.correct.deployContract.forEach(
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
-                    const simulatedTx =
-                        await thorSoloClient.transactions.simulateTransaction(
-                            transaction.clauses
-                        );
+                    const simulatedTx = await retryOperation(
+                        async () =>
+                            await thorSoloClient.transactions.simulateTransaction(
+                                transaction.clauses
+                            )
+                    );
 
                     expect(simulatedTx).toBeDefined();
 
@@ -222,13 +245,15 @@ describe('ThorClient - Transactions Module', () => {
         simulateTransaction.errors.forEach(
             ({ testName, transaction, vmError }) => {
                 test(testName, async () => {
-                    const simulatedTx =
-                        await thorSoloClient.transactions.simulateTransaction(
-                            transaction.clauses,
-                            {
-                                ...transaction.simulateTransactionOptions
-                            }
-                        );
+                    const simulatedTx = await retryOperation(
+                        async () =>
+                            await thorSoloClient.transactions.simulateTransaction(
+                                transaction.clauses,
+                                {
+                                    ...transaction.simulateTransactionOptions
+                                }
+                            )
+                    );
 
                     expect(simulatedTx).toBeDefined();
                     expect(simulatedTx).toHaveLength(1);

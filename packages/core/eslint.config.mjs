@@ -19,6 +19,9 @@ export default [
                     message: "Please import using @vechain/sdk-<the-module>",
                 }],
             }],
+            // Disable all sonarjs rules
+            "sonarjs/no-base-to-string": "off",
+            "sonarjs/no-unused-expressions": "off",
         },
     },
 ];

@@ -7,6 +7,7 @@ import {
     type TransactionBody
 } from '@vechain/sdk-core';
 import {
+    InvalidDataType,
     InvalidSecp256k1PrivateKey,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
@@ -117,7 +118,8 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * Sends a transaction to the blockchain.
      *
      * @param {TransactionRequestInput} transactionToSend - The transaction object to be sent.
-     * This includes all the necessary details such as `to`, `value`, `data`, `gasLimit`, etc.
+     * This includes all the necessary details such as `to`, `value`, `data`, `gas`, etc.
+     * Note: `gasLimit` is deprecated and will be removed in a future release. Use `gas` instead.
      * @return {Promise<string>} A promise that resolves to the transaction hash as a string
      * once the transaction is successfully sent.
      * @throws {JSONRPCInvalidParams} Throws an error if the provider is not attached
@@ -215,13 +217,23 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         const unsignedTx = Transaction.of(unsignedTransactionBody);
 
         // Sign transaction with origin private key and gasPayer private key
-        if (gasPayerOptions?.gasPayerPrivateKey !== undefined)
+        if (gasPayerOptions?.gasPayerPrivateKey !== undefined) {
+            // Validate the gas payer private key before using it
+            if (!HexUInt.isValid(gasPayerOptions.gasPayerPrivateKey)) {
+                throw new InvalidDataType(
+                    'VeChainPrivateKeySigner._signWithGasPayer',
+                    'Invalid gas payer private key. Ensure it is a valid hexadecimal string.',
+                    { gasPayerPrivateKey: gasPayerOptions.gasPayerPrivateKey }
+                );
+            }
+
             return Hex.of(
                 Transaction.of(unsignedTransactionBody).signAsSenderAndGasPayer(
                     originPrivateKey,
-                    HexUInt.of(gasPayerOptions?.gasPayerPrivateKey).bytes
+                    HexUInt.of(gasPayerOptions.gasPayerPrivateKey).bytes
                 ).encoded
             ).toString();
+        }
 
         // Otherwise, get the signature of the gasPayer from the gasPayer endpoint
         const gasPayerSignature = await DelegationHandler(

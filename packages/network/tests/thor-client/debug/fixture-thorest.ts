@@ -1,17 +1,13 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 
-import {
-    THOR_SOLO_ACCOUNTS,
-    type ThorClient,
-    type TransactionReceipt
-} from '../../../src';
+import { type ThorClient, type TransactionReceipt } from '../../../src';
 import {
     transactionNonces,
-    transfer1VTHOClause,
-    transferTransactionBodyValueAsNumber
+    transfer1VTHOClause
 } from '../transactions/fixture';
 import { HexUInt, BlockId, Transaction } from '@vechain/sdk-core';
-
+import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
+import { retryOperation } from '../../test-utils';
 /**
  * Debug traceTransactionClause tests fixture testnet
  *
@@ -462,35 +458,47 @@ const retrieveStorageRangeTestnetFixture = {
  * @param thorClient The ThorClient instance
  * @returns The transaction receipt
  */
-const sendTransactionWithAccountIndex = async (
-    senderIndex: number,
+const sendTransactionWithAccount = async (
+    account: ThorSoloAccount,
     thorClient: ThorClient
 ): Promise<TransactionReceipt | null> => {
     // Estimate the gas required for the transfer transaction
-    const gasResult = await thorClient.gas.estimateGas(
-        [transfer1VTHOClause],
-        THOR_SOLO_ACCOUNTS[senderIndex].address
-    );
+    const gasResult = await retryOperation(async () => {
+        return await thorClient.transactions.estimateGas(
+            [transfer1VTHOClause],
+            account.address
+        );
+    });
 
     // Create the signed transfer transaction
-    const tx = Transaction.of({
-        ...transferTransactionBodyValueAsNumber,
-        gas: gasResult.totalGas,
-        nonce: transactionNonces
-            .sendTransactionWithANumberAsValueInTransactionBody[0]
-    }).sign(HexUInt.of(THOR_SOLO_ACCOUNTS[senderIndex].privateKey).bytes);
+
+    const nonce =
+        transactionNonces.sendTransactionWithANumberAsValueInTransactionBody[0];
+
+    const txBody = await thorClient.transactions.buildTransactionBody(
+        [transfer1VTHOClause],
+        gasResult.totalGas,
+        { nonce }
+    );
+
+    const tx = Transaction.of(txBody).sign(
+        HexUInt.of(account.privateKey).bytes
+    );
 
     // Send the transaction and obtain the transaction ID
-    const sendTransactionResult =
-        await thorClient.transactions.sendTransaction(tx);
+    const sendTransactionResult = await retryOperation(async () => {
+        return await thorClient.transactions.sendTransaction(tx);
+    });
 
     // Wait for the transaction to be included in a block
-    return await sendTransactionResult.wait();
+    return await retryOperation(async () => {
+        return await sendTransactionResult.wait();
+    });
 };
 
 export {
     traceTransactionClauseTestnetFixture,
     traceContractCallTestnetFixture,
     retrieveStorageRangeTestnetFixture,
-    sendTransactionWithAccountIndex
+    sendTransactionWithAccount
 };

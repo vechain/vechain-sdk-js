@@ -160,6 +160,29 @@ class JSONRPCMethodNotImplemented extends JSONRPCProviderError {
     }
 }
 
+/**
+ * Revert error.
+ *
+ * WHEN TO USE:
+ * * When a Transaction is reverted.
+ */
+class JSONRPCTransactionRevertError extends Error {
+    code: number;
+    data?: string;
+    message: string;
+
+    constructor(message: string, data?: string) {
+        super(message || 'execution reverted');
+        this.message = message;
+        this.name = 'JSONRPCTransactionRevertError';
+        this.code = -32000;
+        this.data = data;
+
+        // Needed to make instanceof work when transpiled
+        Object.setPrototypeOf(this, new.target.prototype);
+    }
+}
+
 export {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
@@ -170,5 +193,6 @@ export {
     JSONRPCProviderError,
     JSONRPCServerError,
     ProviderMethodError,
-    JSONRPCInvalidDefaultBlock
+    JSONRPCInvalidDefaultBlock,
+    JSONRPCTransactionRevertError
 };

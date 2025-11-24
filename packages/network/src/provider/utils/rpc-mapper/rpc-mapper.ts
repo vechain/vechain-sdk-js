@@ -1,4 +1,5 @@
 import { type ThorClient } from '../../../thor-client';
+import { type FeeHistoryResponse } from '../../../thor-client/gas/types';
 import { type VeChainProvider } from '../../providers/vechain-provider';
 import { RPC_METHODS } from '../const/rpc-mapper/rpc-methods';
 import {
@@ -57,6 +58,8 @@ import {
     web3ClientVersion,
     web3Sha3
 } from './methods';
+import { ethFeeHistory } from './methods/eth_feeHistory/eth_feeHistory';
+import { ethMaxPriorityFeePerGas } from './methods/eth_maxPriorityFeePerGas/eth_maxPriorityFeePerGas';
 
 type MethodHandlerType<TParams, TReturnType> = (
     params: TParams[]
@@ -179,7 +182,7 @@ const RPCMethodsMap = (
             return await ethSubscribe(thorClient, params, provider);
         },
 
-        [RPC_METHODS.eth_unsubscribe]: async (params) => {
+        [RPC_METHODS.eth_unsubscribe]: async (params): Promise<boolean> => {
             return await ethUnsubscribe(params, provider);
         },
 
@@ -199,7 +202,14 @@ const RPCMethodsMap = (
             return await debugTraceCall(thorClient, params);
         },
 
-        [RPC_METHODS.evm_mine]: async (): Promise<BlocksRPC | null> => {
+        [RPC_METHODS.evm_increaseTime]: async (): Promise<null> => {
+            // @see https://docs.vechain.org/core-concepts/evm-compatibility/test-coverage/hardhat-specific/evm_increasetime
+            // VeChain does not support evm_increaseTime, so we use evm_mine instead
+            // This is a workaround to be able to use hardhat's evm_increaseTime
+            return await evmMine(thorClient);
+        },
+
+        [RPC_METHODS.evm_mine]: async (): Promise<null> => {
             return await evmMine(thorClient);
         },
 
@@ -330,6 +340,18 @@ const RPCMethodsMap = (
 
         [RPC_METHODS.eth_signTypedData_v4]: async (params): Promise<string> => {
             return await ethSignTypedDataV4(thorClient, params, provider);
+        },
+
+        [RPC_METHODS.eth_maxPriorityFeePerGas]: async (
+            params
+        ): Promise<string> => {
+            return await ethMaxPriorityFeePerGas(thorClient, params, provider);
+        },
+
+        [RPC_METHODS.eth_feeHistory]: async (
+            params
+        ): Promise<FeeHistoryResponse> => {
+            return await ethFeeHistory(thorClient, params, provider);
         }
     };
 };

@@ -1,6 +1,8 @@
 import {
     Address,
     Clause,
+    Revision,
+    type ContractClause,
     type TransactionClause,
     Units,
     VET
@@ -19,7 +21,6 @@ import type {
 import { type VeChainSigner } from '../../../signer';
 import { type FilterCriteria } from '../../logs';
 import { type SendTransactionResult } from '../../transactions/types';
-import { type ContractClause } from '../types';
 import { type Contract } from './contract';
 import { ContractFilter } from './contract-filter';
 import {
@@ -33,10 +34,11 @@ import {
     type ContractFunctionTransact,
     type TransactionValue
 } from './types';
+import type { ContractCallOptions } from '../types';
 
 /**
- * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
- * @param contract - The contract instance to create the read proxy for.
+ * Creates a Proxy object for reading contract functions, allowing for the dynamic invocation of contract read operations.
+ * @param contract - The contract instance
  * @returns A Proxy that intercepts calls to read contract functions, automatically handling the invocation with the configured options.
  */
 function getReadProxy<TAbi extends Abi>(
@@ -57,29 +59,39 @@ function getReadProxy<TAbi extends Abi>(
                     args as unknown[]
                 );
 
-                const clauseComment =
-                    extractOptionsResult.clauseAdditionalOptions?.comment;
-
-                const revisionValue =
-                    extractOptionsResult.clauseAdditionalOptions?.revision;
+                const clauseAdditionalOptions =
+                    extractOptionsResult.clauseAdditionalOptions;
 
                 const functionAbi = contract.getFunctionAbi(prop);
+
+                const callOptions = {
+                    caller:
+                        contract.getSigner() !== undefined
+                            ? await contract.getSigner()?.getAddress()
+                            : undefined,
+                    ...contract.getContractReadOptions(),
+                    includeABI: true
+                } as ContractCallOptions & {
+                    caller?: string;
+                    includeABI: boolean;
+                };
+
+                if (clauseAdditionalOptions?.comment !== undefined) {
+                    callOptions.comment = clauseAdditionalOptions.comment;
+                }
+
+                if (clauseAdditionalOptions?.revision !== undefined) {
+                    callOptions.revision = Revision.of(
+                        clauseAdditionalOptions.revision
+                    );
+                }
 
                 const executeCallResult =
                     await contract.contractsModule.executeCall(
                         contract.address,
                         functionAbi,
                         extractOptionsResult.args,
-                        {
-                            caller:
-                                contract.getSigner() !== undefined
-                                    ? await contract.getSigner()?.getAddress()
-                                    : undefined,
-                            ...contract.getContractReadOptions(),
-                            comment: clauseComment,
-                            revision: revisionValue,
-                            includeABI: true
-                        }
+                        callOptions
                     );
 
                 if (!executeCallResult.success) {
@@ -91,7 +103,9 @@ function getReadProxy<TAbi extends Abi>(
                         }
                     );
                 }
-                return executeCallResult.result.array as unknown[];
+
+                // Return the properly typed result based on the function's outputs
+                return executeCallResult.result.array ?? [];
             };
         }
     });
@@ -151,7 +165,9 @@ function getTransactProxy<TAbi extends Abi>(
                     {
                         ...transactionOptions,
                         value:
-                            transactionOptions.value ?? transactionValue ?? 0,
+                            transactionOptions.value ??
+                            transactionValue ??
+                            '0x0',
                         comment: clauseComment,
                         includeABI: true
                     }
@@ -335,9 +351,11 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
  * @returns The transaction value object, if found in the arguments list.
  */
 function getTransactionValue(args: unknown[]): TransactionValue | undefined {
-    return args.find((arg) => isTransactionValue(arg)) as
-        | TransactionValue
-        | undefined;
+    const found = args.find((arg) => isTransactionValue(arg));
+    if (!found) return undefined;
+    return {
+        value: (found.value as number | string | bigint).toString()
+    } as TransactionValue;
 }
 
 /**

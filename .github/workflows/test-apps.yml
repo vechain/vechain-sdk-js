@@ -9,12 +9,12 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: v20.11.0
+                  node-version: 22
  
             - name: Install packages
               run: yarn install
@@ -33,6 +33,7 @@ jobs:
                   # Iterate over each folder in /apps
                   for current_app_directory in "$apps_directory"/*; do
                     if [ -d "$current_app_directory" ]; then
+
                       # LOG
                       echo "Running yarn in $current_app_directory"
                   
@@ -41,7 +42,7 @@ jobs:
                   
                       # Test
                       yarn test
-                  
+
                       # Return to the original directory using absolute path
                       cd "../"
                     fi

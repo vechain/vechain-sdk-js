@@ -11,6 +11,7 @@ import {
 } from '../../../src';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { erc20ContractBytecode } from './fixture';
+import { retryOperation } from '../../test-utils';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -287,12 +288,14 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const contract = await factory.waitForDeployment();
 
-        const contractRead =
-            await thorSoloClient.contracts.executeMultipleClausesCall([
-                contract.clause.name(),
-                contract.clause.symbol(),
-                contract.clause.decimals()
-            ]);
+        const contractRead = await retryOperation(
+            async () =>
+                await thorSoloClient.contracts.executeMultipleClausesCall([
+                    contract.clause.name(),
+                    contract.clause.symbol(),
+                    contract.clause.decimals()
+                ])
+        );
 
         expect(contractRead[0]).toEqual({
             success: true,
@@ -332,12 +335,14 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const contract = await factory.waitForDeployment();
 
-        const contractRead =
-            await thorSoloClient.contracts.executeMultipleClausesCall([
-                contract.clause.name(),
-                contract.clause.symbol(),
-                contract.clause.decimals()
-            ]);
+        const contractRead = await retryOperation(
+            async () =>
+                await thorSoloClient.contracts.executeMultipleClausesCall([
+                    contract.clause.name(),
+                    contract.clause.symbol(),
+                    contract.clause.decimals()
+                ])
+        );
 
         expect(contractRead[0]).toEqual({
             success: true,
@@ -363,72 +368,80 @@ describe('ThorClient - ERC20 Contracts', () => {
     }, 10000);
 
     /**
-     * Tests the execution of multiple ERC20 contract clauses using a blockchain client.
+     * Tests the execution of multiple ERC20 contract clauses using a blockchain client. Once using a TransactionClause[] and once using a ContractClause[]
      */
-    test('Execute multiple ERC20 contract clauses', async () => {
-        // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
-            ERC20_ABI,
-            erc20ContractBytecode,
-            signer
-        );
-
-        factory = await factory.startDeployment();
-
-        const contract = await factory.waitForDeployment();
-
-        // Execute multiple 'transfer' transactions on the deployed contract,
-        const txResult =
-            await thorSoloClient.contracts.executeMultipleClausesTransaction(
-                [
-                    contract.clause.transfer(
-                        { comment: 'Transfer 1000 tokens' },
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                        1000n
-                    ),
-                    contract.clause.transfer(
-                        { comment: 'Transfer 1000 tokens' },
-                        TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
-                        1000n
-                    ),
-                    contract.clause.transfer(
-                        { comment: 'Transfer 3000 tokens' },
-                        TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
-                        3000n
-                    )
-                ],
+    ['TransactionClause', 'ContractClause'].forEach((testCase) => {
+        test('Execute multiple ERC20 contract clauses', async () => {
+            // Deploy the ERC20 contract
+            let factory = thorSoloClient.contracts.createContractFactory(
+                ERC20_ABI,
+                erc20ContractBytecode,
                 signer
             );
 
-        await txResult.wait();
+            factory = await factory.startDeployment();
 
-        const reads = await thorSoloClient.contracts.executeMultipleClausesCall(
-            [
-                contract.clause.balanceOf(
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            const contract = await factory.waitForDeployment();
+
+            const rawClauses = [
+                contract.clause.transfer(
+                    { comment: 'Transfer 1000 tokens' },
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    1000n
                 ),
-                contract.clause.balanceOf(
-                    TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
+                contract.clause.transfer(
+                    { comment: 'Transfer 1000 tokens' },
+                    TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
+                    1000n
+                ),
+                contract.clause.transfer(
+                    { comment: 'Transfer 3000 tokens' },
+                    TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address,
+                    3000n
                 )
-            ]
-        );
+            ];
 
-        expect(reads[0]).toEqual({
-            success: true,
-            result: {
-                plain: 1000n,
-                array: [1000n]
-            }
-        });
+            // Execute multiple 'transfer' transactions on the deployed contract,
+            const txResult =
+                await thorSoloClient.contracts.executeMultipleClausesTransaction(
+                    testCase === 'ContractClause'
+                        ? rawClauses
+                        : rawClauses.map((clause) => clause.clause),
+                    signer
+                );
 
-        expect(reads[1]).toEqual({
-            success: true,
-            result: {
-                plain: 4000n,
-                array: [4000n]
-            }
-        });
-    }, 10000);
+            await txResult.wait();
+
+            const reads = await retryOperation(
+                async () =>
+                    await thorSoloClient.contracts.executeMultipleClausesCall([
+                        contract.clause.balanceOf(
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
+                                .address
+                        ),
+                        contract.clause.balanceOf(
+                            TEST_ACCOUNTS.TRANSACTION.GAS_PAYER.address
+                        )
+                    ])
+            );
+
+            expect(reads[0]).toEqual({
+                success: true,
+                result: {
+                    plain: 1000n,
+                    array: [1000n]
+                }
+            });
+
+            expect(reads[1]).toEqual({
+                success: true,
+                result: {
+                    plain: 4000n,
+                    array: [4000n]
+                }
+            });
+        }, 10000);
+    });
 
     /**
      * Test transaction execution with url delegation set from contract.

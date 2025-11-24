@@ -7,10 +7,11 @@ import {
 import {
     RPC_METHODS,
     RPCMethodsMap,
-    THOR_SOLO_ACCOUNTS,
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
+import { getUnusedAccount } from '../../../../fixture';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_sendRawTransaction' method
@@ -42,8 +43,8 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             // 1 - Init sender and receiver
 
             const actors = {
-                sender: THOR_SOLO_ACCOUNTS[1],
-                receiver: THOR_SOLO_ACCOUNTS[2]
+                sender: getUnusedAccount(),
+                receiver: getUnusedAccount()
             };
 
             // 2- Init transaction
@@ -58,18 +59,29 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             ];
 
             // Get latest block
-            const latestBlock =
-                await thorClient.blocks.getBestBlockCompressed();
-
-            // Estimate the gas required for the transfer transaction
-            const gasResult = await thorClient.gas.estimateGas(
-                clauses,
-                actors.sender.address
+            const latestBlock = await retryOperation(
+                async () => await thorClient.blocks.getBestBlockCompressed()
             );
 
+            // Estimate the gas required for the transfer transaction
+            const gasResult = await retryOperation(
+                async () =>
+                    await thorClient.transactions.estimateGas(
+                        clauses,
+                        actors.sender.address
+                    )
+            );
+
+            const genesisBlock = await thorClient.blocks.getGenesisBlock();
+
+            if (!genesisBlock) {
+                throw new Error('Genesis block not found');
+            }
+
+            const chainTagId = Number(`0x${genesisBlock.id.slice(-2)}`);
             // Create transactions
             const transactionBody = {
-                chainTag: 0xf6,
+                chainTag: chainTagId,
                 blockRef:
                     latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
                 expiration: 32,
@@ -90,9 +102,12 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
 
             // 3 - Send raw transaction
 
-            const result = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_sendRawTransaction
-            ]([raw])) as string;
+            const result = (await retryOperation(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_sendRawTransaction
+                    ]([raw])
+            )) as string;
 
             expect(result).toBe(signedTransaction.id.toString());
         });

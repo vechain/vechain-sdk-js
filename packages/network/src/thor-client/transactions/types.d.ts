@@ -1,4 +1,8 @@
-import type { TransactionBody, TransactionClause } from '@vechain/sdk-core';
+import type {
+    Revision,
+    TransactionBody,
+    TransactionClause
+} from '@vechain/sdk-core';
 import type { Output } from '../blocks';
 import { type Transfer } from '../logs';
 
@@ -15,12 +19,14 @@ type SimulateTransactionClause = TransactionClause;
 interface WaitForTransactionOptions {
     /**
      * Timeout in milliseconds.
-     * After this time, the method will throw an error.
+     * After this time, the method will return `null` if the transaction is not included in a block.
+     * If not specified, a default timeout of 30 seconds will be used.
      */
     timeoutMs?: number;
     /**
      * Interval in milliseconds.
      * The method will check the transaction status every `intervalMs` milliseconds.
+     * If not specified, a default interval of 1000 milliseconds (1 second) will be used.
      */
     intervalMs?: number;
 }
@@ -51,12 +57,13 @@ interface TransactionBodyOptions {
     expiration?: number;
 
     /**
-     * Transaction gas.
+     * The maximum amount of gas to allow this transaction to consume.
      */
     gas?: string | number;
 
     /**
      *  The maximum amount of gas to allow this transaction to consume.
+     *  @deprecated Use `gas` instead. This property will be removed in a future release.
      */
     gasLimit?: string;
 
@@ -85,6 +92,16 @@ interface TransactionBodyOptions {
      * Every transaction with same chainTag, blockRef, ... must have different nonce.
      */
     nonce?: string | number;
+
+    /**
+     * The maximum fee per gas for the transaction.
+     */
+    maxFeePerGas?: string | number;
+
+    /**
+     * The maximum priority fee per gas for the transaction.
+     */
+    maxPriorityFeePerGas?: string | number;
 }
 
 /**
@@ -125,7 +142,7 @@ interface SimulateTransactionOptions {
     /**
      * The block number or block ID of which the transaction simulation is based on
      */
-    revision?: string;
+    revision?: Revision;
     /**
      * The offered gas for the transaction simulation
      */
@@ -197,7 +214,9 @@ interface SendTransactionResult {
      */
     id: string;
 
-    wait: () => Promise<TransactionReceipt | null>;
+    wait: (
+        options?: WaitForTransactionOptions
+    ) => Promise<TransactionReceipt | null>;
 }
 
 /**
@@ -246,6 +265,7 @@ type TransactionDetailNoRaw = TransactionBody & {
     gasPayer: string | null;
     size: number;
     meta: TransactionMetadata;
+    type: number;
 };
 
 /**
@@ -280,6 +300,34 @@ interface TransactionReceipt {
      * Data associated with the transaction e.g. blockID, blockNumber, txID
      */
     meta: TransactionMetadata;
+    /**
+     * The maximum fee per gas for the transaction.
+     */
+    maxFeePerGas?: string;
+    /**
+     * The maximum priority fee per gas for the transaction.
+     */
+    maxPriorityFeePerGas?: string;
+}
+
+/**
+ * [Event](http://127.0.0.1:8669/doc/stoplight-ui/#/schemas/Event)
+ */
+interface TransactionSimulationEvent {
+    /**
+     * The address of the contract that emitted the event.
+     */
+    address: string;
+
+    /**
+     * Topics are indexed parameters to an event. The first topic is always the event signature.
+     */
+    topics: string[];
+
+    /**
+     * The data associated with the event.
+     */
+    data: string;
 }
 
 /**
@@ -293,7 +341,7 @@ interface TransactionSimulationResult {
     /**
      * Events emitted from the transaction simulation
      */
-    events: Event[];
+    events: TransactionSimulationEvent[];
     /**
      * Transfers that occur from the transaction simulation
      */
@@ -315,17 +363,18 @@ interface TransactionSimulationResult {
 /* --- Responses Outputs end --- */
 
 export type {
-    WaitForTransactionOptions,
-    TransactionBodyOptions,
-    SignTransactionOptions,
     GetDelegationSignatureResult,
-    SendTransactionResult,
     GetTransactionInputOptions,
     GetTransactionReceiptInputOptions,
-    TransactionReceipt,
-    TransactionSimulationResult,
+    SendTransactionResult,
+    SignTransactionOptions,
     SimulateTransactionClause,
     SimulateTransactionOptions,
+    TransactionBodyOptions,
+    TransactionDetailNoRaw,
     TransactionDetailRaw,
-    TransactionDetailNoRaw
+    TransactionReceipt,
+    TransactionSimulationEvent,
+    TransactionSimulationResult,
+    WaitForTransactionOptions
 };

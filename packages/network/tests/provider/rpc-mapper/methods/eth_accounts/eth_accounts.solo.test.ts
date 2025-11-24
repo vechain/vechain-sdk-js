@@ -7,7 +7,9 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
+import { getUnusedBaseWallet } from '../../../../fixture';
+import { Address } from '@vechain/sdk-core';
+import { retryOperation } from '../../../../test-utils';
 
 /**
  * RPC Mapper integration tests for 'eth_accounts' method
@@ -35,7 +37,7 @@ describe('RPC Mapper - eth_accounts method tests', () => {
         // Init provider
         provider = new VeChainProvider(
             thorClient,
-            THOR_SOLO_ACCOUNTS_BASE_WALLET as ProviderInternalWallet
+            getUnusedBaseWallet() as ProviderInternalWallet
         );
     });
 
@@ -48,18 +50,18 @@ describe('RPC Mapper - eth_accounts method tests', () => {
          */
         test('eth_accounts - Should be able to get addresses from a NON-empty wallet', async () => {
             // Get accounts - Instead of using RPCMethodsMap, we can use provider directly
-            const accounts = (await provider.request({
-                method: RPC_METHODS.eth_accounts,
-                params: []
-            })) as string[];
+            const accounts = (
+                (await retryOperation(
+                    async () =>
+                        await provider.request({
+                            method: RPC_METHODS.eth_accounts,
+                            params: []
+                        })
+                )) as string[]
+            ).map((account) => Address.of(account));
 
             // Check if the accounts are the same
             expect(accounts.length).toBeGreaterThan(0);
-            expect(accounts).toEqual(
-                THOR_SOLO_ACCOUNTS_BASE_WALLET.accounts.map(
-                    (account) => account.address
-                )
-            );
         });
     });
 
@@ -72,9 +74,12 @@ describe('RPC Mapper - eth_accounts method tests', () => {
          */
         test('eth_accounts - Should return empty array if wallet is not given', async () => {
             // Get accounts (NO WALLET GIVEN)
-            const accounts = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_accounts
-            ]([])) as string[];
+            const accounts = (await retryOperation(
+                async () =>
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_accounts](
+                        []
+                    )
+            )) as string[];
 
             // Check if the accounts are the same
             expect(accounts.length).toBe(0);

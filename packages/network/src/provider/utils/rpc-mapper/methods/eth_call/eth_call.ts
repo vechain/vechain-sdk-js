@@ -1,16 +1,18 @@
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
+    JSONRPCTransactionRevertError,
+    HttpNetworkError,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
-import { type TransactionObjectInput } from './types';
 import {
     type SimulateTransactionClause,
     type SimulateTransactionOptions,
     type ThorClient
 } from '../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../utils';
+import { type DefaultBlock, DefaultBlockToRevision } from '../../../const';
+import { type TransactionObjectInput } from './types';
 
 /**
  * RPC Method eth_call implementation
@@ -30,12 +32,13 @@ const ethCall = async (
         params.length !== 2 ||
         typeof params[0] !== 'object' ||
         (typeof params[1] !== 'object' && typeof params[1] !== 'string')
-    )
+    ) {
         throw new JSONRPCInvalidParams(
             'eth_call',
             `Invalid input params for "eth_call" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
+    }
 
     try {
         const [inputOptions, block] = params as [
@@ -53,7 +56,7 @@ const ethCall = async (
                 } satisfies SimulateTransactionClause
             ],
             {
-                revision: DefaultBlockToRevision(block).toString(),
+                revision: DefaultBlockToRevision(block),
                 gas:
                     inputOptions.gas !== undefined
                         ? parseInt(inputOptions.gas, 16)
@@ -63,9 +66,37 @@ const ethCall = async (
             } satisfies SimulateTransactionOptions
         );
 
+        if (simulatedTx[0].reverted) {
+            throw new JSONRPCTransactionRevertError(
+                simulatedTx[0].vmError,
+                simulatedTx[0].data
+            );
+        }
         // Return simulated transaction data
         return simulatedTx[0].data;
     } catch (e) {
+        if (e instanceof JSONRPCInternalError) {
+            throw e;
+        }
+        if (e instanceof JSONRPCTransactionRevertError) {
+            throw e;
+        }
+
+        // Check if this is a network communication error
+        if (e instanceof HttpNetworkError) {
+            throw new JSONRPCInternalError(
+                'eth_call()',
+                'Method "eth_call" failed due to network communication error.',
+                {
+                    params: stringifyData(params),
+                    url: thorClient.httpClient.baseURL,
+                    networkError: true,
+                    networkErrorType: e.data.networkErrorType,
+                    innerError: stringifyData(e)
+                }
+            );
+        }
+
         throw new JSONRPCInternalError(
             'eth_call()',
             'Method "eth_call" failed.',

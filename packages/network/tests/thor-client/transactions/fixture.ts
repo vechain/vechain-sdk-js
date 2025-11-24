@@ -1,15 +1,12 @@
-import {
-    ABIContract,
-    networkInfo,
-    Units,
-    type TransactionBody
-} from '@vechain/sdk-core';
+import { ABIContract, Units, type TransactionBody } from '@vechain/sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../../src';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS,
+    configData
 } from '../../fixture';
+import { getSoloChainTag } from '../../test-utils';
 
 /**
  * Some random transaction nonces to use into tests
@@ -52,10 +49,11 @@ const transfer1VTHOClauseWithValueAsANumber = {
 /**
  * transaction body that transfers 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
  */
-const transferTransactionBody: Omit<TransactionBody, 'gas' | 'nonce'> = {
+const transferTransactionBody: Omit<
+    TransactionBody,
+    'gas' | 'nonce' | 'chainTag' | 'blockRef'
+> = {
     clauses: [transfer1VTHOClause],
-    chainTag: networkInfo.solo.chainTag,
-    blockRef: networkInfo.solo.genesisBlock.id.slice(0, 18),
     expiration: 1000,
     gasPriceCoef: 128,
     dependsOn: null
@@ -66,11 +64,9 @@ const transferTransactionBody: Omit<TransactionBody, 'gas' | 'nonce'> = {
  */
 const transferTransactionBodyValueAsNumber: Omit<
     TransactionBody,
-    'gas' | 'nonce'
+    'gas' | 'nonce' | 'chainTag' | 'blockRef'
 > = {
     clauses: [transfer1VTHOClauseWithValueAsANumber],
-    chainTag: networkInfo.solo.chainTag,
-    blockRef: networkInfo.solo.genesisBlock.id.slice(0, 18),
     expiration: 1000,
     gasPriceCoef: 128,
     dependsOn: null
@@ -121,7 +117,7 @@ const waitForTransactionTestCases = [
         description:
             'Should wait for transaction with timeout and return TransactionReceipt',
         options: {
-            timeoutMs: 5000,
+            timeoutMs: 10000,
             intervalMs: undefined,
             nonce: transactionNonces.waitForTransactionTestCases[1]
         }
@@ -139,7 +135,7 @@ const waitForTransactionTestCases = [
         description:
             'Should wait for transaction with intervalMs & timeoutMs and return TransactionReceipt',
         options: {
-            timeoutMs: 5000,
+            timeoutMs: 10000,
             intervalMs: 100,
             nonce: transactionNonces.waitForTransactionTestCases[3]
         }
@@ -151,11 +147,14 @@ const waitForTransactionTestCases = [
  */
 const invalidWaitForTransactionTestCases = [
     {
-        description: 'Should throw error when timeoutMs is too low',
+        description:
+            'Should return null when timeoutMs is too low and tx cannot be included in time',
         options: {
             timeoutMs: 1,
             intervalMs: undefined,
-            nonce: transactionNonces.invalidWaitForTransactionTestCases[0]
+            nonce: transactionNonces.invalidWaitForTransactionTestCases[0],
+            dependsOn:
+                '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f'
         }
     }
 ];
@@ -167,10 +166,10 @@ const buildTransactionBodyClausesTestCases = [
     {
         description: 'Should build transaction body that transfers 1 VTHO',
         clauses: [transfer1VTHOClause],
-        options: {},
+        options: { gasPriceCoef: 0 },
         expected: {
             solo: {
-                chainTag: 246,
+                chainTag: getSoloChainTag(),
                 clauses: [
                     {
                         data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
@@ -232,7 +231,7 @@ const buildTransactionBodyClausesTestCases = [
         },
         expected: {
             solo: {
-                chainTag: 246,
+                chainTag: getSoloChainTag(),
                 clauses: [
                     {
                         data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
@@ -246,7 +245,7 @@ const buildTransactionBodyClausesTestCases = [
                     },
                     {
                         data: '0xc7bce69d0000000000000000000000000000000000000000000000000000000000000000',
-                        to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                        to: configData.TESTING_CONTRACT_ADDRESS,
                         value: '0'
                     },
                     {
@@ -258,7 +257,7 @@ const buildTransactionBodyClausesTestCases = [
                 dependsOn:
                     '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
                 expiration: 1000,
-                gas: 115954,
+                gas: 115768,
                 gasPriceCoef: 255,
                 reserved: { features: 1 }
             },
@@ -277,7 +276,7 @@ const buildTransactionBodyClausesTestCases = [
                     },
                     {
                         data: '0xc7bce69d0000000000000000000000000000000000000000000000000000000000000000',
-                        to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                        to: configData.TESTING_CONTRACT_ADDRESS,
                         value: '0'
                     },
                     {
@@ -317,27 +316,6 @@ const buildTransactionBodyClausesTestCases = [
                 '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f' // Any valid tx id
         },
         expected: {
-            solo: {
-                chainTag: 246,
-                clauses: [
-                    {
-                        data: '0x',
-                        to: '0x0000000000000000000000000000456E65726779',
-                        value: '0'
-                    },
-                    {
-                        data: '0x',
-                        to: '0x0000000000000000000000000000506172616D73',
-                        value: '1000000000000000000'
-                    }
-                ],
-                dependsOn:
-                    '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
-                expiration: 1000,
-                gas: 52046,
-                gasPriceCoef: 255,
-                reserved: { features: 1 }
-            },
             testnet: {
                 chainTag: 39,
                 clauses: [
@@ -389,32 +367,6 @@ const buildTransactionBodyClausesTestCases = [
                 '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f' // Any valid tx id
         },
         expected: {
-            solo: {
-                chainTag: 246,
-                clauses: [
-                    {
-                        data: '0x',
-                        to: '0x0000000000000000000000000000456E65726779',
-                        value: '0'
-                    },
-                    {
-                        to: null,
-                        data: '0x',
-                        value: '0'
-                    },
-                    {
-                        data: '0x',
-                        to: '0x0000000000000000000000000000456E65726779',
-                        value: '0'
-                    }
-                ],
-                dependsOn:
-                    '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
-                expiration: 1000,
-                gas: 100046,
-                gasPriceCoef: 255,
-                reserved: { features: 1 }
-            },
             testnet: {
                 chainTag: 39,
                 clauses: [

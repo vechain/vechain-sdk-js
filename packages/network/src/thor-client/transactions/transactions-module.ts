@@ -4,6 +4,7 @@ import {
     type ABIFunction,
     Address,
     Clause,
+    type ContractClause,
     dataUtils,
     Hex,
     HexUInt,
@@ -15,21 +16,35 @@ import {
     Units,
     VET
 } from '@vechain/sdk-core';
-import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    InvalidTransactionField,
+    HttpNetworkError
+} from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
 import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
+import type { VeChainSigner } from '../../signer';
 import {
     buildQuery,
     BUILT_IN_CONTRACTS,
     ERROR_SELECTOR,
     PANIC_SELECTOR,
-    Poll,
     thorest,
     vnsUtils
 } from '../../utils';
 import { type BlocksModule, type ExpandedBlockDetail } from '../blocks';
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractTransactionOptions
+} from '../contracts';
 import { type CallNameReturnType, type DebugModule } from '../debug';
+import { type ForkDetector } from '../fork';
+import { type GasModule } from '../gas';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
+import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
+import { type LogsModule } from '../logs';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -43,16 +58,6 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
-import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import type {
-    ContractCallOptions,
-    ContractCallResult,
-    ContractClause,
-    ContractTransactionOptions
-} from '../contracts';
-import type { VeChainSigner } from '../../signer';
-import { type LogsModule } from '../logs';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -62,15 +67,21 @@ class TransactionsModule {
     readonly blocksModule: BlocksModule;
     readonly debugModule: DebugModule;
     readonly logsModule: LogsModule;
+    readonly gasModule: GasModule;
+    readonly forkDetector: ForkDetector;
 
     constructor(
         blocksModule: BlocksModule,
         debugModule: DebugModule,
-        logsModule: LogsModule
+        logsModule: LogsModule,
+        gasModule: GasModule,
+        forkDetector: ForkDetector
     ) {
         this.blocksModule = blocksModule;
         this.debugModule = debugModule;
         this.logsModule = logsModule;
+        this.gasModule = gasModule;
+        this.forkDetector = forkDetector;
     }
 
     /**
@@ -187,13 +198,23 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.blocksModule.httpClient.http(
-            HttpMethod.GET,
-            thorest.transactions.get.TRANSACTION_RECEIPT(id),
-            {
-                query: buildQuery({ head: options?.head })
+        try {
+            return (await this.blocksModule.httpClient.http(
+                HttpMethod.GET,
+                thorest.transactions.get.TRANSACTION_RECEIPT(id),
+                {
+                    query: buildQuery({ head: options?.head })
+                }
+            )) as TransactionReceipt | null;
+        } catch (error) {
+            // Check if this is a network communication error
+            if (error instanceof HttpNetworkError) {
+                // For network errors, return null instead of throwing
+                // This allows the polling mechanism to continue
+                return null;
             }
-        )) as TransactionReceipt | null;
+            throw error;
+        }
     }
 
     /**
@@ -237,8 +258,8 @@ class TransactionsModule {
 
         return {
             id: transactionResult.id,
-            wait: async () =>
-                await this.waitForTransaction(transactionResult.id)
+            wait: async (options?: WaitForTransactionOptions) =>
+                await this.waitForTransaction(transactionResult.id, options)
         };
     }
 
@@ -289,15 +310,27 @@ class TransactionsModule {
             );
         }
 
-        return await Poll.SyncPoll(
-            async () => await this.getTransactionReceipt(txID),
-            {
-                requestIntervalInMilliseconds: options?.intervalMs,
-                maximumWaitingTimeInMilliseconds: options?.timeoutMs
+        // If no timeout is specified, use default timeout of 30 seconds
+        const timeoutMs = options?.timeoutMs ?? 30000;
+        const intervalMs = options?.intervalMs ?? 1000;
+
+        const startTime = Date.now();
+        const deadline = startTime + timeoutMs;
+        while (true) {
+            // Check if timeout has been reached
+            if (Date.now() >= deadline) {
+                return null;
             }
-        ).waitUntil((result) => {
-            return result !== null;
-        });
+            // Try to get the transaction receipt
+            const receipt = await this.getTransactionReceipt(txID).catch(
+                () => null
+            );
+            if (receipt !== null) {
+                return receipt;
+            }
+            // Wait for the specified interval before trying again
+            await new Promise((resolve) => setTimeout(resolve, intervalMs));
+        }
     }
 
     /**
@@ -306,10 +339,12 @@ class TransactionsModule {
      *
      * @param clauses - The clauses of the transaction.
      * @param gas - The gas to be used to perform the transaction.
-     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, dependsOn and isDelegated fields.
+     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePerGas, maxPriorityFeePerGas, gas, dependsOn and isDelegated fields.
      *                  If the `expiration` is not specified, the transaction will expire after 32 blocks.
-     *                  If the `gasPriceCoef` is not specified, the transaction will use the default gas price coef of 127.
-     *                  If the `dependsOn is` not specified, the transaction will not depend on any other transaction.
+     *                  If the `gasPriceCoef` is not specified & galactica fork didn't happen yet, the transaction will use the default gas price coef of 0.
+     *                  If the `gasPriceCoef` is not specified & galactica fork happened, the transaction will use the default maxFeePerGas and maxPriorityFeePerGas.
+     *                  If the `gas` is specified in options, it will override the gas parameter.
+     *                  If the `dependsOn` is not specified, the transaction will not depend on any other transaction.
      *                  If the `isDelegated` is not specified, the transaction will not be delegated.
      *
      * @returns A promise that resolves to the transaction body.
@@ -317,7 +352,7 @@ class TransactionsModule {
      * @throws an error if the genesis block or the latest block cannot be retrieved.
      */
     public async buildTransactionBody(
-        clauses: TransactionClause[],
+        clauses: TransactionClause[] | Clause[] | ContractClause['clause'],
         gas: number,
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
@@ -340,20 +375,268 @@ class TransactionsModule {
             );
 
         const chainTag =
-            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
+            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(-2)}`);
+
+        const filledOptions = await this.fillDefaultBodyOptions(options);
+
+        // Process clauses - handle different clause types properly
+        let processedClauses: TransactionClause[];
+
+        if (Array.isArray(clauses)) {
+            // This is a TransactionClause[] or Clause[] - convert to TransactionClause[]
+            processedClauses = clauses.map((clause) => ({
+                to: clause.to,
+                data: clause.data,
+                value: clause.value
+            }));
+        } else {
+            // Single TransactionClause or Clause
+            processedClauses = [
+                {
+                    to: clauses.to,
+                    data: clauses.data,
+                    value: clauses.value
+                }
+            ];
+        }
 
         return {
             blockRef,
             chainTag,
-            clauses: await this.resolveNamesInClauses(clauses),
+            clauses: await this.resolveNamesInClauses(processedClauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
-            gas,
-            gasPriceCoef: options?.gasPriceCoef ?? 0,
+            gas: options?.gas !== undefined ? Number(options.gas) : gas,
+            gasPriceCoef: filledOptions?.gasPriceCoef,
+            maxFeePerGas: filledOptions?.maxFeePerGas,
+            maxPriorityFeePerGas: filledOptions?.maxPriorityFeePerGas,
             nonce: options?.nonce ?? Hex.random(8).toString(),
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
+    }
+
+    /**
+     * Fills the transaction body with the default options.
+     *
+     * @param body - The transaction body to fill.
+     * @returns A promise that resolves to the filled transaction body.
+     * @throws {InvalidDataType}
+     */
+    public async fillTransactionBody(
+        body: TransactionBody
+    ): Promise<TransactionBody> {
+        const extractedOptions: TransactionBodyOptions = {
+            maxFeePerGas: body.maxFeePerGas,
+            maxPriorityFeePerGas: body.maxPriorityFeePerGas,
+            gasPriceCoef: body.gasPriceCoef
+        };
+
+        const filledOptions =
+            await this.fillDefaultBodyOptions(extractedOptions);
+        return {
+            ...body,
+            ...filledOptions
+        };
+    }
+
+    /**
+     * Fills the default body options for a transaction.
+     *
+     * @param options - The transaction body options to fill.
+     * @returns A promise that resolves to the filled transaction body options.
+     * @throws {InvalidDataType}
+     */
+    public async fillDefaultBodyOptions(
+        options?: TransactionBodyOptions
+    ): Promise<TransactionBodyOptions> {
+        options ??= {};
+
+        // Check for invalid parameter combinations first
+        const hasMaxFeePerGas = options.maxFeePerGas !== undefined;
+        const hasMaxPriorityFeePerGas =
+            options.maxPriorityFeePerGas !== undefined;
+        const hasGasPriceCoef = options.gasPriceCoef !== undefined;
+
+        // Case 3: maxPriorityFeePerGas + gasPriceCoef (error)
+        if (hasMaxPriorityFeePerGas && hasGasPriceCoef && !hasMaxFeePerGas) {
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid parameter combination: maxPriorityFeePerGas and gasPriceCoef cannot be used together without maxFeePerGas.',
+                { options }
+            );
+        }
+
+        // Case 4: maxFeePerGas + gasPriceCoef (error)
+        if (hasMaxFeePerGas && hasGasPriceCoef && !hasMaxPriorityFeePerGas) {
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid parameter combination: maxFeePerGas and gasPriceCoef cannot be used together without maxPriorityFeePerGas.',
+                { options }
+            );
+        }
+
+        // Case 1: maxPriorityFeePerGas + maxFeePerGas + gasPriceCoef (only 1 and 2 are used)
+        if (hasMaxPriorityFeePerGas && hasMaxFeePerGas && hasGasPriceCoef) {
+            options.gasPriceCoef = undefined;
+            // Continue with dynamic fee processing below
+        } else if (hasMaxPriorityFeePerGas && hasMaxFeePerGas) {
+            // Case 2: maxPriorityFeePerGas + maxFeePerGas (1 and 2 are used)
+            options.gasPriceCoef = undefined;
+            // Continue with dynamic fee processing below
+        } else if (
+            hasGasPriceCoef &&
+            !hasMaxPriorityFeePerGas &&
+            !hasMaxFeePerGas
+        ) {
+            // Case 5: gasPriceCoef only (3 is used - legacy transaction)
+            options.maxFeePerGas = undefined;
+            options.maxPriorityFeePerGas = undefined;
+            return options;
+        }
+
+        // check if fork happened
+        const galacticaHappened =
+            await this.forkDetector.isGalacticaForked('best');
+        if (
+            !galacticaHappened &&
+            (hasMaxFeePerGas || hasMaxPriorityFeePerGas)
+        ) {
+            // user has specified dynamic fee tx, but fork didn't happen yet
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid transaction body options. Dynamic fee tx is not allowed before Galactica fork.',
+                { options }
+            );
+        }
+        if (!galacticaHappened && !hasGasPriceCoef) {
+            // galactica hasn't happened yet, default is legacy fee
+            options.gasPriceCoef = 0;
+            return options;
+        }
+        if (galacticaHappened && hasMaxFeePerGas && hasMaxPriorityFeePerGas) {
+            // galactica happened, user specified new fee type
+            return options;
+        }
+        // default to dynamic fee tx
+        options.gasPriceCoef = undefined;
+
+        // Get next block base fee per gas
+        const biNextBlockBaseFeePerGas =
+            await this.gasModule.getNextBlockBaseFeePerGas();
+        if (
+            biNextBlockBaseFeePerGas === null ||
+            biNextBlockBaseFeePerGas === undefined
+        ) {
+            throw new InvalidDataType(
+                'TransactionsModule.fillDefaultBodyOptions()',
+                'Invalid transaction body options. Unable to get next block base fee per gas.',
+                { options }
+            );
+        }
+
+        // set maxPriorityFeePerGas if not specified already
+        if (
+            options.maxPriorityFeePerGas === undefined ||
+            options.maxPriorityFeePerGas === null
+        ) {
+            // Calculate maxPriorityFeePerGas based on fee history (75th percentile)
+            // and the HIGH speed threshold (min(0.046*baseFee, 75_percentile))
+            const defaultMaxPriorityFeePerGas =
+                await this.calculateDefaultMaxPriorityFeePerGas(
+                    biNextBlockBaseFeePerGas
+                );
+            options.maxPriorityFeePerGas = defaultMaxPriorityFeePerGas;
+        }
+
+        // set maxFeePerGas if not specified already
+        if (
+            options.maxFeePerGas === undefined ||
+            options.maxFeePerGas === null
+        ) {
+            // compute maxFeePerGas
+            const biMaxPriorityFeePerGas = HexUInt.of(
+                options.maxPriorityFeePerGas
+            ).bi;
+            // maxFeePerGas = 1.12 * baseFeePerGas + maxPriorityFeePerGas
+            const biMaxFeePerGas =
+                (112n * biNextBlockBaseFeePerGas) / 100n +
+                biMaxPriorityFeePerGas;
+            options.maxFeePerGas = HexUInt.of(biMaxFeePerGas).toString();
+        }
+        return options;
+    }
+
+    /**
+     * Calculates the default max priority fee per gas based on the current base fee
+     * and historical 75th percentile rewards.
+     *
+     * Uses the FAST (HIGH) speed threshold: min(0.046*baseFee, 75_percentile)
+     *
+     * @param baseFee - The current base fee per gas
+     * @returns A promise that resolves to the default max priority fee per gas as a hex string
+     */
+    private async calculateDefaultMaxPriorityFeePerGas(
+        baseFee: bigint
+    ): Promise<string> {
+        // Get fee history for recent blocks
+        const feeHistory = await this.gasModule.getFeeHistory({
+            blockCount: 10,
+            newestBlock: 'best',
+            rewardPercentiles: [25, 50, 75] // Get 25th, 50th and 75th percentiles
+        });
+
+        // Get the 75th percentile reward from the most recent block
+        let percentile75: bigint;
+
+        if (
+            feeHistory.reward !== null &&
+            feeHistory.reward !== undefined &&
+            feeHistory.reward.length > 0
+        ) {
+            const latestBlockRewards =
+                feeHistory.reward[feeHistory.reward.length - 1];
+            const equalRewardsOnLastBlock =
+                new Set(latestBlockRewards).size === 3;
+
+            // If rewards are equal in the last block, use the first one (75th percentile)
+            // Otherwise, calculate the average of 75th percentiles across blocks
+            if (equalRewardsOnLastBlock) {
+                percentile75 = HexUInt.of(latestBlockRewards[2]).bi; // 75th percentile at index 2
+            } else {
+                // Calculate average of 75th percentiles across blocks
+                let sum = 0n;
+                let count = 0;
+
+                for (const blockRewards of feeHistory.reward) {
+                    if (
+                        blockRewards.length !== null &&
+                        blockRewards.length > 2 &&
+                        blockRewards[2] !== null &&
+                        blockRewards[2] !== undefined
+                    ) {
+                        sum += HexUInt.of(blockRewards[2]).bi;
+                        count++;
+                    }
+                }
+
+                percentile75 = count > 0 ? sum / BigInt(count) : 0n;
+            }
+        } else {
+            // Fallback to getMaxPriorityFeePerGas if fee history is not available
+            percentile75 = HexUInt.of(
+                await this.gasModule.getMaxPriorityFeePerGas()
+            ).bi;
+        }
+
+        // Calculate 4.6% of base fee (HIGH speed threshold)
+        const baseFeeCap = (baseFee * 46n) / 1000n; // 0.046 * baseFee
+
+        // Use the minimum of the two values
+        const priorityFee =
+            baseFeeCap < percentile75 ? baseFeeCap : percentile75;
+
+        return HexUInt.of(priorityFee).toString();
     }
 
     /**
@@ -439,7 +722,7 @@ class TransactionsModule {
         if (
             revision !== undefined &&
             revision !== null &&
-            !Revision.isValid(revision)
+            !Revision.isValid(revision.toString())
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.simulateTransaction()',
@@ -450,9 +733,9 @@ class TransactionsModule {
 
         return (await this.blocksModule.httpClient.http(
             HttpMethod.POST,
-            thorest.accounts.post.SIMULATE_TRANSACTION(revision),
+            thorest.accounts.post.SIMULATE_TRANSACTION(revision?.toString()),
             {
-                query: buildQuery({ revision }),
+                query: buildQuery({ revision: revision?.toString() }),
                 body: {
                     clauses: await this.resolveNamesInClauses(
                         clauses.map((clause) => {
@@ -600,15 +883,32 @@ class TransactionsModule {
      * @see {@link TransactionsModule#simulateTransaction}
      */
     public async estimateGas(
-        clauses: SimulateTransactionClause[],
+        clauses: (SimulateTransactionClause | ContractClause)[],
         caller?: string,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
-        // Clauses must be an array of clauses with at least one clause
-        if (clauses.length <= 0) {
+        // Normalize to SimulateTransactionClause[]
+        const clausesToEstimate: SimulateTransactionClause[] = clauses.map(
+            (clause) => {
+                if (clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.estimateGas()',
+                        'Invalid ContractClause provided: missing inner clause.',
+                        { clause }
+                    );
+                }
+                if ('clause' in clause) {
+                    return clause.clause;
+                }
+                return clause;
+            }
+        );
+
+        // Validate the normalized set is non-empty
+        if (clausesToEstimate.length === 0) {
             throw new InvalidDataType(
-                'GasModule.estimateGas()',
-                'Invalid clauses. Clauses must be an array of clauses with at least one clause.',
+                'TransactionsModule.estimateGas()',
+                'Invalid clauses. Clauses must be an array with at least one clause.',
                 { clauses, caller, options }
             );
         }
@@ -626,7 +926,7 @@ class TransactionsModule {
         }
 
         // Simulate the transaction to get the simulations of each clause
-        const simulations = await this.simulateTransaction(clauses, {
+        const simulations = await this.simulateTransaction(clausesToEstimate, {
             caller,
             ...options
         });
@@ -637,7 +937,9 @@ class TransactionsModule {
         });
 
         // The intrinsic gas of the transaction
-        const intrinsicGas = Number(Transaction.intrinsicGas(clauses).wei);
+        const intrinsicGas = Number(
+            Transaction.intrinsicGas(clausesToEstimate).wei
+        );
 
         // totalSimulatedGas represents the summation of all clauses' gasUsed
         const totalSimulatedGas = simulations.reduce((sum, simulation) => {
@@ -646,11 +948,11 @@ class TransactionsModule {
 
         // The total gas of the transaction
         // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
-        const totalGas =
+        const totalGas = Math.ceil(
             (intrinsicGas +
                 (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
-            (1 + (options?.gasPadding ?? 0)); // Add gasPadding if it is defined
-
+                (1 + (options?.gasPadding ?? 0))
+        ); // Add gasPadding if it is defined
         return isReverted
             ? {
                   totalGas,
@@ -728,7 +1030,16 @@ class TransactionsModule {
     ): Promise<ContractCallResult[]> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.simulateTransaction(
-            clauses.map((clause) => clause.clause),
+            clauses.map((clause) => {
+                if (clause.clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.executeMultipleClausesCall()',
+                        'Invalid ContractClause provided: missing inner clause.',
+                        { clause }
+                    );
+                }
+                return clause.clause;
+            }),
             options
         );
         // Returning the decoded results both as plain and array.
@@ -775,6 +1086,8 @@ class TransactionsModule {
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
             gasPriceCoef: options?.gasPriceCoef,
+            maxFeePerGas: options?.maxFeePerGas,
+            maxPriorityFeePerGas: options?.maxPriorityFeePerGas,
             nonce: options?.nonce,
             value: options?.value,
             dependsOn: options?.dependsOn,
@@ -787,7 +1100,8 @@ class TransactionsModule {
 
         return {
             id,
-            wait: async () => await this.waitForTransaction(id)
+            wait: async (options?: WaitForTransactionOptions) =>
+                await this.waitForTransaction(id, options)
         };
     }
 
@@ -800,16 +1114,30 @@ class TransactionsModule {
      * @return {Promise<SendTransactionResult>} The result of the transaction, including transaction ID and a wait function.
      */
     public async executeMultipleClausesTransaction(
-        clauses: ContractClause[],
+        clauses: ContractClause[] | TransactionClause[],
         signer: VeChainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
-            clauses: clauses.map((clause) => clause.clause),
+            clauses: clauses.map((clause) => {
+                if (clause === undefined) {
+                    throw new InvalidDataType(
+                        'TransactionsModule.executeMultipleClausesTransaction()',
+                        'Invalid ContractClause[] | TransactionClause[] provided: missing clause.',
+                        { clause }
+                    );
+                }
+                if ('clause' in clause) {
+                    return (clause as unknown as ContractClause).clause;
+                }
+                return clause;
+            }),
             gas: options?.gas,
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
             gasPriceCoef: options?.gasPriceCoef,
+            maxFeePerGas: options?.maxFeePerGas,
+            maxPriorityFeePerGas: options?.maxPriorityFeePerGas,
             nonce: options?.nonce,
             value: options?.value,
             dependsOn: options?.dependsOn,
@@ -822,7 +1150,8 @@ class TransactionsModule {
 
         return {
             id,
-            wait: async () => await this.waitForTransaction(id)
+            wait: async (options?: WaitForTransactionOptions) =>
+                await this.waitForTransaction(id, options)
         };
     }
 
@@ -836,7 +1165,7 @@ class TransactionsModule {
      *
      * @return {Promise<ContractCallResult>} A promise that resolves to the result of the contract call, containing the base gas price.
      */
-    public async getBaseGasPrice(): Promise<ContractCallResult> {
+    public async getLegacyBaseGasPrice(): Promise<ContractCallResult> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
             ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),

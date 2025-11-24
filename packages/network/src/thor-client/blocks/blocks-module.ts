@@ -65,7 +65,7 @@ class BlocksModule {
             .onData((data) => {
                 this.headBlock = data;
             })
-            .onError(this.onBlockError ?? (() => {}));
+            .onError(this.onBlockError ?? ((): void => {}));
 
         this.pollInstance.startListen();
     }
@@ -149,6 +149,17 @@ class BlocksModule {
     }
 
     /**
+     * Retrieves the base fee per gas of the best block.
+     *
+     * @returns A promise that resolves to the base fee per gas of the best block.
+     */
+    public async getBestBlockBaseFeePerGas(): Promise<string | null> {
+        const bestBlock = await this.getBestBlockCompressed();
+        if (bestBlock === null) return null;
+        return bestBlock.baseFeePerGas ?? null;
+    }
+
+    /**
      * Asynchronously retrieves a reference to the best block in the blockchain.
      *
      * This method first calls `getBestBlockCompressed()` to obtain the current best block. If no block is found (i.e., if `getBestBlockCompressed()` returns `null`),
@@ -220,15 +231,15 @@ class BlocksModule {
         return await Poll.SyncPoll(
             async () =>
                 expanded
-                    ? await this.getBestBlockCompressed()
-                    : await this.getBestBlockExpanded(),
+                    ? await this.getBlockExpanded(blockNumber)
+                    : await this.getBlockCompressed(blockNumber),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
             }
         ).waitUntil((result) => {
             // Continue polling until the result's block number matches the specified revision
-            return result != null && result?.number >= blockNumber;
+            return result != null && result.number == blockNumber;
         });
     }
 

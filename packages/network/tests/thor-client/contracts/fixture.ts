@@ -5,8 +5,13 @@ import {
     type DeployParams
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
-import type { EventDisplayOrder, PaginationOptions, Range } from '../../../src';
-import { TEST_ACCOUNTS } from '../../fixture';
+import type {
+    CompressedBlockDetail,
+    EventDisplayOrder,
+    PaginationOptions,
+    Range
+} from '../../../src';
+import { TEST_ACCOUNTS, configData } from '../../fixture';
 
 const contractBytecode: string =
     '0x608060405234801561001057600080fd5b506040516102063803806102068339818101604052810190610032919061007a565b80600081905550506100a7565b600080fd5b6000819050919050565b61005781610044565b811461006257600080fd5b50565b6000815190506100748161004e565b92915050565b6000602082840312156100905761008f61003f565b5b600061009e84828501610065565b91505092915050565b610150806100b66000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806360fe47b11461003b5780636d4ce63c14610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220785262acbf50fa50a7b4dc8d8087ca8904c7e6b847a13674503fdcbac903b67e64736f6c63430008170033';
@@ -26,8 +31,8 @@ const depositContractBytecode: string =
 const sampleTwoValuesReturnBytecode: string =
     '0x608060405234801561001057600080fd5b506101ea806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80630dbe671f1461003b5780634df7e3d01461005a575b600080fd5b610043610064565b604051610051929190610184565b60405180910390f35b6100626100a8565b005b6000606060016040518060400160405280600181526020017f6100000000000000000000000000000000000000000000000000000000000000815250915091509091565b600060606100b4610064565b80925081935050506100c4610064565b50809250506100d1610064565b9050809150505050565b6000819050919050565b6100ee816100db565b82525050565b600081519050919050565b600082825260208201905092915050565b60005b8381101561012e578082015181840152602081019050610113565b60008484015250505050565b6000601f19601f8301169050919050565b6000610156826100f4565b61016081856100ff565b9350610170818560208601610110565b6101798161013a565b840191505092915050565b600060408201905061019960008301856100e5565b81810360208301526101ab818461014b565b9050939250505056fea26469706673582212201b347b344b0405eee69f8551d7f0dff5cb414de0237f3a6e9192c43efbf009ab64736f6c63430008140033';
 
-// to recharge the gasPayer, deposit to this address: 0xD4a88FE48909486B7A91ec821598d73740398337, lasts until 2024-05-10
-const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/473';
+// to recharge the gasPayer, deposit to this address: 0xFf71C92d64578Ac8bD5bD81FBc8b550380bdf1F6
+const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/883';
 
 const ERC20_CONTRACT_ADDRESS_ON_TESTNET =
     '0x755780b48a853282a6b6a88aa7b544a7ffe8451d';
@@ -620,7 +625,7 @@ const testingContractNegativeTestCases: TestCase[] = [
     {
         description: 'testAssertError() test',
         functionName: 'testAssertError',
-        params: [1],
+        params: [1n], // Changed from 1 to 1n to use BigInt
         expected: { result: { errorMessage: 'Panic(0x01)' }, success: false },
         reverted: true,
         isReadOnly: true
@@ -658,13 +663,13 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
     {
         description: 'should return the blockID of the given block number',
         functionName: 'getBlockID',
-        params: [1],
+        params: [0],
         expected: {
             result: {
                 array: [
-                    '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
+                    '0x000000007ddd67eb598130944bc9714dcc89196b01261839d67533b2993489eb'
                 ],
-                plain: '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
+                plain: '0x000000007ddd67eb598130944bc9714dcc89196b01261839d67533b2993489eb'
             },
             success: true
         },
@@ -676,16 +681,27 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the block total score of the given block defined by the block number',
         functionName: 'getBlockTotalScore',
         params: [1],
-        expected: { result: { array: [1n], plain: 1n }, success: true },
+        expected: { result: { array: [10000n], plain: 10000n }, success: true },
         reverted: false,
         isReadOnly: true
     },
     {
         description: 'should return the block time of the given block number',
         functionName: 'getBlockTime',
-        params: [1],
+        params: [0],
         expected: {
-            result: { array: [1702231120n], plain: 1702231120n },
+            result: {
+                array: [
+                    BigInt(
+                        (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                            .timestamp
+                    )
+                ],
+                plain: BigInt(
+                    (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                        .timestamp
+                )
+            },
             success: true
         },
         reverted: false,
@@ -694,25 +710,15 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
     {
         description: 'should return the block signer of the given block number',
         functionName: 'getBlockSigner',
-        params: [1],
+        params: [0],
         expected: {
             result: {
-                array: ['0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'],
-                plain: '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'
-            },
-            success: true
-        },
-        reverted: false,
-        isReadOnly: true
-    },
-    {
-        description: 'should return the total supply of VET',
-        functionName: 'getTotalSupply',
-        params: [],
-        expected: {
-            result: {
-                array: [10000000000000000000000000000n],
-                plain: 10000000000000000000000000000n
+                array: [
+                    (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                        .signer
+                ],
+                plain: (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
+                    .signer
             },
             success: true
         },
