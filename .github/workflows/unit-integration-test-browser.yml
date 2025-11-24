@@ -13,7 +13,7 @@ jobs:
                 node: [20, lts/*, 24]
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -47,7 +47,7 @@ jobs:
 
             - name: Upload Thor solo logs
               if: always() && steps.save-logs.outcome == 'success'
-              uses: actions/upload-artifact@v4.4.3
+              uses: actions/upload-artifact@v5.0.0
               with:
                 name: thor-solo-logs-browser-${{ matrix.node == 'lts/*' && 'node-lts' || format('node-{0}', matrix.node) }}
                 path: packages/solo-setup/logs/
