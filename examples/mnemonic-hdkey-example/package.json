@@ -1,0 +1,16 @@
+{
+    "name": "mnemonic-hdkey-example",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsx index.ts"
+    },
+    "dependencies": {
+        "@vechain/sdk-temp": "portal:../../packages/sdk"
+    },
+    "devDependencies": {
+        "tsx": "^4.20.6",
+        "typescript": "^5.0.3"
+    }
+}
