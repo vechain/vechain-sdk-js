@@ -7,7 +7,7 @@ import {
 } from '../../../../../src';
 import { retryOperation } from '../../../../test-utils';
 
-const soloChainId = '0xf6';
+type EthBlock = { hash: string };
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
@@ -36,12 +36,24 @@ describe('RPC Mapper - eth_chainId method tests solo', () => {
          * Test case regarding obtaining the chain id
          */
         test('Should return the chain id', async () => {
+            const ethGetBlockByNumber = RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getBlockByNumber
+            ] as (
+                params: [blockTag: string, fullTxObjects: boolean]
+            ) => Promise<EthBlock>;
+
+            const genesisBlock = await ethGetBlockByNumber(['0x0', true]);
+
+            const blockHash = genesisBlock.hash.slice(2);
+            const chainTagByte = blockHash.slice(-2);
+            const chaintagId = `0x${chainTagByte}`;
+
             const rpcCallChainId = (await retryOperation(
                 async () =>
                     await RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId]([])
             )) as string;
 
-            expect(rpcCallChainId).toBe(soloChainId);
+            expect(rpcCallChainId).toBe(chaintagId);
         });
     });
 });

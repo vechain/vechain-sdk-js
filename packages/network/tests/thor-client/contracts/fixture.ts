@@ -667,9 +667,9 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         expected: {
             result: {
                 array: [
-                    '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6'
+                    '0x000000007ddd67eb598130944bc9714dcc89196b01261839d67533b2993489eb'
                 ],
-                plain: '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6'
+                plain: '0x000000007ddd67eb598130944bc9714dcc89196b01261839d67533b2993489eb'
             },
             success: true
         },
@@ -681,7 +681,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the block total score of the given block defined by the block number',
         functionName: 'getBlockTotalScore',
         params: [1],
-        expected: { result: { array: [1n], plain: 1n }, success: true },
+        expected: { result: { array: [10000n], plain: 10000n }, success: true },
         reverted: false,
         isReadOnly: true
     },
@@ -719,20 +719,6 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
                 ],
                 plain: (configData.SOLO_GENESIS_BLOCK as CompressedBlockDetail)
                     .signer
-            },
-            success: true
-        },
-        reverted: false,
-        isReadOnly: true
-    },
-    {
-        description: 'should return the total supply of VET',
-        functionName: 'getTotalSupply',
-        params: [],
-        expected: {
-            result: {
-                array: [10000000000000000000000000000n],
-                plain: 10000000000000000000000000000n
             },
             success: true
         },

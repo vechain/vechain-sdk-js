@@ -9,12 +9,12 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: v20.11.0
+                  node-version: 22
  
             - name: Install packages
               run: yarn install

@@ -16,7 +16,11 @@ import {
     Units,
     VET
 } from '@vechain/sdk-core';
-import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    InvalidTransactionField,
+    HttpNetworkError
+} from '@vechain/sdk-errors';
 import { ErrorFragment, Interface } from 'ethers';
 import { HttpMethod } from '../../http';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
@@ -26,7 +30,6 @@ import {
     BUILT_IN_CONTRACTS,
     ERROR_SELECTOR,
     PANIC_SELECTOR,
-    Poll,
     thorest,
     vnsUtils
 } from '../../utils';
@@ -195,13 +198,23 @@ class TransactionsModule {
                 { head: options?.head }
             );
 
-        return (await this.blocksModule.httpClient.http(
-            HttpMethod.GET,
-            thorest.transactions.get.TRANSACTION_RECEIPT(id),
-            {
-                query: buildQuery({ head: options?.head })
+        try {
+            return (await this.blocksModule.httpClient.http(
+                HttpMethod.GET,
+                thorest.transactions.get.TRANSACTION_RECEIPT(id),
+                {
+                    query: buildQuery({ head: options?.head })
+                }
+            )) as TransactionReceipt | null;
+        } catch (error) {
+            // Check if this is a network communication error
+            if (error instanceof HttpNetworkError) {
+                // For network errors, return null instead of throwing
+                // This allows the polling mechanism to continue
+                return null;
             }
-        )) as TransactionReceipt | null;
+            throw error;
+        }
     }
 
     /**
@@ -245,8 +258,8 @@ class TransactionsModule {
 
         return {
             id: transactionResult.id,
-            wait: async () =>
-                await this.waitForTransaction(transactionResult.id)
+            wait: async (options?: WaitForTransactionOptions) =>
+                await this.waitForTransaction(transactionResult.id, options)
         };
     }
 
@@ -297,15 +310,27 @@ class TransactionsModule {
             );
         }
 
-        return await Poll.SyncPoll(
-            async () => await this.getTransactionReceipt(txID),
-            {
-                requestIntervalInMilliseconds: options?.intervalMs,
-                maximumWaitingTimeInMilliseconds: options?.timeoutMs
+        // If no timeout is specified, use default timeout of 30 seconds
+        const timeoutMs = options?.timeoutMs ?? 30000;
+        const intervalMs = options?.intervalMs ?? 1000;
+
+        const startTime = Date.now();
+        const deadline = startTime + timeoutMs;
+        while (true) {
+            // Check if timeout has been reached
+            if (Date.now() >= deadline) {
+                return null;
             }
-        ).waitUntil((result) => {
-            return result !== null;
-        });
+            // Try to get the transaction receipt
+            const receipt = await this.getTransactionReceipt(txID).catch(
+                () => null
+            );
+            if (receipt !== null) {
+                return receipt;
+            }
+            // Wait for the specified interval before trying again
+            await new Promise((resolve) => setTimeout(resolve, intervalMs));
+        }
     }
 
     /**
@@ -314,11 +339,12 @@ class TransactionsModule {
      *
      * @param clauses - The clauses of the transaction.
      * @param gas - The gas to be used to perform the transaction.
-     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePErGas, maxPriorityFeePerGas, dependsOn and isDelegated fields.
+     * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, maxFeePerGas, maxPriorityFeePerGas, gas, dependsOn and isDelegated fields.
      *                  If the `expiration` is not specified, the transaction will expire after 32 blocks.
      *                  If the `gasPriceCoef` is not specified & galactica fork didn't happen yet, the transaction will use the default gas price coef of 0.
      *                  If the `gasPriceCoef` is not specified & galactica fork happened, the transaction will use the default maxFeePerGas and maxPriorityFeePerGas.
-     *                  If the `dependsOn is` not specified, the transaction will not depend on any other transaction.
+     *                  If the `gas` is specified in options, it will override the gas parameter.
+     *                  If the `dependsOn` is not specified, the transaction will not depend on any other transaction.
      *                  If the `isDelegated` is not specified, the transaction will not be delegated.
      *
      * @returns A promise that resolves to the transaction body.
@@ -349,7 +375,7 @@ class TransactionsModule {
             );
 
         const chainTag =
-            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
+            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(-2)}`);
 
         const filledOptions = await this.fillDefaultBodyOptions(options);
 
@@ -380,7 +406,7 @@ class TransactionsModule {
             clauses: await this.resolveNamesInClauses(processedClauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
-            gas,
+            gas: options?.gas !== undefined ? Number(options.gas) : gas,
             gasPriceCoef: filledOptions?.gasPriceCoef,
             maxFeePerGas: filledOptions?.maxFeePerGas,
             maxPriorityFeePerGas: filledOptions?.maxPriorityFeePerGas,
@@ -1074,7 +1100,8 @@ class TransactionsModule {
 
         return {
             id,
-            wait: async () => await this.waitForTransaction(id)
+            wait: async (options?: WaitForTransactionOptions) =>
+                await this.waitForTransaction(id, options)
         };
     }
 
@@ -1123,7 +1150,8 @@ class TransactionsModule {
 
         return {
             id,
-            wait: async () => await this.waitForTransaction(id)
+            wait: async (options?: WaitForTransactionOptions) =>
+                await this.waitForTransaction(id, options)
         };
     }
 

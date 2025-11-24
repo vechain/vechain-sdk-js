@@ -16,6 +16,11 @@ import { THOR_SOLO_ACCOUNTS_TO_SEED } from '../config/accounts';
  */
 async function main(): Promise<void> {
     try {
+        // Get the genesis and chaintag
+        const genesisBlock = await getGenesisBlock();
+        const chainTag = Number(`0x${genesisBlock.id.slice(-2)}`);
+        console.log(`Solo chain tag: ${chainTag}`);
+
         // Deploy the testing contract
         const testContract = await ethers.deployContract('TestingContract');
         await testContract.waitForDeployment();
@@ -36,8 +41,7 @@ async function main(): Promise<void> {
         console.log(`TestingToken deployed with address: ${testTokenAddress}`);
 
         try {
-            // Try to get genesis block details
-            const genesisBlock = await getGenesisBlock();
+           
 
             // Try to seed accounts with VET & VTHO & TestToken
             const seedVetTxId = await seedVET(THOR_SOLO_ACCOUNTS_TO_SEED);
@@ -55,6 +59,7 @@ async function main(): Promise<void> {
                 testContractABI,
                 testContractByteCode,
                 genesisBlock,
+                chainTag,
                 seedVetTxId,
                 seedVthoTxId,
                 testTokenAddress,

@@ -47,9 +47,14 @@ describe('ThorClient - Transactions Module', () => {
                         )
                 );
 
+                const chainTagId = await thorSoloClient.nodes.getChaintag();
+
+                if (!chainTagId) {
+                    throw new Error('Chain tag not found');
+                }
                 // Create transactions
                 const transactionBody = {
-                    chainTag: 0xf6,
+                    chainTag: chainTagId,
                     blockRef:
                         latestBlock !== null
                             ? latestBlock.id.slice(0, 18)
@@ -63,7 +68,7 @@ describe('ThorClient - Transactions Module', () => {
                 };
 
                 const delegatedTransactionBody = {
-                    chainTag: 0xf6,
+                    chainTag: chainTagId,
                     blockRef:
                         latestBlock !== null
                             ? latestBlock.id.slice(0, 18)

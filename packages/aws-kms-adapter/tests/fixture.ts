@@ -1,7 +1,7 @@
 import { ERC20_ABI, HexUInt, VTHO_ADDRESS } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
-    type ThorClient,
+    ThorClient,
     type TransactionReceipt,
     VeChainPrivateKeySigner,
     VeChainProvider
@@ -45,7 +45,7 @@ const signTransactionTestCases = {
                 isDelegated: false,
                 expected: {
                     body: {
-                        chainTag: 246,
+                        chainTag: configData.SOLO_CHAIN_TAG,
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',
@@ -65,7 +65,7 @@ const signTransactionTestCases = {
                 isDelegated: true,
                 expected: {
                     body: {
-                        chainTag: 246,
+                        chainTag: configData.SOLO_CHAIN_TAG,
                         clauses: [
                             {
                                 data: '0xb6b55f25000000000000000000000000000000000000000000000000000000000000007b',

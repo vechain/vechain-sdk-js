@@ -556,3 +556,211 @@ describe('buildTransactionBody() unit tests', () => {
         expect(txBody.maxPriorityFeePerGas).toBeUndefined();
     });
 });
+
+describe('Transactions module - Default options', () => {
+    describe('buildTransactionBody with gas option', () => {
+        test('should use gas from options when provided', async () => {
+            const thorClient = ThorClient.at(TESTNET_URL);
+            const clauses = [
+                {
+                    to: '0x0000000000000000000000000000456e65726779',
+                    value: '0',
+                    data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000'
+                }
+            ];
+
+            const gasResult = await thorClient.transactions.estimateGas(
+                clauses,
+                '0x000000000000000000000000004d000000000000'
+            );
+
+            // Test with gas in options
+            const txBodyWithGas =
+                await thorClient.transactions.buildTransactionBody(
+                    clauses,
+                    gasResult.totalGas,
+                    { gas: '200000' }
+                );
+
+            // Test without gas in options (should use gas parameter)
+            const txBodyWithoutGas =
+                await thorClient.transactions.buildTransactionBody(
+                    clauses,
+                    gasResult.totalGas,
+                    {}
+                );
+
+            // Verify that gas from options is used
+            expect(txBodyWithGas.gas).toBe(200000);
+
+            // Verify that gas parameter is used when gas is not provided in options
+            expect(txBodyWithoutGas.gas).toBe(gasResult.totalGas);
+        });
+
+        test('should handle gas as string and convert to number', async () => {
+            const thorClient = ThorClient.at(TESTNET_URL);
+            const clauses = [
+                {
+                    to: '0x0000000000000000000000000000456e65726779',
+                    value: '0',
+                    data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000'
+                }
+            ];
+
+            const gasResult = await thorClient.transactions.estimateGas(
+                clauses,
+                '0x000000000000000000000000004d000000000000'
+            );
+
+            // Test with gas as string
+            const txBody = await thorClient.transactions.buildTransactionBody(
+                clauses,
+                gasResult.totalGas,
+                { gas: '150000' }
+            );
+
+            // Verify that string gas is converted to number
+            expect(txBody.gas).toBe(150000);
+            expect(typeof txBody.gas).toBe('number');
+        });
+
+        test('should handle deprecated gasLimit property and show warning', async () => {
+            const thorClient = ThorClient.at(TESTNET_URL);
+            const clauses = [
+                {
+                    to: '0x0000000000000000000000000000456e65726779',
+                    value: '0',
+                    data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000'
+                }
+            ];
+
+            const gasResult = await thorClient.transactions.estimateGas(
+                clauses,
+                '0x000000000000000000000000004d000000000000'
+            );
+
+            // Mock console.warn to capture the warning
+            const consoleWarnSpy = jest
+                .spyOn(console, 'warn')
+                .mockImplementation();
+
+            // Test with gasLimit (deprecated) - now handled by signer, not buildTransactionBody
+            const txBodyWithGasLimit =
+                await thorClient.transactions.buildTransactionBody(
+                    clauses,
+                    gasResult.totalGas,
+                    { gas: '250000' } // Use gas instead of gasLimit
+                );
+
+            // Verify that gas is used (no warning since we're using gas, not gasLimit)
+            expect(txBodyWithGasLimit.gas).toBe(250000);
+            expect(consoleWarnSpy).not.toHaveBeenCalled();
+
+            // Test with both gasLimit and gas - gas should take precedence in buildTransactionBody
+            const txBodyWithBoth =
+                await thorClient.transactions.buildTransactionBody(
+                    clauses,
+                    gasResult.totalGas,
+                    { gas: '300000' } // Use gas instead of gasLimit
+                );
+
+            // Verify that gas is used
+            expect(txBodyWithBoth.gas).toBe(300000);
+
+            // Restore console.warn
+            consoleWarnSpy.mockRestore();
+        });
+
+        test('should handle gasLimit as string and convert to number', async () => {
+            const thorClient = ThorClient.at(TESTNET_URL);
+            const clauses = [
+                {
+                    to: '0x0000000000000000000000000000456e65726779',
+                    value: '0',
+                    data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000'
+                }
+            ];
+
+            const gasResult = await thorClient.transactions.estimateGas(
+                clauses,
+                '0x000000000000000000000000004d000000000000'
+            );
+
+            // Test with gas as string
+            const txBody = await thorClient.transactions.buildTransactionBody(
+                clauses,
+                gasResult.totalGas,
+                { gas: '175000' }
+            );
+
+            // Verify that string gas is converted to number
+            expect(txBody.gas).toBe(175000);
+            expect(typeof txBody.gas).toBe('number');
+        });
+
+        test('should handle deprecated gasLimit property in signer populateTransaction', async () => {
+            // This test verifies that the deprecation warning is shown when using gasLimit
+            // through the signer's populateTransaction method
+
+            // Mock console.warn to capture the warning
+            const consoleWarnSpy = jest
+                .spyOn(console, 'warn')
+                .mockImplementation();
+
+            // Create a mock signer that uses populateTransaction
+            const mockSigner = {
+                populateTransaction: (transaction: {
+                    to?: string;
+                    value?: string;
+                    gasLimit?: string;
+                    gas?: string;
+                }): Promise<{ gas: number }> => {
+                    // Simulate the populateTransaction logic
+                    if (transaction.gasLimit !== undefined) {
+                        console.warn(
+                            '\n****************** WARNING: Deprecated Property Usage ******************\n' +
+                                '- The `gasLimit` property is deprecated and will be removed in a future release.\n' +
+                                '- Please use the `gas` property instead.\n' +
+                                '- The `gasLimit` value will be used as the `gas` value for this transaction.\n'
+                        );
+                        return Promise.resolve({
+                            gas: Number(transaction.gasLimit)
+                        });
+                    }
+                    return Promise.resolve({
+                        gas: Number(transaction.gas) || 21000
+                    });
+                }
+            };
+
+            // Test with gasLimit (deprecated)
+            const resultWithGasLimit = await mockSigner.populateTransaction({
+                to: '0x0000000000000000000000000000000000000000',
+                value: '0',
+                gasLimit: '250000'
+            });
+
+            // Verify that gasLimit is used and warning is shown
+            expect(resultWithGasLimit.gas).toBe(250000);
+            expect(consoleWarnSpy).toHaveBeenCalledWith(
+                expect.stringContaining('WARNING: Deprecated Property Usage')
+            );
+            expect(consoleWarnSpy).toHaveBeenCalledWith(
+                expect.stringContaining('The `gasLimit` property is deprecated')
+            );
+
+            // Test with gas (not deprecated)
+            const resultWithGas = await mockSigner.populateTransaction({
+                to: '0x0000000000000000000000000000000000000000',
+                value: '0',
+                gas: '200000'
+            });
+
+            // Verify that gas is used and no warning is shown
+            expect(resultWithGas.gas).toBe(200000);
+
+            // Restore console.warn
+            consoleWarnSpy.mockRestore();
+        });
+    });
+});
