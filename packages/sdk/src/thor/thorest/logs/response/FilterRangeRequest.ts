@@ -1,4 +1,4 @@
-import { type FilterRangeRequestUnits } from '@thor/thorest';
+import { FilterRangeRequestUnits } from '@thor/thorest';
 import { type FilterRangeJSON } from '@thor/thorest/json';
 import { type FilterRange } from '@thor/thor-client/model/logs/FilterRange';
 
@@ -41,10 +41,12 @@ class FilterRangeRequest {
      * @return {FilterRangeRequest} The FilterRangeRequest instance created from the FilterRange.
      */
     static of(range: FilterRange): FilterRangeRequest {
+        const units: FilterRangeRequestUnits =
+            range.unit === 'block'
+                ? FilterRangeRequestUnits.block
+                : FilterRangeRequestUnits.time;
         return new FilterRangeRequest(
-            range.unit != null
-                ? (range.unit as unknown as FilterRangeRequestUnits)
-                : undefined,
+            units,
             range.from ?? undefined,
             range.to ?? undefined
         );

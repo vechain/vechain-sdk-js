@@ -1,8 +1,8 @@
 import {
     FilterOptionsRequest,
     FilterRangeRequest,
-    TransferCriteriaRequest,
-    type LogSortRequest
+    LogSortRequest,
+    TransferCriteriaRequest
 } from '@thor/thorest';
 import { type TransferLogFilterRequestJSON } from '@thor/thorest/json';
 import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
@@ -79,7 +79,9 @@ class TransferLogFilterRequest {
                   )
                 : undefined,
             filter.order != null
-                ? (filter.order as unknown as LogSortRequest)
+                ? filter.order === 'asc'
+                    ? LogSortRequest.asc
+                    : LogSortRequest.desc
                 : undefined
         );
     }

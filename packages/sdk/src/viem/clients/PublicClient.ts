@@ -34,7 +34,7 @@ import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import { type FilterRange } from '@thor/thor-client/model/logs/FilterRange';
 import { type FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
-import { EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
+import { type EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
 import { type AbiEvent, toEventSelector } from 'viem';
 import type { FeeHistory } from '@thor/thor-client/model/gas/FeeHistory';
 import {
@@ -814,10 +814,13 @@ class PublicClient {
             addresses.forEach((addrValue) => {
                 const normalizedAddress = Address.of(addrValue);
 
-                const eventCriteria = new EventCriteria(
-                    normalizedAddress,
-                    ...topics
-                );
+                const eventCriteria: EventCriteria = {
+                    address: normalizedAddress,
+                    topic0: topics[0],
+                    topic1: topics[1],
+                    topic2: topics[2],
+                    topic3: topics[3]
+                };
                 criteriaSet.push(eventCriteria);
             });
         }

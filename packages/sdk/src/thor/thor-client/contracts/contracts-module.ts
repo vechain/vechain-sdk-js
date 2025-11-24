@@ -18,7 +18,7 @@ import {
 } from 'viem';
 import type { ContractCallOptions, ContractCallResult } from './types';
 import { EventLogFilter } from '../model/logs/EventLogFilter';
-import { EventCriteria } from '../model/logs/EventCriteria';
+import { type EventCriteria } from '../model/logs/EventCriteria';
 import { type FilterRange } from '../model/logs/FilterRange';
 import { QuerySmartContractEvents, type EventLogResponse } from '@thor/thorest';
 import { type TransactionReceipt } from '../model/transactions/TransactionReceipt';
@@ -730,7 +730,9 @@ class ContractsModule extends AbstractThorModule {
                     ? { unit: 'block', from: fromBlock, to: toBlock }
                     : null;
 
-            const criteria = EventCriteria.of(address);
+            const criteria: EventCriteria = {
+                address: Address.of(address)
+            };
             const filter = EventLogFilter.of(range, null, [criteria], null);
 
             // Use thorest to get raw event logs directly
