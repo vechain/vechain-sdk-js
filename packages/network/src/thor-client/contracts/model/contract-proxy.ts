@@ -1,6 +1,7 @@
 import {
     Address,
     Clause,
+    Revision,
     type ContractClause,
     type TransactionClause,
     Units,
@@ -33,6 +34,7 @@ import {
     type ContractFunctionTransact,
     type TransactionValue
 } from './types';
+import type { ContractCallOptions } from '../types';
 
 /**
  * Creates a Proxy object for reading contract functions, allowing for the dynamic invocation of contract read operations.
@@ -57,29 +59,39 @@ function getReadProxy<TAbi extends Abi>(
                     args as unknown[]
                 );
 
-                const clauseComment =
-                    extractOptionsResult.clauseAdditionalOptions?.comment;
-
-                const revisionValue =
-                    extractOptionsResult.clauseAdditionalOptions?.revision;
+                const clauseAdditionalOptions =
+                    extractOptionsResult.clauseAdditionalOptions;
 
                 const functionAbi = contract.getFunctionAbi(prop);
+
+                const callOptions = {
+                    caller:
+                        contract.getSigner() !== undefined
+                            ? await contract.getSigner()?.getAddress()
+                            : undefined,
+                    ...contract.getContractReadOptions(),
+                    includeABI: true
+                } as ContractCallOptions & {
+                    caller?: string;
+                    includeABI: boolean;
+                };
+
+                if (clauseAdditionalOptions?.comment !== undefined) {
+                    callOptions.comment = clauseAdditionalOptions.comment;
+                }
+
+                if (clauseAdditionalOptions?.revision !== undefined) {
+                    callOptions.revision = Revision.of(
+                        clauseAdditionalOptions.revision
+                    );
+                }
 
                 const executeCallResult =
                     await contract.contractsModule.executeCall(
                         contract.address,
                         functionAbi,
                         extractOptionsResult.args,
-                        {
-                            caller:
-                                contract.getSigner() !== undefined
-                                    ? await contract.getSigner()?.getAddress()
-                                    : undefined,
-                            ...contract.getContractReadOptions(),
-                            comment: clauseComment,
-                            revision: revisionValue,
-                            includeABI: true
-                        }
+                        callOptions
                     );
 
                 if (!executeCallResult.success) {

@@ -48,10 +48,12 @@ const gasResult = await thorSoloClient.transactions.estimateGas(
     options
 );
 
+const chainTag = await thorSoloClient.nodes.getChaintag();
+
 // 4 - Create transaction
 
 const transactionBody = {
-    chainTag: networkInfo.solo.chainTag,
+    chainTag: chainTag,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
     clauses,

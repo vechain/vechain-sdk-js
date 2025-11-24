@@ -7,11 +7,8 @@ on:
     workflow_dispatch:
 
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
     contents: read
-    pages: write
-    id-token: write
 
 # Allow only one instance of wf to run at once
 concurrency:
@@ -27,7 +24,7 @@ jobs:
     timeout-minutes: 5
     steps:
         - name: Checkout repository
-          uses: actions/checkout@v4
+          uses: actions/checkout@v6
 
         - name: Setup Node
           uses: actions/setup-node@v4
@@ -47,7 +44,7 @@ jobs:
           uses: actions/configure-pages@v5
 
         - name: Upload artifact
-          uses: actions/upload-pages-artifact@v3
+          uses: actions/upload-pages-artifact@v4
           with:
             path: ${{ env.BUILD_PATH }}
 
@@ -58,6 +55,11 @@ jobs:
     needs: build-api-docs
     runs-on: ubuntu-latest
     name: Deploy
+
+    # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+    permissions:
+        pages: write
+        id-token: write
     steps:
         - name: Deploy to GitHub Pages
           id: deployment

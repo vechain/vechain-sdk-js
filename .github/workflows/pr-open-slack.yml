@@ -1,0 +1,94 @@
+name: Notify Slack on PR Open or Closed
+
+on:
+  pull_request:
+    types: [opened, closed]
+    branches:
+      - sdk-v3
+      - main
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check_slack_secret:
+    name: Check Slack Bot Token
+    runs-on: ubuntu-latest
+    outputs:
+      has_secret: ${{ steps.eval.outputs.has_secret }}
+    steps:
+      - name: Evaluate Slack bot token and channel id
+        id: eval
+        shell: bash
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        run: |
+          if [ -n "${SLACK_BOT_TOKEN}" ] && [ -n "${SLACK_CHANNEL_ID}" ]; then
+            echo "has_secret=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_secret=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  notify:
+    name: Post PR Open or Closed to Slack
+    runs-on: ubuntu-latest
+    needs: [check_slack_secret]
+    if: ${{ needs.check_slack_secret.outputs.has_secret == 'true' }}
+    steps:
+      - name: Notify Slack (PR opened)
+        if: ${{ github.event.action == 'opened' }}
+        shell: bash
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_USER: ${{ github.event.pull_request.user.login }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+        run: |
+          set -euo pipefail
+          PAYLOAD=$(jq -n --arg channel "$SLACK_CHANNEL_ID" \
+                        --arg text "PR opened on ${BASE_BRANCH}: ${PR_TITLE} by ${PR_USER} → ${PR_URL}" \
+                        '{channel:$channel,text:$text}')
+          RESP=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" \
+            -H "Content-type: application/json; charset=utf-8" \
+            --data "$PAYLOAD")
+          echo "$RESP" | jq -e '.ok == true' >/dev/null || { echo "Slack post failed"; echo "$RESP" | jq .; exit 1; }
+      - name: Notify Slack (PR merged)
+        if: ${{ github.event.action == 'closed' && github.event.pull_request.merged == true }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_USER: ${{ github.event.pull_request.user.login }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+        run: |
+          curl -sS -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" \
+            -H "Content-type: application/json; charset=utf-8" \
+            --data "{\"channel\":\"${SLACK_CHANNEL_ID}\",\"text\":\"PR merged into ${BASE_BRANCH}: ${PR_TITLE} by ${PR_USER} → ${PR_URL}\"}"
+
+      - name: Notify Slack (PR closed without merge)
+        if: ${{ github.event.action == 'closed' && github.event.pull_request.merged != true }}
+        shell: bash
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_USER: ${{ github.event.pull_request.user.login }}
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+        run: |
+          set -euo pipefail
+          PAYLOAD=$(jq -n --arg channel "$SLACK_CHANNEL_ID" \
+                        --arg text "PR closed (not merged) on ${BASE_BRANCH}: ${PR_TITLE} by ${PR_USER} → ${PR_URL}" \
+                        '{channel:$channel,text:$text}')
+          curl -sS -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${SLACK_BOT_TOKEN}" \
+            -H "Content-type: application/json; charset=utf-8" \
+            --data "$PAYLOAD" | jq -e '.ok == true'
+
