@@ -1,0 +1,21 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "defaultAdmin",
+        "type": "address"
+      },
+      {
+        "name": "pauser",
+        "type": "address"
+      },
+      {
+        "name": "minter",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  }
+]
+
