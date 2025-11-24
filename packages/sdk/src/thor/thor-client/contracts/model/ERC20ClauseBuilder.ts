@@ -1,6 +1,6 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
-import { Address, Hex } from '@common/vcdm';
+import { Address, type AddressLike, Hex } from '@common/vcdm';
 import { Clause } from '@thor/thor-client/model/transactions/Clause';
 import { encodeFunctionData, parseUnits } from 'viem';
 import { ERC20_ABI } from '@thor/utils';
@@ -43,19 +43,22 @@ export class ERC20ClauseBuilder {
      * ```
      */
     public static transfer(
-        tokenAddress: Address,
-        recipient: Address,
+        tokenAddress: AddressLike,
+        recipient: AddressLike,
         amount: bigint,
         comment?: string
     ): Clause {
+        const normalizedTokenAddress = Address.of(tokenAddress);
+        const normalizedRecipient = Address.of(recipient);
+
         const data = encodeFunctionData({
             abi: ERC20_ABI,
             functionName: 'transfer',
-            args: [recipient.toString() as any, amount]
+            args: [normalizedRecipient.toString() as any, amount]
         });
 
         return new Clause(
-            tokenAddress,
+            normalizedTokenAddress,
             0n, // No VET value sent with token transfer
             Hex.of(data),
             comment ?? null,
@@ -84,8 +87,8 @@ export class ERC20ClauseBuilder {
      * ```
      */
     public static transferWithDecimals(
-        tokenAddress: Address,
-        recipient: Address,
+        tokenAddress: AddressLike,
+        recipient: AddressLike,
         amount: string,
         decimals: number = 18,
         comment?: string
@@ -113,19 +116,22 @@ export class ERC20ClauseBuilder {
      * ```
      */
     public static approve(
-        tokenAddress: Address,
-        spender: Address,
+        tokenAddress: AddressLike,
+        spender: AddressLike,
         amount: bigint,
         comment?: string
     ): Clause {
+        const normalizedTokenAddress = Address.of(tokenAddress);
+        const normalizedSpender = Address.of(spender);
+
         const data = encodeFunctionData({
             abi: ERC20_ABI,
             functionName: 'approve',
-            args: [spender.toString() as any, amount]
+            args: [normalizedSpender.toString() as any, amount]
         });
 
         return new Clause(
-            tokenAddress,
+            normalizedTokenAddress,
             0n, // No VET value sent with approve
             Hex.of(data),
             comment ?? null,
@@ -154,8 +160,8 @@ export class ERC20ClauseBuilder {
      * ```
      */
     public static approveWithDecimals(
-        tokenAddress: Address,
-        spender: Address,
+        tokenAddress: AddressLike,
+        spender: AddressLike,
         amount: string,
         decimals: number = 18,
         comment?: string
@@ -185,20 +191,28 @@ export class ERC20ClauseBuilder {
      * ```
      */
     public static transferFrom(
-        tokenAddress: Address,
-        from: Address,
-        to: Address,
+        tokenAddress: AddressLike,
+        from: AddressLike,
+        to: AddressLike,
         amount: bigint,
         comment?: string
     ): Clause {
+        const normalizedTokenAddress = Address.of(tokenAddress);
+        const normalizedFrom = Address.of(from);
+        const normalizedTo = Address.of(to);
+
         const data = encodeFunctionData({
             abi: ERC20_ABI,
             functionName: 'transferFrom',
-            args: [from.toString() as any, to.toString() as any, amount]
+            args: [
+                normalizedFrom.toString() as any,
+                normalizedTo.toString() as any,
+                amount
+            ]
         });
 
         return new Clause(
-            tokenAddress,
+            normalizedTokenAddress,
             0n, // No VET value sent with transferFrom
             Hex.of(data),
             comment ?? null,
@@ -229,9 +243,9 @@ export class ERC20ClauseBuilder {
      * ```
      */
     public static transferFromWithDecimals(
-        tokenAddress: Address,
-        from: Address,
-        to: Address,
+        tokenAddress: AddressLike,
+        from: AddressLike,
+        to: AddressLike,
         amount: string,
         decimals: number = 18,
         comment?: string

@@ -24,7 +24,7 @@ export interface ViemContract<TAbi extends Abi> {
     /**
      * Contract address
      */
-    address: Address;
+    address: AddressLike;
 
     /**
      * Contract ABI
@@ -114,7 +114,9 @@ export function createViemContract<TAbi extends Abi>(
             string,
             (
                 ...args: FunctionArgs
-            ) => Promise<(string | number | bigint | boolean | AddressLike | Hex)[]>
+            ) => Promise<
+                (string | number | bigint | boolean | AddressLike | Hex)[]
+            >
         >,
         write: {} as Record<
             string,
@@ -284,7 +286,9 @@ export function createViemContract<TAbi extends Abi>(
 /**
  * Type guard to check if an object is a CompiledContract
  */
-function isCompiledContractFormat(obj: unknown): obj is { abi: Abi; [key: string]: unknown } {
+function isCompiledContractFormat(
+    obj: unknown
+): obj is { abi: Abi; [key: string]: unknown } {
     return (
         obj !== null &&
         typeof obj === 'object' &&
@@ -295,12 +299,13 @@ function isCompiledContractFormat(obj: unknown): obj is { abi: Abi; [key: string
 
 export function getContract<TAbi extends Abi>(
     contractsModule: ContractsModule,
-    address: Address,
+    address: AddressLike,
     abi: TAbi,
     signer?: Signer
 ): ViemContract<TAbi> {
+    const normalizedAddress = Address.of(address);
     // Extract ABI array from full contract JSON if needed
     const actualAbi = isCompiledContractFormat(abi) ? (abi.abi as TAbi) : abi;
-    const contract = contractsModule.load(address, actualAbi, signer);
+    const contract = contractsModule.load(normalizedAddress, actualAbi, signer);
     return createViemContract(contract);
 }

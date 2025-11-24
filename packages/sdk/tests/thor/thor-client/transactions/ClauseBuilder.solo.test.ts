@@ -54,3 +54,5 @@ describe('ClauseBuilder transferVTHO SOLO tests', () => {
         expect(receipt?.reverted).toBe(false);
     }, 30000);
 });
+
+

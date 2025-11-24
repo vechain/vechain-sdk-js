@@ -1,4 +1,10 @@
-import { type Revision, type Address, HexUInt, type Hex } from '@common/vcdm';
+import {
+    type Revision,
+    Address,
+    HexUInt,
+    type Hex,
+    AddressLike
+} from '@common/vcdm';
 import { AccountDetail } from '../model/accounts/AccountDetail';
 import {
     RetrieveAccountDetails,
@@ -20,10 +26,11 @@ class AccountsModule extends AbstractThorModule {
      * @return {Promise<AccountDetail>} Returns a promise that resolves to the account details.
      */
     public async getAccount(
-        address: Address,
+        address: AddressLike,
         revision?: Revision
     ): Promise<AccountDetail> {
-        const query = RetrieveAccountDetails.of(address, revision);
+        const addr = Address.of(address);
+        const query = RetrieveAccountDetails.of(addr, revision);
         const { response } = await query.askTo(this.httpClient);
         return new AccountDetail(response);
     }
@@ -36,10 +43,11 @@ class AccountsModule extends AbstractThorModule {
      * @return {Promise<HexUInt>} A promise that resolves to the bytecode of the smart contract.
      */
     public async getBytecode(
-        address: Address,
+        address: AddressLike,
         revision?: Revision
     ): Promise<HexUInt> {
-        const query = RetrieveContractBytecode.of(address, revision);
+        const addr = Address.of(address);
+        const query = RetrieveContractBytecode.of(addr, revision);
         const { response } = await query.askTo(this.httpClient);
         return HexUInt.of(response.code);
     }
@@ -53,15 +61,12 @@ class AccountsModule extends AbstractThorModule {
      * @return {Promise<HexUInt>} - A promise that resolves to the storage value as a string.
      */
     public async getStorageAt(
-        address: Address,
+        address: AddressLike,
         position: Hex,
         revision?: Revision
     ): Promise<HexUInt> {
-        const query = RetrieveStoragePositionValue.of(
-            address,
-            position,
-            revision
-        );
+        const addr = Address.of(address);
+        const query = RetrieveStoragePositionValue.of(addr, position, revision);
         const { response } = await query.askTo(this.httpClient);
         return HexUInt.of(response.value);
     }
