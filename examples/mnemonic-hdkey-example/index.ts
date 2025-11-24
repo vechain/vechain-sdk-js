@@ -1,5 +1,5 @@
-import { Address, Mnemonic } from '@common/vcdm';
-import { HDKey } from '@common/cryptography/hdkey';
+import { Address, Mnemonic } from '@vechain/sdk-temp/common';
+import { HDKey } from '@vechain/sdk-temp/common';
 
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
 const randomMnemonic = Mnemonic.of();
@@ -69,4 +69,3 @@ console.log(
     ).toString(),
     'Class HDKey - Default path'
 );
-
