@@ -13,7 +13,7 @@ jobs:
                 node: [20, lts/*, 24]
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Setup Node
               uses: actions/setup-node@v4
@@ -54,7 +54,7 @@ jobs:
 
             - name: Upload Thor solo logs
               if: always() && steps.save-logs.outcome == 'success'
-              uses: actions/upload-artifact@v4.6.2
+              uses: actions/upload-artifact@v5.0.0
               with:
                 name: thor-solo-logs-${{ matrix.node == 'lts/*' && 'node-lts' || format('node-{0}', matrix.node) }}
                 path: packages/solo-setup/logs/
@@ -71,7 +71,7 @@ jobs:
 
             - name: Jest Coverage Comment
               if: matrix.node == 'lts/*'
-              uses: MishaKav/jest-coverage-comment@main
+              uses: MishaKav/jest-coverage-comment@174f9cbf582b7cc2a7a3acce14dcfc8362e9d37f # v1.0.29
               with:
                 title: Test Coverage
                 summary-title: Summary
@@ -93,7 +93,7 @@ jobs:
 
             - name: Archive coverage
               if: always() &&matrix.node == 'lts/*' && (steps.stop-solo.outcome == 'success')
-              uses: actions/upload-artifact@v4.6.2
+              uses: actions/upload-artifact@v5.0.0
               with:
                 name: coverage-results
                 path: |
@@ -101,7 +101,7 @@ jobs:
             
             - name: Post unit test results to slack
               if: always() && github.ref == 'refs/heads/main' && (steps.all-tests.outcome == 'failure')
-              uses: slackapi/slack-github-action@v2.0.0
+              uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
               with:
                 webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
                 webhook-type: webhook-trigger
