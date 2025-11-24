@@ -19,7 +19,7 @@
     "interact-erc721": "npx hardhat run scripts/erc721/interact.ts --network vechain_testnet"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.0.2",
+    "@openzeppelin/contracts": "^5.4.0",
     "@vechain/sdk-core": "2.0.7",
     "@vechain/sdk-hardhat-plugin": "2.0.7",
     "@vechain/sdk-logging": "2.0.7"
