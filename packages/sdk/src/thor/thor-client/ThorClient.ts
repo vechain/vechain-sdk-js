@@ -10,6 +10,7 @@ import { GasModule } from './gas/gas-module';
 import { NodesModule } from './nodes/nodes-module';
 import { ContractsModule } from './contracts/contracts-module';
 import { TransactionsModule } from './transactions/transactions-module';
+import type { IThorClient } from './AbstractThorModule';
 
 /**
  * The `ThorClient` class serves as an abstractedinterface to interact with the VeChainThor blockchain.
@@ -70,13 +71,14 @@ class ThorClient {
         this.transactions = new TransactionsModule(httpClient);
 
         // set thorClient to modules for cross-module communication
-        this.accounts.setThorClient(this);
-        this.blocks.setThorClient(this);
-        this.gas.setThorClient(this);
-        this.logs.setThorClient(this);
-        this.nodes.setThorClient(this);
-        this.contracts.setThorClient(this);
-        this.transactions.setThorClient(this);
+        // Type assertion: ThorClient implements IThorClient interface
+        this.accounts.setThorClient(this as unknown as IThorClient);
+        this.blocks.setThorClient(this as unknown as IThorClient);
+        this.gas.setThorClient(this as unknown as IThorClient);
+        this.logs.setThorClient(this as unknown as IThorClient);
+        this.nodes.setThorClient(this as unknown as IThorClient);
+        this.contracts.setThorClient(this as unknown as IThorClient);
+        this.transactions.setThorClient(this as unknown as IThorClient);
     }
 
     /**

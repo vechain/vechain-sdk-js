@@ -29,6 +29,8 @@ import { type TransactionBodyOptions } from '../model/transactions/TransactionBo
 import { log } from '@common/logging';
 import { type Signer } from '@thor/signer/Signer';
 import { type EstimateGasOptions } from '../model/gas';
+import { type EstimateGasResult } from '../model/gas/EstimateGasResult';
+import { type AddressLike } from '@common/vcdm';
 
 /**
  * The transactions module of the VeChain Thor blockchain.
@@ -227,7 +229,10 @@ class TransactionsModule extends AbstractThorModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionRequest> {
         try {
-            const txBuilder = TransactionBuilder.create(this.thorClient);
+            // Type assertion: IThorClient is compatible with ThorClient for TransactionBuilder
+            // TransactionBuilder.create expects ThorClient, but we have IThorClient (forward reference)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const txBuilder = TransactionBuilder.create(this.thorClient as any);
             // add clauses and gas
             txBuilder.withClauses(clauses);
             txBuilder.withGas(
@@ -298,11 +303,15 @@ class TransactionsModule extends AbstractThorModule {
         txOptions?: TransactionBodyOptions
     ): Promise<Hex> {
         // estimate the gas
-        const gasEstimate = await this.thorClient.gas.estimateGas(
-            clauses,
-            signer.address,
-            gasEstimateOptions
-        );
+        const gasEstimate: EstimateGasResult = await (
+            this.thorClient.gas as {
+                estimateGas: (
+                    clauses: Clause[],
+                    caller: AddressLike,
+                    options?: EstimateGasOptions
+                ) => Promise<EstimateGasResult>;
+            }
+        ).estimateGas(clauses, signer.address, gasEstimateOptions);
         if (gasEstimate.reverted) {
             log.warn({
                 message: 'Gas estimation reverted',

@@ -24,6 +24,9 @@ import { FilterRangeUnits } from '../model/logs/FilterRangeUnits';
 import { QuerySmartContractEvents, type EventLogResponse } from '@thor/thorest';
 import { type TransactionReceipt } from '../model/transactions/TransactionReceipt';
 import { type WaitForTransactionReceiptOptions } from '../model/transactions/WaitForTransactionReceiptOptions';
+import { type ClauseSimulationResult } from '../model/transactions';
+import { type AccountDetail } from '../model/accounts/AccountDetail';
+import { HexUInt } from '@common/vcdm';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
@@ -74,7 +77,7 @@ class ContractsModule extends AbstractThorModule {
             actualAbi,
             bytecode as `0x${string}`,
             signer,
-            this
+            this as unknown as { readonly [key: string]: unknown }
         );
     }
 
@@ -96,7 +99,11 @@ class ContractsModule extends AbstractThorModule {
         const actualAbi = this.isCompiledContract(abi)
             ? (abi.abi as TAbi)
             : abi;
-        return new Contract<TAbi>(normalizedAddress, actualAbi, this, signer);
+        // Type assertion to avoid circular dependency - Contract uses forward reference interface
+        // The Contract constructor expects a ContractsModule interface (forward reference)
+        // but we're passing the real ContractsModule instance, so we use type assertion
+        const ContractClass = Contract as any;
+        return new ContractClass(normalizedAddress, actualAbi, this, signer);
     }
 
     /**
@@ -115,7 +122,7 @@ class ContractsModule extends AbstractThorModule {
             abi,
             bytecode as `0x${string}`,
             signer,
-            this
+            this as unknown as { readonly [key: string]: unknown }
         );
     }
 
@@ -237,8 +244,8 @@ class ContractsModule extends AbstractThorModule {
                 gasPrice: options?.gasPrice
             };
 
-            const simulationResults =
-                await this.thorClient.transactions.simulateTransaction(
+            const simulationResults: ClauseSimulationResult[] =
+                await (this.thorClient.transactions as { simulateTransaction: (clauses: Clause[], options?: unknown) => Promise<ClauseSimulationResult[]> }).simulateTransaction(
                     [clause],
                     simulationOptions
                 );
@@ -419,8 +426,8 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId =
-                await this.thorClient.transactions.sendRawTransaction(
+            const transactionId: Hex =
+                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -588,8 +595,8 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId =
-                await this.thorClient.transactions.sendRawTransaction(
+            const transactionId: Hex =
+                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -630,11 +637,11 @@ class ContractsModule extends AbstractThorModule {
 
         try {
             // Get account details and bytecode using ThorClient accounts module
-            const accountDetails = await this.thorClient.accounts.getAccount(
+            const accountDetails: AccountDetail = await (this.thorClient.accounts as { getAccount: (address: AddressLike, revision?: Revision) => Promise<AccountDetail> }).getAccount(
                 addr,
                 revision
             );
-            const bytecode = await this.thorClient.accounts.getBytecode(
+            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
                 addr,
                 revision
             );
@@ -690,7 +697,7 @@ class ContractsModule extends AbstractThorModule {
         const addr = Address.of(address);
         try {
             // Use ThorClient accounts module to get bytecode
-            const bytecode = await this.thorClient.accounts.getBytecode(
+            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
                 addr,
                 revision
             );
@@ -780,10 +787,11 @@ class ContractsModule extends AbstractThorModule {
         transactionId: Hex,
         options?: WaitForTransactionReceiptOptions
     ): Promise<TransactionReceipt | null> {
-        return await this.thorClient.transactions.waitForTransactionReceipt(
+        const receipt: TransactionReceipt | null = await (this.thorClient.transactions as { waitForTransactionReceipt: (transactionId: Hex, options?: WaitForTransactionReceiptOptions) => Promise<TransactionReceipt | null> }).waitForTransactionReceipt(
             transactionId,
             options
         );
+        return receipt;
     }
 }
 
