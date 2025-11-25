@@ -2,9 +2,9 @@ import {
     Address,
     Hex,
     Revision,
-    RevisionLike,
+    type RevisionLike,
     RevisionType,
-    AddressLike
+    type AddressLike
 } from '@common/vcdm';
 import { type HttpClient, FetchHttpClient } from '@common/http';
 import {
@@ -32,10 +32,9 @@ import { log } from '@common/logging';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
-import { FilterRange } from '@thor/thor-client/model/logs/FilterRange';
-import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits';
-import { FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
-import { EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
+import { type FilterRange } from '@thor/thor-client/model/logs/FilterRange';
+import { type FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
+import { type EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
 import { type AbiEvent, toEventSelector } from 'viem';
 import type { FeeHistory } from '@thor/thor-client/model/gas/FeeHistory';
 import {
@@ -790,11 +789,11 @@ class PublicClient {
             .padStart(8, '0')}`;
 
         // create the EventLogFilter
-        const filterRange = new FilterRange(
-            FilterRangeUnits.block,
-            Number(fromBlock),
-            Number(toBlock)
-        );
+        const filterRange: FilterRange = {
+            unit: 'block',
+            from: Number(fromBlock),
+            to: Number(toBlock)
+        };
 
         // create topics from args
         const topic0 =
@@ -807,7 +806,7 @@ class PublicClient {
         ];
 
         // filterOptions is needed by Thor but not used by viem
-        const filterOptions = new FilterOptions();
+        const filterOptions: FilterOptions | null = null;
         // create an EventCriteria for each address
         const criteriaSet: EventCriteria[] = [];
         if (address !== undefined) {
@@ -815,10 +814,13 @@ class PublicClient {
             addresses.forEach((addrValue) => {
                 const normalizedAddress = Address.of(addrValue);
 
-                const eventCriteria = new EventCriteria(
-                    normalizedAddress,
-                    ...topics
-                );
+                const eventCriteria: EventCriteria = {
+                    address: normalizedAddress,
+                    topic0: topics[0],
+                    topic1: topics[1],
+                    topic2: topics[2],
+                    topic3: topics[3]
+                };
                 criteriaSet.push(eventCriteria);
             });
         }
