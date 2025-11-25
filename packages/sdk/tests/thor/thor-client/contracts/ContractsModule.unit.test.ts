@@ -4,7 +4,10 @@
 import { describe, expect, test, jest } from '@jest/globals';
 import { ThorClient } from '../../../../src/thor/thor-client/ThorClient';
 import { Address } from '../../../../src/common/vcdm';
-import { IllegalArgumentError } from '../../../../src/common/errors';
+import {
+    IllegalArgumentError,
+    ContractCallError
+} from '../../../../src/common/errors';
 
 // Mock HttpClient
 // @ts-ignore - Jest mock typing issues
@@ -170,6 +173,32 @@ describe.skip('ContractsModule', () => {
                     args
                 )
             ).rejects.toThrow(IllegalArgumentError);
+        });
+
+        test('Should throw ContractCallError when function not found on ABI', async () => {
+            const thorClient = createThorClient();
+            const contractAddress = Address.of(
+                '0x0000000000000000000000000000456e65726779'
+            );
+            // Create a function ABI that doesn't exist in the contract
+            const nonExistentFunctionAbi = {
+                type: 'function',
+                name: 'nonExistentFunction',
+                stateMutability: 'view',
+                inputs: [],
+                outputs: [{ name: '', type: 'string' }]
+            } as any;
+            const args: unknown[] = [];
+
+            // This should throw ContractCallError because encodeFunctionData will fail
+            // with "Function not found on ABI" error
+            await expect(
+                thorClient.contracts.executeCall(
+                    contractAddress,
+                    nonExistentFunctionAbi,
+                    args
+                )
+            ).rejects.toThrow(ContractCallError);
         });
     });
 

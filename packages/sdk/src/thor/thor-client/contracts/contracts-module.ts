@@ -9,13 +9,14 @@ import { Contract, ContractFactory } from './model';
 import { ClauseBuilder } from '@thor/thor-client/transactions/ClauseBuilder';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
 import { Clause } from '../model/transactions/Clause';
-import { IllegalArgumentError } from '../../../common/errors';
+import { IllegalArgumentError, ContractCallError } from '../../../common/errors';
 import { log } from '@common/logging';
 import {
     type AbiParameter,
     encodeFunctionData,
     decodeFunctionResult
 } from 'viem';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import type { ContractCallOptions, ContractCallResult } from './types';
 import { EventLogFilter } from '../model/logs/EventLogFilter';
 import { type EventCriteria } from '../model/logs/EventCriteria';
@@ -207,7 +208,18 @@ class ContractsModule extends AbstractThorModule {
                     message: 'Error in encodeFunctionData',
                     context: { error }
                 });
-                throw error;
+                // Throw ContractCallError for encoding errors (e.g., "Function not found on ABI")
+                const errorMessage =
+                    error instanceof Error ? error.message : 'Unknown encoding error';
+                throw new ContractCallError(
+                    'ContractsModule.executeCall',
+                    errorMessage,
+                    {
+                        functionName: functionAbi.name,
+                        contractAddress: contractAddress.toString()
+                    },
+                    error instanceof Error ? error : undefined
+                );
             }
 
             const clauseContractAddress = Address.of(contractAddress);
@@ -251,11 +263,57 @@ class ContractsModule extends AbstractThorModule {
                 const clauseResult = simulationResults[0];
 
                 if (clauseResult.reverted) {
+                    // Try to decode the revert reason
+                    let decodedRevertReason: string | undefined;
+                    try {
+                        const revertData = clauseResult.data
+                            ? Hex.of(clauseResult.data.toString())
+                            : Hex.of('0x');
+                        decodedRevertReason = decodeRevertReason(revertData);
+                    } catch {
+                        // If decoding fails, decodedRevertReason remains undefined
+                        decodedRevertReason = undefined;
+                    }
+
+                    const vmError = clauseResult.vmError || '';
+
+                    // If we can't decode a revert reason, this might indicate a function
+                    // that doesn't exist in the contract or a generic revert
+                    // In this case, throw an exception to match v2 behavior
+                    // This is more aggressive but matches v2 where encodeData() fails
+                    const hasNoRevertMessage =
+                        !decodedRevertReason || decodedRevertReason.trim() === '';
+
+                    // Check if vmError is generic (common indicators of function not existing)
+                    const vmErrorLower = vmError.toLowerCase();
+                    const isGenericError =
+                        !vmError ||
+                        vmError === 'execution reverted' ||
+                        vmError === 'revert' ||
+                        vmErrorLower.includes('execution reverted') ||
+                        vmErrorLower.includes('revert');
+
+                    // If no decoded revert message and generic error, throw exception
+                    // This matches v2 behavior where encodeData() fails for non-existent functions
+                    if (hasNoRevertMessage && isGenericError) {
+                        throw new ContractCallError(
+                            'ContractsModule.executeCall',
+                            'Contract call reverted without a specific error message. This may indicate the function does not exist in the contract.',
+                            {
+                                functionName: functionAbi.name,
+                                contractAddress: contractAddress.toString(),
+                                vmError: vmError || 'execution reverted'
+                            }
+                        );
+                    }
+
+                    // If we have a decoded revert reason or a specific vmError, return error object
+                    // This is a legitimate contract execution error (revert)
                     return {
                         success: false,
                         result: {
                             errorMessage:
-                                clauseResult.vmError || 'Contract call reverted'
+                                decodedRevertReason || vmError || 'Contract call reverted'
                         }
                     };
                 }
@@ -338,20 +396,28 @@ class ContractsModule extends AbstractThorModule {
                 }
             };
         } catch (error) {
-            // Re-throw validation errors
-            if (error instanceof IllegalArgumentError) {
+            // Re-throw validation and encoding errors (these should be exceptions, not return values)
+            if (
+                error instanceof IllegalArgumentError ||
+                error instanceof ContractCallError
+            ) {
                 throw error;
             }
 
-            return {
-                success: false,
-                result: {
-                    errorMessage:
-                        error instanceof Error
-                            ? error.message
-                            : 'Unknown error occurred'
-                }
-            };
+            // For unexpected errors during simulation or other operations, throw ContractCallError
+            const errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : 'Unknown error occurred';
+            throw new ContractCallError(
+                'ContractsModule.executeCall',
+                errorMessage,
+                {
+                    contractAddress: contractAddress?.toString(),
+                    functionName: functionAbi?.name
+                },
+                error instanceof Error ? error : undefined
+            );
         }
     }
 
