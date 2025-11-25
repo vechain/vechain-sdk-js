@@ -29,6 +29,7 @@ import { type WaitForTransactionReceiptOptions } from '../model/transactions/Wai
 // Proper function arguments type using VeChain SDK types
 // Type alias for function arguments (runtime values, not ABI definitions)
 type FunctionArgs = readonly unknown[];
+type AbiEntry = Abi[number];
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -131,7 +132,7 @@ class ContractsModule extends AbstractThorModule {
      */
     public async executeCall(
         contractAddress: AddressLike,
-        functionAbi: AbiFunction,
+        functionAbi: AbiFunction | AbiEntry | undefined,
         functionData: FunctionArgs,
         options?: ContractCallOptions
     ): Promise<ContractCallResult> {
@@ -152,7 +153,12 @@ class ContractsModule extends AbstractThorModule {
             }
 
             // Validate function ABI
-            if (!functionAbi || !functionAbi.name) {
+            const resolvedFunctionAbi =
+                functionAbi && functionAbi.type === 'function'
+                    ? (functionAbi as AbiFunction)
+                    : undefined;
+
+            if (!resolvedFunctionAbi || !resolvedFunctionAbi.name) {
                 throw new IllegalArgumentError(
                     'ContractsModule.executeCall',
                     'Invalid function ABI',
@@ -180,22 +186,22 @@ class ContractsModule extends AbstractThorModule {
             log.debug({
                 message: 'encodeFunctionData inputs',
                 context: {
-                    abi: [functionAbi],
-                    functionName: functionAbi.name,
+                    abi: [resolvedFunctionAbi],
+                    functionName: resolvedFunctionAbi.name,
                     args: processedArgs
                 }
             });
             log.debug({
                 message: 'functionAbi inputs',
-                context: { inputs: functionAbi.inputs }
+                context: { inputs: resolvedFunctionAbi.inputs }
             });
 
             // Use viem's encodeFunctionData directly
             let data: string;
             try {
                 data = encodeFunctionData({
-                    abi: [functionAbi] as any,
-                    functionName: functionAbi.name as any,
+                    abi: [resolvedFunctionAbi] as any,
+                    functionName: resolvedFunctionAbi.name as any,
                     args: processedArgs as any
                 });
 
@@ -269,12 +275,12 @@ class ContractsModule extends AbstractThorModule {
                     try {
                         // Decode the result using viem's decodeFunctionResult if the function has outputs
                         if (
-                            functionAbi.outputs &&
-                            functionAbi.outputs.length > 0
+                            resolvedFunctionAbi.outputs &&
+                            resolvedFunctionAbi.outputs.length > 0
                         ) {
                             const decoded = decodeFunctionResult({
-                                abi: [functionAbi],
-                                functionName: functionAbi.name,
+                                abi: [resolvedFunctionAbi],
+                                functionName: resolvedFunctionAbi.name,
                                 data: clauseResult.data.toString() as `0x${string}`
                             });
 
