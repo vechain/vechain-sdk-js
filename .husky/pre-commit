@@ -1,6 +1,5 @@
 corepack yarn build
 corepack yarn lint
 corepack yarn check:circular-dependencies
-npx madge --circular --extensions ts ./packages/sdk/src
 corepack yarn test:node:unit
 corepack yarn check:tests-naming

@@ -101,9 +101,11 @@ class ContractsModule extends AbstractThorModule {
             : abi;
         // Type assertion to avoid circular dependency - Contract uses forward reference interface
         // The Contract constructor expects a ContractsModule interface (forward reference)
-        // but we're passing the real ContractsModule instance, so we use type assertion
-        const ContractClass = Contract as any;
-        return new ContractClass(normalizedAddress, actualAbi, this, signer);
+        // but we're passing the real ContractsModule instance, which is structurally compatible
+        // We cannot import the forward reference interface type without creating a circular dependency
+        // Using 'as any' is necessary here as the forward reference interface cannot be properly typed
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return new Contract(normalizedAddress, actualAbi, this as any, signer);
     }
 
     /**

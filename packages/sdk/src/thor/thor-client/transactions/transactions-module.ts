@@ -229,10 +229,14 @@ class TransactionsModule extends AbstractThorModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionRequest> {
         try {
-            // Type assertion: IThorClient is compatible with ThorClient for TransactionBuilder
+            // Type assertion: IThorClient provides the interface TransactionBuilder needs
             // TransactionBuilder.create expects ThorClient, but we have IThorClient (forward reference)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const txBuilder = TransactionBuilder.create(this.thorClient as any);
+            // IThorClient is structurally compatible with ThorClient for TransactionBuilder's needs
+            const txBuilder = TransactionBuilder.create(
+                this.thorClient as unknown as Parameters<
+                    typeof TransactionBuilder.create
+                >[0]
+            );
             // add clauses and gas
             txBuilder.withClauses(clauses);
             txBuilder.withGas(
