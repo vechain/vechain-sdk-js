@@ -122,6 +122,18 @@ class LogsModule extends AbstractThorModule {
     }
 
     /**
+     * Filters event logs based on the provided criteria. Raw event logs are not decoded.
+     *
+     * @param filterOptions - An object specifying filtering criteria for event logs.
+     * @returns A promise that resolves to filtered event logs.
+     */
+    public async filterRawEventLogs(
+        filterOptions: EventLogFilter
+    ): Promise<EventLog[]> {
+        return await this.getRawEventLogs(filterOptions);
+    }
+
+    /**
      * Removes duplicated ABI items from the provided array.
      * ABI items are considered duplicated if they have the same signature hash.
      * @param eventAbis - An array of event ABI items.

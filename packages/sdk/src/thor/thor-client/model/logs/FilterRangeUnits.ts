@@ -1,9 +1,6 @@
 /**
- * [FilterRange](http://localhost:8669/doc/stoplight-ui/#/schemas/FilterRange)`.unit` property.
+ * The unit of measurement for the from and to values in a filter range.
  */
-enum FilterRangeUnits {
-    block = 'block',
-    time = 'time'
-}
+type FilterRangeUnits = 'block' | 'time';
 
-export { FilterRangeUnits };
+export type { FilterRangeUnits };
