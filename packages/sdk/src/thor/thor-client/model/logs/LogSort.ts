@@ -1,6 +1,6 @@
-enum LogSort {
-    asc = 'asc',
-    desc = 'desc'
-}
+/**
+ * The order of the results. Use asc for ascending order, and desc for descending order.
+ */
+type LogSort = 'asc' | 'desc';
 
-export { LogSort };
+export type { LogSort };
