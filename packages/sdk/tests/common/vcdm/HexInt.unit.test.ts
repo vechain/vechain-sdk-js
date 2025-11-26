@@ -16,7 +16,38 @@ describe('HexInt class tests', () => {
             const hex = HexInt.of(exp);
             expect(hex.bi).toEqual(exp);
             expect(hex.n).toEqual(Number(exp));
-            expect(hex.toString()).toEqual('-0x0c0c0a');
+            // BigInt.toString(16) preserves minimal format without forcing byte alignment
+            expect(hex.toString()).toEqual('-0xc0c0a');
+            expect(hex.digits.length).toBe(5); // Minimal format, no padding added
+        });
+
+        test('Do not force byte alignment when creating HexInt from bigint', () => {
+            // Test case from Thor API: "0x921af8386350000" (15 digits)
+            // Should preserve minimal format without adding padding
+            const exp = 0x921af8386350000n;
+            const hex = HexInt.of(exp);
+            expect(hex.toString()).toBe('0x921af8386350000');
+            expect(hex.digits.length).toBe(15); // Minimal format preserved
+            // Verify no padding was added
+            expect(hex.digits).toBe(exp.toString(16));
+        });
+
+        test('Preserve minimal format for bigint values without forcing alignment', () => {
+            // BigInt.toString(16) returns minimal representation
+            // No padding should be added to force byte alignment
+            const testCases = [
+                { value: 15n, expected: '0xf', digits: 1 }, // Minimal format
+                { value: 255n, expected: '0xff', digits: 2 }, // Minimal format
+                { value: 789514n, expected: '0xc0c0a', digits: 5 } // Minimal format
+            ];
+
+            testCases.forEach(({ value, expected, digits }) => {
+                const hex = HexInt.of(value);
+                expect(hex.toString()).toBe(expected);
+                expect(hex.digits.length).toBe(digits);
+                // Verify digits match BigInt.toString(16) exactly (no padding)
+                expect(hex.digits).toBe(value.toString(16));
+            });
         });
 
         test('Return equals values for bi and n properties from number value', () => {
