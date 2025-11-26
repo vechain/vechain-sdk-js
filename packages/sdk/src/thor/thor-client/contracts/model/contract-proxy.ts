@@ -21,6 +21,7 @@ import type { ContractFunctionCriteria } from './ContractFunctionCriteria';
 import type { ContractFunctionFilter } from './ContractFunctionFilter';
 import type { ContractFunctionRead } from './ContractFunctionRead';
 import type { ContractFunctionTransact } from './ContractFunctionTransact';
+import type { ContractCallResult } from '../types';
 
 /**
  * Extracts and removes additional options from function arguments
@@ -142,7 +143,7 @@ function getReadProxy<TAbi extends Abi>(
                     );
                 }
 
-                const executeCallResult =
+                const executeCallResult: ContractCallResult =
                     await contract.contractsModule.executeCall(
                         contract.address,
                         functionAbi,
@@ -172,7 +173,8 @@ function getReadProxy<TAbi extends Abi>(
                 }
 
                 // Return the properly typed result based on the function's outputs
-                return executeCallResult.result.array ?? [];
+                const resultArray = executeCallResult.result.array ?? [];
+                return resultArray as (string | number | bigint | boolean | Hex | AddressLike)[];
             };
         }
     }) as ContractFunctionRead<
