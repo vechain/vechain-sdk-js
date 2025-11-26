@@ -136,6 +136,12 @@ class ContractsModule extends AbstractThorModule {
         functionData: FunctionArgs,
         options?: ContractCallOptions
     ): Promise<ContractCallResult> {
+        // Validate function ABI early to make it available in catch block
+        const resolvedFunctionAbi =
+            functionAbi && functionAbi.type === 'function'
+                ? (functionAbi as AbiFunction)
+                : undefined;
+
         try {
             // Validate contract address
             if (
@@ -153,11 +159,6 @@ class ContractsModule extends AbstractThorModule {
             }
 
             // Validate function ABI
-            const resolvedFunctionAbi =
-                functionAbi && functionAbi.type === 'function'
-                    ? (functionAbi as AbiFunction)
-                    : undefined;
-
             if (!resolvedFunctionAbi || !resolvedFunctionAbi.name) {
                 throw new IllegalArgumentError(
                     'ContractsModule.executeCall',
@@ -221,7 +222,7 @@ class ContractsModule extends AbstractThorModule {
                     'ContractsModule.executeCall',
                     errorMessage,
                     {
-                        functionName: functionAbi.name,
+                        functionName: resolvedFunctionAbi.name,
                         contractAddress: contractAddress.toString()
                     },
                     error instanceof Error ? error : undefined
@@ -306,7 +307,7 @@ class ContractsModule extends AbstractThorModule {
                             'ContractsModule.executeCall',
                             'Contract call reverted without a specific error message. This may indicate the function does not exist in the contract.',
                             {
-                                functionName: functionAbi.name,
+                                functionName: resolvedFunctionAbi.name,
                                 contractAddress: contractAddress.toString(),
                                 vmError: vmError || 'execution reverted'
                             }
@@ -415,12 +416,21 @@ class ContractsModule extends AbstractThorModule {
                 error instanceof Error
                     ? error.message
                     : 'Unknown error occurred';
+            // Use resolvedFunctionAbi if available, otherwise try to extract from functionAbi
+            const functionName =
+                resolvedFunctionAbi?.name ??
+                (functionAbi &&
+                'type' in functionAbi &&
+                functionAbi.type === 'function' &&
+                'name' in functionAbi
+                    ? (functionAbi as AbiFunction).name
+                    : undefined);
             throw new ContractCallError(
                 'ContractsModule.executeCall',
                 errorMessage,
                 {
                     contractAddress: contractAddress?.toString(),
-                    functionName: functionAbi?.name
+                    functionName
                 },
                 error instanceof Error ? error : undefined
             );
