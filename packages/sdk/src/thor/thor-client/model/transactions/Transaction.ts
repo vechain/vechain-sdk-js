@@ -1,7 +1,7 @@
 import { type Address, type Hex } from '@common/vcdm';
 import { TransactionMeta } from './TransactionMeta';
 import { type GetTxResponse } from '@thor/thorest/transactions';
-import { BaseTransaction, type BaseTransactionParams } from './BaseTransaction';
+import { BaseTransaction, type TransactionBody } from './BaseTransaction';
 
 /**
  * Class representing a transaction read from the blockchain.
@@ -52,7 +52,7 @@ class Transaction extends BaseTransaction {
             maxPriorityFeePerGas: data.maxPriorityFeePerGas ?? undefined,
             dependsOn: data.dependsOn,
             nonce: data.nonce
-        } satisfies BaseTransactionParams);
+        } satisfies TransactionBody);
         this.id = data.id;
         this.type = data.type;
         this.origin = data.origin;

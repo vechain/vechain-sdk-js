@@ -388,7 +388,6 @@ class ContractsModule extends AbstractThorModule {
             // Use provided TransactionRequest or create a default one
             const finalTransactionRequest = transactionRequest
                 ? new TransactionRequest({
-                      beggar: transactionRequest.beggar,
                       blockRef: transactionRequest.blockRef,
                       chainTag: transactionRequest.chainTag,
                       clauses: [clause], // Override clauses with our contract call

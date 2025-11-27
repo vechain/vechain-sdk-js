@@ -9,9 +9,9 @@ import {
 import { type EstimateGasOptions, type ThorClient } from '@thor/thor-client';
 import {
     type Clause,
-    TransactionRequest,
-    type TransactionRequestParam
+    TransactionRequest
 } from '@thor/thor-client/model/transactions';
+import { type TransactionBody } from '@thor/thor-client/model/transactions/BaseTransaction';
 import { RetrieveRegularBlock } from '@thor/thorest/blocks';
 import { log } from '@common/logging';
 
@@ -37,7 +37,7 @@ interface AsyncBuildTask {
  * The TransactionBuilder class is used to build a transaction request.
  */
 class TransactionBuilder {
-    private params: TransactionRequestParam;
+    private params: TransactionBody;
     private buildTasks: AsyncBuildTask[];
 
     private readonly thorClient: ThorClient;
@@ -49,8 +49,7 @@ class TransactionBuilder {
     private static readonly STARTING_GAS = 0n;
 
     // starting values for the builder
-    private readonly startingParams: TransactionRequestParam = {
-        beggar: undefined,
+    private readonly startingParams: TransactionBody = {
         blockRef: TransactionBuilder.STARTING_BLOCK_REF,
         chainTag: TransactionBuilder.STARTING_CHAIN_TAG,
         clauses: [],
@@ -60,8 +59,9 @@ class TransactionBuilder {
         gasPriceCoef: undefined,
         nonce: TransactionBuilder.STARTING_NONCE,
         maxFeePerGas: undefined,
-        maxPriorityFeePerGas: undefined
-    } satisfies TransactionRequestParam;
+        maxPriorityFeePerGas: undefined,
+        reserved: undefined
+    } satisfies TransactionBody;
 
     // constructor from thor client
     private constructor(thorClient: ThorClient) {
@@ -96,21 +96,6 @@ class TransactionBuilder {
             message: `TransactionBuilder.addTask: Added build task: ${task.name}`,
             context: { task }
         });
-    }
-
-    /**
-     * Sets the requester for a gas sponsored transaction.
-     * @param requester - The address of the requester.
-     * @returns The builder instance.
-     */
-    public withSponsorReq(requester: AddressLike): this {
-        const normalizedRequester = Address.of(requester);
-        this.params.beggar = normalizedRequester;
-        log.debug({
-            message: 'TransactionBuilder.withSponsorReq',
-            context: { requester: normalizedRequester }
-        });
-        return this;
     }
 
     /**
@@ -271,6 +256,21 @@ class TransactionBuilder {
         log.debug({
             message: 'TransactionBuilder.withNonce',
             context: { nonce }
+        });
+        return this;
+    }
+
+    /**
+     * Sets that the transaction is delegated to another account for gas payment.
+     * @returns The builder instance.
+     */
+    public withDelegatedFee(): this {
+        this.params.reserved = {
+            features: 1,
+            unused: []
+        };
+        log.debug({
+            message: 'TransactionBuilder.withFeeDelegation'
         });
         return this;
     }

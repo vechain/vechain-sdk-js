@@ -10,7 +10,7 @@ import {
     type WaitForTransactionReceiptOptions
 } from '@thor/thor-client/model/transactions';
 import { AbstractThorModule } from '../AbstractThorModule';
-import { Address, Hex, Revision } from '@common/vcdm';
+import { Hex, Revision } from '@common/vcdm';
 import {
     type ExecuteCodeResponse,
     ExecuteCodesRequest,
@@ -25,7 +25,7 @@ import { type TransactionRequest } from '@thor/thor-client/model/transactions/Tr
 import { IllegalArgumentError, TimeoutError } from '@common/errors';
 import { waitUntil, type WaitUntilOptions } from '@common/utils/poller';
 import { TransactionBuilder } from './TransactionBuilder';
-import { type TransactionBodyOptions } from '../model/transactions/TransactionBodyOptions';
+import { type TransactionBodyOptions } from '@thor/thor-client/model/transactions/TransactionBody';
 import { log } from '@common/logging';
 import { type Signer } from '@thor/signer/Signer';
 import { type EstimateGasOptions } from '../model/gas';
@@ -236,7 +236,7 @@ class TransactionsModule extends AbstractThorModule {
             // if option are provided, apply them to the builder
             // blockref
             if (options?.blockRef !== undefined) {
-                txBuilder.withBlockRef(Hex.of(options.blockRef));
+                txBuilder.withBlockRef(options.blockRef);
             }
             // chain tag
             if (options?.chainTag !== undefined) {
@@ -264,11 +264,13 @@ class TransactionsModule extends AbstractThorModule {
             if (options?.nonce !== undefined) {
                 txBuilder.withNonce(BigInt(options.nonce));
             }
-            // with gas sponsor requester
-            if (options?.gasSponsorRequester !== undefined) {
-                txBuilder.withSponsorReq(
-                    Address.of(options.gasSponsorRequester)
-                );
+            // depends on
+            if (options?.dependsOn !== undefined) {
+                txBuilder.withDependsOn(options.dependsOn);
+            }
+            // is delegated
+            if (options?.isDelegated !== undefined && options.isDelegated) {
+                txBuilder.withDelegatedFee();
             }
             // build the transaction request
             return await txBuilder.build();

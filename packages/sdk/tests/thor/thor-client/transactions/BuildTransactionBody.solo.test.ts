@@ -1,7 +1,7 @@
 import { Address } from '@common/vcdm';
 import { describe, expect, test } from '@jest/globals';
 import { Clause, ThorClient } from '@thor/thor-client';
-import { type TransactionBodyOptions } from '@thor/thor-client/model/transactions/TransactionBodyOptions';
+import { type TransactionBodyOptions } from '@thor/thor-client/model/transactions/TransactionBody';
 
 /**
  * @group solo
@@ -11,7 +11,7 @@ describe('BuildTransactionBody SOLO tests', () => {
         const thorClient = ThorClient.at('http://localhost:8669');
         const clauses = [new Clause(Address.of('0x0'), 1n, null, null, null)];
         const bodyOptions: TransactionBodyOptions = {
-            gasPriceCoef: 2
+            gasPriceCoef: 2n
         };
         const txRequest = await thorClient.transactions.buildTransactionBody(
             clauses,
@@ -25,7 +25,7 @@ describe('BuildTransactionBody SOLO tests', () => {
         expect(txRequest.expiration).toBeDefined();
         expect(txRequest.gasPriceCoef).toBe(2n);
         expect(txRequest.nonce).toBeDefined();
-        expect(txRequest.isIntendedToBeSponsored).toBe(false);
+        expect(txRequest.isDelegated).toBe(false);
         expect(txRequest.maxFeePerGas).toBeUndefined();
         expect(txRequest.maxPriorityFeePerGas).toBeUndefined();
     });
@@ -33,9 +33,9 @@ describe('BuildTransactionBody SOLO tests', () => {
         const thorClient = ThorClient.at('http://localhost:8669');
         const clauses = [new Clause(Address.of('0x0'), 1n, null, null, null)];
         const bodyOptions: TransactionBodyOptions = {
-            maxFeePerGas: 100000,
-            maxPriorityFeePerGas: 100000,
-            gasSponsorRequester: '0x05b0f21cCcF4c6AAbcA8Fe90904f878BeE47938A'
+            maxFeePerGas: 100000n,
+            maxPriorityFeePerGas: 100000n,
+            isDelegated: true
         };
         const txRequest = await thorClient.transactions.buildTransactionBody(
             clauses,
@@ -49,7 +49,7 @@ describe('BuildTransactionBody SOLO tests', () => {
         expect(txRequest.expiration).toBeDefined();
         expect(txRequest.gasPriceCoef).toBeUndefined();
         expect(txRequest.nonce).toBeDefined();
-        expect(txRequest.isIntendedToBeSponsored).toBe(true);
+        expect(txRequest.isDelegated).toBe(true);
         expect(txRequest.maxFeePerGas).toBe(100000n);
         expect(txRequest.maxPriorityFeePerGas).toBe(100000n);
     });
@@ -67,7 +67,7 @@ describe('BuildTransactionBody SOLO tests', () => {
         expect(txRequest.expiration).toBeDefined();
         expect(txRequest.gasPriceCoef).toBeUndefined();
         expect(txRequest.nonce).toBeDefined();
-        expect(txRequest.isIntendedToBeSponsored).toBe(false);
+        expect(txRequest.isDelegated).toBe(false);
         expect(txRequest.maxFeePerGas).toBeGreaterThan(0n);
         expect(txRequest.maxPriorityFeePerGas).toBeGreaterThan(0n);
     });
