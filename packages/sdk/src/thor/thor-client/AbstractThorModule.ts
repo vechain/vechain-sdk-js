@@ -1,5 +1,19 @@
 import type { HttpClient } from '@common/http';
-import type { ThorClient } from './ThorClient';
+
+/**
+ * Forward reference interface to avoid circular dependency with ThorClient.
+ * This interface matches the structure of ThorClient without importing it.
+ */
+export interface IThorClient {
+    readonly httpClient: HttpClient;
+    readonly accounts: unknown;
+    readonly blocks: unknown;
+    readonly gas: unknown;
+    readonly logs: unknown;
+    readonly nodes: unknown;
+    readonly contracts: unknown;
+    readonly transactions: unknown;
+}
 
 /**
  * The `AbstractThorModule` class is the base class for all Thor modules.
@@ -13,7 +27,7 @@ export abstract class AbstractThorModule {
     /**
      * The `ThorClient` instance.
      */
-    public thorClient!: ThorClient;
+    public thorClient!: IThorClient;
 
     /**
      * Constructs a new `AbstractThorModule` instance.
@@ -29,7 +43,7 @@ export abstract class AbstractThorModule {
      *
      * @param thorClient - The `ThorClient` instance.
      */
-    public setThorClient(thorClient: ThorClient): void {
+    public setThorClient(thorClient: IThorClient): void {
         this.thorClient = thorClient;
     }
 }
