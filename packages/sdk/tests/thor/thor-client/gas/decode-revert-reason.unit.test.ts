@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { decodeRevertReason } from '@thor/thor-client/gas/helpers/decode-evm-error';
+import { decodeRevertReason } from '@thor/thor-client/contracts/utils';
 import { Hex } from '@common/vcdm';
 import { encodeErrorResult } from 'viem';
 import { ABIDecodeError } from '@common/errors/ABIDecodeError';
