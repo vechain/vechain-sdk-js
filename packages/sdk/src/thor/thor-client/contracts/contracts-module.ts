@@ -16,7 +16,6 @@ import {
     encodeFunctionData,
     decodeFunctionResult
 } from 'viem';
-import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import type { ContractCallOptions, ContractCallResult } from './types';
 import { EventLogFilter } from '../model/logs/EventLogFilter';
 import { type EventCriteria } from '../model/logs/EventCriteria';
@@ -281,18 +280,48 @@ class ContractsModule extends AbstractThorModule {
 
                 if (clauseResult.reverted) {
                     // Try to decode the revert reason from the data
-                    let errorMessage: string;
+                    let decodedReason: string | undefined;
                     if (clauseResult.data && clauseResult.data.toString() !== '0x') {
                         try {
-                            const decodedReason = decodeRevertReason(clauseResult.data);
-                            errorMessage = decodedReason ?? (clauseResult.vmError || 'Contract call reverted');
+                            decodedReason = decodeRevertReason(clauseResult.data);
                         } catch {
-                            // If decoding fails, fall back to vmError
-                            errorMessage = clauseResult.vmError || 'Contract call reverted';
+                            // If decoding fails, decodedReason remains undefined
                         }
-                    } else {
-                        errorMessage = clauseResult.vmError || 'Contract call reverted';
                     }
+
+                    const vmError = clauseResult.vmError || '';
+
+                    // If we can't decode a revert reason and have a generic error,
+                    // throw ContractCallError to match v2 behavior
+                    const hasNoRevertMessage =
+                        !decodedReason || decodedReason.trim() === '';
+
+                    // Check if vmError is generic (common indicators of function not existing)
+                    const vmErrorLower = vmError.toLowerCase();
+                    const isGenericError =
+                        !vmError ||
+                        vmError === 'execution reverted' ||
+                        vmError === 'revert' ||
+                        vmErrorLower.includes('execution reverted') ||
+                        vmErrorLower.includes('revert');
+
+                    // If no decoded revert message and generic error, throw exception
+                    // This matches v2 behavior where encodeData() fails for non-existent functions
+                    if (hasNoRevertMessage && isGenericError) {
+                        throw new ContractCallError(
+                            'ContractsModule.executeCall',
+                            'Contract call reverted without a specific error message. This may indicate the function does not exist in the contract.',
+                            {
+                                functionName: resolvedFunctionAbi.name,
+                                contractAddress: contractAddress.toString(),
+                                vmError: vmError || 'execution reverted'
+                            }
+                        );
+                    }
+
+                    // If we have a decoded revert reason or a specific vmError, return error object
+                    const errorMessage =
+                        decodedReason || vmError || 'Contract call reverted';
 
                     return {
                         success: false,
