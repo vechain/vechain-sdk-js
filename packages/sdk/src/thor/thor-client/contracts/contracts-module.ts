@@ -24,6 +24,10 @@ import { type FilterRange } from '../model/logs/FilterRange';
 import { QuerySmartContractEvents, type EventLogResponse } from '@thor/thorest';
 import { type TransactionReceipt } from '../model/transactions/TransactionReceipt';
 import { type WaitForTransactionReceiptOptions } from '../model/transactions/WaitForTransactionReceiptOptions';
+import { type ClauseSimulationResult } from '../model/transactions';
+import { type AccountDetail } from '../model/accounts/AccountDetail';
+import { HexUInt } from '@common/vcdm';
+import { decodeRevertReason } from './utils';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
@@ -75,7 +79,7 @@ class ContractsModule extends AbstractThorModule {
             actualAbi,
             bytecode as `0x${string}`,
             signer,
-            this
+            this as unknown as { readonly [key: string]: unknown }
         );
     }
 
@@ -97,7 +101,13 @@ class ContractsModule extends AbstractThorModule {
         const actualAbi = this.isCompiledContract(abi)
             ? (abi.abi as TAbi)
             : abi;
-        return new Contract<TAbi>(normalizedAddress, actualAbi, this, signer);
+        // Type assertion to avoid circular dependency - Contract uses forward reference interface
+        // The Contract constructor expects a ContractsModule interface (forward reference)
+        // but we're passing the real ContractsModule instance, which is structurally compatible
+        // We cannot import the forward reference interface type without creating a circular dependency
+        // Using 'as any' is necessary here as the forward reference interface cannot be properly typed
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return new Contract(normalizedAddress, actualAbi, this as any, signer);
     }
 
     /**
@@ -116,7 +126,7 @@ class ContractsModule extends AbstractThorModule {
             abi,
             bytecode as `0x${string}`,
             signer,
-            this
+            this as unknown as { readonly [key: string]: unknown }
         );
     }
 
@@ -255,8 +265,8 @@ class ContractsModule extends AbstractThorModule {
                 gasPrice: options?.gasPrice
             };
 
-            const simulationResults =
-                await this.thorClient.transactions.simulateTransaction(
+            const simulationResults: ClauseSimulationResult[] =
+                await (this.thorClient.transactions as { simulateTransaction: (clauses: Clause[], options?: unknown) => Promise<ClauseSimulationResult[]> }).simulateTransaction(
                     [clause],
                     simulationOptions
                 );
@@ -270,57 +280,24 @@ class ContractsModule extends AbstractThorModule {
                 const clauseResult = simulationResults[0];
 
                 if (clauseResult.reverted) {
-                    // Try to decode the revert reason
-                    let decodedRevertReason: string | undefined;
-                    try {
-                        const revertData = clauseResult.data
-                            ? Hex.of(clauseResult.data.toString())
-                            : Hex.of('0x');
-                        decodedRevertReason = decodeRevertReason(revertData);
-                    } catch {
-                        // If decoding fails, decodedRevertReason remains undefined
-                        decodedRevertReason = undefined;
+                    // Try to decode the revert reason from the data
+                    let errorMessage: string;
+                    if (clauseResult.data && clauseResult.data.toString() !== '0x') {
+                        try {
+                            const decodedReason = decodeRevertReason(clauseResult.data);
+                            errorMessage = decodedReason ?? (clauseResult.vmError || 'Contract call reverted');
+                        } catch {
+                            // If decoding fails, fall back to vmError
+                            errorMessage = clauseResult.vmError || 'Contract call reverted';
+                        }
+                    } else {
+                        errorMessage = clauseResult.vmError || 'Contract call reverted';
                     }
 
-                    const vmError = clauseResult.vmError || '';
-
-                    // If we can't decode a revert reason, this might indicate a function
-                    // that doesn't exist in the contract or a generic revert
-                    // In this case, throw an exception to match v2 behavior
-                    // This is more aggressive but matches v2 where encodeData() fails
-                    const hasNoRevertMessage =
-                        !decodedRevertReason || decodedRevertReason.trim() === '';
-
-                    // Check if vmError is generic (common indicators of function not existing)
-                    const vmErrorLower = vmError.toLowerCase();
-                    const isGenericError =
-                        !vmError ||
-                        vmError === 'execution reverted' ||
-                        vmError === 'revert' ||
-                        vmErrorLower.includes('execution reverted') ||
-                        vmErrorLower.includes('revert');
-
-                    // If no decoded revert message and generic error, throw exception
-                    // This matches v2 behavior where encodeData() fails for non-existent functions
-                    if (hasNoRevertMessage && isGenericError) {
-                        throw new ContractCallError(
-                            'ContractsModule.executeCall',
-                            'Contract call reverted without a specific error message. This may indicate the function does not exist in the contract.',
-                            {
-                                functionName: resolvedFunctionAbi.name,
-                                contractAddress: contractAddress.toString(),
-                                vmError: vmError || 'execution reverted'
-                            }
-                        );
-                    }
-
-                    // If we have a decoded revert reason or a specific vmError, return error object
-                    // This is a legitimate contract execution error (revert)
                     return {
                         success: false,
                         result: {
-                            errorMessage:
-                                decodedRevertReason || vmError || 'Contract call reverted'
+                            errorMessage
                         }
                     };
                 }
@@ -500,8 +477,8 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId =
-                await this.thorClient.transactions.sendRawTransaction(
+            const transactionId: Hex =
+                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -669,8 +646,8 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId =
-                await this.thorClient.transactions.sendRawTransaction(
+            const transactionId: Hex =
+                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -711,11 +688,11 @@ class ContractsModule extends AbstractThorModule {
 
         try {
             // Get account details and bytecode using ThorClient accounts module
-            const accountDetails = await this.thorClient.accounts.getAccount(
+            const accountDetails: AccountDetail = await (this.thorClient.accounts as { getAccount: (address: AddressLike, revision?: Revision) => Promise<AccountDetail> }).getAccount(
                 addr,
                 revision
             );
-            const bytecode = await this.thorClient.accounts.getBytecode(
+            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
                 addr,
                 revision
             );
@@ -771,7 +748,7 @@ class ContractsModule extends AbstractThorModule {
         const addr = Address.of(address);
         try {
             // Use ThorClient accounts module to get bytecode
-            const bytecode = await this.thorClient.accounts.getBytecode(
+            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
                 addr,
                 revision
             );
@@ -863,10 +840,11 @@ class ContractsModule extends AbstractThorModule {
         transactionId: Hex,
         options?: WaitForTransactionReceiptOptions
     ): Promise<TransactionReceipt | null> {
-        return await this.thorClient.transactions.waitForTransactionReceipt(
+        const receipt: TransactionReceipt | null = await (this.thorClient.transactions as { waitForTransactionReceipt: (transactionId: Hex, options?: WaitForTransactionReceiptOptions) => Promise<TransactionReceipt | null> }).waitForTransactionReceipt(
             transactionId,
             options
         );
+        return receipt;
     }
 }
 

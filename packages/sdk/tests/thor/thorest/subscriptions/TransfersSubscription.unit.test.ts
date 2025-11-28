@@ -150,7 +150,7 @@ describe('TransfersSubscription unit tests', () => {
         const mockTransferData = {
             sender: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
             recipient: '0x9567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            amount: '0x0de0b6b3a7640000', // 1 ETH in wei
+            amount: '0xde0b6b3a7640000', // 1 ETH in wei (minimal format, no padding)
             obsolete: false,
             meta: mockLogMeta
         } satisfies SubscriptionTransferResponseJSON;
@@ -400,7 +400,7 @@ describe('TransfersSubscription unit tests', () => {
         const mockData: SubscriptionTransferResponseJSON = {
             sender: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
             recipient: '0x9567d83b7b8d80addcb281a71d54fc7b3364ffed',
-            amount: '0x0de0b6b3a7640000', // 1 ETH in wei
+            amount: '0xde0b6b3a7640000', // 1 ETH in wei (minimal format, no padding)
             obsolete: false,
             meta: mockLogMeta
         };

@@ -283,15 +283,13 @@ class Hex implements VeChainDataModel<Hex> {
         try {
             if (typeof exp === 'bigint') {
                 if (exp < 0n) {
-                    return new Hex(
-                        this.NEGATIVE,
-                        nc_utils.numberToHexUnpadded(-1n * exp)
-                    );
+                    // Use BigInt.toString(16) which doesn't force byte alignment
+                    // This preserves minimal format without adding padding (e.g., "0x921af8386350000" from Thor)
+                    return new Hex(this.NEGATIVE, (-1n * exp).toString(16));
                 }
-                return new Hex(
-                    this.POSITIVE,
-                    nc_utils.numberToHexUnpadded(exp)
-                );
+                // Use BigInt.toString(16) which doesn't force byte alignment
+                // This preserves minimal format without adding padding (e.g., "0x921af8386350000" from Thor)
+                return new Hex(this.POSITIVE, exp.toString(16));
             } else if (typeof exp === 'number') {
                 const dataView = new DataView(new ArrayBuffer(16));
                 dataView.setFloat64(0, exp);
