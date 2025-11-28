@@ -2730,10 +2730,10 @@
     table "^6.8.0"
     undici "^5.14.0"
 
-"@nomicfoundation/ignition-core@^0.15.13":
-  version "0.15.13"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/ignition-core/-/ignition-core-0.15.13.tgz#b2320eb7a6acda7ccb7da0fdd89231206c970ffa"
-  integrity sha512-Z4T1WIbw0EqdsN9RxtnHeQXBi7P/piAmCu8bZmReIdDo/2h06qgKWxjDoNfc9VBFZJ0+Dx79tkgQR3ewxMDcpA==
+"@nomicfoundation/ignition-core@^0.15.13", "@nomicfoundation/ignition-core@^0.15.14":
+  version "0.15.14"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/ignition-core/-/ignition-core-0.15.14.tgz#3e06098d25dc3d6362b27f10d8a89241cbb03e61"
+  integrity sha512-BRgNaApHTdmk0NNTVYMltRXUFQGaWKHKnaaOyp9TG/BsUUkW3mH1ds5+rM4UBUIHivIyh3fKFDCOGJIJcQG9aw==
   dependencies:
     "@ethersproject/address" "5.6.1"
     "@nomicfoundation/solidity-analyzer" "^0.1.1"
