@@ -236,7 +236,7 @@ class TransactionsModule extends AbstractThorModule {
             // if option are provided, apply them to the builder
             // blockref
             if (options?.blockRef !== undefined) {
-                txBuilder.withBlockRef(options.blockRef);
+                txBuilder.withBlockRef(Hex.of(options.blockRef));
             }
             // chain tag
             if (options?.chainTag !== undefined) {
@@ -266,7 +266,7 @@ class TransactionsModule extends AbstractThorModule {
             }
             // depends on
             if (options?.dependsOn !== undefined) {
-                txBuilder.withDependsOn(options.dependsOn);
+                txBuilder.withDependsOn(Hex.of(options.dependsOn));
             }
             // is delegated
             if (options?.isDelegated !== undefined && options.isDelegated) {

@@ -7,6 +7,7 @@ import {
 import { type VeChainDataModel } from '@common/vcdm';
 import { isBrowser } from '@common/utils/browser';
 import { log } from '@common/logging/log';
+import { type HexLike } from './HexLike';
 
 /**
  * Full Qualified Path
@@ -279,7 +280,13 @@ class Hex implements VeChainDataModel<Hex> {
      *
      * @throws {IllegalArgumentError} if the given `exp` can't be represented as a hexadecimal expression.
      */
-    public static of(exp: bigint | number | string | Uint8Array): Hex {
+    public static of(
+        exp: bigint | number | string | Uint8Array | HexLike
+    ): Hex {
+        // if the exp is already a Hex instance, return it.
+        if (exp instanceof Hex) {
+            return exp;
+        }
         try {
             if (typeof exp === 'bigint') {
                 if (exp < 0n) {

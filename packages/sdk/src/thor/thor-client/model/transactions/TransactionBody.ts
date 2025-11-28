@@ -1,5 +1,6 @@
 import { type Hex } from '@common/vcdm';
 import { type Clause } from './Clause';
+import { type HexLike } from '@common/vcdm/HexLike';
 
 /**
  * Core transaction body interface.
@@ -84,7 +85,7 @@ interface TransactionBodyOptions {
     /**
      * 8 bytes prefix of some block's ID
      */
-    blockRef?: Hex;
+    blockRef?: HexLike;
 
     /**
      * Last byte of genesis block ID
@@ -94,7 +95,7 @@ interface TransactionBodyOptions {
     /**
      * The ID of the transaction that this transaction depends on.
      */
-    dependsOn?: Hex;
+    dependsOn?: HexLike;
 
     /**
      * The expiration time of the transaction.
