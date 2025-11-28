@@ -19,7 +19,7 @@ import {
     type EstimateGasResult,
     type EstimateGasOptions
 } from '@thor/thor-client/model/gas';
-import { decodeRevertReason } from './helpers/decode-evm-error';
+import { decodeRevertReason } from '../contracts/utils';
 import { log } from '@common/logging';
 
 const FQP = 'packages/sdk/src/thor/thor-client/gas/gas-module.ts';

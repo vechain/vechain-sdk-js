@@ -26,6 +26,7 @@ import { type WaitForTransactionReceiptOptions } from '../model/transactions/Wai
 import { type ClauseSimulationResult } from '../model/transactions';
 import { type AccountDetail } from '../model/accounts/AccountDetail';
 import { HexUInt } from '@common/vcdm';
+import { decodeRevertReason } from './utils';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
@@ -266,11 +267,24 @@ class ContractsModule extends AbstractThorModule {
                 const clauseResult = simulationResults[0];
 
                 if (clauseResult.reverted) {
+                    // Try to decode the revert reason from the data
+                    let errorMessage: string;
+                    if (clauseResult.data && clauseResult.data.toString() !== '0x') {
+                        try {
+                            const decodedReason = decodeRevertReason(clauseResult.data);
+                            errorMessage = decodedReason ?? (clauseResult.vmError || 'Contract call reverted');
+                        } catch {
+                            // If decoding fails, fall back to vmError
+                            errorMessage = clauseResult.vmError || 'Contract call reverted';
+                        }
+                    } else {
+                        errorMessage = clauseResult.vmError || 'Contract call reverted';
+                    }
+
                     return {
                         success: false,
                         result: {
-                            errorMessage:
-                                clauseResult.vmError || 'Contract call reverted'
+                            errorMessage
                         }
                     };
                 }
