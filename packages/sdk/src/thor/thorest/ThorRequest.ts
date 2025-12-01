@@ -1,13 +1,5 @@
 import { type HttpClient } from '@common/http';
-
-// Forward reference to avoid circular dependency with ThorResponse
-interface ThorResponse<
-    RequestClass extends ThorRequest<RequestClass, ResponseClass>,
-    ResponseClass
-> {
-    request: RequestClass;
-    response: ResponseClass;
-}
+import { type ThorResponse } from './ThorResponse';
 
 interface ThorRequest<
     RequestClass extends ThorRequest<RequestClass, ResponseClass>,
