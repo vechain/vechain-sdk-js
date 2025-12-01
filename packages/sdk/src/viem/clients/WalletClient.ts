@@ -98,7 +98,7 @@ class WalletClient extends PublicClient {
                     ? HexUInt.of(HexInt.of(request.abi)).toString()
                     : null
             );
-            return new TransactionRequest({
+            return TransactionRequest.of({
                 blockRef: request.blockRef,
                 chainTag: request.chainTag,
                 clauses: [clause],

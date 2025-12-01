@@ -141,7 +141,7 @@ class PrivateKeySigner implements Signer {
                     this.#privateKey
                 );
                 if (transactionRequest.signature !== undefined) {
-                    return new TransactionRequest(
+                    return TransactionRequest.of(
                         { ...transactionRequest },
                         concatBytes(
                             transactionRequest.signature.slice(
@@ -152,7 +152,7 @@ class PrivateKeySigner implements Signer {
                         )
                     );
                 } else {
-                    return new TransactionRequest(
+                    return TransactionRequest.of(
                         { ...transactionRequest },
                         gasPayerSignature
                     );
@@ -189,7 +189,7 @@ class PrivateKeySigner implements Signer {
                     this.#privateKey
                 );
                 if (transactionRequest.signature !== undefined) {
-                    return new TransactionRequest(
+                    return TransactionRequest.of(
                         { ...transactionRequest },
                         concatBytes(
                             originSignature,
@@ -199,7 +199,7 @@ class PrivateKeySigner implements Signer {
                         )
                     );
                 } else {
-                    return new TransactionRequest(
+                    return TransactionRequest.of(
                         { ...transactionRequest },
                         originSignature
                     );
@@ -229,7 +229,7 @@ class PrivateKeySigner implements Signer {
         transactionRequest: TransactionRequest
     ): TransactionRequest {
         if (this.#privateKey !== null) {
-            return new TransactionRequest(
+            return TransactionRequest.of(
                 { ...transactionRequest },
                 Secp256k1.sign(transactionRequest.hash.bytes, this.#privateKey)
             );

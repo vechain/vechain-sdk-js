@@ -415,7 +415,7 @@ class ContractsModule extends AbstractThorModule {
 
             // Use provided TransactionRequest or create a default one
             const finalTransactionRequest = transactionRequest
-                ? new TransactionRequest({
+                ? TransactionRequest.of({
                       blockRef: transactionRequest.blockRef,
                       chainTag: transactionRequest.chainTag,
                       clauses: [clause], // Override clauses with our contract call
@@ -428,7 +428,7 @@ class ContractsModule extends AbstractThorModule {
                           transactionRequest.maxPriorityFeePerGas,
                       nonce: transactionRequest.nonce
                   })
-                : new TransactionRequest({
+                : TransactionRequest.of({
                       clauses: [clause],
                       gas: 21000n,
                       gasPriceCoef: 0n,
@@ -593,11 +593,11 @@ class ContractsModule extends AbstractThorModule {
 
             // Use provided TransactionRequest or create a default one
             const finalTransactionRequest = transactionRequest
-                ? new TransactionRequest({
+                ? TransactionRequest.of({
                       ...transactionRequest,
                       clauses: transactionClauses as Clause[] // Override clauses with our contract calls
                   })
-                : new TransactionRequest({
+                : TransactionRequest.of({
                       clauses: transactionClauses as Clause[],
                       gas: 21000n,
                       gasPriceCoef: 0n,
