@@ -1,10 +1,10 @@
 /* eslint-disable */
 // TODO: Contracts module is pending rework - lint errors will be fixed during refactor
 import { Address, AddressLike, Hex, Revision } from '@common/vcdm';
-import type { AbiParameter } from 'abitype';
-import { IllegalArgumentError, InvalidTransactionField } from '@common/errors';
+import type { AbiParameter, AbiFunction } from 'abitype';
+import { IllegalArgumentError, InvalidTransactionField, ContractCallError } from '@common/errors';
 import { log } from '@common/logging';
-import { encodeFunctionData } from 'viem';
+import { encodeFunctionData, toFunctionSignature } from 'viem';
 import { Clause } from '@thor/thor-client/model/transactions/Clause';
 import { ContractFilter } from './ContractFilter';
 import type {
@@ -159,14 +159,13 @@ function getReadProxy<TAbi extends Abi>(
                     );
 
                 if (!executeCallResult.success) {
-                    throw new IllegalArgumentError(
-                        'ContractProxy.getReadProxy',
-                        'Contract call failed',
+                    const errorMessage =
+                        executeCallResult.result.errorMessage ||
+                        'Unknown error';
+                    throw new ContractCallError(
+                        toFunctionSignature(functionAbi),
+                        errorMessage,
                         {
-                            functionName: prop.toString(),
-                            errorMessage:
-                                executeCallResult.result.errorMessage ||
-                                'Unknown error',
                             contractAddress: contract.address.toString()
                         }
                     );
