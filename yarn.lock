@@ -3152,7 +3152,7 @@ __metadata:
     "@vechain/sdk-solo-setup": "npm:3.0.0-beta.1"
     abitype: "npm:1.1.0"
     bignumber.js: "npm:9.3.1"
-    ethers: "npm:6.13.5"
+    ethers: "npm:6.14.0"
     fast-json-stable-stringify: "npm:2.1.0"
     jest-fetch-mock: "npm:3.0.3"
     loglevel: "npm:1.9.2"
@@ -5185,14 +5185,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:9.1.2":
-  version: 9.1.2
-  resolution: "eslint-config-prettier@npm:9.1.2"
+"eslint-config-prettier@npm:10.0.1":
+  version: 10.0.1
+  resolution: "eslint-config-prettier@npm:10.0.1"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
-    eslint-config-prettier: bin/cli.js
-  checksum: 10c0/d2e9dc913b1677764a4732433d83d258f40820458c65d0274cb9e3eaf6559b39f2136446f310c05abed065a4b3c2e901807ccf583dff76c6227eaebf4132c39a
+    eslint-config-prettier: build/bin/cli.js
+  checksum: 10c0/e2434931669d211663c0493f2c1640a670a02ba4503a68f056a7eda133f383acbbb983a4a7bd0ad6cb3b2bc4d5731c3be8b32fe28e35087a76fea45f7061ae70
   languageName: node
   linkType: hard
 
@@ -5520,9 +5520,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:6.13.5":
-  version: 6.13.5
-  resolution: "ethers@npm:6.13.5"
+"ethers@npm:6.14.0":
+  version: 6.14.0
+  resolution: "ethers@npm:6.14.0"
   dependencies:
     "@adraffy/ens-normalize": "npm:1.10.1"
     "@noble/curves": "npm:1.2.0"
@@ -5531,7 +5531,7 @@ __metadata:
     aes-js: "npm:4.0.0-beta.5"
     tslib: "npm:2.7.0"
     ws: "npm:8.17.1"
-  checksum: 10c0/64bc7b8907de199392b8a88c15c9a085892919cff7efa2e5326abc7fe5c426001726c51d91e10c74e5fc5e2547188297ce4127f6e52ea42a97ade0b2ae474677
+  checksum: 10c0/7da443719a21c0b071dbd7d47e50faa8fcacc746e2b5487a394992215457903b1d187279e7134b48414d2626d0dbbf58b20c3bb8d246c359aa0a7453b608d582
   languageName: node
   linkType: hard
 
@@ -6118,9 +6118,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:10.4.5, glob@npm:^10.2.2, glob@npm:^10.3.10":
-  version: 10.4.5
-  resolution: "glob@npm:10.4.5"
+"glob@npm:10.5.0":
+  version: 10.5.0
+  resolution: "glob@npm:10.5.0"
   dependencies:
     foreground-child: "npm:^3.1.0"
     jackspeak: "npm:^3.1.2"
@@ -6130,7 +6130,7 @@ __metadata:
     path-scurry: "npm:^1.11.1"
   bin:
     glob: dist/esm/bin.mjs
-  checksum: 10c0/19a9759ea77b8e3ca0a43c2f07ecddc2ad46216b786bb8f993c445aee80d345925a21e5280c7b7c6c59e860a0154b84e4b2b60321fea92cd3c56b4a7489f160e
+  checksum: 10c0/100705eddbde6323e7b35e1d1ac28bcb58322095bd8e63a7d0bef1a2cdafe0d0f7922a981b2b48369a4f8c1b077be5c171804534c3509dfe950dde15fbe6d828
   languageName: node
   linkType: hard
 
@@ -6145,6 +6145,22 @@ __metadata:
     once: "npm:^1.3.0"
     path-is-absolute: "npm:^1.0.0"
   checksum: 10c0/173245e6f9ccf904309eb7ef4a44a11f3bf68e9e341dff5a28b5db0dd7123b7506daf41497f3437a0710f57198187b758c2351eeaabce4d16935e956920da6a4
+  languageName: node
+  linkType: hard
+
+"glob@npm:^10.2.2, glob@npm:^10.3.10":
+  version: 10.4.5
+  resolution: "glob@npm:10.4.5"
+  dependencies:
+    foreground-child: "npm:^3.1.0"
+    jackspeak: "npm:^3.1.2"
+    minimatch: "npm:^9.0.4"
+    minipass: "npm:^7.1.2"
+    package-json-from-dist: "npm:^1.0.0"
+    path-scurry: "npm:^1.11.1"
+  bin:
+    glob: dist/esm/bin.mjs
+  checksum: 10c0/19a9759ea77b8e3ca0a43c2f07ecddc2ad46216b786bb8f993c445aee80d345925a21e5280c7b7c6c59e860a0154b84e4b2b60321fea92cd3c56b4a7489f160e
   languageName: node
   linkType: hard
 
@@ -11969,7 +11985,7 @@ __metadata:
     "@jest/globals": "npm:29.7.0"
     "@types/fs-extra": "npm:11.0.4"
     eslint: "npm:9.39.1"
-    eslint-config-prettier: "npm:9.1.2"
+    eslint-config-prettier: "npm:10.0.1"
     eslint-plugin-import: "npm:2.32.0"
     eslint-plugin-local-rules: "npm:3.0.2"
     eslint-plugin-n: "npm:17.23.1"
@@ -11978,7 +11994,7 @@ __metadata:
     eslint-plugin-security: "npm:3.0.1"
     eslint-plugin-sonarjs: "npm:3.0.5"
     fs-extra: "npm:11.3.1"
-    glob: "npm:10.4.5"
+    glob: "npm:10.5.0"
     globals: "npm:15.15.0"
     hardhat: "npm:2.26.3"
     husky: "npm:9.1.7"
