@@ -18,9 +18,10 @@ const FQP =
 /**
  * [Retrieve historical fee data](http://localhost:8669/doc/stoplight-ui/#/paths/fees-history/get)
  */
-class RetrieveHistoricalFeeData
-    implements ThorRequest<RetrieveHistoricalFeeData, GetFeesHistoryResponse>
-{
+class RetrieveHistoricalFeeData implements ThorRequest<
+    RetrieveHistoricalFeeData,
+    GetFeesHistoryResponse
+> {
     /**
      * Represents the API endpoint or resource path used for priority-fee-related operations.
      */

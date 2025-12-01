@@ -16,9 +16,10 @@ const FQP =
  *
  * Retrieve the bytecode of a contract identified by its address.
  */
-class RetrieveContractBytecode
-    implements ThorRequest<RetrieveContractBytecode, ContractBytecode>
-{
+class RetrieveContractBytecode implements ThorRequest<
+    RetrieveContractBytecode,
+    ContractBytecode
+> {
     /**
      * Represents the HTTP path for this specific API endpoint.
      */
