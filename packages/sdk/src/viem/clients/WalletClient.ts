@@ -173,25 +173,28 @@ class WalletClient extends PublicClient {
      * If sender is provided, signs as gas payer.
      * If sender is not provided, signs as origin.
      *
-     * @param {TransactionRequest} transactionRequest - The transaction to sign.
+     * @param {TransactionRequest | Hex} transactionRequest - The transaction to sign.
      * @param {Address} [sender] - The sender address (only for sponsored transactions).
      * @returns {Promise<Hex>} The RLP-encoded signed transaction.
      * @throws {UnsupportedOperationError} If no account is configured.
      */
     // eslint-disable-next-line require-await
     public async signTransaction(
-        transactionRequest: TransactionRequest,
+        transactionRequest: TransactionRequest | Hex,
         sender?: Address
     ): Promise<Hex> {
+        let tx: TransactionRequest;
+        if (transactionRequest instanceof Hex) {
+            tx = TransactionRequest.decode(transactionRequest);
+        } else {
+            tx = transactionRequest;
+        }
         const func = (): Hex => {
             if (this.account !== null) {
                 if (sender !== undefined) {
-                    return this.account.signAsGasPayer(
-                        sender,
-                        transactionRequest
-                    );
+                    return this.account.signAsGasPayer(sender, tx);
                 }
-                return this.account.sign(transactionRequest);
+                return this.account.sign(tx);
             }
             throw new UnsupportedOperationError(
                 `${FQP}WalletClient.signTransaction(transactionRequest: TransactionRequest): Promise<Hex>`,

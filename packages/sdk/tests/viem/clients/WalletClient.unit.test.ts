@@ -334,5 +334,51 @@ describe('WalletClient UNIT tests', () => {
             ).bytes;
             expect(encodedSaS).toEqual(txRequestSaS.encoded.bytes);
         });
+
+        test('ok <- no need to decode for gas payer signature', async () => {
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            });
+            // Sign as Sender. Partial signature.
+            const originSigner = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+            const txRequestSaS = originSigner.sign(txRequest);
+            const originWallet = new WalletClient(
+                MOCK_URL,
+                mockHttpClient({}, 'post'),
+                privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
+            );
+            const encodedSaS = (await originWallet.signTransaction(txRequest))
+                .bytes;
+            expect(encodedSaS).toEqual(txRequestSaS.encoded.bytes);
+            // Sign as Gas Payer. Finalized signature.
+            const gasPayerSigner = new PrivateKeySigner(
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+            const gasPayerWallet = new WalletClient(
+                MOCK_URL,
+                mockHttpClient({}, 'post'),
+                privateKeyToAccount(Hex.of(mockReceiverAccount.privateKey))
+            );
+            const encodedSaGP = (
+                await gasPayerWallet.signTransaction(Hex.of(encodedSaS))
+            ).bytes;
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded.bytes);
+        });
     });
 });
