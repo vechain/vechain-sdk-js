@@ -29,6 +29,8 @@ import { type TransactionBodyOptions } from '@thor/thor-client/model/transaction
 import { log } from '@common/logging';
 import { type Signer } from '@thor/signer/Signer';
 import { type EstimateGasOptions } from '../model/gas';
+import { type EstimateGasResult } from '../model/gas/EstimateGasResult';
+import { type AddressLike } from '@common/vcdm';
 
 /**
  * The transactions module of the VeChain Thor blockchain.
@@ -227,7 +229,14 @@ class TransactionsModule extends AbstractThorModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionRequest> {
         try {
-            const txBuilder = TransactionBuilder.create(this.thorClient);
+            // Type assertion: IThorClient provides the interface TransactionBuilder needs
+            // TransactionBuilder.create expects ThorClient, but we have IThorClient (forward reference)
+            // IThorClient is structurally compatible with ThorClient for TransactionBuilder's needs
+            const txBuilder = TransactionBuilder.create(
+                this.thorClient as unknown as Parameters<
+                    typeof TransactionBuilder.create
+                >[0]
+            );
             // add clauses and gas
             txBuilder.withClauses(clauses);
             txBuilder.withGas(
@@ -300,11 +309,15 @@ class TransactionsModule extends AbstractThorModule {
         txOptions?: TransactionBodyOptions
     ): Promise<Hex> {
         // estimate the gas
-        const gasEstimate = await this.thorClient.gas.estimateGas(
-            clauses,
-            signer.address,
-            gasEstimateOptions
-        );
+        const gasEstimate: EstimateGasResult = await (
+            this.thorClient.gas as {
+                estimateGas: (
+                    clauses: Clause[],
+                    caller: AddressLike,
+                    options?: EstimateGasOptions
+                ) => Promise<EstimateGasResult>;
+            }
+        ).estimateGas(clauses, signer.address, gasEstimateOptions);
         if (gasEstimate.reverted) {
             log.warn({
                 message: 'Gas estimation reverted',

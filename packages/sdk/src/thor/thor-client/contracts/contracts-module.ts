@@ -18,17 +18,21 @@ import {
 } from 'viem';
 import type { ContractCallOptions, ContractCallResult } from './types';
 import { EventLogFilter } from '../model/logs/EventLogFilter';
-import { EventCriteria } from '../model/logs/EventCriteria';
-import { FilterRange } from '../model/logs/FilterRange';
-import { FilterRangeUnits } from '../model/logs/FilterRangeUnits';
+import { type EventCriteria } from '../model/logs/EventCriteria';
+import { type FilterRange } from '../model/logs/FilterRange';
 import { QuerySmartContractEvents, type EventLogResponse } from '@thor/thorest';
 import { type TransactionReceipt } from '../model/transactions/TransactionReceipt';
 import { type WaitForTransactionReceiptOptions } from '../model/transactions/WaitForTransactionReceiptOptions';
+import { type ClauseSimulationResult } from '../model/transactions';
+import { type AccountDetail } from '../model/accounts/AccountDetail';
+import { HexUInt } from '@common/vcdm';
+import { decodeRevertReason } from './utils';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
 // Type alias for function arguments (runtime values, not ABI definitions)
 type FunctionArgs = readonly unknown[];
+type AbiEntry = Abi[number];
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -74,7 +78,7 @@ class ContractsModule extends AbstractThorModule {
             actualAbi,
             bytecode as `0x${string}`,
             signer,
-            this
+            this as unknown as { readonly [key: string]: unknown }
         );
     }
 
@@ -96,7 +100,13 @@ class ContractsModule extends AbstractThorModule {
         const actualAbi = this.isCompiledContract(abi)
             ? (abi.abi as TAbi)
             : abi;
-        return new Contract<TAbi>(normalizedAddress, actualAbi, this, signer);
+        // Type assertion to avoid circular dependency - Contract uses forward reference interface
+        // The Contract constructor expects a ContractsModule interface (forward reference)
+        // but we're passing the real ContractsModule instance, which is structurally compatible
+        // We cannot import the forward reference interface type without creating a circular dependency
+        // Using 'as any' is necessary here as the forward reference interface cannot be properly typed
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return new Contract(normalizedAddress, actualAbi, this as any, signer);
     }
 
     /**
@@ -115,7 +125,7 @@ class ContractsModule extends AbstractThorModule {
             abi,
             bytecode as `0x${string}`,
             signer,
-            this
+            this as unknown as { readonly [key: string]: unknown }
         );
     }
 
@@ -131,7 +141,7 @@ class ContractsModule extends AbstractThorModule {
      */
     public async executeCall(
         contractAddress: AddressLike,
-        functionAbi: AbiFunction,
+        functionAbi: AbiFunction | AbiEntry | undefined,
         functionData: FunctionArgs,
         options?: ContractCallOptions
     ): Promise<ContractCallResult> {
@@ -152,7 +162,12 @@ class ContractsModule extends AbstractThorModule {
             }
 
             // Validate function ABI
-            if (!functionAbi || !functionAbi.name) {
+            const resolvedFunctionAbi =
+                functionAbi && functionAbi.type === 'function'
+                    ? (functionAbi as AbiFunction)
+                    : undefined;
+
+            if (!resolvedFunctionAbi || !resolvedFunctionAbi.name) {
                 throw new IllegalArgumentError(
                     'ContractsModule.executeCall',
                     'Invalid function ABI',
@@ -180,22 +195,22 @@ class ContractsModule extends AbstractThorModule {
             log.debug({
                 message: 'encodeFunctionData inputs',
                 context: {
-                    abi: [functionAbi],
-                    functionName: functionAbi.name,
+                    abi: [resolvedFunctionAbi],
+                    functionName: resolvedFunctionAbi.name,
                     args: processedArgs
                 }
             });
             log.debug({
                 message: 'functionAbi inputs',
-                context: { inputs: functionAbi.inputs }
+                context: { inputs: resolvedFunctionAbi.inputs }
             });
 
             // Use viem's encodeFunctionData directly
             let data: string;
             try {
                 data = encodeFunctionData({
-                    abi: [functionAbi] as any,
-                    functionName: functionAbi.name as any,
+                    abi: [resolvedFunctionAbi] as any,
+                    functionName: resolvedFunctionAbi.name as any,
                     args: processedArgs as any
                 });
 
@@ -237,8 +252,8 @@ class ContractsModule extends AbstractThorModule {
                 gasPrice: options?.gasPrice
             };
 
-            const simulationResults =
-                await this.thorClient.transactions.simulateTransaction(
+            const simulationResults: ClauseSimulationResult[] =
+                await (this.thorClient.transactions as { simulateTransaction: (clauses: Clause[], options?: unknown) => Promise<ClauseSimulationResult[]> }).simulateTransaction(
                     [clause],
                     simulationOptions
                 );
@@ -252,11 +267,24 @@ class ContractsModule extends AbstractThorModule {
                 const clauseResult = simulationResults[0];
 
                 if (clauseResult.reverted) {
+                    // Try to decode the revert reason from the data
+                    let errorMessage: string;
+                    if (clauseResult.data && clauseResult.data.toString() !== '0x') {
+                        try {
+                            const decodedReason = decodeRevertReason(clauseResult.data);
+                            errorMessage = decodedReason ?? (clauseResult.vmError || 'Contract call reverted');
+                        } catch {
+                            // If decoding fails, fall back to vmError
+                            errorMessage = clauseResult.vmError || 'Contract call reverted';
+                        }
+                    } else {
+                        errorMessage = clauseResult.vmError || 'Contract call reverted';
+                    }
+
                     return {
                         success: false,
                         result: {
-                            errorMessage:
-                                clauseResult.vmError || 'Contract call reverted'
+                            errorMessage
                         }
                     };
                 }
@@ -269,12 +297,12 @@ class ContractsModule extends AbstractThorModule {
                     try {
                         // Decode the result using viem's decodeFunctionResult if the function has outputs
                         if (
-                            functionAbi.outputs &&
-                            functionAbi.outputs.length > 0
+                            resolvedFunctionAbi.outputs &&
+                            resolvedFunctionAbi.outputs.length > 0
                         ) {
                             const decoded = decodeFunctionResult({
-                                abi: [functionAbi],
-                                functionName: functionAbi.name,
+                                abi: [resolvedFunctionAbi],
+                                functionName: resolvedFunctionAbi.name,
                                 data: clauseResult.data.toString() as `0x${string}`
                             });
 
@@ -418,8 +446,8 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId =
-                await this.thorClient.transactions.sendRawTransaction(
+            const transactionId: Hex =
+                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -587,8 +615,8 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId =
-                await this.thorClient.transactions.sendRawTransaction(
+            const transactionId: Hex =
+                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -629,11 +657,11 @@ class ContractsModule extends AbstractThorModule {
 
         try {
             // Get account details and bytecode using ThorClient accounts module
-            const accountDetails = await this.thorClient.accounts.getAccount(
+            const accountDetails: AccountDetail = await (this.thorClient.accounts as { getAccount: (address: AddressLike, revision?: Revision) => Promise<AccountDetail> }).getAccount(
                 addr,
                 revision
             );
-            const bytecode = await this.thorClient.accounts.getBytecode(
+            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
                 addr,
                 revision
             );
@@ -689,7 +717,7 @@ class ContractsModule extends AbstractThorModule {
         const addr = Address.of(address);
         try {
             // Use ThorClient accounts module to get bytecode
-            const bytecode = await this.thorClient.accounts.getBytecode(
+            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
                 addr,
                 revision
             );
@@ -730,12 +758,14 @@ class ContractsModule extends AbstractThorModule {
         const addr = Address.of(address);
         try {
             // Create the filter for the contract events
-            const range =
+            const range: FilterRange | null =
                 fromBlock !== undefined && toBlock !== undefined
-                    ? FilterRange.of(FilterRangeUnits.block, fromBlock, toBlock)
+                    ? { unit: 'block', from: fromBlock, to: toBlock }
                     : null;
 
-            const criteria = EventCriteria.of(addr);
+            const criteria: EventCriteria = {
+                address: Address.of(address)
+            };
             const filter = EventLogFilter.of(range, null, [criteria], null);
 
             // Use thorest to get raw event logs directly
@@ -779,10 +809,11 @@ class ContractsModule extends AbstractThorModule {
         transactionId: Hex,
         options?: WaitForTransactionReceiptOptions
     ): Promise<TransactionReceipt | null> {
-        return await this.thorClient.transactions.waitForTransactionReceipt(
+        const receipt: TransactionReceipt | null = await (this.thorClient.transactions as { waitForTransactionReceipt: (transactionId: Hex, options?: WaitForTransactionReceiptOptions) => Promise<TransactionReceipt | null> }).waitForTransactionReceipt(
             transactionId,
             options
         );
+        return receipt;
     }
 }
 

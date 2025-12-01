@@ -4,11 +4,11 @@ import {
     EventLogsResponse,
     FilterOptionsRequest,
     FilterRangeRequest,
+    FilterRangeRequestUnits,
+    LogSortRequest,
     QuerySmartContractEvents
 } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
-import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits';
-import { LogSort } from '@thor/thor-client/model/logs/LogSort';
 import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
@@ -19,10 +19,10 @@ describe('QuerySmartContractEvents SOLO tests', () => {
 
     test('ok <- askTo - not empty', async () => {
         const filter = new EventLogFilterRequest(
-            new FilterRangeRequest(FilterRangeUnits.block, 0, 100),
+            new FilterRangeRequest(FilterRangeRequestUnits.block, 0, 100),
             undefined,
             undefined,
-            LogSort.asc
+            LogSortRequest.asc
         );
         const request = new QuerySmartContractEvents(filter);
         const actual = (await request.askTo(httpClient)).response;
@@ -33,7 +33,7 @@ describe('QuerySmartContractEvents SOLO tests', () => {
 
     test('ok <- askTo - empty', async () => {
         const filter = new EventLogFilterRequest(
-            new FilterRangeRequest(FilterRangeUnits.block, 0, 0),
+            new FilterRangeRequest(FilterRangeRequestUnits.block, 0, 0),
             new FilterOptionsRequest(0, 100, true),
             undefined,
             undefined

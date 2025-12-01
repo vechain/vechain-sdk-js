@@ -1,10 +1,7 @@
 import { describe, expect } from '@jest/globals';
 import { QueryVETTransferEvents, TransferLogsResponse } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
-import { TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
-import { FilterRange } from '@thor/thor-client/model/logs/FilterRange';
-import { FilterRangeUnits } from '@thor/thor-client/model/logs/FilterRangeUnits';
-import { LogSort } from '@thor/thor-client/model/logs/LogSort';
+import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
 import { ThorNetworks } from '@thor/utils/const/network';
 
 /**
@@ -14,12 +11,14 @@ describe('QueryVETTransferEvents SOLO tests', () => {
     const httpClient = FetchHttpClient.at(new URL(ThorNetworks.SOLONET));
 
     test('ok <- askTo - not empty', async () => {
-        const filter = new TransferLogFilter(
-            new FilterRange(FilterRangeUnits.block, 0, 100),
-            null,
-            null,
-            LogSort.desc
-        );
+        const filter: TransferLogFilter = {
+            range: {
+                unit: 'block',
+                from: 0,
+                to: 100
+            },
+            order: 'desc'
+        };
         const request = QueryVETTransferEvents.of(filter);
         const actual = (await request.askTo(httpClient)).response;
         expect(actual).toBeDefined();
@@ -28,12 +27,13 @@ describe('QueryVETTransferEvents SOLO tests', () => {
     });
 
     test('ok <- askTo - empty', async () => {
-        const filter = new TransferLogFilter(
-            new FilterRange(FilterRangeUnits.block, 0, 0),
-            null,
-            null,
-            null
-        );
+        const filter: TransferLogFilter = {
+            range: {
+                unit: 'block',
+                from: 0,
+                to: 0
+            }
+        };
         const request = QueryVETTransferEvents.of(filter);
         const actual = (await request.askTo(httpClient)).response;
         expect(actual).toBeDefined();

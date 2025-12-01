@@ -14,11 +14,12 @@ import {
     type SimulateTransactionOptions,
     type Clause
 } from '@thor/thor-client/model/transactions';
+import { type Block } from '@thor/thor-client/model/blocks';
 import {
     type EstimateGasResult,
     type EstimateGasOptions
 } from '@thor/thor-client/model/gas';
-import { decodeRevertReason } from './helpers/decode-evm-error';
+import { decodeRevertReason } from '../contracts/utils';
 import { log } from '@common/logging';
 
 const FQP = 'packages/sdk/src/thor/thor-client/gas/gas-module.ts';
@@ -145,11 +146,14 @@ class GasModule extends AbstractThorModule {
             gas: options?.gas,
             gasPrice: options?.gasPrice
         };
-        const simulationResult =
-            await this.thorClient.transactions.simulateTransaction(
-                clauses,
-                simulationOptions
-            );
+        const simulationResult: ClauseSimulationResult[] = await (
+            this.thorClient.transactions as {
+                simulateTransaction: (
+                    clauses: Clause[],
+                    options?: SimulateTransactionOptions
+                ) => Promise<ClauseSimulationResult[]>;
+            }
+        ).simulateTransaction(clauses, simulationOptions);
         // sum the gas used of each clause
         const evmGasUsed = simulationResult.reduce(
             (sum: bigint, item: ClauseSimulationResult) => {
@@ -174,12 +178,16 @@ class GasModule extends AbstractThorModule {
             ? {
                   totalGas: totalGasUsed,
                   reverted: true,
-                  revertReasons: simulationResult.map((simulation) => {
-                      return decodeRevertReason(simulation.data) ?? '';
-                  }),
-                  vmErrors: simulationResult.map((simulation) => {
-                      return simulation.vmError;
-                  })
+                  revertReasons: simulationResult.map(
+                      (simulation: ClauseSimulationResult) => {
+                          return decodeRevertReason(simulation.data) ?? '';
+                      }
+                  ),
+                  vmErrors: simulationResult.map(
+                      (simulation: ClauseSimulationResult) => {
+                          return simulation.vmError;
+                      }
+                  )
               }
             : {
                   totalGas: totalGasUsed,
@@ -455,7 +463,11 @@ class GasModule extends AbstractThorModule {
             );
         }
         // this needs changing eventually to use the blocks module
-        const block = await this.thorClient.blocks.getBlock(revision);
+        const block: Block | null = await (
+            this.thorClient.blocks as {
+                getBlock: (revision: RevisionLike) => Promise<Block | null>;
+            }
+        ).getBlock(revision);
         if (block === null) {
             log.error({
                 message: 'Block is not available',

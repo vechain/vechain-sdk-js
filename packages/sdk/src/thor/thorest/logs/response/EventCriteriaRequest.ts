@@ -1,4 +1,4 @@
-import { type Address, type Hex } from '@common/vcdm';
+import { Address, type Hex } from '@common/vcdm';
 import { type EventCriteriaJSON } from '@thor/thorest/json';
 import { type EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
 
@@ -70,7 +70,7 @@ class EventCriteriaRequest {
      */
     static of(criteria: EventCriteria): EventCriteriaRequest {
         return new EventCriteriaRequest(
-            criteria.address ?? undefined,
+            criteria.address != null ? Address.of(criteria.address) : undefined,
             criteria.topic0 ?? undefined,
             criteria.topic1 ?? undefined,
             criteria.topic2 ?? undefined,
