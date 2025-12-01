@@ -133,7 +133,6 @@ class WalletClient extends PublicClient {
      * @see {@link https://viem.sh/docs/actions/wallet/sendRawTransaction | Viem sendRawTransaction}
      */
     public async sendRawTransaction(raw: Hex): Promise<Hex> {
-        console.log('raw', raw.toString());
         const txId = await this.thorClient.transactions.sendRawTransaction(raw);
         return txId;
     }
