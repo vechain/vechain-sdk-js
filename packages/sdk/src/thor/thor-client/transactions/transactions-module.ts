@@ -94,9 +94,12 @@ class TransactionsModule extends AbstractThorModule {
         options?: SimulateTransactionOptions
     ): Promise<ClauseSimulationResult[]> {
         const request = new ExecuteCodesRequest(clauses, options);
-        const query = InspectClauses.of(request).withRevision(
-            options?.revision ?? Revision.BEST
-        );
+        // Convert RevisionLike to Revision
+        const revision =
+            options?.revision !== undefined
+                ? Revision.of(options.revision)
+                : Revision.BEST;
+        const query = InspectClauses.of(request).withRevision(revision);
         const thorResponse = await query.askTo(this.httpClient);
         return thorResponse.response.items.map(
             (resp: ExecuteCodeResponse) => new ClauseSimulationResult(resp)
