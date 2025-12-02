@@ -7,7 +7,7 @@
         "dev": "vite"
     },
     "dependencies": {
-        "@vechain/sdk-temp": "3.0.0-beta.1.17"
+        "@vechain/sdk-temp": "portal:../../packages/sdk"
     },
     "devDependencies": {
         "typescript": "^5.0.3",
