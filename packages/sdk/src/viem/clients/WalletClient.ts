@@ -98,7 +98,7 @@ class WalletClient extends PublicClient {
                     ? HexUInt.of(HexInt.of(request.abi)).toString()
                     : null
             );
-            return new TransactionRequest({
+            return TransactionRequest.of({
                 blockRef: request.blockRef,
                 chainTag: request.chainTag,
                 clauses: [clause],
@@ -133,6 +133,7 @@ class WalletClient extends PublicClient {
      * @see {@link https://viem.sh/docs/actions/wallet/sendRawTransaction | Viem sendRawTransaction}
      */
     public async sendRawTransaction(raw: Hex): Promise<Hex> {
+        console.log('raw', raw.toString());
         const txId = await this.thorClient.transactions.sendRawTransaction(raw);
         return txId;
     }

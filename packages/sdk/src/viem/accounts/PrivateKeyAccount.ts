@@ -5,7 +5,7 @@ import { type TransactionRequest } from '@thor/thor-client/model/transactions';
 /**
  * The interface represents a private key account.
  * It is used to sign transaction requests using a private key.
- * This mirrors the PrivateKeyAccount from viem, but adds the signAsGasPayer method.
+ * This mirrors the PrivateKeyAccount from view, but adds the signAsGasPayer method.
  */
 export interface PrivateKeyAccount {
     privateKey: Hex;

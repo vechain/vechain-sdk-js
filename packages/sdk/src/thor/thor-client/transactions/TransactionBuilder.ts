@@ -604,7 +604,7 @@ class TransactionBuilder {
             // check if the transaction request can be built after running all async tasks
             await this.postBuildChecks();
             // build the transaction request
-            return new TransactionRequest(this.params);
+            return TransactionRequest.of(this.params);
         } finally {
             this.reset();
         }
