@@ -23,9 +23,10 @@ const FQP =
  *
  * This request to Thor endpoint allows you to retrieve a transaction in its raw hexadecimal form, identified by its ID.
  */
-class RetrieveRawTransactionByID
-    implements ThorRequest<RetrieveRawTransactionByID, GetRawTxResponse | null>
-{
+class RetrieveRawTransactionByID implements ThorRequest<
+    RetrieveRawTransactionByID,
+    GetRawTxResponse | null
+> {
     /**
      * Represents the HTTP path configuration for a specific API endpoint.
      */

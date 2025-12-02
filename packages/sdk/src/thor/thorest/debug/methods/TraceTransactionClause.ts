@@ -14,9 +14,10 @@ const FQP =
 /**
  * [Trace a transaction clause](http://localhost:8669/doc/stoplight-ui/#/paths/debug-tracers/post)
  */
-class TraceTransactionClause
-    implements ThorRequest<TraceTransactionClause, unknown>
-{
+class TraceTransactionClause implements ThorRequest<
+    TraceTransactionClause,
+    unknown
+> {
     /**
      * Represents the HTTP path configuration for the debug tracers endpoint.
      */

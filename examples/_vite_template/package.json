@@ -10,7 +10,7 @@
         "@vechain/sdk-temp": "3.0.0-beta.1.17"
     },
     "devDependencies": {
-        "typescript": "^5.0.3",
-        "vite": "^7.1.11"
+        "typescript": "5.9.3",
+        "vite": "7.2.6"
     }
 }

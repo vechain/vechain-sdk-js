@@ -21,9 +21,10 @@ const FQP = 'packages/sdk/src/thor/thorest/accounts/methods/InspectClauses.ts!';
  * API endpoint: `POST /accounts/*`
  */
 /// Documentation: http://localhost:8669/doc/stoplight-ui/#/paths/accounts-*/post/
-class InspectClauses
-    implements ThorRequest<InspectClauses, ExecuteCodesResponse>
-{
+class InspectClauses implements ThorRequest<
+    InspectClauses,
+    ExecuteCodesResponse
+> {
     /**
      * Represents the HTTP path for this specific API endpoint.
      */

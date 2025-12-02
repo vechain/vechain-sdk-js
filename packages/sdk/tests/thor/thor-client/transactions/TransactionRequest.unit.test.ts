@@ -55,7 +55,6 @@ describe('TransactionRequest', () => {
             expect(transaction.gas).toBe(mockGas);
             expect(transaction.gasPriceCoef).toBe(mockGasPriceCoef);
             expect(transaction.nonce).toBe(mockNonce);
-            expect(transaction.beggar).toBeUndefined();
             expect(transaction.maxFeePerGas).toBeUndefined();
             expect(transaction.maxPriorityFeePerGas).toBeUndefined();
         });
@@ -74,14 +73,8 @@ describe('TransactionRequest', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas
             };
 
-            const transaction = new TransactionRequest(
-                params,
-                mockOriginSignature,
-                mockGasPayerSignature,
-                mockSignature
-            );
+            const transaction = new TransactionRequest(params, mockSignature);
 
-            expect(transaction.beggar).toBe(mockBeggar);
             expect(transaction.blockRef).toBe(mockBlockRef);
             expect(transaction.chainTag).toBe(1);
             expect(transaction.clauses).toHaveLength(1);
@@ -94,6 +87,7 @@ describe('TransactionRequest', () => {
             expect(transaction.maxPriorityFeePerGas).toBe(
                 mockMaxPriorityFeePerGas
             );
+            expect(transaction.signature).toStrictEqual(mockSignature);
         });
 
         test('ok <- legacy with all parameters', () => {
@@ -109,14 +103,8 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(
-                params,
-                mockOriginSignature,
-                mockGasPayerSignature,
-                mockSignature
-            );
+            const transaction = new TransactionRequest(params, mockSignature);
 
-            expect(transaction.beggar).toBe(mockBeggar);
             expect(transaction.blockRef).toBe(mockBlockRef);
             expect(transaction.chainTag).toBe(1);
             expect(transaction.clauses).toHaveLength(1);
@@ -127,6 +115,7 @@ describe('TransactionRequest', () => {
             expect(transaction.nonce).toBe(mockNonce);
             expect(transaction.maxFeePerGas).toBe(undefined);
             expect(transaction.maxPriorityFeePerGas).toBe(undefined);
+            expect(transaction.signature).toStrictEqual(mockSignature);
         });
 
         test('ok <- create defensive copies of signatures', () => {
@@ -140,27 +129,15 @@ describe('TransactionRequest', () => {
                 gasPriceCoef: mockGasPriceCoef,
                 nonce: mockNonce
             };
-
-            const originalOriginSig = new Uint8Array([1, 2, 3]);
-            const originalGasPayerSig = new Uint8Array([4, 5, 6]);
             const originalSig = new Uint8Array([7, 8, 9]);
 
-            const transaction = new TransactionRequest(
-                params,
-                originalOriginSig,
-                originalGasPayerSig,
-                originalSig
-            );
+            const transaction = new TransactionRequest(params, originalSig);
 
             // Modify original arrays
-            originalOriginSig[0] = 99;
-            originalGasPayerSig[0] = 99;
             originalSig[0] = 99;
 
             // Transaction should still have original values
-            expect(transaction.originSignature[0]).toBe(1);
-            expect(transaction.gasPayerSignature[0]).toBe(4);
-            expect(transaction.signature[0]).toBe(7);
+            expect(transaction.signature?.[0]).toBe(7);
         });
 
         test('ok <- handle undefined signatures', () => {
@@ -176,10 +153,7 @@ describe('TransactionRequest', () => {
             };
 
             const transaction = new TransactionRequest(params);
-
-            expect(transaction.originSignature).toEqual(new Uint8Array([]));
-            expect(transaction.gasPayerSignature).toEqual(new Uint8Array([]));
-            expect(transaction.signature).toEqual(new Uint8Array([]));
+            expect(transaction.signature).toBeUndefined();
         });
     });
 
@@ -218,8 +192,8 @@ describe('TransactionRequest', () => {
         });
     });
 
-    describe('isIntendedToBeSponsored getter', () => {
-        test('true <- when beggar is defined', () => {
+    describe('isDelegated getter', () => {
+        test('true <- when reserved.features set to 1', () => {
             const params = {
                 beggar: mockBeggar,
                 blockRef: mockBlockRef,
@@ -229,14 +203,17 @@ describe('TransactionRequest', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
             };
-
             const transaction = new TransactionRequest(params);
-            expect(transaction.isIntendedToBeSponsored).toBe(true);
+            expect(transaction.isDelegated).toBe(true);
         });
 
-        test('false <- when beggar is undefined', () => {
+        test('false <- when reserved.features is undefined', () => {
             const params = {
                 blockRef: mockBlockRef,
                 chainTag: 1,
@@ -249,12 +226,32 @@ describe('TransactionRequest', () => {
             };
 
             const transaction = new TransactionRequest(params);
-            expect(transaction.isIntendedToBeSponsored).toBe(false);
+            expect(transaction.isDelegated).toBe(false);
+        });
+
+        test('false <- when reserved.features is 0', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: 1,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: mockGasPriceCoef,
+                nonce: mockNonce,
+                reserved: {
+                    features: 0,
+                    unused: []
+                }
+            };
+
+            const transaction = new TransactionRequest(params);
+            expect(transaction.isDelegated).toBe(false);
         });
     });
 
     describe('isSigned getter', () => {
-        test('false <- for unsigned transaction without beggar', () => {
+        test('false <- for unsigned transaction without delegated', () => {
             const params = {
                 blockRef: mockBlockRef,
                 chainTag: 1,
@@ -270,7 +267,7 @@ describe('TransactionRequest', () => {
             expect(transaction.isSigned).toBe(false);
         });
 
-        test('true <- for signed transaction without beggar', () => {
+        test('true <- for signed transaction without delegated', () => {
             const params = {
                 blockRef: mockBlockRef,
                 chainTag: 1,
@@ -284,8 +281,6 @@ describe('TransactionRequest', () => {
 
             const transaction = new TransactionRequest(
                 params,
-                mockOriginSignature,
-                undefined,
                 mockOriginSignature
             );
             expect(transaction.isSigned).toBe(true);
@@ -301,7 +296,11 @@ describe('TransactionRequest', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
             };
 
             // Only origin signature
@@ -310,14 +309,6 @@ describe('TransactionRequest', () => {
                 mockOriginSignature
             );
             expect(transaction1.isSigned).toBe(false);
-
-            // Only gas payer signature
-            const transaction2 = new TransactionRequest(
-                params,
-                undefined,
-                mockGasPayerSignature
-            );
-            expect(transaction2.isSigned).toBe(false);
         });
 
         test('true <- for fully signed sponsored transaction', () => {
@@ -330,15 +321,17 @@ describe('TransactionRequest', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
             };
-
-            const transaction = new TransactionRequest(
-                params,
-                mockOriginSignature,
-                mockGasPayerSignature,
-                mockSignature
-            );
+            const fullSignature = new Uint8Array([
+                ...mockOriginSignature,
+                ...mockGasPayerSignature
+            ]);
+            const transaction = new TransactionRequest(params, fullSignature);
             expect(transaction.isSigned).toBe(true);
         });
 
@@ -355,12 +348,7 @@ describe('TransactionRequest', () => {
             };
 
             const wrongSignature = new Uint8Array([1, 2, 3]); // Different length
-            const transaction = new TransactionRequest(
-                params,
-                mockOriginSignature,
-                undefined,
-                wrongSignature
-            );
+            const transaction = new TransactionRequest(params, wrongSignature);
             expect(transaction.isSigned).toBe(false);
         });
 
@@ -374,16 +362,15 @@ describe('TransactionRequest', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
             };
 
             const wrongSignature = new Uint8Array([1, 2, 3]); // Different length
-            const transaction = new TransactionRequest(
-                params,
-                mockOriginSignature,
-                mockGasPayerSignature,
-                wrongSignature
-            );
+            const transaction = new TransactionRequest(params, wrongSignature);
             expect(transaction.isSigned).toBe(false);
         });
     });
@@ -404,7 +391,6 @@ describe('TransactionRequest', () => {
             const transaction = new TransactionRequest(params);
             const json = transaction.toJSON();
 
-            expect(json.beggar).toBeUndefined();
             expect(json.blockRef).toBe(mockBlockRef.toString());
             expect(json.chainTag).toBe(1);
             expect(json.clauses).toHaveLength(1);
@@ -415,14 +401,11 @@ describe('TransactionRequest', () => {
             expect(json.nonce).toBe(HexUInt.of(mockNonce).toString());
             expect(json.maxFeePerGas).toBeUndefined();
             expect(json.maxPriorityFeePerGas).toBeUndefined();
-            expect(json.originSignature).toBeUndefined();
-            expect(json.gasPayerSignature).toBeUndefined();
             expect(json.signature).toBeUndefined();
         });
 
         test('ok <- full dynamic transaction to JSON', () => {
             const params = {
-                beggar: mockBeggar,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [new Clause(mockAddress, mockValue.bi)],
@@ -431,18 +414,16 @@ describe('TransactionRequest', () => {
                 gas: mockGas,
                 nonce: mockNonce,
                 maxFeePerGas: mockMaxFeePerGas,
-                maxPriorityFeePerGas: mockMaxPriorityFeePerGas
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
             };
 
-            const transaction = new TransactionRequest(
-                params,
-                mockOriginSignature,
-                mockGasPayerSignature,
-                mockSignature
-            );
+            const transaction = new TransactionRequest(params, mockSignature);
             const json = transaction.toJSON();
 
-            expect(json.beggar).toBe(mockBeggar.toString());
             expect(json.blockRef).toBe(mockBlockRef.toString());
             expect(json.chainTag).toBe(1);
             expect(json.clauses).toHaveLength(1);
@@ -452,18 +433,11 @@ describe('TransactionRequest', () => {
             expect(json.gasPriceCoef).toBe(undefined);
             expect(json.nonce).toBe(HexUInt.of(mockNonce).toString());
             expect(json.maxPriorityFeePerGas).toBe(mockMaxPriorityFeePerGas);
-            expect(json.originSignature).toBe(
-                HexUInt.of(mockOriginSignature).toString()
-            );
-            expect(json.gasPayerSignature).toBe(
-                HexUInt.of(mockGasPayerSignature).toString()
-            );
             expect(json.signature).toBe(HexUInt.of(mockSignature).toString());
         });
 
         test('ok <- full legacy transaction to JSON', () => {
             const params = {
-                beggar: mockBeggar,
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [new Clause(mockAddress, mockValue.bi)],
@@ -471,18 +445,16 @@ describe('TransactionRequest', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
             };
 
-            const transaction = new TransactionRequest(
-                params,
-                mockOriginSignature,
-                mockGasPayerSignature,
-                mockSignature
-            );
+            const transaction = new TransactionRequest(params, mockSignature);
             const json = transaction.toJSON();
 
-            expect(json.beggar).toBe(mockBeggar.toString());
             expect(json.blockRef).toBe(mockBlockRef.toString());
             expect(json.chainTag).toBe(1);
             expect(json.clauses).toHaveLength(1);
@@ -493,12 +465,6 @@ describe('TransactionRequest', () => {
             expect(json.nonce).toBe(HexUInt.of(mockNonce).toString());
             expect(json.maxFeePerGas).toBe(undefined);
             expect(json.maxPriorityFeePerGas).toBe(undefined);
-            expect(json.originSignature).toBe(
-                HexUInt.of(mockOriginSignature).toString()
-            );
-            expect(json.gasPayerSignature).toBe(
-                HexUInt.of(mockGasPayerSignature).toString()
-            );
             expect(json.signature).toBe(HexUInt.of(mockSignature).toString());
         });
 
@@ -597,12 +563,11 @@ describe('TransactionRequest', () => {
 
             const transaction = new TransactionRequest(params);
 
-            expect(transaction.beggar).toBeUndefined();
             expect(transaction.dependsOn).toBeNull();
             expect(transaction.maxFeePerGas).toBeUndefined();
             expect(transaction.maxPriorityFeePerGas).toBeUndefined();
             expect(transaction.isDynamicFee).toBe(false);
-            expect(transaction.isIntendedToBeSponsored).toBe(false);
+            expect(transaction.isDelegated).toBe(false);
             expect(transaction.isSigned).toBe(false);
         });
 

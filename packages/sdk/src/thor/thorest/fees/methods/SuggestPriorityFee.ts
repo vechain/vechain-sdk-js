@@ -15,9 +15,10 @@ const FQP = 'packages/sdk/src/thor/thorest/fees/methods/SuggestPriorityFee.ts!';
 /**
  * [Suggest a priority fee for a transaction to be included in a block](http://localhost:8669/doc/stoplight-ui/#/paths/fees-priority/get)
  */
-class SuggestPriorityFee
-    implements ThorRequest<SuggestPriorityFee, GetFeesPriorityResponse>
-{
+class SuggestPriorityFee implements ThorRequest<
+    SuggestPriorityFee,
+    GetFeesPriorityResponse
+> {
     /**
      * Represents the API endpoint or resource path used for priority-fee-related operations.
      */
