@@ -105,7 +105,6 @@ class ContractsModule extends AbstractThorModule {
         // but we're passing the real ContractsModule instance, which is structurally compatible
         // We cannot import the forward reference interface type without creating a circular dependency
         // Using 'as any' is necessary here as the forward reference interface cannot be properly typed
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return new Contract(normalizedAddress, actualAbi, this as any, signer);
     }
 

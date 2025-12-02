@@ -1,72 +1,9 @@
 import { type Clause } from './Clause';
 import { type Hex } from '@common/vcdm';
+import { type TransactionBody } from './TransactionBody';
 // Forward reference to avoid circular dependency with TransactionRequest
 // TransactionRequest is only mentioned in JSDoc comments, not used in code
 import { TransactionRequestRLPCodec } from '@thor/thor-client/rlp';
-
-/**
- * Common parameters shared by all transaction types:
- * - TransactionRequest - A transaction request to **Thor** blockchain system.
- * - Transaction - A transaction read from the blockchain.
- */
-interface BaseTransactionParams {
-    /**
-     * The last byte of the genesis block ID.
-     */
-    chainTag: number;
-
-    /**
-     * The first 8 bytes of the referenced block ID.
-     */
-    blockRef: Hex;
-
-    /**
-     * The expiration of the transaction, represented as the number of blocks after the blockRef
-     */
-    expiration: number;
-
-    /**
-     * An array of clauses that are executed by the transaction.
-     */
-    clauses: Clause[];
-
-    /**
-     * The max amount of gas that can be used by the transaction.
-     */
-    gas: bigint;
-
-    /**
-     * The coefficient used to calculate the final gas price of the transaction.
-     * Used for legacy transactions (pre-EIP-1559).
-     * Mutually exclusive with maxFeePerGas and maxPriorityFeePerGas.
-     */
-    gasPriceCoef?: bigint;
-
-    /**
-     * The maximum fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
-     * Used for dynamic fee transactions.
-     * Mutually exclusive with gasPriceCoef.
-     */
-    maxFeePerGas?: bigint;
-
-    /**
-     * The maximum priority fee per gas the sender is willing to pay (EIP-1559 dynamic fees).
-     * This is the tip paid to validators for transaction inclusion priority.
-     * Used for dynamic fee transactions.
-     * Mutually exclusive with gasPriceCoef.
-     */
-    maxPriorityFeePerGas?: bigint;
-
-    /**
-     * The transaction ID that this transaction depends on.
-     */
-    dependsOn: Hex | null;
-
-    /**
-     * The transaction nonce - a 64-bit unsigned integer.
-     */
-    nonce: bigint;
-}
 
 /**
  * Abstract base class for all transaction types in the VeChain Thor blockchain.
@@ -138,7 +75,7 @@ abstract class BaseTransaction implements TransactionBody {
     /**
      * Protected constructor to initialize common transaction fields.
      * Only accessible by subclasses.
-     * @param {BaseTransactionParams} params - Common transaction parameters
+     * @param params - Common transaction parameters
      */
     protected constructor(params: TransactionBody) {
         this.chainTag = params.chainTag;
