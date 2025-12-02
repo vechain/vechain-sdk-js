@@ -59,7 +59,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "rm -rf ./dist && tsup",
+    "build": "rm -rf ./dist && npx tsup",
     "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 15) exit 1}'",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write src/**/**/**/**/*.ts tests/**/**/**/**/*.ts",

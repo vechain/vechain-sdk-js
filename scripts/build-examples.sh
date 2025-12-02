@@ -35,9 +35,9 @@ find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -
     rm -rf "$example_dir/node_modules"
 
     
-    # Install dependencies
+    # Install dependencies (use --immutable to respect example's yarn.lock)
     echo "📦 Installing dependencies..."
-    (cd "$example_dir" && corepack yarn install)
+    (cd "$example_dir" && corepack yarn install --immutable)
     
     # Build (if build script exists)
     if grep -q '"build"' "$package_json"; then

@@ -48,9 +48,9 @@ find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -
     echo "🧹 Cleaning old dependencies..."
     rm -rf "$example_dir/node_modules"
     
-    # Install dependencies from npm
+    # Install dependencies from npm (use --immutable to respect example's yarn.lock)
     echo "📦 Installing dependencies from npm..."
-    (cd "$example_dir" && corepack yarn install > /dev/null 2>&1)
+    (cd "$example_dir" && corepack yarn install --immutable > /dev/null 2>&1)
     
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

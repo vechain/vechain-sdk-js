@@ -36,7 +36,7 @@
     "solo"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup-node index.ts --format cjs,esm --dts --outDir dist && npx tsup-node scripts/deploy.ts --format cjs,esm --outDir dist",
+    "build": "rm -rf ./dist && npx tsup-node index.ts --format cjs,esm --dts --outDir dist && npx tsup-node scripts/deploy.ts --format cjs,esm --outDir dist",
     "clean": "rm -rf dist node_modules && rm -rf ./dist",
     "dev": "npm run build -- --watch",
     "compile": "npx hardhat compile",
