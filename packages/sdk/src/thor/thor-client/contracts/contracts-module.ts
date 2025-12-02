@@ -9,7 +9,7 @@ import { Contract, ContractFactory } from './model';
 import { ClauseBuilder } from '@thor/thor-client/transactions/ClauseBuilder';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
 import { Clause } from '../model/transactions/Clause';
-import { IllegalArgumentError } from '../../../common/errors';
+import { IllegalArgumentError, ContractCallError } from '../../../common/errors';
 import { log } from '@common/logging';
 import {
     type AbiParameter,
@@ -23,9 +23,6 @@ import { type FilterRange } from '../model/logs/FilterRange';
 import { QuerySmartContractEvents, type EventLogResponse } from '@thor/thorest';
 import { type TransactionReceipt } from '../model/transactions/TransactionReceipt';
 import { type WaitForTransactionReceiptOptions } from '../model/transactions/WaitForTransactionReceiptOptions';
-import { type ClauseSimulationResult } from '../model/transactions';
-import { type AccountDetail } from '../model/accounts/AccountDetail';
-import { HexUInt } from '@common/vcdm';
 import { decodeRevertReason } from './utils';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
@@ -78,7 +75,7 @@ class ContractsModule extends AbstractThorModule {
             actualAbi,
             bytecode as `0x${string}`,
             signer,
-            this as unknown as { readonly [key: string]: unknown }
+            this
         );
     }
 
@@ -100,13 +97,7 @@ class ContractsModule extends AbstractThorModule {
         const actualAbi = this.isCompiledContract(abi)
             ? (abi.abi as TAbi)
             : abi;
-        // Type assertion to avoid circular dependency - Contract uses forward reference interface
-        // The Contract constructor expects a ContractsModule interface (forward reference)
-        // but we're passing the real ContractsModule instance, which is structurally compatible
-        // We cannot import the forward reference interface type without creating a circular dependency
-        // Using 'as any' is necessary here as the forward reference interface cannot be properly typed
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return new Contract(normalizedAddress, actualAbi, this as any, signer);
+        return new Contract<TAbi>(normalizedAddress, actualAbi, this, signer);
     }
 
     /**
@@ -125,7 +116,7 @@ class ContractsModule extends AbstractThorModule {
             abi,
             bytecode as `0x${string}`,
             signer,
-            this as unknown as { readonly [key: string]: unknown }
+            this
         );
     }
 
@@ -145,6 +136,12 @@ class ContractsModule extends AbstractThorModule {
         functionData: FunctionArgs,
         options?: ContractCallOptions
     ): Promise<ContractCallResult> {
+        // Validate function ABI early to make it available in catch block
+        const resolvedFunctionAbi =
+            functionAbi && functionAbi.type === 'function'
+                ? (functionAbi as AbiFunction)
+                : undefined;
+
         try {
             // Validate contract address
             if (
@@ -162,11 +159,6 @@ class ContractsModule extends AbstractThorModule {
             }
 
             // Validate function ABI
-            const resolvedFunctionAbi =
-                functionAbi && functionAbi.type === 'function'
-                    ? (functionAbi as AbiFunction)
-                    : undefined;
-
             if (!resolvedFunctionAbi || !resolvedFunctionAbi.name) {
                 throw new IllegalArgumentError(
                     'ContractsModule.executeCall',
@@ -223,7 +215,18 @@ class ContractsModule extends AbstractThorModule {
                     message: 'Error in encodeFunctionData',
                     context: { error }
                 });
-                throw error;
+                // Throw ContractCallError for encoding errors (e.g., "Function not found on ABI")
+                const errorMessage =
+                    error instanceof Error ? error.message : 'Unknown encoding error';
+                throw new ContractCallError(
+                    'ContractsModule.executeCall',
+                    errorMessage,
+                    {
+                        functionName: resolvedFunctionAbi.name,
+                        contractAddress: contractAddress.toString()
+                    },
+                    error instanceof Error ? error : undefined
+                );
             }
 
             const clauseContractAddress = Address.of(contractAddress);
@@ -252,8 +255,8 @@ class ContractsModule extends AbstractThorModule {
                 gasPrice: options?.gasPrice
             };
 
-            const simulationResults: ClauseSimulationResult[] =
-                await (this.thorClient.transactions as { simulateTransaction: (clauses: Clause[], options?: unknown) => Promise<ClauseSimulationResult[]> }).simulateTransaction(
+            const simulationResults =
+                await this.thorClient.transactions.simulateTransaction(
                     [clause],
                     simulationOptions
                 );
@@ -268,18 +271,48 @@ class ContractsModule extends AbstractThorModule {
 
                 if (clauseResult.reverted) {
                     // Try to decode the revert reason from the data
-                    let errorMessage: string;
+                    let decodedReason: string | undefined;
                     if (clauseResult.data && clauseResult.data.toString() !== '0x') {
                         try {
-                            const decodedReason = decodeRevertReason(clauseResult.data);
-                            errorMessage = decodedReason ?? (clauseResult.vmError || 'Contract call reverted');
+                            decodedReason = decodeRevertReason(clauseResult.data);
                         } catch {
-                            // If decoding fails, fall back to vmError
-                            errorMessage = clauseResult.vmError || 'Contract call reverted';
+                            // If decoding fails, decodedReason remains undefined
                         }
-                    } else {
-                        errorMessage = clauseResult.vmError || 'Contract call reverted';
                     }
+
+                    const vmError = clauseResult.vmError || '';
+
+                    // If we can't decode a revert reason and have a generic error,
+                    // throw ContractCallError to match v2 behavior
+                    const hasNoRevertMessage =
+                        !decodedReason || decodedReason.trim() === '';
+
+                    // Check if vmError is generic (common indicators of function not existing)
+                    const vmErrorLower = vmError.toLowerCase();
+                    const isGenericError =
+                        !vmError ||
+                        vmError === 'execution reverted' ||
+                        vmError === 'revert' ||
+                        vmErrorLower.includes('execution reverted') ||
+                        vmErrorLower.includes('revert');
+
+                    // If no decoded revert message and generic error, throw exception
+                    // This matches v2 behavior where encodeData() fails for non-existent functions
+                    if (hasNoRevertMessage && isGenericError) {
+                        throw new ContractCallError(
+                            'ContractsModule.executeCall',
+                            'Contract call reverted without a specific error message. This may indicate the function does not exist in the contract.',
+                            {
+                                functionName: resolvedFunctionAbi.name,
+                                contractAddress: contractAddress.toString(),
+                                vmError: vmError || 'execution reverted'
+                            }
+                        );
+                    }
+
+                    // If we have a decoded revert reason or a specific vmError, return error object
+                    const errorMessage =
+                        decodedReason || vmError || 'Contract call reverted';
 
                     return {
                         success: false,
@@ -367,20 +400,37 @@ class ContractsModule extends AbstractThorModule {
                 }
             };
         } catch (error) {
-            // Re-throw validation errors
-            if (error instanceof IllegalArgumentError) {
+            // Re-throw validation and encoding errors (these should be exceptions, not return values)
+            if (
+                error instanceof IllegalArgumentError ||
+                error instanceof ContractCallError
+            ) {
                 throw error;
             }
 
-            return {
-                success: false,
-                result: {
-                    errorMessage:
-                        error instanceof Error
-                            ? error.message
-                            : 'Unknown error occurred'
-                }
-            };
+            // For unexpected errors during simulation or other operations, throw ContractCallError
+            const errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : 'Unknown error occurred';
+            // Use resolvedFunctionAbi if available, otherwise try to extract from functionAbi
+            const functionName =
+                resolvedFunctionAbi?.name ??
+                (functionAbi &&
+                'type' in functionAbi &&
+                functionAbi.type === 'function' &&
+                'name' in functionAbi
+                    ? (functionAbi as AbiFunction).name
+                    : undefined);
+            throw new ContractCallError(
+                'ContractsModule.executeCall',
+                errorMessage,
+                {
+                    contractAddress: contractAddress?.toString(),
+                    functionName
+                },
+                error instanceof Error ? error : undefined
+            );
         }
     }
 
@@ -446,8 +496,8 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId: Hex =
-                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
+            const transactionId =
+                await this.thorClient.transactions.sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -615,8 +665,8 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId: Hex =
-                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
+            const transactionId =
+                await this.thorClient.transactions.sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -657,11 +707,11 @@ class ContractsModule extends AbstractThorModule {
 
         try {
             // Get account details and bytecode using ThorClient accounts module
-            const accountDetails: AccountDetail = await (this.thorClient.accounts as { getAccount: (address: AddressLike, revision?: Revision) => Promise<AccountDetail> }).getAccount(
+            const accountDetails = await this.thorClient.accounts.getAccount(
                 addr,
                 revision
             );
-            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
+            const bytecode = await this.thorClient.accounts.getBytecode(
                 addr,
                 revision
             );
@@ -717,7 +767,7 @@ class ContractsModule extends AbstractThorModule {
         const addr = Address.of(address);
         try {
             // Use ThorClient accounts module to get bytecode
-            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
+            const bytecode = await this.thorClient.accounts.getBytecode(
                 addr,
                 revision
             );
@@ -809,11 +859,10 @@ class ContractsModule extends AbstractThorModule {
         transactionId: Hex,
         options?: WaitForTransactionReceiptOptions
     ): Promise<TransactionReceipt | null> {
-        const receipt: TransactionReceipt | null = await (this.thorClient.transactions as { waitForTransactionReceipt: (transactionId: Hex, options?: WaitForTransactionReceiptOptions) => Promise<TransactionReceipt | null> }).waitForTransactionReceipt(
+        return await this.thorClient.transactions.waitForTransactionReceipt(
             transactionId,
             options
         );
-        return receipt;
     }
 }
 
