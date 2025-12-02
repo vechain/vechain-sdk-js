@@ -5,10 +5,7 @@ import { Hex } from 'viem';
 import { HexUInt } from '@common/vcdm';
 import { IllegalArgumentError } from '@common/errors';
 import { type Abi, AbiParameter } from 'abitype';
-// Forward reference to avoid circular dependency with ContractsModule
-interface ContractsModule {
-    readonly [key: string]: unknown;
-}
+import { type ContractsModule } from '../contracts-module';
 import { type Signer } from '@thor/signer';
 import { type SimulateTransactionOptions } from '../types';
 import { type TransactionRequest } from '../../model/transactions/TransactionRequest';

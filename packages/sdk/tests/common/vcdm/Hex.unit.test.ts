@@ -5,6 +5,7 @@ import {
     UnsupportedOperationError
 } from '@common/errors';
 import { isBrowser } from '@common/utils/browser';
+import { type HexLike } from '@common/vcdm/HexLike';
 
 /**
  * Test Hex class.
@@ -407,6 +408,24 @@ describe('Hex class tests', () => {
                 );
                 expect(true).toBeTruthy();
             }
+        });
+    });
+    describe('HexLike tests', () => {
+        test('Return a Hex instance if the passed argument is a Hex instance', () => {
+            const hex: HexLike = Hex.of('0x000000000000000000000000000caca0');
+            expect(Hex.of(hex)).toEqual(hex);
+        });
+        test('Return a Hex instance if the passed argument is a string', () => {
+            const hex: HexLike = '0x000000000000000000000000000caca0';
+            expect(Hex.of(hex)).toEqual(
+                Hex.of('0x000000000000000000000000000caca0')
+            );
+        });
+        test('Return a Hex instance if the passed argument 0x string', () => {
+            const hex: HexLike = '0x000000000000000000000000000caca0';
+            expect(Hex.of(hex)).toEqual(
+                Hex.of('0x000000000000000000000000000caca0')
+            );
         });
     });
 });

@@ -81,7 +81,7 @@ describe('unit tests', () => {
             gasPriceCoef: 0n,
             gas: BigInt(mockGasResponse.totalGas),
             dependsOn: null,
-            nonce: 2
+            nonce: 2n
         });
 
         const senderSigner = new PrivateKeySigner(sender.privateKey.bytes);
@@ -121,8 +121,11 @@ describe('unit tests', () => {
             gasPayer.privateKey.bytes,
             false
         );
-        const txA = new TransactionRequest({
-            beggar: sender.address,
+        const senderPublicKey = Secp256k1.derivePublicKey(
+            sender.privateKey.bytes,
+            false
+        );
+        const txRequest = new TransactionRequest({
             chainTag: mockChainTag,
             blockRef: BlockRef.of(latestBlock.id),
             expiration: 0,
@@ -130,30 +133,52 @@ describe('unit tests', () => {
             gasPriceCoef: 0n,
             gas: BigInt(gasToPay.totalGas),
             dependsOn: null,
-            nonce: 1
+            nonce: 1n,
+            reserved: {
+                features: 1,
+                unused: []
+            }
         });
         const senderSigner = new PrivateKeySigner(sender.privateKey.bytes);
         const gasPayerSigner = new PrivateKeySigner(gasPayer.privateKey.bytes);
-        const as = senderSigner.sign(txA);
-        const ap = gasPayerSigner.sign(as);
-        const sigmaA = nc_secp256k1.Signature.fromCompact(
-            ap.signature?.slice(-65).slice(0, 64) as Uint8Array
+        const txSenderSigned = senderSigner.sign(txRequest);
+        const senderSignature = txSenderSigned.signature?.slice(
+            0,
+            64
+        ) as Uint8Array;
+        const txSenderAndGasPayerSigned = gasPayerSigner.sign(
+            txSenderSigned,
+            sender.address
         );
-        const hashA = Blake2b256.of(
+        const gasPayerSignature = nc_secp256k1.Signature.fromCompact(
+            txSenderAndGasPayerSigned.signature
+                ?.slice(-65)
+                .slice(0, 64) as Uint8Array
+        );
+        // verify sender signature is recoverable from the signing hash and sender public key
+        const isSenderSignatureVerified = nc_secp256k1.verify(
+            senderSignature ?? new Uint8Array(),
+            txRequest.hash.bytes,
+            senderPublicKey
+        );
+        expect(isSenderSignatureVerified).toBe(true);
+
+        // verify gas payer signature is recoverable from the gas payer hash and gas payer public key
+        const gasPayerHash = Blake2b256.of(
             concatBytes(
-                ap.hash.bytes, // Origin hash.
-                ap.beggar?.bytes ?? new Uint8Array()
+                txRequest.hash.bytes, // unsigned hash
+                sender.address.bytes ?? new Uint8Array() // sender address
             )
-        ).bytes; // Gas payer hash.
-        const isVerifiedA = nc_secp256k1.verify(
-            sigmaA.toBytes(),
-            hashA,
+        ).bytes;
+        const isGasPayerSignatureVerified = nc_secp256k1.verify(
+            gasPayerSignature.toBytes(),
+            gasPayerHash,
             gasPayerPublicKey
         );
-        expect(isVerifiedA).toBe(true);
+        expect(isGasPayerSignatureVerified).toBe(true);
 
-        const txB = new TransactionRequest({
-            beggar: sender.address,
+        // repeat for non-delegated transaction
+        const txRequestNonDelegated = new TransactionRequest({
             chainTag: mockChainTag,
             blockRef: BlockRef.of(latestBlock.id),
             expiration: 0,
@@ -161,31 +186,36 @@ describe('unit tests', () => {
             gasPriceCoef: 0n,
             gas: BigInt(gasToPay.totalGas),
             dependsOn: null,
-            nonce: 2
+            nonce: 2n
         });
-        const bs = senderSigner.sign(txB);
-        const bp = gasPayerSigner.sign(bs);
-        const sigmaB = nc_secp256k1.Signature.fromCompact(
-            bp.signature?.slice(-65).slice(0, 64) as Uint8Array
+        const txSenderSignedNonDelegated = senderSigner.sign(
+            txRequestNonDelegated
         );
-        const hashB = Blake2b256.of(
-            concatBytes(
-                bp.hash.bytes, // Origin hash.
-                bp.beggar?.bytes ?? new Uint8Array()
-            )
-        ).bytes; // Gas payer hash.
-        const isVerifiedB = nc_secp256k1.verify(
-            sigmaB.toBytes(),
-            hashB,
+        const senderSignatureNonDelegated =
+            txSenderSignedNonDelegated.signature?.slice(0, 64) as Uint8Array;
+        const txSenderAndGasPayerSignedNonDelegated = gasPayerSigner.sign(
+            txSenderSignedNonDelegated,
+            sender.address
+        );
+        const gasPayerSignatureNonDelegated =
+            nc_secp256k1.Signature.fromCompact(
+                txSenderAndGasPayerSignedNonDelegated.signature
+                    ?.slice(-65)
+                    .slice(0, 64) as Uint8Array
+            );
+        // verify sender signature is recoverable from the signing hash and sender public key
+        const isSenderSignatureVerifiedNonDelegated = nc_secp256k1.verify(
+            senderSignatureNonDelegated,
+            txRequestNonDelegated.hash.bytes,
+            senderPublicKey
+        );
+        expect(isSenderSignatureVerifiedNonDelegated).toBe(true);
+        // verify gas payer signature is recoverable from the gas payer hash and gas payer public key
+        const isGasPayerSignatureVerifiedNonDelegated = nc_secp256k1.verify(
+            gasPayerSignatureNonDelegated.toBytes(),
+            txRequestNonDelegated.hash.bytes,
             gasPayerPublicKey
         );
-        expect(isVerifiedB).toBe(true);
-
-        const isVerifiedForge = nc_secp256k1.verify(
-            sigmaA.toBytes(),
-            hashB,
-            gasPayerPublicKey
-        );
-        expect(isVerifiedForge).toBe(false);
+        expect(isGasPayerSignatureVerifiedNonDelegated).toBe(true);
     });
 });
