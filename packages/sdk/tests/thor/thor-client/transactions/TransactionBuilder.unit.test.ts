@@ -14,9 +14,7 @@ describe('TransactionBuilder UNIT tests', () => {
         const thorClient = ThorClient.at('http://localhost:8669');
         const builder = TransactionBuilder.create(thorClient);
         const transaction = await builder
-            .withSponsorReq(
-                Address.of('0x05b0f21cCcF4c6AAbcA8Fe90904f878BeE47938A')
-            )
+            .withDelegatedFee()
             .withBlockRef(Hex.of('0x1234'))
             .withChainTag(1)
             .withClauses([new Clause(Address.of('0x0'), 1n, null, null, null)])
@@ -34,7 +32,7 @@ describe('TransactionBuilder UNIT tests', () => {
         expect(transaction.gas).toBe(1n);
         expect(transaction.gasPriceCoef).toBe(2n);
         expect(transaction.nonce).toBe(9n);
-        expect(transaction.isIntendedToBeSponsored).toBe(true);
+        expect(transaction.isDelegated).toBe(true);
         expect(transaction.maxFeePerGas).toBeUndefined();
         expect(transaction.maxPriorityFeePerGas).toBeUndefined();
     });

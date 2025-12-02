@@ -17,9 +17,10 @@ const FQP =
  * Retrieve information about a block identified by its revision.
  * If the provided revision is not found, the response will be `null`.
  */
-class RetrieveRegularBlock
-    implements ThorRequest<RetrieveRegularBlock, RegularBlockResponse | null>
-{
+class RetrieveRegularBlock implements ThorRequest<
+    RetrieveRegularBlock,
+    RegularBlockResponse | null
+> {
     /**
      * Represents the HTTP path for this specific API endpoint.
      */

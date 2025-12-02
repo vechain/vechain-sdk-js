@@ -1,4 +1,4 @@
-import { Address } from './Address';
+import type { Address } from './Address';
 
 /**
  * Values that can be treated as an address throughout the SDK.

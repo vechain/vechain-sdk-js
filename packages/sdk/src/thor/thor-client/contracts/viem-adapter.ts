@@ -185,7 +185,7 @@ export function createViemContract<TAbi extends Abi>(
                         params.maxFeePerGas ||
                         params.maxPriorityFeePerGas)
                 ) {
-                    const transactionRequest = new TransactionRequest({
+                    const transactionRequest = TransactionRequest.of({
                         clauses: [], // Will be set by the contract method
                         gas: params.gas ?? 21000n,
                         gasPriceCoef: params.gasPriceCoef ?? 0n,

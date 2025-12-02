@@ -7,6 +7,7 @@ import {
 import { type VeChainDataModel } from '@common/vcdm';
 import { isBrowser } from '@common/utils/browser';
 import { log } from '@common/logging/log';
+import { type HexLike } from './HexLike';
 
 /**
  * Full Qualified Path
@@ -279,19 +280,23 @@ class Hex implements VeChainDataModel<Hex> {
      *
      * @throws {IllegalArgumentError} if the given `exp` can't be represented as a hexadecimal expression.
      */
-    public static of(exp: bigint | number | string | Uint8Array): Hex {
+    public static of(
+        exp: bigint | number | string | Uint8Array | HexLike
+    ): Hex {
+        // if the exp is already a Hex instance, return it.
+        if (exp instanceof Hex) {
+            return exp;
+        }
         try {
             if (typeof exp === 'bigint') {
                 if (exp < 0n) {
-                    return new Hex(
-                        this.NEGATIVE,
-                        nc_utils.numberToHexUnpadded(-1n * exp)
-                    );
+                    // Use BigInt.toString(16) which doesn't force byte alignment
+                    // This preserves minimal format without adding padding (e.g., "0x921af8386350000" from Thor)
+                    return new Hex(this.NEGATIVE, (-1n * exp).toString(16));
                 }
-                return new Hex(
-                    this.POSITIVE,
-                    nc_utils.numberToHexUnpadded(exp)
-                );
+                // Use BigInt.toString(16) which doesn't force byte alignment
+                // This preserves minimal format without adding padding (e.g., "0x921af8386350000" from Thor)
+                return new Hex(this.POSITIVE, exp.toString(16));
             } else if (typeof exp === 'number') {
                 const dataView = new DataView(new ArrayBuffer(16));
                 dataView.setFloat64(0, exp);

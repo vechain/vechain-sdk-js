@@ -5,6 +5,7 @@ import {
     UnsupportedOperationError
 } from '@common/errors';
 import { isBrowser } from '@common/utils/browser';
+import { type HexLike } from '@common/vcdm/HexLike';
 
 /**
  * Test Hex class.
@@ -87,6 +88,51 @@ describe('Hex class tests', () => {
             const hex = Hex.of(exp);
             expect(hex).toBeInstanceOf(Hex);
             expect(hex.bi).toEqual(exp);
+        });
+
+        test('Do not force byte alignment when creating Hex from bigint', () => {
+            // Test case from Thor API: "0x921af8386350000" (15 digits)
+            // BigInt.toString(16) preserves minimal format without forcing byte alignment
+            const exp = 0x921af8386350000n;
+            const hex = Hex.of(exp);
+            expect(hex.toString()).toBe('0x921af8386350000');
+            expect(hex.digits.length).toBe(15); // Minimal format preserved, no padding added
+        });
+
+        test('Preserve minimal format for bigint values without forcing alignment', () => {
+            // BigInt.toString(16) returns minimal representation (can be even or odd)
+            // No padding should be added to force byte alignment
+            const testCases = [
+                { value: 15n, expected: '0xf', digits: 1 }, // Odd - no padding
+                { value: 255n, expected: '0xff', digits: 2 }, // Even - no padding needed
+                { value: 789514n, expected: '0xc0c0a', digits: 5 } // Odd - no padding
+            ];
+
+            testCases.forEach(({ value, expected, digits }) => {
+                const hex = Hex.of(value);
+                expect(hex.toString()).toBe(expected);
+                expect(hex.digits.length).toBe(digits);
+                // Verify no unnecessary padding was added
+                expect(hex.digits).toBe(value.toString(16));
+            });
+        });
+
+        test('Preserve minimal format for negative bigint values', () => {
+            const exp = -789514n;
+            const hex = Hex.of(exp);
+            expect(hex.toString()).toBe('-0xc0c0a');
+            expect(hex.digits.length).toBe(5); // Minimal format, no padding
+            expect(hex.sign).toBe(-1);
+            // Verify digits match the absolute value's minimal representation
+            expect(hex.digits).toBe((-1n * exp).toString(16));
+        });
+
+        test('Preserve format when creating Hex from string (no forced alignment)', () => {
+            // Thor can return hex with any number of digits, should be preserved as-is
+            const thorHex = '0x921af8386350000';
+            const hex = Hex.of(thorHex);
+            expect(hex.toString()).toBe(thorHex);
+            expect(hex.digits.length).toBe(15); // Preserved exactly as received
         });
 
         test('Return an Hex instance if the passed argument is negative number', () => {
@@ -362,6 +408,24 @@ describe('Hex class tests', () => {
                 );
                 expect(true).toBeTruthy();
             }
+        });
+    });
+    describe('HexLike tests', () => {
+        test('Return a Hex instance if the passed argument is a Hex instance', () => {
+            const hex: HexLike = Hex.of('0x000000000000000000000000000caca0');
+            expect(Hex.of(hex)).toEqual(hex);
+        });
+        test('Return a Hex instance if the passed argument is a string', () => {
+            const hex: HexLike = '0x000000000000000000000000000caca0';
+            expect(Hex.of(hex)).toEqual(
+                Hex.of('0x000000000000000000000000000caca0')
+            );
+        });
+        test('Return a Hex instance if the passed argument 0x string', () => {
+            const hex: HexLike = '0x000000000000000000000000000caca0';
+            expect(Hex.of(hex)).toEqual(
+                Hex.of('0x000000000000000000000000000caca0')
+            );
         });
     });
 });

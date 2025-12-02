@@ -17,9 +17,10 @@ const FQP =
 /**
  * [Retrieve storage range](http://localhost:8669/doc/stoplight-ui/#/paths/debug-storage-range/post)
  */
-class RetrieveStorageRange
-    implements ThorRequest<RetrieveStorageRange, StorageRange>
-{
+class RetrieveStorageRange implements ThorRequest<
+    RetrieveStorageRange,
+    StorageRange
+> {
     /**
      * Represents an HTTP path configuration for a specific endpoint.
      */

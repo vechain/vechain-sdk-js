@@ -9,7 +9,7 @@ import { Contract, ContractFactory } from './model';
 import { ClauseBuilder } from '@thor/thor-client/transactions/ClauseBuilder';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
 import { Clause } from '../model/transactions/Clause';
-import { IllegalArgumentError } from '../../../common/errors';
+import { IllegalArgumentError, ContractCallError } from '../../../common/errors';
 import { log } from '@common/logging';
 import {
     type AbiParameter,
@@ -26,11 +26,13 @@ import { type WaitForTransactionReceiptOptions } from '../model/transactions/Wai
 import { type ClauseSimulationResult } from '../model/transactions';
 import { type AccountDetail } from '../model/accounts/AccountDetail';
 import { HexUInt } from '@common/vcdm';
+import { decodeRevertReason } from './utils';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
 // Type alias for function arguments (runtime values, not ABI definitions)
 type FunctionArgs = readonly unknown[];
+type AbiEntry = Abi[number];
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -139,10 +141,16 @@ class ContractsModule extends AbstractThorModule {
      */
     public async executeCall(
         contractAddress: AddressLike,
-        functionAbi: AbiFunction,
+        functionAbi: AbiFunction | AbiEntry | undefined,
         functionData: FunctionArgs,
         options?: ContractCallOptions
     ): Promise<ContractCallResult> {
+        // Validate function ABI early to make it available in catch block
+        const resolvedFunctionAbi =
+            functionAbi && functionAbi.type === 'function'
+                ? (functionAbi as AbiFunction)
+                : undefined;
+
         try {
             // Validate contract address
             if (
@@ -160,7 +168,7 @@ class ContractsModule extends AbstractThorModule {
             }
 
             // Validate function ABI
-            if (!functionAbi || !functionAbi.name) {
+            if (!resolvedFunctionAbi || !resolvedFunctionAbi.name) {
                 throw new IllegalArgumentError(
                     'ContractsModule.executeCall',
                     'Invalid function ABI',
@@ -188,22 +196,22 @@ class ContractsModule extends AbstractThorModule {
             log.debug({
                 message: 'encodeFunctionData inputs',
                 context: {
-                    abi: [functionAbi],
-                    functionName: functionAbi.name,
+                    abi: [resolvedFunctionAbi],
+                    functionName: resolvedFunctionAbi.name,
                     args: processedArgs
                 }
             });
             log.debug({
                 message: 'functionAbi inputs',
-                context: { inputs: functionAbi.inputs }
+                context: { inputs: resolvedFunctionAbi.inputs }
             });
 
             // Use viem's encodeFunctionData directly
             let data: string;
             try {
                 data = encodeFunctionData({
-                    abi: [functionAbi] as any,
-                    functionName: functionAbi.name as any,
+                    abi: [resolvedFunctionAbi] as any,
+                    functionName: resolvedFunctionAbi.name as any,
                     args: processedArgs as any
                 });
 
@@ -216,7 +224,18 @@ class ContractsModule extends AbstractThorModule {
                     message: 'Error in encodeFunctionData',
                     context: { error }
                 });
-                throw error;
+                // Throw ContractCallError for encoding errors (e.g., "Function not found on ABI")
+                const errorMessage =
+                    error instanceof Error ? error.message : 'Unknown encoding error';
+                throw new ContractCallError(
+                    'ContractsModule.executeCall',
+                    errorMessage,
+                    {
+                        functionName: resolvedFunctionAbi.name,
+                        contractAddress: contractAddress.toString()
+                    },
+                    error instanceof Error ? error : undefined
+                );
             }
 
             const clauseContractAddress = Address.of(contractAddress);
@@ -260,11 +279,54 @@ class ContractsModule extends AbstractThorModule {
                 const clauseResult = simulationResults[0];
 
                 if (clauseResult.reverted) {
+                    // Try to decode the revert reason from the data
+                    let decodedReason: string | undefined;
+                    if (clauseResult.data && clauseResult.data.toString() !== '0x') {
+                        try {
+                            decodedReason = decodeRevertReason(clauseResult.data);
+                        } catch {
+                            // If decoding fails, decodedReason remains undefined
+                        }
+                    }
+
+                    const vmError = clauseResult.vmError || '';
+
+                    // If we can't decode a revert reason and have a generic error,
+                    // throw ContractCallError to match v2 behavior
+                    const hasNoRevertMessage =
+                        !decodedReason || decodedReason.trim() === '';
+
+                    // Check if vmError is generic (common indicators of function not existing)
+                    const vmErrorLower = vmError.toLowerCase();
+                    const isGenericError =
+                        !vmError ||
+                        vmError === 'execution reverted' ||
+                        vmError === 'revert' ||
+                        vmErrorLower.includes('execution reverted') ||
+                        vmErrorLower.includes('revert');
+
+                    // If no decoded revert message and generic error, throw exception
+                    // This matches v2 behavior where encodeData() fails for non-existent functions
+                    if (hasNoRevertMessage && isGenericError) {
+                        throw new ContractCallError(
+                            'ContractsModule.executeCall',
+                            'Contract call reverted without a specific error message. This may indicate the function does not exist in the contract.',
+                            {
+                                functionName: resolvedFunctionAbi.name,
+                                contractAddress: contractAddress.toString(),
+                                vmError: vmError || 'execution reverted'
+                            }
+                        );
+                    }
+
+                    // If we have a decoded revert reason or a specific vmError, return error object
+                    const errorMessage =
+                        decodedReason || vmError || 'Contract call reverted';
+
                     return {
                         success: false,
                         result: {
-                            errorMessage:
-                                clauseResult.vmError || 'Contract call reverted'
+                            errorMessage
                         }
                     };
                 }
@@ -277,12 +339,12 @@ class ContractsModule extends AbstractThorModule {
                     try {
                         // Decode the result using viem's decodeFunctionResult if the function has outputs
                         if (
-                            functionAbi.outputs &&
-                            functionAbi.outputs.length > 0
+                            resolvedFunctionAbi.outputs &&
+                            resolvedFunctionAbi.outputs.length > 0
                         ) {
                             const decoded = decodeFunctionResult({
-                                abi: [functionAbi],
-                                functionName: functionAbi.name,
+                                abi: [resolvedFunctionAbi],
+                                functionName: resolvedFunctionAbi.name,
                                 data: clauseResult.data.toString() as `0x${string}`
                             });
 
@@ -347,20 +409,37 @@ class ContractsModule extends AbstractThorModule {
                 }
             };
         } catch (error) {
-            // Re-throw validation errors
-            if (error instanceof IllegalArgumentError) {
+            // Re-throw validation and encoding errors (these should be exceptions, not return values)
+            if (
+                error instanceof IllegalArgumentError ||
+                error instanceof ContractCallError
+            ) {
                 throw error;
             }
 
-            return {
-                success: false,
-                result: {
-                    errorMessage:
-                        error instanceof Error
-                            ? error.message
-                            : 'Unknown error occurred'
-                }
-            };
+            // For unexpected errors during simulation or other operations, throw ContractCallError
+            const errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : 'Unknown error occurred';
+            // Use resolvedFunctionAbi if available, otherwise try to extract from functionAbi
+            const functionName =
+                resolvedFunctionAbi?.name ??
+                (functionAbi &&
+                'type' in functionAbi &&
+                functionAbi.type === 'function' &&
+                'name' in functionAbi
+                    ? (functionAbi as AbiFunction).name
+                    : undefined);
+            throw new ContractCallError(
+                'ContractsModule.executeCall',
+                errorMessage,
+                {
+                    contractAddress: contractAddress?.toString(),
+                    functionName
+                },
+                error instanceof Error ? error : undefined
+            );
         }
     }
 
@@ -395,8 +474,7 @@ class ContractsModule extends AbstractThorModule {
 
             // Use provided TransactionRequest or create a default one
             const finalTransactionRequest = transactionRequest
-                ? new TransactionRequest({
-                      beggar: transactionRequest.beggar,
+                ? TransactionRequest.of({
                       blockRef: transactionRequest.blockRef,
                       chainTag: transactionRequest.chainTag,
                       clauses: [clause], // Override clauses with our contract call
@@ -409,7 +487,7 @@ class ContractsModule extends AbstractThorModule {
                           transactionRequest.maxPriorityFeePerGas,
                       nonce: transactionRequest.nonce
                   })
-                : new TransactionRequest({
+                : TransactionRequest.of({
                       clauses: [clause],
                       gas: 21000n,
                       gasPriceCoef: 0n,
@@ -574,11 +652,11 @@ class ContractsModule extends AbstractThorModule {
 
             // Use provided TransactionRequest or create a default one
             const finalTransactionRequest = transactionRequest
-                ? new TransactionRequest({
+                ? TransactionRequest.of({
                       ...transactionRequest,
                       clauses: transactionClauses as Clause[] // Override clauses with our contract calls
                   })
-                : new TransactionRequest({
+                : TransactionRequest.of({
                       clauses: transactionClauses as Clause[],
                       gas: 21000n,
                       gasPriceCoef: 0n,

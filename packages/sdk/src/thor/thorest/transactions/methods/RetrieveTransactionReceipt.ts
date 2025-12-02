@@ -22,10 +22,10 @@ const FQP =
  * This request to Thor endpoint allows you to retrieve the receipt of a transaction identified by its ID.
  * If the transaction is not found, the response will be `null`.
  */
-class RetrieveTransactionReceipt
-    implements
-        ThorRequest<RetrieveTransactionReceipt, GetTxReceiptResponse | null>
-{
+class RetrieveTransactionReceipt implements ThorRequest<
+    RetrieveTransactionReceipt,
+    GetTxReceiptResponse | null
+> {
     /**
      * Represents the HTTP path configuration for a specific API endpoint.
      */

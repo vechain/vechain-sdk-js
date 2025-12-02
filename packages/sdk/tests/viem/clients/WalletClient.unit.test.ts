@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import type { ThorSoloAccount } from '@vechain/sdk-solo-setup';
-import { Address, HexUInt } from '@common';
+import { Address, Hex, HexUInt } from '@common';
 import { Clause, TransactionRequest } from '@thor/thor-client';
 import { PrivateKeySigner } from '../../../src/thor/signer';
-import { privateKeyToAccount } from 'viem/accounts';
+import { privateKeyToAccount } from '../../../src/viem/accounts';
 import { WalletClient } from '@viem';
 import { mockHttpClient } from '../../MockHttpClient';
 
@@ -59,7 +59,7 @@ describe('WalletClient UNIT tests', () => {
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
             );
             const expected = originSigner.sign(txRequest).encoded;
             const actual = (await originWallet.signTransaction(txRequest))
@@ -69,7 +69,6 @@ describe('WalletClient UNIT tests', () => {
 
         test('ok <- dynamic fee - signed then sponsored', async () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -93,7 +92,7 @@ describe('WalletClient UNIT tests', () => {
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
             );
             const encodedSaS = (await originWallet.signTransaction(txRequest))
                 .bytes;
@@ -106,7 +105,7 @@ describe('WalletClient UNIT tests', () => {
             const gasPayerWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockReceiverAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockReceiverAccount.privateKey))
             );
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(
@@ -118,7 +117,6 @@ describe('WalletClient UNIT tests', () => {
 
         test('ok <- dynamic fee - sponsored than signed', async () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -132,38 +130,71 @@ describe('WalletClient UNIT tests', () => {
                 gas: mockGas,
                 maxFeePerGas: mockMaxFeePerGas,
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
-                nonce: mockNonce
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
             });
-            // Sign as gas payer. Partial signature.
+            // Objective is to compare transaction signatures
+            // signed by the thor private key signer and the viem wallet client
+            // STEP 1: Sign the tx request as gas payer with thor private key signer
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(txRequest);
-            const gasPayerWallet = new WalletClient(
+            const txRequestThorSigned = gasPayerSigner.sign(
+                txRequest,
+                Address.of(mockReceiverAccount.address)
+            );
+            // STEP 2: Sign as gas payer with viem wallet client
+            const gasPayerViemWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockReceiverAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockReceiverAccount.privateKey))
             );
-            const encodedSaGP = (
-                await gasPayerWallet.signTransaction(txRequest)
-            ).bytes;
-            expect(encodedSaGP).toEqual(txRequestSaGP.encoded.bytes);
-            // Sign as Sender. Finalized signature.
+            const txRequestViemSignedEncoded =
+                await gasPayerViemWallet.signTransaction(
+                    txRequest,
+                    Address.of(mockReceiverAccount.address)
+                );
+            const txRequestViemSigned = TransactionRequest.decode(
+                txRequestViemSignedEncoded
+            );
+            // compare signatures
+            const txRequestThorSignedSignature =
+                txRequestThorSigned.signature ?? new Uint8Array();
+            const txRequestViemSignedSignature =
+                txRequestViemSigned.signature ?? new Uint8Array();
+            expect(txRequestThorSignedSignature).toStrictEqual(
+                txRequestViemSignedSignature
+            );
+
+            // Now sign the tx request as sender with thor private key signer
+            // and same with viem wallet client
+            // compare the final signatures
+            // STEP 1: Sign the tx request as sender with thor private key signer
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequestSaGP);
+            const txRequestThorFullySigned =
+                originSigner.sign(txRequestThorSigned);
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
             );
-            const encodedSaS = (
-                await originWallet.signTransaction(
-                    TransactionRequest.decode(HexUInt.of(encodedSaGP))
-                )
-            ).bytes;
-            expect(encodedSaS).toEqual(txRequestSaS.encoded.bytes);
+            const txRequestViemFullySignedEncoded =
+                await originWallet.signTransaction(txRequestViemSigned);
+            const txRequestViemFullySigned = TransactionRequest.decode(
+                txRequestViemFullySignedEncoded
+            );
+            const txRequestThorFullySignedSignature =
+                txRequestThorFullySigned.signature ?? new Uint8Array();
+            const txRequestViemFullySignedSignature =
+                txRequestViemFullySigned.signature ?? new Uint8Array();
+            expect(txRequestThorFullySignedSignature).toStrictEqual(
+                txRequestViemFullySignedSignature
+            );
         });
 
         test('ok <- legacy - no sponsored', async () => {
@@ -189,17 +220,15 @@ describe('WalletClient UNIT tests', () => {
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
             );
             const expected = originSigner.sign(txRequest).encoded;
-            const actual = (await originWallet.signTransaction(txRequest))
-                .bytes;
-            expect(actual).toEqual(expected.bytes);
+            const actual = await originWallet.signTransaction(txRequest);
+            expect(actual).toStrictEqual(expected);
         });
 
         test('ok <- legacy - signed then sponsored', async () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -212,7 +241,11 @@ describe('WalletClient UNIT tests', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
             });
             // Sign as Sender. Partial signature.
             const originSigner = new PrivateKeySigner(
@@ -222,7 +255,7 @@ describe('WalletClient UNIT tests', () => {
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
             );
             const encodedSaS = (await originWallet.signTransaction(txRequest))
                 .bytes;
@@ -231,23 +264,27 @@ describe('WalletClient UNIT tests', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+            const txRequestSaGP = gasPayerSigner.sign(
+                txRequestSaS,
+                Address.of(mockSenderAccount.address)
+            );
             const gasPayerWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockReceiverAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockReceiverAccount.privateKey))
             );
-            const encodedSaGP = (
-                await gasPayerWallet.signTransaction(
-                    TransactionRequest.decode(HexUInt.of(encodedSaS))
-                )
-            ).bytes;
-            expect(encodedSaGP).toEqual(txRequestSaGP.encoded.bytes);
+            const encodedSaGP = await gasPayerWallet.signTransaction(
+                txRequestSaS,
+                Address.of(mockSenderAccount.address)
+            );
+
+            expect(encodedSaGP.bytes).toStrictEqual(
+                txRequestSaGP.encoded.bytes
+            );
         });
 
         test('ok <- legacy - sponsored then signed', async () => {
             const txRequest = new TransactionRequest({
-                beggar: Address.of(mockSenderAccount.address),
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -260,7 +297,11 @@ describe('WalletClient UNIT tests', () => {
                 expiration: mockExpiration,
                 gas: mockGas,
                 gasPriceCoef: mockGasPriceCoef,
-                nonce: mockNonce
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
             });
             // Sign as gas payer. Partial signature.
             const gasPayerSigner = new PrivateKeySigner(
@@ -270,7 +311,7 @@ describe('WalletClient UNIT tests', () => {
             const gasPayerWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockReceiverAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockReceiverAccount.privateKey))
             );
             const encodedSaGP = (
                 await gasPayerWallet.signTransaction(txRequest)
@@ -284,7 +325,7 @@ describe('WalletClient UNIT tests', () => {
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
-                privateKeyToAccount(`0x${mockSenderAccount.privateKey}`)
+                privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
             );
             const encodedSaS = (
                 await originWallet.signTransaction(
@@ -292,6 +333,52 @@ describe('WalletClient UNIT tests', () => {
                 )
             ).bytes;
             expect(encodedSaS).toEqual(txRequestSaS.encoded.bytes);
+        });
+
+        test('ok <- no need to decode for gas payer signature', async () => {
+            const txRequest = new TransactionRequest({
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [
+                    new Clause(
+                        Address.of(mockReceiverAccount.address),
+                        mockValue
+                    )
+                ],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                maxFeePerGas: mockMaxFeePerGas,
+                maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
+                nonce: mockNonce
+            });
+            // Sign as Sender. Partial signature.
+            const originSigner = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes
+            );
+            const txRequestSaS = originSigner.sign(txRequest);
+            const originWallet = new WalletClient(
+                MOCK_URL,
+                mockHttpClient({}, 'post'),
+                privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
+            );
+            const encodedSaS = (await originWallet.signTransaction(txRequest))
+                .bytes;
+            expect(encodedSaS).toEqual(txRequestSaS.encoded.bytes);
+            // Sign as Gas Payer. Finalized signature.
+            const gasPayerSigner = new PrivateKeySigner(
+                HexUInt.of(mockReceiverAccount.privateKey).bytes
+            );
+            const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+            const gasPayerWallet = new WalletClient(
+                MOCK_URL,
+                mockHttpClient({}, 'post'),
+                privateKeyToAccount(Hex.of(mockReceiverAccount.privateKey))
+            );
+            const encodedSaGP = (
+                await gasPayerWallet.signTransaction(Hex.of(encodedSaS))
+            ).bytes;
+            expect(encodedSaGP).toEqual(txRequestSaGP.encoded.bytes);
         });
     });
 });

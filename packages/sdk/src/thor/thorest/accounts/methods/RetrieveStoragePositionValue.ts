@@ -16,9 +16,10 @@ const FQP =
  *
  * Retrieve the value of a storage position identified by its address and key.
  */
-class RetrieveStoragePositionValue
-    implements ThorRequest<RetrieveStoragePositionValue, GetStorageResponse>
-{
+class RetrieveStoragePositionValue implements ThorRequest<
+    RetrieveStoragePositionValue,
+    GetStorageResponse
+> {
     /**
      * Represents the HTTP path for this specific API endpoint.
      */

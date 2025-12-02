@@ -73,7 +73,7 @@ interface BaseTransactionParams {
  * Contains common fields and validation logic shared by both transaction requests
  * and transactions read from the blockchain.
  */
-abstract class BaseTransaction implements BaseTransactionParams {
+abstract class BaseTransaction implements TransactionBody {
     /**
      * The last byte of the genesis block ID.
      */
@@ -128,11 +128,19 @@ abstract class BaseTransaction implements BaseTransactionParams {
     public readonly nonce: bigint;
 
     /**
+     * The reserved field for the transaction.
+     */
+    public readonly reserved?: {
+        features?: number;
+        unused?: Uint8Array[];
+    };
+
+    /**
      * Protected constructor to initialize common transaction fields.
      * Only accessible by subclasses.
      * @param {BaseTransactionParams} params - Common transaction parameters
      */
-    protected constructor(params: BaseTransactionParams) {
+    protected constructor(params: TransactionBody) {
         this.chainTag = params.chainTag;
         this.blockRef = params.blockRef;
         this.expiration = params.expiration;
@@ -143,6 +151,7 @@ abstract class BaseTransaction implements BaseTransactionParams {
         this.maxPriorityFeePerGas = params.maxPriorityFeePerGas;
         this.dependsOn = params.dependsOn;
         this.nonce = params.nonce;
+        this.reserved = params.reserved;
     }
 
     /**
@@ -196,4 +205,4 @@ abstract class BaseTransaction implements BaseTransactionParams {
     }
 }
 
-export { BaseTransaction, type BaseTransactionParams };
+export { BaseTransaction, type TransactionBody };
