@@ -17,10 +17,10 @@ const FQP =
 /**
  * [Retrieve transactions from transactions pool](http://localhost:8669/doc/stoplight-ui/#/paths/node-txpool/get)
  */
-class RetrieveTransactionsFromTransactionPool
-    implements
-        ThorRequest<RetrieveTransactionsFromTransactionPool, TransactionsIDs>
-{
+class RetrieveTransactionsFromTransactionPool implements ThorRequest<
+    RetrieveTransactionsFromTransactionPool,
+    TransactionsIDs
+> {
     protected static readonly PATH: HttpPath = {
         path: '/node/txpool'
     };

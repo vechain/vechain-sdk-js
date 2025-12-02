@@ -17,9 +17,10 @@ const FQP =
  * Implements ThorRequest interface for handling peer information retrieval.
  * @implements {ThorRequest<RetrieveConnectedPeers, GetPeersResponse>}
  */
-class RetrieveConnectedPeers
-    implements ThorRequest<RetrieveConnectedPeers, GetPeersResponse | null>
-{
+class RetrieveConnectedPeers implements ThorRequest<
+    RetrieveConnectedPeers,
+    GetPeersResponse | null
+> {
     /**
      * The endpoint path for retrieving connected peers information
      * @private

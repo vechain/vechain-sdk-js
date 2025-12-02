@@ -20,9 +20,10 @@ const FQP = 'packages/sdk/src/thor/thorest/blocks/methods/RetrieveRawBlock.ts!';
  * Retrieve information about a block identified by its revision.
  * If the provided revision is not found, the response will be `null`
  */
-class RetrieveRawBlock
-    implements ThorRequest<RetrieveRawBlock, RawBlockResponse | null>
-{
+class RetrieveRawBlock implements ThorRequest<
+    RetrieveRawBlock,
+    RawBlockResponse | null
+> {
     /**
      * Represents the HTTP path for this specific API endpoint.
      */

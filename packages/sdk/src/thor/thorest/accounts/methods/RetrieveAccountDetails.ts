@@ -16,9 +16,10 @@ const FQP =
  *
  * Retrieve the details of an account identified by its address.
  */
-class RetrieveAccountDetails
-    implements ThorRequest<RetrieveAccountDetails, GetAccountResponse>
-{
+class RetrieveAccountDetails implements ThorRequest<
+    RetrieveAccountDetails,
+    GetAccountResponse
+> {
     /**
      * Represents the HTTP path for this specific API endpoint.
      */

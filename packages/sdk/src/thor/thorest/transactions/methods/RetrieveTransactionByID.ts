@@ -25,9 +25,10 @@ const FQP =
  *
  * This request to Thor endpoint allows you to retrieve a transaction identified by its ID.
  */
-class RetrieveTransactionByID
-    implements ThorRequest<RetrieveTransactionByID, GetTxResponse | null>
-{
+class RetrieveTransactionByID implements ThorRequest<
+    RetrieveTransactionByID,
+    GetTxResponse | null
+> {
     /**
      * Represents the HTTP path configuration for a specific API endpoint.
      */
