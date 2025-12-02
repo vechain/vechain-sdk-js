@@ -57,7 +57,8 @@
         "count-quarantine": "grep -r '@group quarantine' packages/sdk/tests/ --include='*.test.*' | wc -l",
         "list-quarantine": "grep -r '@group quarantine' packages/sdk/tests/ --include='*.test.*'",
         "build-examples": "chmod +x ./scripts/build-examples.sh && ./scripts/build-examples.sh",
-        "run-examples": "chmod +x ./scripts/run-examples.sh && ./scripts/run-examples.sh"
+        "run-examples": "chmod +x ./scripts/run-examples.sh && ./scripts/run-examples.sh",
+        "run-vite-examples": "chmod +x ./scripts/run-vite-examples.sh && ./scripts/run-vite-examples.sh"
     },
     "devDependencies": {
         "@changesets/cli": "2.29.7",

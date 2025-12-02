@@ -9,9 +9,21 @@
     <div id="app">Loading...</div>
     <script type="module">
       import out from './index.ts';
-      document.querySelector('#app').innerHTML = Array.isArray(out)
-        ? out.map(x => `<div style="margin-bottom: 16px;">${x}</div>`).join('')
-        : out;
+      const app = document.querySelector('#app');
+      if (out instanceof Promise) {
+        out.then(result => {
+          app.innerHTML = Array.isArray(result)
+            ? result.map(x => `<div style="margin-bottom: 16px;">${x}</div>`).join('')
+            : result;
+        }).catch(err => {
+          app.innerHTML = `<div style="color: red;">Error: ${err.message}</div>`;
+          console.error(err);
+        });
+      } else {
+        app.innerHTML = Array.isArray(out)
+          ? out.map(x => `<div style="margin-bottom: 16px;">${x}</div>`).join('')
+          : out;
+      }
     </script>
   </body>
 </html>

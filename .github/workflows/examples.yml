@@ -45,3 +45,6 @@ jobs:
 
           - name: Run Non-Vite Examples
             run: corepack yarn run-examples
+
+          - name: Build and Test Vite Examples
+            run: corepack yarn run-vite-examples
