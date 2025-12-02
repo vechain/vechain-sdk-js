@@ -1,5 +1,16 @@
 import { Address, Mnemonic } from '@vechain/sdk-temp/common';
+import { ThorClient, ThorNetworks } from '@vechain/sdk-temp/thor'
 import { HDKey } from '@vechain/sdk-temp/common';
+
+// DEBUG: create client
+const client = ThorClient.at(ThorNetworks.TESTNET);
+// just random call to test if the client is working
+const block = await client.blocks.getBlock();
+if (block === null) {
+    console.error('Failed to get block');
+    process.exit(1);
+}
+console.log('Block', block);
 
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
 const randomMnemonic = Mnemonic.of();
