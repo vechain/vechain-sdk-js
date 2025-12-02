@@ -6,7 +6,7 @@ EXAMPLES_DIR="./examples"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-echo "Running non-vite examples with local SDK..."
+echo "Running non-vite examples with npm package..."
 
 # Find all subdirectories in examples (excluding node_modules and hidden dirs)
 find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -not -name ".*" | while read -r example_dir; do
@@ -44,8 +44,12 @@ find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -
         echo "nodeLinker: node-modules" > "$yarnrc"
     fi
     
-    # Install dependencies (yarn is fast if already installed)
-    echo "📦 Installing dependencies..."
+    # Clean up old installations to avoid portal conflicts
+    echo "🧹 Cleaning old dependencies..."
+    rm -rf "$example_dir/node_modules"
+    
+    # Install dependencies from npm
+    echo "📦 Installing dependencies from npm..."
     (cd "$example_dir" && corepack yarn install > /dev/null 2>&1)
     
     echo ""
