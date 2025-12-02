@@ -44,6 +44,11 @@ find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -
         echo "nodeLinker: node-modules" > "$yarnrc"
     fi
     
+    # Disable hardened mode
+    if ! grep -q "enableHardenedMode" "$yarnrc"; then
+        echo "enableHardenedMode: false" >> "$yarnrc"
+    fi
+    
     # Clean up old installations to avoid portal conflicts
     echo "🧹 Cleaning old dependencies..."
     rm -rf "$example_dir/node_modules"
