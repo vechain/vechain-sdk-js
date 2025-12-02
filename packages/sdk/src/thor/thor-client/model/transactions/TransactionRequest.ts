@@ -27,7 +27,7 @@ class TransactionRequest extends BaseTransaction {
      * @param {TransactionBody} body - The transaction request parameters.
      * @param {Uint8Array} [signature] - Optional overall transaction signature
      */
-    public constructor(body: TransactionBody, signature?: Uint8Array) {
+    protected constructor(body: TransactionBody, signature?: Uint8Array) {
         super(body);
         if (
             TransactionRequest.isLegacy(body) ||
@@ -42,6 +42,20 @@ class TransactionRequest extends BaseTransaction {
                 { body }
             );
         }
+    }
+
+    /**
+     * Creates a new instance of the class with the provided parameters.
+     *
+     * @param {TransactionBody} body - The transaction request parameters.
+     * @param {Uint8Array} [signature] - Optional overall transaction signature
+     * @return {TransactionRequest} A new instance of the class.
+     */
+    public static of(
+        body: TransactionBody,
+        signature?: Uint8Array
+    ): TransactionRequest {
+        return new TransactionRequest(body, signature);
     }
 
     /**

@@ -341,7 +341,7 @@ class TransactionRequestRLPCodec {
                     : undefined
         } satisfies TransactionBody;
         // Create and return TransactionRequest with signatures.
-        return new TransactionRequest(params, body.signature);
+        return TransactionRequest.of(params, body.signature);
     }
 
     /**

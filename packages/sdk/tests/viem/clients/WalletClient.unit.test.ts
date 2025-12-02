@@ -277,7 +277,7 @@ describe('WalletClient UNIT tests', () => {
                 txRequestSaS,
                 Address.of(mockSenderAccount.address)
             );
-            
+
             expect(encodedSaGP.bytes).toStrictEqual(
                 txRequestSaGP.encoded.bytes
             );
