@@ -95,7 +95,7 @@ describe('SendTransaction SOLO tests', () => {
             const builder = TransactionBuilder.create(thorClient);
             const txRequest = await builder
                 .withClauses(clauses)
-                .withSponsorReq(sender)
+                .withDelegatedFee()
                 .withDynFeeTxDefaults()
                 .withEstimatedGas(sender, { revision: Revision.BEST })
                 .build();
@@ -103,7 +103,8 @@ describe('SendTransaction SOLO tests', () => {
             const senderSignedTxRequest = senderSigner.sign(txRequest);
             // sign the tx request as gas payer
             const gasPayerSignedTxRequest = gasPayerSigner.sign(
-                senderSignedTxRequest
+                senderSignedTxRequest,
+                Address.of(sender.toString())
             );
             // send the transaction
             const txId = await thorClient.transactions.sendTransaction(
@@ -133,7 +134,7 @@ describe('SendTransaction SOLO tests', () => {
             const builder = TransactionBuilder.create(thorClient);
             const txRequest = await builder
                 .withClauses(clauses)
-                .withSponsorReq(sender)
+                .withDelegatedFee()
                 .withLegacyTxDefaults()
                 .withEstimatedGas(sender, {
                     revision: Revision.BEST
@@ -143,7 +144,8 @@ describe('SendTransaction SOLO tests', () => {
             const senderSignedTxRequest = senderSigner.sign(txRequest);
             // sign the tx request as gas payer
             const gasPayerSignedTxRequest = gasPayerSigner.sign(
-                senderSignedTxRequest
+                senderSignedTxRequest,
+                Address.of(sender.toString())
             );
             // send the transaction
             const txId = await thorClient.transactions.sendTransaction(

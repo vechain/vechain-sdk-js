@@ -21,7 +21,6 @@ export {
     mnemonicToAccount,
     type PrivateKeyToAccountOptions,
     type PrivateKeyToAccountErrorType,
-    privateKeyToAccount,
     type ToAccountErrorType,
     toAccount,
     type AccountSource,
@@ -30,7 +29,6 @@ export {
     type JsonRpcAccount,
     type LocalAccount,
     type HDAccount,
-    type PrivateKeyAccount,
     type SignErrorType,
     type SignParameters,
     type SignReturnType,
@@ -71,3 +69,5 @@ export {
     createNonceManager,
     nonceManager
 } from 'viem/accounts';
+export { privateKeyToAccount } from './PrivateKeyAccount';
+export { type PrivateKeyAccount } from './PrivateKeyAccount';

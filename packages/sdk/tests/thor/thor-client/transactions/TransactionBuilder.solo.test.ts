@@ -48,7 +48,7 @@ describe('TransactionBuilder SOLO tests', () => {
         expect(transaction.maxFeePerGas).toBeGreaterThan(0n);
         expect(transaction.maxPriorityFeePerGas).toBeGreaterThanOrEqual(0n);
         expect(transaction.nonce).toBeGreaterThan(0);
-        expect(transaction.isIntendedToBeSponsored).toBe(false);
+        expect(transaction.isDelegated).toBe(false);
         expect(transaction.gas).toBeGreaterThanOrEqual(21000n); // VET transfer is >= 21000 gas
     });
     test('create transaction without calling withDynFeeTxDefaults or withLegacyFeeTxDefaults', async () => {
