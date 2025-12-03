@@ -9,15 +9,21 @@ The `examples/viem` directory gives examples using the `viem` compatibility laye
 ## Example List
 
 - Thor
-    - Blocks
-        - [ ] example 1
-        - [ ] example 2
-        - [ ] example 3
+    - Contracts
+        - [Contract deployment using ThorClient and contract bytecode](./thor/contract-deploy-example/)
+    - Mnemonics and Keys
+        - [Mnemonic and HDKey](./thor/mnemonic-hdkey-example/)
+    - Accounts
+        - [Read an addresses VET & VTHO balance and contract bytecode](./thor/get-account-details/)
+    - Transactions
+        - [Read a transaction and transaction receipt](./thor/get-transaction-details/)
+
+
 - Viem
     - Blocks
-        - [ ] example 1
-        - [ ] example 2
-        - [ ] example 3
+        - example 1
+        - example 2
+        - example 3
 
 
 ## Adding an Example
