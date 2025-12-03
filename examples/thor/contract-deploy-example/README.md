@@ -2,7 +2,7 @@
 
 This example demonstrates how to deploy a smart contract to VeChain Thor network using SDK v3.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/contract-deploy-example)
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/thor/contract-deploy-example)
 
 ## Usage
 
