@@ -1,0 +1,16 @@
+{
+    "name": "vite-thor-client-example",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "dependencies": {
+        "@vechain/sdk-temp": "portal:../../packages/sdk"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.3",
+        "vite": "^7.1.11"
+    }
+}
