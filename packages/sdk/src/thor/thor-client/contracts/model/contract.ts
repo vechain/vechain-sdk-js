@@ -33,7 +33,25 @@ import { Address, AddressLike, Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError, ContractCallError } from '@common/errors';
 import { log } from '@common/logging';
 import type { ContractCallOptions } from '../types';
-import type { ContractsModule } from '../contracts-module';
+// Forward reference to avoid circular dependency with ContractsModule
+import type { ContractCallResult } from '../types';
+interface ContractsModule {
+    executeCall(
+        contractAddress: unknown,
+        functionAbi: unknown,
+        functionData: readonly unknown[],
+        options?: ContractCallOptions
+    ): Promise<ContractCallResult>;
+    executeTransaction(
+        signer: unknown,
+        contractAddress: unknown,
+        functionAbi: unknown,
+        functionData: readonly unknown[],
+        transactionRequest?: unknown,
+        value?: bigint
+    ): Promise<unknown>;
+    [key: string]: unknown;
+}
 import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
 import { RevisionLike } from '@common/vcdm';
 // Proper function arguments type using VeChain SDK types (runtime values, not ABI definitions)
@@ -385,7 +403,7 @@ class Contract<TAbi extends Abi> {
                                 this.extractAdditionalOptions(args);
 
                             // Use the contracts module's executeCall method
-                            const result =
+                            const result: ContractCallResult =
                                 await this.contractsModule.executeCall(
                                     this.address,
                                     abiItem,
@@ -406,13 +424,18 @@ class Contract<TAbi extends Abi> {
                                     toFunctionSignature(abiItem),
                                     errorMessage,
                                     {
+                                        functionName,
+                                        errorMessage:
+                                            (result.result as { errorMessage?: string }).errorMessage ||
+                                            'Unknown error',
                                         contractAddress: this.address.toString()
                                     }
                                 );
                             }
 
                             // Return single value if array has one element, otherwise return the array
-                            const resultArray = result.result.array || [];
+                            // result.result is an object with 'array' and 'plain' properties
+                            const resultArray = result.result.array ?? [];
                             return resultArray.length === 1
                                 ? resultArray[0]
                                 : resultArray;

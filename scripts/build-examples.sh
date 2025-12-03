@@ -6,7 +6,7 @@ EXAMPLES_DIR="./examples"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-echo "Building examples with local SDK..."
+echo "Building examples with npm package..."
 
 # Find all subdirectories in examples (excluding node_modules and hidden dirs)
 find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -not -name ".*" | while read -r example_dir; do
@@ -30,14 +30,19 @@ find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 1 -type d -not -name "node_modules" -
         echo "⚙️  Configuring yarn for node_modules..."
         echo "nodeLinker: node-modules" > "$yarnrc"
     fi
+    
+    # Disable hardened mode
+    if ! grep -q "enableHardenedMode" "$yarnrc"; then
+        echo "enableHardenedMode: false" >> "$yarnrc"
+    fi
 
     # Clean up old installations
     rm -rf "$example_dir/node_modules"
 
     
-    # Install dependencies
+    # Install dependencies (use --immutable to respect example's yarn.lock)
     echo "📦 Installing dependencies..."
-    (cd "$example_dir" && corepack yarn install)
+    (cd "$example_dir" && corepack yarn install --immutable)
     
     # Build (if build script exists)
     if grep -q '"build"' "$package_json"; then

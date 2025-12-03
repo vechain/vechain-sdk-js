@@ -20,7 +20,3 @@ export {
     getCriteriaProxy
 } from './contract-proxy';
 export type { DeployParams } from './DeployParams';
-
-// Viem compatibility exports
-export { createViemContract, getContract } from '../viem-adapter';
-export type { ViemContract } from '../viem-adapter';
