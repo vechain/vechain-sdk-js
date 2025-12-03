@@ -1,7 +1,6 @@
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import {
     ABI,
-    ABIItem,
     ABIFunction,
     ABIEvent,
     ABIContract
@@ -12,31 +11,43 @@ import { IllegalArgumentError } from '../../../../src/common/errors';
  * @group unit/contracts/abi
  */
 describe('ABI Classes', () => {
-    describe('ABIItem', () => {
+    describe('ABIItem (via ABIEvent)', () => {
+        // ABIItem is abstract, so we test through ABIEvent which extends it
         test('Should create ABIItem with signature', () => {
-            const signature = 'transfer(address,uint256)';
-            const abiItem = new ABIItem(signature);
+            const signature =
+                'event Transfer(address indexed from, address indexed to, uint256 value)';
+            const abiItem = new ABIEvent(signature);
 
             expect(abiItem.toString()).toBe(signature);
             expect(abiItem.bytes).toEqual(new TextEncoder().encode(signature));
         });
 
         test('Should throw IllegalArgumentError for bi getter', () => {
-            const abiItem = new ABIItem('test()');
+            const abiItem = new ABIEvent(
+                'event Test(uint256 indexed value)'
+            );
 
             expect(() => abiItem.bi).toThrow(IllegalArgumentError);
         });
 
         test('Should throw IllegalArgumentError for n getter', () => {
-            const abiItem = new ABIItem('test()');
+            const abiItem = new ABIEvent(
+                'event Test(uint256 indexed value)'
+            );
 
             expect(() => abiItem.n).toThrow(IllegalArgumentError);
         });
 
         test('Should compare ABIItems correctly', () => {
-            const item1 = new ABIItem('transfer(address,uint256)');
-            const item2 = new ABIItem('transfer(address,uint256)');
-            const item3 = new ABIItem('approve(address,uint256)');
+            const item1 = new ABIEvent(
+                'event Transfer(address indexed from, address indexed to, uint256 value)'
+            );
+            const item2 = new ABIEvent(
+                'event Transfer(address indexed from, address indexed to, uint256 value)'
+            );
+            const item3 = new ABIEvent(
+                'event Approval(address indexed owner, address indexed spender, uint256 value)'
+            );
 
             expect(item1.compareTo(item2)).toBe(0);
             expect(item1.compareTo(item3)).toBeGreaterThan(0);
@@ -210,7 +221,42 @@ describe('ABI Classes', () => {
 
             const decoded = abiEvent.decodeEventLog(eventData);
 
-            expect(Array.isArray(decoded)).toBe(true);
+            // Returns an object with eventName and args (named parameters)
+            expect(decoded).toHaveProperty('eventName', 'Transfer');
+            expect(decoded).toHaveProperty('args');
+            expect(decoded.args).toHaveProperty('from');
+            expect(decoded.args).toHaveProperty('to');
+            expect(decoded.args).toHaveProperty('value');
+            expect(decoded.args.value).toBe(1000n);
+        });
+
+        test('Should create ABIEvent from signature string', () => {
+            const signatureString =
+                'event Transfer(address indexed from, address indexed to, uint256 value)';
+            const abiEvent = new ABIEvent(signatureString);
+
+            expect(abiEvent.name).toBe('Transfer');
+            expect(abiEvent.signature).toBe(signatureString);
+        });
+
+        test('Should encode filter topics with null values', () => {
+            const signatureString =
+                'event Transfer(address indexed from, address indexed to, uint256 value)';
+            const abiEvent = new ABIEvent(signatureString);
+
+            const topics = abiEvent.encodeFilterTopics([
+                null, // skip 'from'
+                '0xFf0F343772Ae053f6DDB2885EA9DF1d301E222f6' // filter by 'to'
+            ]);
+
+            expect(topics).toHaveLength(3);
+            expect(topics[0]).toBe(
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+            );
+            expect(topics[1]).toBeNull();
+            expect(topics[2]).toBe(
+                '0x000000000000000000000000ff0f343772ae053f6ddb2885ea9df1d301e222f6'
+            );
         });
 
         test('Should encode event log', () => {
@@ -334,16 +380,20 @@ describe('ABI Classes', () => {
 
     describe('Error Handling', () => {
         test('Should throw IllegalArgumentError with proper context', () => {
-            const abiItem = new ABIItem('test()');
+            const signature = 'event Test(uint256 indexed value)';
+            const abiItem = new ABIEvent(signature);
 
             try {
                 abiItem.bi;
-            } catch (error) {
+            } catch (error: unknown) {
                 expect(error).toBeInstanceOf(IllegalArgumentError);
-                expect(error.message).toContain(
+                expect((error as IllegalArgumentError).message).toContain(
                     'ABIItem cannot be represented as bigint'
                 );
-                expect(error.args).toHaveProperty('signature', 'test()');
+                expect((error as IllegalArgumentError).args).toHaveProperty(
+                    'signature',
+                    signature
+                );
             }
         });
 

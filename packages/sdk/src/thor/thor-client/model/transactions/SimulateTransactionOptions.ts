@@ -1,14 +1,15 @@
-import { type Address, type BlockRef, type Revision } from '@common/vcdm';
+import { type Address, type BlockRef, type RevisionLike } from '@common/vcdm';
 
 /**
  * Simulate transaction options
  */
 interface SimulateTransactionOptions {
     /**
-     * The block number or block ID of which the transaction simulation is based on
+     * The block number or block ID of which the transaction simulation is based on.
+     * Accepts a Revision instance, block number (number/bigint), or string alias ('best', 'finalized', etc.)
      * @default 'best'
      */
-    revision?: Revision;
+    revision?: RevisionLike;
     /**
      * The maximum gas for the transaction simulation
      */
