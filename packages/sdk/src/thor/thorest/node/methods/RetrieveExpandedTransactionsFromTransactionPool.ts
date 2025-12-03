@@ -17,13 +17,10 @@ const FQP =
 /**
  * [Retrieve transactions from transactions pool](http://localhost:8669/doc/stoplight-ui/#/paths/node-txpool/get)
  */
-class RetrieveExpandedTransactionsFromTransactionPool
-    implements
-        ThorRequest<
-            RetrieveExpandedTransactionsFromTransactionPool,
-            Transactions
-        >
-{
+class RetrieveExpandedTransactionsFromTransactionPool implements ThorRequest<
+    RetrieveExpandedTransactionsFromTransactionPool,
+    Transactions
+> {
     /**
      * An object representing the HTTP path configuration.
      */

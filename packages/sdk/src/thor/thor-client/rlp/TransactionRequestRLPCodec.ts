@@ -4,7 +4,6 @@ import {
 } from '@thor/thor-client/model/transactions/index';
 import {
     Address,
-    Blake2b256,
     BufferKind,
     CompactFixedHexBlobKind,
     Hex,
@@ -15,9 +14,9 @@ import {
     RLP,
     type RLPProfile,
     RLPProfiler,
-    type RLPValidObject,
-    Secp256k1
+    type RLPValidObject
 } from '@common';
+import { type TransactionBody } from '../model/transactions/BaseTransaction';
 
 const FQP = 'packages/sdk/src/thor/signer/TransactionRequestRLPCodec.ts!';
 
@@ -40,20 +39,21 @@ class TransactionRequestRLPCodec {
     };
 
     /**
-     * The RLP profile for sponsored albeit unsigned transaction request fields.
+     * Represent the Recursive Length Prefix (RLP) of the transaction features.
+     *
+     * Properties
+     * - `name` - A string indicating the name of the field in the RLP structure.
+     * - `kind` - RLP profile type.
      */
-    private static readonly RLP_UNSIGNED_STATE = [
-        { name: 'beggar', kind: new OptionalFixedHexBlobKind(20) },
-        { name: 'originSignature', kind: new BufferKind() },
-        { name: 'gasPayerSignature', kind: new BufferKind() }
-    ];
+    private static readonly RLP_FEATURES = {
+        name: 'reserved.features',
+        kind: new NumericKind(4)
+    };
 
     /**
-     * The RLP profile for the
-     * [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)
-     * dynamic fee transaction request fields subject to be hashed to compute signatures.
+     * The RLP profile for an unsigneddynamic fee transaction
      */
-    private static readonly RLP_DYNAMIC_FEE_TO_HASH = [
+    private static readonly RLP_UNSIGNED_DYNAMIC_FEE = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
         { name: 'expiration', kind: new NumericKind(4) },
@@ -79,37 +79,17 @@ class TransactionRequestRLPCodec {
     ];
 
     /**
-     * The RLP profile for the
-     * [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)
-     * dynamic fee transaction request once both the gas payer and origin signed.
-     *
-     * The `signature` field is included,
-     * the `gasPayerSignature` and `originSignature` fields are removed.
+     * The RLP profile for a signed dynamic fee transaction
      */
-    private static readonly RLP_DYNAMIC_FEE_SIGNED_REQUEST =
-        TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_TO_HASH.concat(
+    private static readonly RLP_SIGNED_DYNAMIC_FEE =
+        TransactionRequestRLPCodec.RLP_UNSIGNED_DYNAMIC_FEE.concat(
             TransactionRequestRLPCodec.RLP_SIGNED_STATE
         );
 
     /**
-     * The RLP profile for the
-     * [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)
-     * dynamic fee transaction request while both
-     * the gas payer and origin haven't signed yet.
-     *
-     * The `beggar`, `gasPayerSigture` and `originSignature` fields are included;
-     * the `signature` field is removed.
+     * The RLP profile for an unsigned legacy transaction
      */
-    private static readonly RLP_DYNAMIC_FEE_UNSIGNED_REQUEST =
-        TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_TO_HASH.concat(
-            TransactionRequestRLPCodec.RLP_UNSIGNED_STATE
-        );
-
-    /**
-     * The RLP profile for the
-     * legacy transaction request fields subject to be hashed to compute signatures.
-     */
-    private static readonly RLP_LEGACY_TO_HASH = [
+    private static readonly RLP_UNSIGNED_LEGACY = [
         { name: 'chainTag', kind: new NumericKind(1) },
         { name: 'blockRef', kind: new CompactFixedHexBlobKind(8) },
         { name: 'expiration', kind: new NumericKind(4) },
@@ -134,28 +114,11 @@ class TransactionRequestRLPCodec {
     ];
 
     /**
-     * The RLP profile for the
-     * legacy transaction request once both the gas payer and origin signed.
-     *
-     * The `signature` field is included,
-     * the `gasPayerSignature` and `originSignature` fields are removed.
+     * The RLP profile for a signed legacy transaction
      */
-    private static readonly RLP_LEGACY_SIGNED_REQUEST =
-        TransactionRequestRLPCodec.RLP_LEGACY_TO_HASH.concat(
+    private static readonly RLP_SIGNED_LEGACY =
+        TransactionRequestRLPCodec.RLP_UNSIGNED_LEGACY.concat(
             TransactionRequestRLPCodec.RLP_SIGNED_STATE
-        );
-
-    /**
-     * The RLP profile for the
-     * legacy transaction request while both
-     * the gas payer and origin haven't signed yet.
-     *
-     * The `beggar`, `gasPayerSignature` and `originSignature` fields are included;
-     * the `signature` field is removed.
-     */
-    private static readonly RLP_LEGACY_UNSIGNED_REQUEST =
-        TransactionRequestRLPCodec.RLP_LEGACY_TO_HASH.concat(
-            TransactionRequestRLPCodec.RLP_UNSIGNED_STATE
         );
 
     /**
@@ -166,7 +129,7 @@ class TransactionRequestRLPCodec {
      * @throws {InvalidEncodingError} If the encoded data does not match the expected format.
      */
     public static decode(encoded: Uint8Array): TransactionRequest {
-        // Check if this is a dynamic fee transaction (EIP-1559) by looking for 0x51 prefix
+        // Check if this is a dynamic fee transaction by looking for prefix
         const isDynamicFee =
             encoded.length > 0 &&
             encoded[0] === TransactionRequestRLPCodec.DYNAMIC_FEE_PREFIX;
@@ -178,12 +141,12 @@ class TransactionRequestRLPCodec {
     }
 
     /**
-     * Decodes the given RLPValidObject into a {@link Body} object.
+     * Decodes the given RLPValidObject into a {@link TransactionBodyForRLP} object.
      *
      * @param {RLPValidObject} decoded - The object containing the encoded transaction data to decode.
-     * @return {Body} The decoded Body object containing all transaction details.
+     * @return {TransactionBodyForRLP} The decoded TransactionBodyForRLP object containing all transaction details.
      */
-    private static decodeBody(decoded: RLPValidObject): Body {
+    private static decodeBody(decoded: RLPValidObject): TransactionBodyForRLP {
         const clauses: Array<{
             to: string | null;
             value: bigint;
@@ -210,7 +173,6 @@ class TransactionRequestRLPCodec {
                 decoded.gasPriceCoef !== undefined
                     ? BigInt(decoded.gasPriceCoef as number)
                     : undefined,
-            gasPayerSignature: decoded.gasPayerSignature as Uint8Array,
             maxFeePerGas:
                 decoded.maxFeePerGas !== undefined &&
                 decoded.maxFeePerGas !== null
@@ -222,18 +184,13 @@ class TransactionRequestRLPCodec {
                     ? BigInt(decoded.maxPriorityFeePerGas as bigint)
                     : undefined,
             nonce: decoded.nonce as bigint,
-            originSignature: Uint8Array.of(),
             reserved: decoded.reserved as Uint8Array[],
             signature: decoded.signature as Uint8Array
-        } satisfies Body;
+        } satisfies TransactionBodyForRLP;
     }
 
     /**
      * Decodes a dynamic fee transaction request from its encoded representation.
-     *
-     * The [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) dynamic fee
-     * transaction request uses `maxFeePerGas` and `maxPriorityFeePerGas`
-     * properties.
      *
      * @param {Uint8Array} encoded - The encoded dynamic fee transaction request.
      * @return {TransactionRequest} The decoded transaction request object.
@@ -242,8 +199,8 @@ class TransactionRequestRLPCodec {
     private static decodeDynamicFee(encoded: Uint8Array): TransactionRequest {
         const rlpProfile = TransactionRequestRLPCodec.getRLPProfile(
             encoded,
-            TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_SIGNED_REQUEST,
-            TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_UNSIGNED_REQUEST,
+            TransactionRequestRLPCodec.RLP_SIGNED_DYNAMIC_FEE,
+            TransactionRequestRLPCodec.RLP_UNSIGNED_DYNAMIC_FEE,
             `${FQP}TransactionRequestRLPCodec.decode(encoded: Uint8Array): TransactionRequest`
         );
 
@@ -251,12 +208,7 @@ class TransactionRequestRLPCodec {
             .object as RLPValidObject;
         const body = TransactionRequestRLPCodec.decodeBody(decoded);
 
-        return TransactionRequestRLPCodec.finalizeDecodedObject(
-            decoded,
-            body,
-            TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_TO_HASH,
-            true
-        );
+        return TransactionRequestRLPCodec.mapBodyToTransactionRequest(body);
     }
 
     /**
@@ -269,8 +221,8 @@ class TransactionRequestRLPCodec {
     private static decodeLegacy(encoded: Uint8Array): TransactionRequest {
         const rlpProfile = TransactionRequestRLPCodec.getRLPProfile(
             encoded,
-            TransactionRequestRLPCodec.RLP_LEGACY_SIGNED_REQUEST,
-            TransactionRequestRLPCodec.RLP_LEGACY_UNSIGNED_REQUEST,
+            TransactionRequestRLPCodec.RLP_SIGNED_LEGACY,
+            TransactionRequestRLPCodec.RLP_UNSIGNED_LEGACY,
             `${FQP}TransactionRequestRLPCodec.decode(encoded: Uint8Array): TransactionRequest`
         );
 
@@ -278,12 +230,7 @@ class TransactionRequestRLPCodec {
             .object as RLPValidObject;
         const body = TransactionRequestRLPCodec.decodeBody(decoded);
 
-        return TransactionRequestRLPCodec.finalizeDecodedObject(
-            decoded,
-            body,
-            TransactionRequestRLPCodec.RLP_LEGACY_TO_HASH,
-            false
-        );
+        return TransactionRequestRLPCodec.mapBodyToTransactionRequest(body);
     }
 
     /**
@@ -300,10 +247,10 @@ class TransactionRequestRLPCodec {
         isToHash: boolean = false
     ): Uint8Array {
         const body = {
-            ...TransactionRequestRLPCodec.mapTransactionRequestToBody(
+            ...TransactionRequestRLPCodec.mapTransactionRequestToTransactionBodyForRLP(
                 transactionRequest
             )
-        };
+        } satisfies TransactionBodyForRLP;
         if (transactionRequest.isDynamicFee) {
             // For EIP-1559 transactions, prepend the transaction type (0x51)
             return new Uint8Array([
@@ -311,20 +258,20 @@ class TransactionRequestRLPCodec {
                 ...RLPProfiler.ofObject(body, {
                     name: 'tx',
                     kind: isToHash
-                        ? TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_TO_HASH
-                        : transactionRequest.isSigned
-                          ? TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_SIGNED_REQUEST
-                          : TransactionRequestRLPCodec.RLP_DYNAMIC_FEE_UNSIGNED_REQUEST
+                        ? TransactionRequestRLPCodec.RLP_UNSIGNED_DYNAMIC_FEE
+                        : transactionRequest.signature !== undefined
+                          ? TransactionRequestRLPCodec.RLP_SIGNED_DYNAMIC_FEE
+                          : TransactionRequestRLPCodec.RLP_UNSIGNED_DYNAMIC_FEE
                 }).encoded
             ]);
         }
         return RLPProfiler.ofObject(body, {
             name: 'tx',
             kind: isToHash
-                ? TransactionRequestRLPCodec.RLP_LEGACY_TO_HASH
-                : transactionRequest.isSigned
-                  ? TransactionRequestRLPCodec.RLP_LEGACY_SIGNED_REQUEST
-                  : TransactionRequestRLPCodec.RLP_LEGACY_UNSIGNED_REQUEST
+                ? TransactionRequestRLPCodec.RLP_UNSIGNED_LEGACY
+                : transactionRequest.signature !== undefined
+                  ? TransactionRequestRLPCodec.RLP_SIGNED_LEGACY
+                  : TransactionRequestRLPCodec.RLP_UNSIGNED_LEGACY
         }).encoded;
     }
 
@@ -345,7 +292,6 @@ class TransactionRequestRLPCodec {
         fqn: string
     ): RLPProfile {
         const size = (RLP.ofEncoded(encoded).decoded as unknown[]).length;
-
         if (signedRequest.length === size) {
             return { name: 'tx', kind: signedRequest } satisfies RLPProfile;
         } else if (unsignedRequest.length === size) {
@@ -359,73 +305,14 @@ class TransactionRequestRLPCodec {
     }
 
     /**
-     * Finalizes a decoded object into a TransactionRequest by processing the required fields,
-     * including the signature components and optionally calculating the beggar address
-     * if it is not explicitly provided in the decoded data.
-     *
-     * @param {RLPValidObject} decoded - The decoded RLP object containing the transaction details and signatures.
-     * @param {Body} body - The transaction body with the essential fields to be mapped into the TransactionRequest.
-     * @param {RLPProfile[]} toHashProfile - The RLP profiling rules for determining how the transaction should be encoded for hashing.
-     * @param {boolean} isDynamicFee - A flag indicating whether dynamic fee rules should be applied when computing the hash.
-     *
-     * @return {TransactionRequest} The finalized transaction request, containing the mapped body, signatures, and optionally derived beggar address.
-     */
-    private static finalizeDecodedObject(
-        decoded: RLPValidObject,
-        body: Body,
-        toHashProfile: RLPProfile[],
-        isDynamicFee: boolean
-    ): TransactionRequest {
-        const signature = decoded.signature as Uint8Array;
-        const gasPayerSignature =
-            signature !== null && signature !== undefined
-                ? signature.slice(Secp256k1.SIGNATURE_LENGTH, signature.length)
-                : (decoded.gasPayerSignature as Uint8Array);
-        const originSignature =
-            signature !== null && signature !== undefined
-                ? signature.slice(0, Secp256k1.SIGNATURE_LENGTH)
-                : (decoded.originSignature as Uint8Array);
-
-        let beggar: Address | undefined;
-        if (decoded.beggar !== null && decoded.beggar !== undefined) {
-            beggar = Address.of(decoded.beggar as string);
-        } else if (signature?.length === Secp256k1.SIGNATURE_LENGTH * 2) {
-            const hashData = isDynamicFee
-                ? new Uint8Array([
-                      TransactionRequestRLPCodec.DYNAMIC_FEE_PREFIX,
-                      ...RLPProfiler.ofObject(
-                          { ...body },
-                          { name: 'tx', kind: toHashProfile }
-                      ).encoded
-                  ])
-                : RLPProfiler.ofObject(
-                      { ...body },
-                      { name: 'tx', kind: toHashProfile }
-                  ).encoded;
-
-            const originHash = Blake2b256.of(hashData).bytes;
-            beggar = Address.ofPublicKey(
-                Secp256k1.recover(originHash, originSignature)
-            );
-        }
-        return new TransactionRequest(
-            {
-                ...TransactionRequestRLPCodec.mapBodyToTransactionRequest(body),
-                beggar
-            },
-            originSignature,
-            gasPayerSignature,
-            signature
-        );
-    }
-
-    /**
      * Maps the provided body object into a TransactionRequest object.
      *
      * @param {Body} body - The input body containing transaction details, including clauses, chain information, signatures, and related parameters.
      * @return {TransactionRequest} A TransactionRequest object created from the input body, containing transaction details and signatures.
      */
-    private static mapBodyToTransactionRequest(body: Body): TransactionRequest {
+    private static mapBodyToTransactionRequest(
+        body: TransactionBodyForRLP
+    ): TransactionRequest {
         // Convert clause data back to Clause objects.
         const clauses: Clause[] = body.clauses.map((clauseData) => {
             return new Clause(
@@ -436,8 +323,6 @@ class TransactionRequestRLPCodec {
         });
         // Create TransactionRequestParam object.
         const params = {
-            beggar:
-                body.beggar !== undefined ? Address.of(body.beggar) : undefined,
             blockRef: Hex.of(body.blockRef),
             chainTag: body.chainTag,
             clauses,
@@ -447,26 +332,27 @@ class TransactionRequestRLPCodec {
             gasPriceCoef: body.gasPriceCoef,
             nonce: body.nonce,
             maxFeePerGas: body.maxFeePerGas,
-            maxPriorityFeePerGas: body.maxPriorityFeePerGas
-        };
+            maxPriorityFeePerGas: body.maxPriorityFeePerGas,
+            reserved:
+                body.reserved !== undefined
+                    ? TransactionRequestRLPCodec.decodeReservedField(
+                          body.reserved
+                      )
+                    : undefined
+        } satisfies TransactionBody;
         // Create and return TransactionRequest with signatures.
-        return new TransactionRequest(
-            params,
-            body.originSignature,
-            body.gasPayerSignature,
-            body.signature
-        );
+        return TransactionRequest.of(params, body.signature);
     }
 
     /**
      * Maps a TransactionRequest object to a {@link Body} object for transaction creation.
      *
      * @param {TransactionRequest} transactionRequest - The transaction request containing all necessary properties such as clauses, gas, signature, and more.
-     * @return {Body} A Body object that represents the structured transaction data ready for use, with properties like clauses, gas, signatures, and appropriate fee configurations based on transaction type.
+     * @return {Body} A object that represents the structured transaction data ready for RLP encoding.
      */
-    private static mapTransactionRequestToBody(
+    private static mapTransactionRequestToTransactionBodyForRLP(
         transactionRequest: TransactionRequest
-    ): Body {
+    ): TransactionBodyForRLP {
         const clauses: Array<{
             to: string | null;
             value: bigint;
@@ -483,7 +369,6 @@ class TransactionRequestRLPCodec {
             }
         );
         const baseBody = {
-            beggar: transactionRequest.beggar?.toString(),
             blockRef: transactionRequest.blockRef.toString(),
             chainTag: transactionRequest.chainTag,
             clauses,
@@ -493,42 +378,117 @@ class TransactionRequestRLPCodec {
                     : null,
             expiration: transactionRequest.expiration,
             gas: transactionRequest.gas,
-            gasPayerSignature: transactionRequest.gasPayerSignature,
             nonce: transactionRequest.nonce,
-            originSignature: transactionRequest.originSignature,
-            reserved: transactionRequest.isIntendedToBeSponsored
-                ? [Uint8Array.of(1)]
-                : [],
+            reserved:
+                TransactionRequestRLPCodec.encodeReservedField(
+                    transactionRequest
+                ),
             signature: transactionRequest.signature
-        };
+        } satisfies TransactionBodyForRLP;
 
         // For dynamic fee transactions, use maxFeePerGas and maxPriorityFeePerGas
         if (transactionRequest.isDynamicFee) {
             return {
                 ...baseBody,
-                maxFeePerGas: transactionRequest.maxFeePerGas ?? 0n,
-                maxPriorityFeePerGas:
-                    transactionRequest.maxPriorityFeePerGas ?? 0n
-            } satisfies Body;
+                maxFeePerGas: transactionRequest.maxFeePerGas,
+                maxPriorityFeePerGas: transactionRequest.maxPriorityFeePerGas
+            } satisfies TransactionBodyForRLP;
         }
 
         // For legacy transactions (type 0), use gasPriceCoef
         return {
             ...baseBody,
             gasPriceCoef: transactionRequest.gasPriceCoef
-        } satisfies Body;
+        } satisfies TransactionBodyForRLP;
+    }
+
+    /**
+     * Encodes the {@link TransactionBody.reserved} field data for a transaction.
+     *
+     * @return {Uint8Array[]} The encoded list of reserved features.
+     * It removes any trailing unused features that have zero length from the list.
+     *
+     * @remarks The {@link TransactionBody.reserved} is optional, albeit
+     * is required to perform RLP encoding.
+     *
+     * @see encode
+     */
+    private static encodeReservedField(
+        transactionRequest: TransactionRequest
+    ): Uint8Array[] {
+        // Check if is reserved or not
+        const reserved = transactionRequest.reserved ?? {};
+        // Init kind for features
+        const featuresKind = TransactionRequestRLPCodec.RLP_FEATURES.kind;
+        // Features list
+        const featuresList = [
+            featuresKind
+                .data(
+                    reserved.features ?? 0,
+                    TransactionRequestRLPCodec.RLP_FEATURES.name
+                )
+                .encode(),
+            ...(reserved.unused ?? [])
+        ];
+        // Trim features list
+        while (featuresList.length > 0) {
+            if (featuresList[featuresList.length - 1].length === 0) {
+                featuresList.pop();
+            } else {
+                break;
+            }
+        }
+        return featuresList;
+    }
+
+    /**
+     * Decodes the {@link TransactionBody.reserved} field from the given buffer array.
+     *
+     * @param {Buffer[]} reserved  - An array of Uint8Array objects representing the reserved field data.
+     * @return {Object} An object containing the decoded features and any unused buffer data.
+     * @return {number} [return.features] The decoded features from the reserved field.
+     * @return {Buffer[]} [return.unused] An array of Buffer objects representing unused data, if any.
+     * @throws {InvalidTransactionField} Thrown if the reserved field is not properly trimmed.
+     */
+    private static decodeReservedField(reserved: Uint8Array[]): {
+        features?: number;
+        unused?: Uint8Array[];
+    } {
+        if (reserved.length === 0) {
+            return { features: 0, unused: [] };
+        }
+        // Not trimmed reserved field
+        if (reserved[reserved.length - 1].length > 0) {
+            // Get features field.
+            const featuresField = TransactionRequestRLPCodec.RLP_FEATURES.kind
+                .buffer(
+                    reserved[0],
+                    TransactionRequestRLPCodec.RLP_FEATURES.name
+                )
+                .decode() as number;
+            // Return encoded reserved field
+            return reserved.length > 1
+                ? {
+                      features: featuresField,
+                      unused: reserved.slice(1)
+                  }
+                : { features: featuresField };
+        }
+        throw new InvalidEncodingError(
+            `TransactionRequestRLPCodec.decodeReservedField`,
+            'invalid reserved field: fields in the `reserved` property must be properly trimmed',
+            { fieldName: 'reserved', reserved }
+        );
     }
 }
 
 /**
- * Interface representing the body of a transaction request.
+ * Interface representing a TransactionBody for RLP encoding/decoding only.
  * Used for RLP encoding/decoding only, hence using only
- * JS primitive type.
- *
+ * All fields are JS primitive types.
  * @remarks Not intended to be exported.
  */
-interface Body {
-    beggar?: string;
+interface TransactionBodyForRLP {
     blockRef: string;
     chainTag: number;
     clauses: Array<{
@@ -539,14 +499,12 @@ interface Body {
     dependsOn: string | null;
     expiration: number;
     gas: bigint;
-    gasPayerSignature: Uint8Array;
     gasPriceCoef?: bigint; // Optional for dynamic fee transactions
     nonce: bigint;
     maxFeePerGas?: bigint; // For EIP-1559 dynamic fee transactions
     maxPriorityFeePerGas?: bigint; // For EIP-1559 dynamic fee transactions
-    originSignature: Uint8Array;
-    reserved: Uint8Array[]; // For VIP-191 transactions, having one element = 1 to flag the transaction as intended to be sponsored.
-    signature: Uint8Array;
+    reserved?: Uint8Array[]; // For VIP-191 transactions, having one element = 1 to flag the transaction as intended to be sponsored.
+    signature?: Uint8Array;
 }
 
 export { TransactionRequestRLPCodec };

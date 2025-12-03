@@ -18,9 +18,10 @@ const FQP =
 /**
  * [Query smart contract events](http://localhost:8669/doc/stoplight-ui/#/paths/logs-event/post)
  */
-class QuerySmartContractEvents
-    implements ThorRequest<QuerySmartContractEvents, EventLogsResponse>
-{
+class QuerySmartContractEvents implements ThorRequest<
+    QuerySmartContractEvents,
+    EventLogsResponse
+> {
     /**
      * Represents the HTTP path configuration for accessing resources.
      */
