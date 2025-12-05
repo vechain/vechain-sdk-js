@@ -41,15 +41,16 @@ const clause = ClauseBuilder.callFunction(
 );
 
 // Build the transaction with fee delegation
+// Note: Using legacy transaction format for sponsor service compatibility
 const txBuilder = TransactionBuilder.create(thorClient);
 const txRequest = await txBuilder
     .withClauses([clause])
     .withDelegatedFee()
-    .withDynFeeTxDefaults()
+    .withLegacyTxDefaults()
     .withEstimatedGas(senderAddress, { revision: Revision.BEST })
     .build();
 
-// Sign the transaction as the origin (sender)
+// Sign the transaction as the origin (sender) first
 const senderSignedTx = signer.sign(txRequest);
 
 // For fee delegation with an external sponsor service
@@ -58,17 +59,31 @@ const sponsorResponse = await fetch(sponsorUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-        raw: senderSignedTx.encoded.toString(),
+        raw: txRequest.encoded.toString(),
         origin: senderAddress.toString()
     })
 });
 
 if (sponsorResponse.ok) {
-    const sponsorData = (await sponsorResponse.json()) as { raw: string };
-    const fullySigned = TransactionRequest.decode(Hex.of(sponsorData.raw));
+    const sponsorData = (await sponsorResponse.json()) as {
+        signature: string;
+        address: string;
+    };
+    console.log('Sponsor address:', sponsorData.address);
+
+    // Combine sender signature with sponsor signature
+    const senderSig = senderSignedTx.signature!;
+    const sponsorSig = Hex.of(sponsorData.signature).bytes;
+    const combinedSignature = new Uint8Array(
+        senderSig.length + sponsorSig.length
+    );
+    combinedSignature.set(senderSig, 0);
+    combinedSignature.set(sponsorSig, senderSig.length);
+
+    // Create fully signed transaction
+    const fullySigned = TransactionRequest.of(txRequest, combinedSignature);
     const txId = await thorClient.transactions.sendTransaction(fullySigned);
     console.log('Transaction id:', txId.toString());
 } else {
     console.error('Sponsor service error:', await sponsorResponse.text());
 }
-
