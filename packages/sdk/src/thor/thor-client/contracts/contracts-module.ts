@@ -489,7 +489,7 @@ class ContractsModule extends AbstractThorModule {
 
             // get gas from options if provided
             if (transactionOptions != undefined) {
-                if (transactionOptions.gas != undefined) {
+                if (transactionOptions.gas !== undefined) {
                     gasEstimate = transactionOptions.gas;
                 }
             }
