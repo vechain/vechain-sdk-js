@@ -527,7 +527,6 @@ class ContractsModule extends AbstractThorModule {
                     .withDynFeeTxDefaults()
                     .build();
             }
-                
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
 
