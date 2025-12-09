@@ -1,4 +1,4 @@
-import { Hex } from '@common/vcdm';
+import { Hex } from './Hex';
 import { HexInt } from './HexInt';
 import { IllegalArgumentError } from '@common/errors';
 
@@ -89,6 +89,24 @@ class HexUInt extends HexInt {
                 e instanceof Error ? e : undefined
             );
         }
+    }
+
+    /**
+     * Generates a random {@link HexUInt} value with the requested number of bytes.
+     * Ensures the most significant nibble is never `0` so that
+     * `HexUInt.random(bytes).bi.toString(16)` always returns exactly `bytes * 2`
+     * hexadecimal digits.
+     *
+     * @param {number} bytes - The number of bytes to generate.
+     * @throws {IllegalArgumentError} - If the bytes argument is not greater than 0.
+     * @returns {HexUInt} - A randomly generated HexUInt value.
+     */
+    public static random(bytes: number): HexUInt {
+        let candidate: Uint8Array;
+        do {
+            candidate = this.randomBytes(bytes);
+        } while (candidate[0] < 0x10);
+        return this.of(candidate);
     }
 }
 

@@ -89,5 +89,16 @@ class HexInt extends Hex {
             );
         }
     }
+
+    /**
+     * Generates a random {@link HexInt} value of the given number of bytes length.
+     *
+     * @param {number} bytes - The number of bytes to generate.
+     * @throws {IllegalArgumentError} - If the bytes argument is not greater than 0.
+     * @returns {HexInt} - A randomly generated HexInt value.
+     */
+    public static random(bytes: number): HexInt {
+        return this.of(this.randomBytes(bytes));
+    }
 }
 export { HexInt };

@@ -337,6 +337,24 @@ class Hex implements VeChainDataModel<Hex> {
     }
 
     /**
+     * Generates cryptographically safe random bytes, validating the requested length.
+     *
+     * @param {number} bytes - The number of bytes to generate.
+     * @throws {IllegalArgumentError} - If the bytes argument is not greater than 0.
+     * @returns {Uint8Array} - A randomly generated sequence of bytes.
+     */
+    protected static randomBytes(bytes: number): Uint8Array {
+        if (bytes > 0) {
+            return nh_utils.randomBytes(bytes);
+        }
+        throw new IllegalArgumentError(
+            `${FQP}Hex.random(bytes: number): Hex`,
+            'bytes argument not > 0',
+            { bytes }
+        );
+    }
+
+    /**
      * Generates a random Hex value of the given number of bytes length.
      *
      * @param {number} bytes - The number of bytes to generate.
@@ -351,16 +369,7 @@ class Hex implements VeChainDataModel<Hex> {
      * * Follow links for additional security notes.
      */
     public static random(bytes: number): Hex {
-        if (bytes > 0) {
-            return Hex.of(nh_utils.randomBytes(bytes));
-        }
-        throw new IllegalArgumentError(
-            `${FQP}Hex.random(bytes: number): Hex`,
-            'bytes argument not > 0',
-            {
-                bytes
-            }
-        );
+        return this.of(this.randomBytes(bytes));
     }
 
     /**
