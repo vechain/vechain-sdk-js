@@ -511,7 +511,7 @@ class ContractsModule extends AbstractThorModule {
             }
 
             // build the transaction request
-            if (transactionOptions != undefined) {
+            if (transactionOptions !== undefined) {
                 // use provided transaction options
                 finalTransactionRequest = await this.thorClient.transactions.buildTransactionBody(
                     [clause],
