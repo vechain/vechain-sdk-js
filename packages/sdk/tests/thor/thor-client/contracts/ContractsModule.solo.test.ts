@@ -41,7 +41,7 @@ describe('ContractsModule Solo Tests', () => {
             expect(receipt).toBeDefined();
             expect(receipt?.reverted).toBe(false);
         });
-        test('ok <- transfer VTHO to self, with transactionoptions', async () => {
+        test('ok <- transfer VTHO to self, with transaction options', async () => {
             const erc20Abi = new ABIContract(ERC20_ABI);
             const transferFunctionAbi = erc20Abi.getFunction('transfer');
             const txId = await thorClient.contracts.executeTransaction(
