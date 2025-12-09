@@ -317,6 +317,15 @@ class Hex implements VeChainDataModel<Hex> {
         }
     }
 
+    protected static randomBytes(bytes: number): Uint8Array {
+        if (bytes > 0) {
+            return nh_utils.randomBytes(bytes);
+        }
+        throw new InvalidDataType('Hex.random', 'bytes argument not > 0', {
+            bytes
+        });
+    }
+
     /**
      * Generates a random Hex value of the given number of bytes length.
      *
@@ -328,12 +337,7 @@ class Hex implements VeChainDataModel<Hex> {
      * * [`nh_utils.randomBytes`](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#utils).
      */
     public static random(bytes: number): Hex {
-        if (bytes > 0) {
-            return Hex.of(nh_utils.randomBytes(bytes));
-        }
-        throw new InvalidDataType('Hex.random', 'bytes argument not > 0', {
-            bytes
-        });
+        return this.of(this.randomBytes(bytes));
     }
 
     /**

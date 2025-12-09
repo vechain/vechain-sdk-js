@@ -1,6 +1,7 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, describe, expect, test } from '@jest/globals';
 import { HexUInt } from '../../src';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import * as nh_utils from '@noble/hashes/utils';
 
 /**
  * Test HexUInt class.
@@ -29,6 +30,46 @@ describe('HexUInt class tests', () => {
             expect(ofBi.isEqual(ofBytes)).toBeTruthy();
             expect(ofBytes.isEqual(ofHex)).toBeTruthy();
             expect(ofHex.isEqual(ofN)).toBeTruthy();
+        });
+    });
+
+    describe('random method tests', () => {
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('Return a deterministic HexUInt with constant hex length', () => {
+            const bytes = 4;
+            const mockBytes = Uint8Array.of(0x12, 0x34, 0x56, 0x78);
+            const spy = jest
+                .spyOn(nh_utils, 'randomBytes')
+                .mockReturnValue(mockBytes);
+
+            const hexUInt = HexUInt.random(bytes);
+            expect(hexUInt).toBeInstanceOf(HexUInt);
+            expect(hexUInt.toString()).toEqual('0x12345678');
+            expect(hexUInt.bi.toString(16)).toHaveLength(bytes * 2);
+            expect(spy).toHaveBeenCalledWith(bytes);
+        });
+
+        test('Retry when random bytes would introduce a leading zero nibble', () => {
+            const bytes = 2;
+            const invalidBytes = Uint8Array.of(0x03, 0xaa);
+            const validBytes = Uint8Array.of(0xab, 0xcd);
+            const spy = jest
+                .spyOn(nh_utils, 'randomBytes')
+                .mockImplementationOnce(() => invalidBytes)
+                .mockImplementationOnce(() => validBytes);
+
+            const hexUInt = HexUInt.random(bytes);
+
+            expect(hexUInt.toString()).toEqual('0xabcd');
+            expect(hexUInt.bi.toString(16)).toHaveLength(bytes * 2);
+            expect(spy).toHaveBeenCalledTimes(2);
+        });
+
+        test('Throw for invalid byte length', () => {
+            expect(() => HexUInt.random(0)).toThrow(InvalidDataType);
         });
     });
 });

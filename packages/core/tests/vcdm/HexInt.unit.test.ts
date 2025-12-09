@@ -1,6 +1,7 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, describe, expect, test } from '@jest/globals';
 import { Hex, HexInt } from '../../src';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import * as nh_utils from '@noble/hashes/utils';
 
 /**
  * Test HexInt class.
@@ -84,6 +85,29 @@ describe('HexInt class tests', () => {
             expect(ofBi.isEqual(ofBytes)).toBeTruthy();
             expect(ofBytes.isEqual(ofHex)).toBeTruthy();
             expect(ofHex.isEqual(ofN)).toBeTruthy();
+        });
+    });
+
+    describe('random method tests', () => {
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('Return a deterministic HexInt when randomBytes is mocked', () => {
+            const bytes = 4;
+            const mockBytes = Uint8Array.of(0xde, 0xad, 0xbe, 0xef);
+            const spy = jest
+                .spyOn(nh_utils, 'randomBytes')
+                .mockReturnValue(mockBytes);
+
+            const hexInt = HexInt.random(bytes);
+            expect(hexInt).toBeInstanceOf(HexInt);
+            expect(hexInt.toString()).toEqual('0xdeadbeef');
+            expect(spy).toHaveBeenCalledWith(bytes);
+        });
+
+        test('Throw for invalid byte length', () => {
+            expect(() => HexInt.random(0)).toThrow(InvalidDataType);
         });
     });
 });
