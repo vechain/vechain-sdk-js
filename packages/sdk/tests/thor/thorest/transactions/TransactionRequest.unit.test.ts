@@ -66,7 +66,7 @@ describe('TransactionRequest UNIT tests', () => {
             } satisfies TransactionBody;
 
             const originSig = new Uint8Array([1, 2, 3]);
-            const txRequest = new TransactionRequest(body, originSig);
+            const txRequest = TransactionRequest.of(body, originSig);
             expect(txRequest.blockRef).toBe(body.blockRef);
             expect(txRequest.chainTag).toBe(body.chainTag);
             expect(txRequest.clauses).toEqual(body.clauses);
@@ -106,7 +106,7 @@ describe('TransactionRequest UNIT tests', () => {
             } satisfies TransactionBody;
 
             const originSig = new Uint8Array([1, 2, 3]);
-            const txRequest = new TransactionRequest(body, originSig);
+            const txRequest = TransactionRequest.of(body, originSig);
             expect(txRequest.blockRef).toBe(body.blockRef);
             expect(txRequest.chainTag).toBe(body.chainTag);
             expect(txRequest.clauses).toEqual(body.clauses);
@@ -142,7 +142,7 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             } satisfies TransactionBody;
 
-            const txRequest = new TransactionRequest(body);
+            const txRequest = TransactionRequest.of(body);
             expect(txRequest.blockRef).toBe(body.blockRef);
             expect(txRequest.chainTag).toBe(body.chainTag);
             expect(txRequest.clauses).toEqual(body.clauses);
@@ -183,7 +183,7 @@ describe('TransactionRequest UNIT tests', () => {
                 }
             } satisfies TransactionBody;
 
-            const txRequest = new TransactionRequest(body);
+            const txRequest = TransactionRequest.of(body);
             expect(txRequest.blockRef).toBe(body.blockRef);
             expect(txRequest.chainTag).toBe(body.chainTag);
             expect(txRequest.clauses).toEqual(body.clauses);
@@ -214,7 +214,7 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             } satisfies TransactionBody;
 
-            const txRequest = new TransactionRequest(params);
+            const txRequest = TransactionRequest.of(params);
 
             expect(txRequest.blockRef).toBe(params.blockRef);
             expect(txRequest.chainTag).toBe(params.chainTag);
@@ -245,7 +245,7 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             } satisfies TransactionBody;
 
-            const txRequest = new TransactionRequest(params);
+            const txRequest = TransactionRequest.of(params);
 
             expect(txRequest.maxFeePerGas).toBe(1n);
             expect(txRequest.maxPriorityFeePerGas).toBe(0n);
@@ -267,7 +267,7 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             };
 
-            const txRequest = new TransactionRequest(params);
+            const txRequest = TransactionRequest.of(params);
             expect(txRequest.gasPriceCoef).toBe(0n);
             expect(txRequest.isLegacy).toBe(true);
             expect(txRequest.isDynamicFee).toBe(false);
@@ -287,7 +287,7 @@ describe('TransactionRequest UNIT tests', () => {
                 nonce: mockNonce
             };
 
-            const txRequest = new TransactionRequest(params);
+            const txRequest = TransactionRequest.of(params);
             expect(txRequest.maxPriorityFeePerGas).toBe(0n);
             expect(txRequest.isDynamicFee).toBe(true);
             expect(txRequest.isLegacy).toBe(false);
@@ -308,8 +308,7 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             expect(() => {
-                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
-                new TransactionRequest(params);
+                TransactionRequest.of(params);
             }).toThrow(InvalidTransactionField);
         });
 
@@ -328,8 +327,7 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             expect(() => {
-                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
-                new TransactionRequest(params);
+                TransactionRequest.of(params);
             }).toThrow(InvalidTransactionField);
         });
 
@@ -346,8 +344,7 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             expect(() => {
-                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
-                new TransactionRequest(params);
+                TransactionRequest.of(params);
             }).toThrow(InvalidTransactionField);
         });
 
@@ -366,8 +363,7 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             expect(() => {
-                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
-                new TransactionRequest(params);
+                TransactionRequest.of(params);
             }).toThrow(InvalidTransactionField);
         });
 
@@ -386,8 +382,7 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             expect(() => {
-                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
-                new TransactionRequest(params);
+                TransactionRequest.of(params);
             }).toThrow(InvalidTransactionField);
         });
 
@@ -406,8 +401,7 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             expect(() => {
-                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
-                new TransactionRequest(params);
+                TransactionRequest.of(params);
             }).toThrow(InvalidTransactionField);
         });
 
@@ -426,8 +420,7 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             expect(() => {
-                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
-                new TransactionRequest(params);
+                TransactionRequest.of(params);
             }).toThrow(InvalidTransactionField);
         });
 
@@ -446,8 +439,7 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             try {
-                // eslint-disable-next-line no-new,sonarjs/constructor-for-side-effects
-                new TransactionRequest(params);
+                TransactionRequest.of(params);
                 fail('Expected InvalidTransactionField to be thrown');
             } catch (error) {
                 expect(error).toBeInstanceOf(InvalidTransactionField);
@@ -474,7 +466,7 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             const originalSig = new Uint8Array([1, 2, 3]);
-            const txRequest = new TransactionRequest(params, originalSig);
+            const txRequest = TransactionRequest.of(params, originalSig);
 
             // Modify original array
             originalSig[0] = 99;
@@ -487,7 +479,7 @@ describe('TransactionRequest UNIT tests', () => {
 
     describe('encode transaction request', () => {
         test('ok <- encode dynamic fee - no sponsored - unsigned', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -503,13 +495,13 @@ describe('TransactionRequest UNIT tests', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
                 nonce: mockNonce
             } satisfies TransactionBody);
-            const encoded = txRequest.encoded;
+            const { encoded } = txRequest;
             expect(encoded.toString().toLowerCase()).toBe(
                 '0x51f85c81f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c6800080850649534e0086091e97c5ee008261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c0'.toLowerCase()
             );
         });
         test('ok <- encode dynamic fee - sponsored - unsigned', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -529,13 +521,13 @@ describe('TransactionRequest UNIT tests', () => {
                     unused: []
                 }
             } satisfies TransactionBody);
-            const encoded = txRequest.encoded;
+            const { encoded } = txRequest;
             expect(encoded.toString().toLowerCase()).toBe(
                 '0x51f85d81f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c6800080850649534e0086091e97c5ee008261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c101'.toLowerCase()
             );
         });
         test('ok <- encode legacy - no sponsored - unsigned', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -552,13 +544,13 @@ describe('TransactionRequest UNIT tests', () => {
                 maxPriorityFeePerGas: undefined,
                 nonce: mockNonce
             } satisfies TransactionBody);
-            const encoded = txRequest.encoded;
+            const { encoded } = txRequest;
             expect(encoded.toString().toLowerCase()).toBe(
                 '0xf85181f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c680008081808261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c0'.toLowerCase()
             );
         });
         test('ok <- encode legacy - sponsored - unsigned', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -579,13 +571,13 @@ describe('TransactionRequest UNIT tests', () => {
                     unused: []
                 }
             } satisfies TransactionBody);
-            const encoded = txRequest.encoded;
+            const { encoded } = txRequest;
             expect(encoded.toString().toLowerCase()).toBe(
                 '0xf85281f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c680008081808261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c101'.toLowerCase()
             );
         });
         test('ok <- encode dynamic fee - no sponsored - signed', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -605,13 +597,13 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
             const signedTxRequest = signer.sign(txRequest);
-            const encoded = signedTxRequest.encoded;
+            const { encoded } = signedTxRequest;
             expect(encoded.toString().toLowerCase()).toBe(
                 '0x51f89f81f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c6800080850649534e0086091e97c5ee008261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c0b841ff9ecc2a0cba9d8713457bd2b26fbb5524b0aae8494defb4269ea6257cb440260a0fa10d3b0ffc382f551979ed3c9759e7323e4a4463961034b46a47053363e001'.toLowerCase()
             );
         });
         test('ok <- encodedynamic fee - sponsored - signed by origin and gas payer', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -639,13 +631,13 @@ describe('TransactionRequest UNIT tests', () => {
                 signedTxRequest,
                 Address.of(mockSenderAccount.address)
             );
-            const encoded = gasPayerSignedTx.encoded;
+            const { encoded } = gasPayerSignedTx;
             expect(encoded.toString().toLowerCase()).toBe(
                 '0x51f8e181f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c6800080850649534e0086091e97c5ee008261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c101b88252c1f233540111e774baee5f3c7c573b9fba4db0a31811be2dd42f2c39dfef40061b56f1f9932ae525d98631dc6f9297d42b49fc46a1e96e1461ed9a33f78fee005ddde31520f1b1f49aa00c2b5f953970e73760f96877937fea5d8785c680f7226e3c5ef73728b5c30f8911c4c670d2fc0e985b3dbb054d21b8517bd74722ffc801'.toLowerCase()
             );
         });
         test('ok <- encode dynamic fee - sponsored - signed by origin only', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -669,7 +661,7 @@ describe('TransactionRequest UNIT tests', () => {
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
             const originSignedTxRequest = signer.sign(txRequest);
-            const encoded = originSignedTxRequest.encoded;
+            const { encoded } = originSignedTxRequest;
             expect(encoded.toString().toLowerCase()).toBe(
                 '0x51f8a081f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c6800080850649534e0086091e97c5ee008261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c101b84152c1f233540111e774baee5f3c7c573b9fba4db0a31811be2dd42f2c39dfef40061b56f1f9932ae525d98631dc6f9297d42b49fc46a1e96e1461ed9a33f78fee00'.toLowerCase()
             );
@@ -740,13 +732,57 @@ describe('TransactionRequest UNIT tests', () => {
             );
             expect(txRequest.reserved?.features).toBe(1);
             expect(txRequest.reserved?.unused).toBeUndefined();
-            expect(txRequest.signature?.length).toBeGreaterThan(65);
+            expect(txRequest.signature?.length).toBe(65 * 2);
+            const originSignature = txRequest.signature?.slice(0, 65);
+            const gasPayerSignature = txRequest.signature?.slice(65);
+            const originSignatureHex = HexUInt.of(originSignature ?? 0n)
+                .toString()
+                .toLowerCase();
+            const gasPayerSignatureHex = HexUInt.of(gasPayerSignature ?? 0n)
+                .toString()
+                .toLowerCase();
+            expect(originSignatureHex).toBe(
+                '0x52c1f233540111e774baee5f3c7c573b9fba4db0a31811be2dd42f2c39dfef40061b56f1f9932ae525d98631dc6f9297d42b49fc46a1e96e1461ed9a33f78fee00'.toLowerCase()
+            );
+            expect(gasPayerSignatureHex).toBe(
+                '0x5ddde31520f1b1f49aa00c2b5f953970e73760f96877937fea5d8785c680f7226e3c5ef73728b5c30f8911c4c670d2fc0e985b3dbb054d21b8517bd74722ffc801'.toLowerCase()
+            );
+        });
+        test('ok <- decode legacy - sponsored - signed by origin and gas payer', () => {
+            const encoded = HexUInt.of(
+                '0xf9011f27880166f0d03904eb8020f87ef87c94dccaabd81b38e0deef4c202bc7f1261a4d9192c680b864b391c7d3623374722d75736400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005a67077e8000000000000000000000000000000000000000000000000000000006937f0ef818083015e2e8086019b028528ddc101b882e13033d012d788ed7f044707413b709ab130747962fc001c0f64270b0e73072551f8aaf43d310e4531e1e19a9a31ab175744676df87d6246cbe63527158778e7016a67a95ba49e8a9ddf50862f8b4f85662eb95e738430ffc3c049bda41d3a656d2618ac0d4be84208501c59e5f57bfa452d05566f8760858b9e5d30fb24945a3800'
+            );
+            const txRequest = TransactionRequest.decode(encoded);
+            expect(txRequest.blockRef.toString()).toBe('0x0166f0d03904eb80');
+            expect(txRequest.chainTag).toBe(39);
+            expect(txRequest.dependsOn).toBeNull();
+            expect(txRequest.expiration).toBe(32);
+            expect(txRequest.gas).toBe(89646n);
+            expect(txRequest.maxFeePerGas).toBeUndefined();
+            expect(txRequest.maxPriorityFeePerGas).toBeUndefined();
+            expect(txRequest.gasPriceCoef).toBe(128n);
+            expect(txRequest.reserved?.features).toBe(1);
+            expect(txRequest.signature?.length).toBe(65 * 2);
+            const originSignature = txRequest.signature?.slice(0, 65);
+            const gasPayerSignature = txRequest.signature?.slice(65);
+            const originSignatureHex = HexUInt.of(originSignature ?? 0n)
+                .toString()
+                .toLowerCase();
+            const gasPayerSignatureHex = HexUInt.of(gasPayerSignature ?? 0n)
+                .toString()
+                .toLowerCase();
+            expect(originSignatureHex).toBe(
+                '0xe13033d012d788ed7f044707413b709ab130747962fc001c0f64270b0e73072551f8aaf43d310e4531e1e19a9a31ab175744676df87d6246cbe63527158778e701'.toLowerCase()
+            );
+            expect(gasPayerSignatureHex).toBe(
+                '0x6a67a95ba49e8a9ddf50862f8b4f85662eb95e738430ffc3c049bda41d3a656d2618ac0d4be84208501c59e5f57bfa452d05566f8760858b9e5d30fb24945a3800'.toLowerCase()
+            );
         });
     });
 
     describe('encode/decode/hash dynamic', () => {
         test('ok <- dynamic fee - no sponsored - unsigned', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -772,7 +808,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- dynamic fee - no sponsored - signed', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -803,7 +839,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- dynamic fee - sponsored - unsigned', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -834,7 +870,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- dynamic fee - sponsored - gas payer signed only', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -869,7 +905,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- dynamic fee - sponsored - origin signed only', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -904,7 +940,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- dynamic fee - sponsored - both signed', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -965,7 +1001,7 @@ describe('TransactionRequest UNIT tests', () => {
 
     describe('encode/decode/hash legacy', () => {
         test('ok <- legacy - no sponsored - unsigned', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -992,7 +1028,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- legacy - no sponsored - signed', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -1022,7 +1058,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- legacy - - sponsored - unsigned', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -1052,7 +1088,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- legacy - - sponsored - gas payer signed', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -1086,7 +1122,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- legacy - sponsored - origin signed', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -1120,7 +1156,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- legacy - sponsored - both signed', () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -1177,7 +1213,7 @@ describe('TransactionRequest UNIT tests', () => {
 
     describe('encode/decode clauses', () => {
         test('ok <- no clauses', () => {
-            const expected = new TransactionRequest({
+            const expected = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [],
@@ -1194,7 +1230,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- clause with empty data defaults to Hex.PREFIX', () => {
-            const expected = new TransactionRequest({
+            const expected = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [
@@ -1221,7 +1257,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- minimal properties', () => {
-            const expected = new TransactionRequest({
+            const expected = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [new Clause(null, mockValue)],
@@ -1239,7 +1275,7 @@ describe('TransactionRequest UNIT tests', () => {
         });
 
         test('ok <- all properties', () => {
-            const expected = new TransactionRequest({
+            const expected = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: 1,
                 clauses: [
