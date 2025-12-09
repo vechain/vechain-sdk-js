@@ -12,7 +12,7 @@ import { ContractsModule } from './contracts/contracts-module';
 import { TransactionsModule } from './transactions/transactions-module';
 
 /**
- * The `ThorClient` class serves as an abstractedinterface to interact with the VeChainThor blockchain.
+ * The `ThorClient` class serves as an abstracted interface to interact with the VeChainThor blockchain.
  */
 class ThorClient {
     /**
