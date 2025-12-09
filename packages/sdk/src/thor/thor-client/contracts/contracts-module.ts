@@ -12,7 +12,6 @@ import { Clause } from '../model/transactions/Clause';
 import { IllegalArgumentError, ContractCallError } from '../../../common/errors';
 import { log } from '@common/logging';
 import {
-    type AbiParameter,
     encodeFunctionData,
     decodeFunctionResult
 } from 'viem';
@@ -27,6 +26,9 @@ import { type ClauseSimulationResult } from '../model/transactions';
 import { type AccountDetail } from '../model/accounts/AccountDetail';
 import { HexUInt } from '@common/vcdm';
 import { decodeRevertReason } from './utils';
+import { TransactionBodyOptions } from '../model/transactions/TransactionBody';
+import { EstimateGasOptions, EstimateGasResult } from '../model/gas';
+import { TransactionBuilder } from '../transactions/TransactionBuilder';
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
@@ -64,6 +66,14 @@ class ContractsModule extends AbstractThorModule {
         );
     }
 
+    /**
+     * Creates a new contract factory for deploying contracts.
+     *
+     * @param abi - The Application Binary Interface (ABI) of the contract.
+     * @param bytecode - The bytecode of the contract to deploy.
+     * @param signer - The signer used for signing deployment transactions.
+     * @returns A new instance of the ContractFactory.
+     */
     public createContractFactory<TAbi extends Abi>(
         abi: TAbi,
         bytecode: string,
@@ -264,7 +274,7 @@ class ContractsModule extends AbstractThorModule {
             };
 
             const simulationResults: ClauseSimulationResult[] =
-                await (this.thorClient.transactions as { simulateTransaction: (clauses: Clause[], options?: unknown) => Promise<ClauseSimulationResult[]> }).simulateTransaction(
+                await this.thorClient.transactions.simulateTransaction(
                     [clause],
                     simulationOptions
                 );
@@ -443,14 +453,16 @@ class ContractsModule extends AbstractThorModule {
     }
 
     /**
-     * Executes a contract transaction using VeChain's official transaction system.
+     * Executes a contract transaction using VeChain thor
      * This method sends a transaction to the blockchain.
      *
      * @param signer - The signer to use for signing the transaction.
      * @param contractAddress - The address of the contract to call.
      * @param functionAbi - The ABI of the function to call.
      * @param functionData - The arguments to pass to the function.
-     * @param options - Optional transaction options including gas, value, etc.
+     * @param transactionOptions - Optional transaction options
+     * @param estimateGasOptions - Optional estimate gas options
+     * @param value - Optional VET in wei value to send with the transaction.
      * @returns A Promise that resolves to the transaction hash.
      */
     public async executeTransaction(
@@ -458,7 +470,8 @@ class ContractsModule extends AbstractThorModule {
         contractAddress: AddressLike,
         functionAbi: AbiFunction,
         functionData: FunctionArgs,
-        transactionRequest?: TransactionRequest,
+        transactionOptions?: TransactionBodyOptions,
+        estimateGasOptions?: EstimateGasOptions,
         value?: bigint
     ): Promise<Hex> {
         try {
@@ -471,32 +484,50 @@ class ContractsModule extends AbstractThorModule {
                 value ?? 0n
             );
 
-            // Use provided TransactionRequest or create a default one
-            const finalTransactionRequest = transactionRequest
-                ? TransactionRequest.of({
-                      blockRef: transactionRequest.blockRef,
-                      chainTag: transactionRequest.chainTag,
-                      clauses: [clause], // Override clauses with our contract call
-                      dependsOn: transactionRequest.dependsOn,
-                      expiration: transactionRequest.expiration,
-                      gas: transactionRequest.gas,
-                      gasPriceCoef: transactionRequest.gasPriceCoef,
-                      maxFeePerGas: transactionRequest.maxFeePerGas,
-                      maxPriorityFeePerGas:
-                          transactionRequest.maxPriorityFeePerGas,
-                      nonce: transactionRequest.nonce
-                  })
-                : TransactionRequest.of({
-                      clauses: [clause],
-                      gas: 21000n,
-                      gasPriceCoef: 0n,
-                      nonce: 0n,
-                      blockRef: Hex.of('0x0000000000000000'),
-                      chainTag: 0x27,
-                      dependsOn: null,
-                      expiration: 720
-                  });
+            let finalTransactionRequest: TransactionRequest;
+            let gasEstimate: bigint | undefined = undefined;
 
+            // get gas from options if provided
+            if (transactionOptions != undefined) {
+                if (transactionOptions.gas != undefined) {
+                    gasEstimate = transactionOptions.gas;
+                }
+            }
+            // estimate gas if not provided
+            if (gasEstimate === undefined) {
+                const gasEstimateResult = await this.thorClient.gas.estimateGas(
+                    [clause],
+                    signer.address,
+                    estimateGasOptions
+                );
+                if (gasEstimateResult.reverted) {
+                    log.warn({
+                        source: 'ContractsModule.execute',
+                        message: 'Gas estimation reverted',
+                        context: { gasEstimateResult }
+                    });
+                }
+                gasEstimate = gasEstimateResult.totalGas;
+            }
+
+            // build the transaction request
+            if (transactionOptions != undefined) {
+                // use provided transaction options
+                finalTransactionRequest = await this.thorClient.transactions.buildTransactionBody(
+                    [clause],
+                    gasEstimate,
+                    transactionOptions
+                );
+            } else {
+                // use transaction builder to build the transaction request with default values
+                const builder = TransactionBuilder.create(this.thorClient);
+                finalTransactionRequest = await builder
+                    .withClauses([clause])
+                    .withGas(gasEstimate)
+                    .withDynFeeTxDefaults()
+                    .build();
+            }
+                
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
 
@@ -505,7 +536,7 @@ class ContractsModule extends AbstractThorModule {
 
             // Send the transaction using ThorClient transactions module
             const transactionId: Hex =
-                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
+                await this.thorClient.transactions.sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -674,7 +705,7 @@ class ContractsModule extends AbstractThorModule {
 
             // Send the transaction using ThorClient transactions module
             const transactionId: Hex =
-                await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
+                await this.thorClient.transactions.sendRawTransaction(
                     encodedTransaction
                 );
 
@@ -867,7 +898,7 @@ class ContractsModule extends AbstractThorModule {
         transactionId: Hex,
         options?: WaitForTransactionReceiptOptions
     ): Promise<TransactionReceipt | null> {
-        const receipt: TransactionReceipt | null = await (this.thorClient.transactions as { waitForTransactionReceipt: (transactionId: Hex, options?: WaitForTransactionReceiptOptions) => Promise<TransactionReceipt | null> }).waitForTransactionReceipt(
+        const receipt: TransactionReceipt | null = await this.thorClient.transactions.waitForTransactionReceipt(
             transactionId,
             options
         );
