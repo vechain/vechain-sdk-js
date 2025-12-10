@@ -177,34 +177,37 @@ export function createViemContract<TAbi extends Abi>(
                 const args = params?.args || [];
 
                 // Apply transaction options only when explicitly provided
-                if (
-                    params &&
-                    (params.gas !== undefined ||
-                        params.gasPriceCoef !== undefined ||
-                        params.maxFeePerGas !== undefined ||
-                        params.maxPriorityFeePerGas !== undefined)
-                ) {
-                    const transactionOptions: TransactionBodyOptions = {};
+                const transactionOptions: TransactionBodyOptions = {
+                    useLegacyDefaults: true
+                };
+                let hasOverrides = false;
 
-                    if (params.gas !== undefined) {
-                        transactionOptions.gas = params.gas;
-                    }
-
-                    if (params.gasPriceCoef !== undefined) {
-                        transactionOptions.gasPriceCoef = params.gasPriceCoef;
-                    }
-
-                    if (params.maxFeePerGas !== undefined) {
-                        transactionOptions.maxFeePerGas = params.maxFeePerGas;
-                    }
-
-                    if (params.maxPriorityFeePerGas !== undefined) {
-                        transactionOptions.maxPriorityFeePerGas =
-                            params.maxPriorityFeePerGas;
-                    }
-
-                    contract.setTransactOptions(transactionOptions);
+                if (params?.gas !== undefined) {
+                    transactionOptions.gas = params.gas;
+                    hasOverrides = true;
                 }
+
+                if (params?.gasPriceCoef !== undefined) {
+                    transactionOptions.gasPriceCoef = params.gasPriceCoef;
+                    hasOverrides = true;
+                }
+
+                if (params?.maxFeePerGas !== undefined) {
+                    transactionOptions.maxFeePerGas = params.maxFeePerGas;
+                    hasOverrides = true;
+                }
+
+                if (params?.maxPriorityFeePerGas !== undefined) {
+                    transactionOptions.maxPriorityFeePerGas =
+                        params.maxPriorityFeePerGas;
+                    hasOverrides = true;
+                }
+
+                if (hasOverrides) {
+                    delete transactionOptions.useLegacyDefaults;
+                }
+
+                contract.setTransactOptions(transactionOptions);
 
                 const result = await (contract.transact as any)[abiItem.name](
                     ...args

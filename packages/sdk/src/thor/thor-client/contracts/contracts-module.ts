@@ -76,6 +76,10 @@ const normalizeBuilderOverrides = (
     }
 
     const normalizedOptions: TransactionBodyOptions = { ...options };
+    if ('useLegacyDefaults' in normalizedOptions) {
+        delete (normalizedOptions as { useLegacyDefaults?: boolean })
+            .useLegacyDefaults;
+    }
 
     let gasLimit: bigint = DEFAULT_GAS_LIMIT;
     if (normalizedOptions.gas !== undefined) {
@@ -547,15 +551,16 @@ class ContractsModule extends AbstractThorModule {
 
             const clauses = [clause];
 
-            const overridesProvided = hasTransactionOverrides(
-                transactionOptions
-            );
+            const overridesProvided =
+                hasTransactionOverrides(transactionOptions);
+            const legacyRequested =
+                transactionOptions?.useLegacyDefaults === true &&
+                !overridesProvided;
             const { gasLimit: normalizedGasLimit, builderOptions } =
                 normalizeBuilderOverrides(transactionOptions);
             let gasLimit = normalizedGasLimit;
             const shouldEstimateGas =
-                estimateGasOptions !== undefined &&
-                transactionOptions?.gas === undefined;
+                !legacyRequested && transactionOptions?.gas === undefined;
 
             if (shouldEstimateGas) {
                 const gasEstimateResult: EstimateGasResult = await (
@@ -586,7 +591,7 @@ class ContractsModule extends AbstractThorModule {
 
             let finalTransactionRequest: TransactionRequest;
 
-            if (!overridesProvided) {
+            if (legacyRequested) {
                 finalTransactionRequest = TransactionRequest.of({
                     ...DEFAULT_TRANSACTION_LEGACY_FIELDS,
                     gas: gasLimit,
@@ -617,6 +622,15 @@ class ContractsModule extends AbstractThorModule {
 
             return transactionId;
         } catch (error) {
+            log.error({
+                message: 'executeTransaction failed',
+                source: 'ContractsModule.executeTransaction',
+                context: {
+                    contractAddress: contractAddress.toString(),
+                    functionName: functionAbi.name,
+                    error
+                }
+            });
             throw new IllegalArgumentError(
                 'ContractsModule.executeTransaction',
                 'Failed to execute transaction',
@@ -756,10 +770,49 @@ class ContractsModule extends AbstractThorModule {
                 );
             });
 
-            if (!hasTransactionOverrides(transactionOptions)) {
+            const overridesProvided =
+                hasTransactionOverrides(transactionOptions);
+            const legacyRequested =
+                transactionOptions?.useLegacyDefaults === true &&
+                !overridesProvided;
+            const { gasLimit: normalizedGasLimit, builderOptions } =
+                normalizeBuilderOverrides(transactionOptions);
+            let gasLimit = normalizedGasLimit;
+            const shouldEstimateGas =
+                !legacyRequested && transactionOptions?.gas === undefined;
+
+            if (shouldEstimateGas) {
+                const gasEstimateResult: EstimateGasResult = await (
+                    this.thorClient.gas as {
+                        estimateGas: (
+                            clauses: Clause[],
+                            caller: AddressLike,
+                            options?: EstimateGasOptions
+                        ) => Promise<EstimateGasResult>;
+                    }
+                ).estimateGas(transactionClauses, signer.address);
+
+                if (gasEstimateResult.reverted) {
+                    log.warn({
+                        source: 'ContractsModule.executeMultipleClausesTransaction',
+                        message: 'Gas estimation reverted',
+                        context: { gasEstimateResult }
+                    });
+                    throw new IllegalArgumentError(
+                        'ContractsModule.executeMultipleClausesTransaction',
+                        'Gas estimation reverted',
+                        { gasEstimateResult }
+                    );
+                }
+
+                gasLimit = gasEstimateResult.totalGas;
+            }
+
+            if (legacyRequested) {
                 const finalTransactionRequest = TransactionRequest.of({
                     clauses: transactionClauses,
-                    ...DEFAULT_TRANSACTION_LEGACY_FIELDS
+                    ...DEFAULT_TRANSACTION_LEGACY_FIELDS,
+                    gas: gasLimit
                 });
 
                 const signedTransaction = signer.sign(
@@ -774,10 +827,6 @@ class ContractsModule extends AbstractThorModule {
 
                 return transactionId;
             }
-
-            const { gasLimit, builderOptions } = normalizeBuilderOverrides(
-                transactionOptions
-            );
 
             const finalTransactionRequest = await (
                 this.thorClient.transactions as {

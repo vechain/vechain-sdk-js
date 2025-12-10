@@ -135,6 +135,13 @@ interface TransactionBodyOptions {
      * The maximum priority fee per gas for the transaction.
      */
     maxPriorityFeePerGas?: bigint;
+
+    /**
+     * Internal flag used by adapters to request legacy TransactionRequest defaults.
+     * When true (and no other overrides are provided) the ContractsModule will
+     * construct a TransactionRequest using the classic template instead of the builder.
+     */
+    useLegacyDefaults?: boolean;
 }
 
 export type { TransactionBody, TransactionBodyOptions };
