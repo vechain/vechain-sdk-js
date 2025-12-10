@@ -47,12 +47,12 @@ interface ContractsModule {
         contractAddress: unknown,
         functionAbi: unknown,
         functionData: readonly unknown[],
-        transactionRequest?: unknown,
+        transactionRequest?: TransactionBodyOptions,
         value?: bigint
     ): Promise<unknown>;
     [key: string]: unknown;
 }
-import type { TransactionRequest } from '../../model/transactions/TransactionRequest';
+import type { TransactionBodyOptions } from '../../model/transactions/TransactionBody';
 import { RevisionLike } from '@common/vcdm';
 // Proper function arguments type using VeChain SDK types (runtime values, not ABI definitions)
 type FunctionArgs = readonly unknown[];
@@ -134,7 +134,7 @@ class Contract<TAbi extends Abi> {
     } = {} as any;
 
     private contractCallOptions: ContractCallOptions = {};
-    private contractTransactionRequest?: TransactionRequest;
+    private contractTransactionRequest?: TransactionBodyOptions;
 
     /**
      * Initializes a new instance of the `Contract` class.
@@ -203,8 +203,8 @@ class Contract<TAbi extends Abi> {
      * @returns The updated contract transaction options.
      */
     public setContractTransactOptions(
-        transactionRequest: TransactionRequest
-    ): TransactionRequest {
+        transactionRequest: TransactionBodyOptions
+    ): TransactionBodyOptions {
         this.contractTransactionRequest = transactionRequest;
         return this.contractTransactionRequest;
     }
@@ -213,7 +213,9 @@ class Contract<TAbi extends Abi> {
      * Gets the current contract transaction request.
      * @returns The current contract transaction request.
      */
-    public getContractTransactOptions(): TransactionRequest | undefined {
+    public getContractTransactOptions():
+        | TransactionBodyOptions
+        | undefined {
         return this.contractTransactionRequest;
     }
 
@@ -681,7 +683,9 @@ class Contract<TAbi extends Abi> {
      * Sets transaction options for contract transactions.
      * @param transactionRequest - The transaction request to set.
      */
-    public setTransactOptions(transactionRequest: TransactionRequest): void {
+    public setTransactOptions(
+        transactionRequest: TransactionBodyOptions
+    ): void {
         this.contractTransactionRequest = transactionRequest;
     }
 

@@ -470,7 +470,7 @@ describe.skip('Write-Only Contract', () => {
             contract.setContractTransactOptions({ gas: 100000 });
             contract.clearContractTransactOptions();
 
-            expect(contract.getContractTransactOptions()).toEqual({});
+            expect(contract.getContractTransactOptions()).toBeUndefined();
         });
 
         test('Should use transaction options in method calls', async () => {

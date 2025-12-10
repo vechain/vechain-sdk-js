@@ -27,6 +27,67 @@ import { type ClauseSimulationResult } from '../model/transactions';
 import { type AccountDetail } from '../model/accounts/AccountDetail';
 import { HexUInt } from '@common/vcdm';
 import { decodeRevertReason } from './utils';
+import { type TransactionBodyOptions } from '../model/transactions/TransactionBody';
+
+const DEFAULT_TRANSACTION_LEGACY_FIELDS = {
+    gas: 21000n,
+    gasPriceCoef: 0n,
+    nonce: 0n,
+    blockRef: Hex.of('0x0000000000000000'),
+    chainTag: 0x27,
+    dependsOn: null,
+    expiration: 720
+} as const;
+
+const DEFAULT_GAS_LIMIT = 21000n;
+
+const hasTransactionOverrides = (
+    options?: TransactionBodyOptions
+): boolean => {
+    if (!options) {
+        return false;
+    }
+
+    return (
+        options.blockRef !== undefined ||
+        options.chainTag !== undefined ||
+        options.dependsOn !== undefined ||
+        options.expiration !== undefined ||
+        options.gas !== undefined ||
+        options.gasPriceCoef !== undefined ||
+        options.maxFeePerGas !== undefined ||
+        options.maxPriorityFeePerGas !== undefined ||
+        options.nonce !== undefined ||
+        options.isDelegated !== undefined
+    );
+};
+
+const normalizeBuilderOverrides = (
+    options?: TransactionBodyOptions
+): {
+    gasLimit: bigint;
+    builderOptions?: TransactionBodyOptions;
+} => {
+    if (!options) {
+        return { gasLimit: DEFAULT_GAS_LIMIT, builderOptions: undefined };
+    }
+
+    const normalizedOptions: TransactionBodyOptions = { ...options };
+
+    let gasLimit: bigint = DEFAULT_GAS_LIMIT;
+    if (normalizedOptions.gas !== undefined) {
+        gasLimit = normalizedOptions.gas;
+        delete normalizedOptions.gas;
+    }
+
+    return {
+        gasLimit,
+        builderOptions:
+            Object.keys(normalizedOptions).length > 0
+                ? normalizedOptions
+                : undefined
+    };
+};
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
@@ -458,7 +519,7 @@ class ContractsModule extends AbstractThorModule {
         contractAddress: AddressLike,
         functionAbi: AbiFunction,
         functionData: FunctionArgs,
-        transactionRequest?: TransactionRequest,
+        transactionOptions?: TransactionBodyOptions,
         value?: bigint
     ): Promise<Hex> {
         try {
@@ -471,31 +532,40 @@ class ContractsModule extends AbstractThorModule {
                 value ?? 0n
             );
 
-            // Use provided TransactionRequest or create a default one
-            const finalTransactionRequest = transactionRequest
-                ? TransactionRequest.of({
-                      blockRef: transactionRequest.blockRef,
-                      chainTag: transactionRequest.chainTag,
-                      clauses: [clause], // Override clauses with our contract call
-                      dependsOn: transactionRequest.dependsOn,
-                      expiration: transactionRequest.expiration,
-                      gas: transactionRequest.gas,
-                      gasPriceCoef: transactionRequest.gasPriceCoef,
-                      maxFeePerGas: transactionRequest.maxFeePerGas,
-                      maxPriorityFeePerGas:
-                          transactionRequest.maxPriorityFeePerGas,
-                      nonce: transactionRequest.nonce
-                  })
-                : TransactionRequest.of({
-                      clauses: [clause],
-                      gas: 21000n,
-                      gasPriceCoef: 0n,
-                      nonce: 0n,
-                      blockRef: Hex.of('0x0000000000000000'),
-                      chainTag: 0x27,
-                      dependsOn: null,
-                      expiration: 720
-                  });
+            const clauses = [clause];
+
+            if (!hasTransactionOverrides(transactionOptions)) {
+                const finalTransactionRequest = TransactionRequest.of({
+                    clauses,
+                    ...DEFAULT_TRANSACTION_LEGACY_FIELDS
+                });
+
+                const signedTransaction = signer.sign(
+                    finalTransactionRequest
+                );
+                const encodedTransaction = signedTransaction.encoded;
+
+                const transactionId: Hex =
+                    await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
+                        encodedTransaction
+                    );
+
+                return transactionId;
+            }
+
+            const { gasLimit, builderOptions } = normalizeBuilderOverrides(
+                transactionOptions
+            );
+
+            const finalTransactionRequest = await (
+                this.thorClient.transactions as {
+                    buildTransactionBody: (
+                        clauses: Clause[],
+                        gas: bigint,
+                        options?: TransactionBodyOptions
+                    ) => Promise<TransactionRequest>;
+                }
+            ).buildTransactionBody(clauses, gasLimit, builderOptions);
 
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
@@ -622,14 +692,11 @@ class ContractsModule extends AbstractThorModule {
             functionData?: FunctionArgs;
         }[],
         signer: Signer,
-        transactionRequest?: TransactionRequest
+        transactionOptions?: TransactionBodyOptions
     ): Promise<Hex> {
         try {
             // Build multiple clauses for a single transaction
-            const transactionClauses: (
-                | Clause
-                | { to: Address; data: string; value: bigint }
-            )[] = clauses.map((clause) => {
+            const transactionClauses: Clause[] = clauses.map((clause) => {
                 if (
                     clause.contractAddress &&
                     clause.functionAbi &&
@@ -644,27 +711,47 @@ class ContractsModule extends AbstractThorModule {
                         clause.value ?? 0n
                     );
                 }
-                return clause;
+                return new Clause(
+                    clause.to,
+                    clause.value,
+                    Hex.of(clause.data),
+                    null,
+                    null
+                );
             });
 
-            // TODO: Consider using TransactionBuilder for more flexible transaction construction
+            if (!hasTransactionOverrides(transactionOptions)) {
+                const finalTransactionRequest = TransactionRequest.of({
+                    clauses: transactionClauses,
+                    ...DEFAULT_TRANSACTION_LEGACY_FIELDS
+                });
 
-            // Use provided TransactionRequest or create a default one
-            const finalTransactionRequest = transactionRequest
-                ? TransactionRequest.of({
-                      ...transactionRequest,
-                      clauses: transactionClauses as Clause[] // Override clauses with our contract calls
-                  })
-                : TransactionRequest.of({
-                      clauses: transactionClauses as Clause[],
-                      gas: 21000n,
-                      gasPriceCoef: 0n,
-                      nonce: 0n,
-                      blockRef: Hex.of('0x0000000000000000'),
-                      chainTag: 0x27,
-                      dependsOn: null,
-                      expiration: 720
-                  });
+                const signedTransaction = signer.sign(
+                    finalTransactionRequest
+                );
+                const encodedTransaction = signedTransaction.encoded;
+
+                const transactionId: Hex =
+                    await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
+                        encodedTransaction
+                    );
+
+                return transactionId;
+            }
+
+            const { gasLimit, builderOptions } = normalizeBuilderOverrides(
+                transactionOptions
+            );
+
+            const finalTransactionRequest = await (
+                this.thorClient.transactions as {
+                    buildTransactionBody: (
+                        clauses: Clause[],
+                        gas: bigint,
+                        options?: TransactionBodyOptions
+                    ) => Promise<TransactionRequest>;
+                }
+            ).buildTransactionBody(transactionClauses, gasLimit, builderOptions);
 
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
