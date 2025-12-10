@@ -270,21 +270,6 @@ describe('ContractsModule', () => {
     });
 
     describe('executeTransaction Method', () => {
-        test('Should execute transaction for nonpayable function', async () => {
-            // Test removed due to complex TransactionRequest mocking requirements
-            expect(true).toBe(true);
-        });
-
-        test('Should execute transaction for payable function', async () => {
-            // Test removed due to complex TransactionRequest mocking requirements
-            expect(true).toBe(true);
-        });
-
-        test('Should execute transaction with options', async () => {
-            // Test removed due to complex TransactionRequest mocking requirements
-            expect(true).toBe(true);
-        });
-
         test('Should throw IllegalArgumentError for invalid signer', async () => {
             const mockHttpClient = createMockHttpClient();
             const thorClient = createThorClient();

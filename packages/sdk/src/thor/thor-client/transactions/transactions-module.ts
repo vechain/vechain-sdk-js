@@ -284,6 +284,13 @@ class TransactionsModule extends AbstractThorModule {
             if (options?.isDelegated !== undefined && options.isDelegated) {
                 txBuilder.withDelegatedFee();
             }
+            // if options are not provided for tx type, default to dynamic fee tx
+            if (
+                options?.gasPriceCoef === undefined &&
+                options?.maxFeePerGas === undefined
+            ) {
+                txBuilder.withDefaultMaxFeePerGas();
+            }
             // build the transaction request
             return await txBuilder.build();
         } catch (error) {
