@@ -48,11 +48,13 @@ interface ContractsModule {
         functionAbi: unknown,
         functionData: readonly unknown[],
         transactionRequest?: TransactionBodyOptions,
+        estimateGasOptions?: EstimateGasOptions,
         value?: bigint
     ): Promise<unknown>;
     [key: string]: unknown;
 }
 import type { TransactionBodyOptions } from '../../model/transactions/TransactionBody';
+import type { EstimateGasOptions } from '../../model/gas/EstimateGasOptions';
 import { RevisionLike } from '@common/vcdm';
 // Proper function arguments type using VeChain SDK types (runtime values, not ABI definitions)
 type FunctionArgs = readonly unknown[];
@@ -480,6 +482,7 @@ class Contract<TAbi extends Abi> {
                                     abiItem,
                                     cleanArgs,
                                     this.contractTransactionRequest,
+                                    undefined,
                                     options.value
                                 );
 
@@ -526,6 +529,7 @@ class Contract<TAbi extends Abi> {
                                     abiItem,
                                     cleanArgs,
                                     this.contractTransactionRequest,
+                                    undefined,
                                     options.value
                                 );
 

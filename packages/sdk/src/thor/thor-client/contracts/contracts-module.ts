@@ -27,6 +27,10 @@ import { type AccountDetail } from '../model/accounts/AccountDetail';
 import { HexUInt } from '@common/vcdm';
 import { decodeRevertReason } from './utils';
 import { type TransactionBodyOptions } from '../model/transactions/TransactionBody';
+import {
+    type EstimateGasOptions,
+    type EstimateGasResult
+} from '../model/gas';
 
 const DEFAULT_TRANSACTION_LEGACY_FIELDS = {
     gas: 21000n,
@@ -511,15 +515,14 @@ class ContractsModule extends AbstractThorModule {
     }
 
     /**
-     * Executes a contract transaction using VeChain thor
-     * This method sends a transaction to the blockchain.
+     * Executes a contract transaction using VeChain's transaction system.
      *
      * @param signer - The signer to use for signing the transaction.
      * @param contractAddress - The address of the contract to call.
      * @param functionAbi - The ABI of the function to call.
      * @param functionData - The arguments to pass to the function.
-     * @param transactionOptions - Optional transaction options
-     * @param estimateGasOptions - Optional estimate gas options
+     * @param transactionOptions - Optional transaction options.
+     * @param estimateGasOptions - Optional gas estimation options.
      * @param value - Optional VET in wei value to send with the transaction.
      * @returns A Promise that resolves to the transaction hash.
      */
@@ -529,6 +532,7 @@ class ContractsModule extends AbstractThorModule {
         functionAbi: AbiFunction,
         functionData: FunctionArgs,
         transactionOptions?: TransactionBodyOptions,
+        estimateGasOptions?: EstimateGasOptions,
         value?: bigint
     ): Promise<Hex> {
         try {
@@ -543,38 +547,62 @@ class ContractsModule extends AbstractThorModule {
 
             const clauses = [clause];
 
-            if (!hasTransactionOverrides(transactionOptions)) {
-                const finalTransactionRequest = TransactionRequest.of({
-                    clauses,
-                    ...DEFAULT_TRANSACTION_LEGACY_FIELDS
-                });
-
-                const signedTransaction = signer.sign(
-                    finalTransactionRequest
-                );
-                const encodedTransaction = signedTransaction.encoded;
-
-                const transactionId: Hex =
-                    await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
-                        encodedTransaction
-                    );
-
-                return transactionId;
-            }
-
-            const { gasLimit, builderOptions } = normalizeBuilderOverrides(
+            const overridesProvided = hasTransactionOverrides(
                 transactionOptions
             );
+            const { gasLimit: normalizedGasLimit, builderOptions } =
+                normalizeBuilderOverrides(transactionOptions);
+            let gasLimit = normalizedGasLimit;
+            const shouldEstimateGas =
+                estimateGasOptions !== undefined &&
+                transactionOptions?.gas === undefined;
 
-            const finalTransactionRequest = await (
-                this.thorClient.transactions as {
-                    buildTransactionBody: (
-                        clauses: Clause[],
-                        gas: bigint,
-                        options?: TransactionBodyOptions
-                    ) => Promise<TransactionRequest>;
+            if (shouldEstimateGas) {
+                const gasEstimateResult: EstimateGasResult = await (
+                    this.thorClient.gas as {
+                        estimateGas: (
+                            clauses: Clause[],
+                            caller: AddressLike,
+                            options?: EstimateGasOptions
+                        ) => Promise<EstimateGasResult>;
+                    }
+                ).estimateGas(clauses, signer.address, estimateGasOptions);
+
+                if (gasEstimateResult.reverted) {
+                    log.warn({
+                        source: 'ContractsModule.executeTransaction',
+                        message: 'Gas estimation reverted',
+                        context: { gasEstimateResult }
+                    });
+                    throw new IllegalArgumentError(
+                        'ContractsModule.executeTransaction',
+                        'Gas estimation reverted',
+                        { gasEstimateResult }
+                    );
                 }
-            ).buildTransactionBody(clauses, gasLimit, builderOptions);
+
+                gasLimit = gasEstimateResult.totalGas;
+            }
+
+            let finalTransactionRequest: TransactionRequest;
+
+            if (!overridesProvided) {
+                finalTransactionRequest = TransactionRequest.of({
+                    ...DEFAULT_TRANSACTION_LEGACY_FIELDS,
+                    gas: gasLimit,
+                    clauses
+                });
+            } else {
+                finalTransactionRequest = await (
+                    this.thorClient.transactions as {
+                        buildTransactionBody: (
+                            clauses: Clause[],
+                            gas: bigint,
+                            options?: TransactionBodyOptions
+                        ) => Promise<TransactionRequest>;
+                    }
+                ).buildTransactionBody(clauses, gasLimit, builderOptions);
+            }
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
 

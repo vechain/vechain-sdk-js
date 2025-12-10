@@ -237,6 +237,7 @@ function getTransactProxy<TAbi extends Abi>(
                     functionAbi,
                     args as any,
                     transactionOptions,
+                    undefined,
                     typeof transactionValue === 'string'
                         ? BigInt(transactionValue)
                         : (transactionValue ?? 0n)
