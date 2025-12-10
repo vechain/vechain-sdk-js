@@ -575,47 +575,6 @@ class ContractsModule extends AbstractThorModule {
                     ) => Promise<TransactionRequest>;
                 }
             ).buildTransactionBody(clauses, gasLimit, builderOptions);
-
-            // get gas from options if provided
-            if (transactionOptions != undefined) {
-                if (transactionOptions.gas !== undefined) {
-                    gasEstimate = transactionOptions.gas;
-                }
-            }
-            // estimate gas if not provided
-            if (gasEstimate === undefined) {
-                const gasEstimateResult = await this.thorClient.gas.estimateGas(
-                    [clause],
-                    signer.address,
-                    estimateGasOptions
-                );
-                if (gasEstimateResult.reverted) {
-                    log.warn({
-                        source: 'ContractsModule.execute',
-                        message: 'Gas estimation reverted',
-                        context: { gasEstimateResult }
-                    });
-                }
-                gasEstimate = gasEstimateResult.totalGas;
-            }
-
-            // build the transaction request
-            if (transactionOptions !== undefined) {
-                // use provided transaction options
-                finalTransactionRequest = await this.thorClient.transactions.buildTransactionBody(
-                    [clause],
-                    gasEstimate,
-                    transactionOptions
-                );
-            } else {
-                // use transaction builder to build the transaction request with default values
-                const builder = TransactionBuilder.create(this.thorClient);
-                finalTransactionRequest = await builder
-                    .withClauses([clause])
-                    .withGas(gasEstimate)
-                    .withDynFeeTxDefaults()
-                    .build();
-            }
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
 
