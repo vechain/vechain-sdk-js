@@ -20,6 +20,12 @@ The `examples/viem` directory gives examples using the `viem` compatibility laye
     - Transactions
         - [Read a transaction and transaction receipt](./thor/get-transaction-details/)
         - [Transfer VIP-180/ERC-20 tokens without ABI](./thor/transfer-token-wo-abi/)
+        - [Decode a raw transaction](./thor/decode-raw-transaction/)
+        - [Build a transaction request](./thor/build-transaction-request/)
+        - [Transfer VTHO transaction](./thor/transfer-vtho-transaction/)
+    - Events & Logs
+        - [Filtering VET Transfers](./thor/filter-vet-transfers/)
+        - [Filtering Raw Event Logs and Decoding](./thor/filter-event-logs/)
 
 
 - Viem
