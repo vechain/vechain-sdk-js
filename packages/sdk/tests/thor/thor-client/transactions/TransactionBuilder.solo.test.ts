@@ -100,12 +100,8 @@ describe('TransactionBuilder SOLO tests', () => {
     test('create transaction with gas estimation not set by the user', async () => {
         const builder =
             TransactionBuilder.create(thorClient).withClauses(clauses);
-        // expect error on build as user did not call withEstimatedGas
-        await expect(async () => await builder.build()).rejects.toThrow(
-            new InvalidTransactionField(
-                'TransactionBuilder.build',
-                'Gas estimation was not called, cannot build transaction'
-            )
-        );
+        // expect gas to be set to 0
+        const txRequest = await builder.build();
+        expect(txRequest.gas).toBe(0n);
     });
 });

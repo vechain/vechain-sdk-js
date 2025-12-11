@@ -535,25 +535,6 @@ class TransactionBuilder {
                 this.withDefaultChainTag();
             }
         }
-        // check if estimating gas was not set by the user
-        if (this.params.gas === TransactionBuilder.STARTING_GAS) {
-            // not directly set by the user, perhaps use estimated gas task added
-            const estimatedGasTask = this.buildTasks.find(
-                (t) => t.name === BuildTaskName.WITH_ESTIMATED_GAS
-            );
-            if (estimatedGasTask === undefined) {
-                // no estimated gas task added, throw error
-                log.error({
-                    message:
-                        'TransactionBuilder.build: Gas estimation was not called, cannot build transaction'
-                });
-                throw new InvalidTransactionField(
-                    'TransactionBuilder.build',
-                    'Gas estimation was not called, cannot build transaction',
-                    { params: this.params }
-                );
-            }
-        }
     }
 
     /**
