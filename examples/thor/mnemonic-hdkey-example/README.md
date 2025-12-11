@@ -2,7 +2,7 @@
 
 This example demonstrates how to generate BIP39 mnemonic words and derive addresses using different derivation paths (Ethereum, VeChain, and default) in SDK v3.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/mnemonic-hdkey-example)
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/thor/mnemonic-hdkey-example)
 
 ## Usage
 

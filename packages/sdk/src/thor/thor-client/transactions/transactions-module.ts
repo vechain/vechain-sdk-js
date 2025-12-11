@@ -96,9 +96,12 @@ class TransactionsModule extends AbstractThorModule {
         options?: SimulateTransactionOptions
     ): Promise<ClauseSimulationResult[]> {
         const request = new ExecuteCodesRequest(clauses, options);
-        const query = InspectClauses.of(request).withRevision(
-            options?.revision ?? Revision.BEST
-        );
+        // Convert RevisionLike to Revision
+        const revision =
+            options?.revision !== undefined
+                ? Revision.of(options.revision)
+                : Revision.BEST;
+        const query = InspectClauses.of(request).withRevision(revision);
         const thorResponse = await query.askTo(this.httpClient);
         return thorResponse.response.items.map(
             (resp: ExecuteCodeResponse) => new ClauseSimulationResult(resp)
@@ -280,6 +283,13 @@ class TransactionsModule extends AbstractThorModule {
             // is delegated
             if (options?.isDelegated !== undefined && options.isDelegated) {
                 txBuilder.withDelegatedFee();
+            }
+            // if options are not provided for tx type, default to dynamic fee tx
+            if (
+                options?.gasPriceCoef === undefined &&
+                options?.maxFeePerGas === undefined
+            ) {
+                txBuilder.withDefaultMaxFeePerGas();
             }
             // build the transaction request
             return await txBuilder.build();

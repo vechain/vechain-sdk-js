@@ -45,7 +45,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
 
             expect(transaction.blockRef).toBe(mockBlockRef);
             expect(transaction.chainTag).toBe(1);
@@ -73,7 +73,7 @@ describe('TransactionRequest', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas
             };
 
-            const transaction = new TransactionRequest(params, mockSignature);
+            const transaction = TransactionRequest.of(params, mockSignature);
 
             expect(transaction.blockRef).toBe(mockBlockRef);
             expect(transaction.chainTag).toBe(1);
@@ -103,7 +103,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params, mockSignature);
+            const transaction = TransactionRequest.of(params, mockSignature);
 
             expect(transaction.blockRef).toBe(mockBlockRef);
             expect(transaction.chainTag).toBe(1);
@@ -131,7 +131,7 @@ describe('TransactionRequest', () => {
             };
             const originalSig = new Uint8Array([7, 8, 9]);
 
-            const transaction = new TransactionRequest(params, originalSig);
+            const transaction = TransactionRequest.of(params, originalSig);
 
             // Modify original arrays
             originalSig[0] = 99;
@@ -152,7 +152,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             expect(transaction.signature).toBeUndefined();
         });
     });
@@ -171,7 +171,7 @@ describe('TransactionRequest', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             expect(transaction.isDynamicFee).toBe(true);
         });
 
@@ -187,7 +187,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             expect(transaction.isDynamicFee).toBe(false);
         });
     });
@@ -209,7 +209,7 @@ describe('TransactionRequest', () => {
                     unused: []
                 }
             };
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             expect(transaction.isDelegated).toBe(true);
         });
 
@@ -225,7 +225,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             expect(transaction.isDelegated).toBe(false);
         });
 
@@ -245,7 +245,7 @@ describe('TransactionRequest', () => {
                 }
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             expect(transaction.isDelegated).toBe(false);
         });
     });
@@ -263,7 +263,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             expect(transaction.isSigned).toBe(false);
         });
 
@@ -279,7 +279,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(
+            const transaction = TransactionRequest.of(
                 params,
                 mockOriginSignature
             );
@@ -304,7 +304,7 @@ describe('TransactionRequest', () => {
             };
 
             // Only origin signature
-            const transaction1 = new TransactionRequest(
+            const transaction1 = TransactionRequest.of(
                 params,
                 mockOriginSignature
             );
@@ -331,7 +331,7 @@ describe('TransactionRequest', () => {
                 ...mockOriginSignature,
                 ...mockGasPayerSignature
             ]);
-            const transaction = new TransactionRequest(params, fullSignature);
+            const transaction = TransactionRequest.of(params, fullSignature);
             expect(transaction.isSigned).toBe(true);
         });
 
@@ -348,7 +348,7 @@ describe('TransactionRequest', () => {
             };
 
             const wrongSignature = new Uint8Array([1, 2, 3]); // Different length
-            const transaction = new TransactionRequest(params, wrongSignature);
+            const transaction = TransactionRequest.of(params, wrongSignature);
             expect(transaction.isSigned).toBe(false);
         });
 
@@ -370,7 +370,7 @@ describe('TransactionRequest', () => {
             };
 
             const wrongSignature = new Uint8Array([1, 2, 3]); // Different length
-            const transaction = new TransactionRequest(params, wrongSignature);
+            const transaction = TransactionRequest.of(params, wrongSignature);
             expect(transaction.isSigned).toBe(false);
         });
     });
@@ -388,7 +388,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             const json = transaction.toJSON();
 
             expect(json.blockRef).toBe(mockBlockRef.toString());
@@ -421,7 +421,7 @@ describe('TransactionRequest', () => {
                 }
             };
 
-            const transaction = new TransactionRequest(params, mockSignature);
+            const transaction = TransactionRequest.of(params, mockSignature);
             const json = transaction.toJSON();
 
             expect(json.blockRef).toBe(mockBlockRef.toString());
@@ -452,7 +452,7 @@ describe('TransactionRequest', () => {
                 }
             };
 
-            const transaction = new TransactionRequest(params, mockSignature);
+            const transaction = TransactionRequest.of(params, mockSignature);
             const json = transaction.toJSON();
 
             expect(json.blockRef).toBe(mockBlockRef.toString());
@@ -482,7 +482,7 @@ describe('TransactionRequest', () => {
                 maxPriorityFeePerGas: 0n
             };
 
-            expect(() => new TransactionRequest(params)).toThrowError(
+            expect(() => TransactionRequest.of(params)).toThrowError(
                 InvalidTransactionField
             );
         });
@@ -500,7 +500,7 @@ describe('TransactionRequest', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             const json = transaction.toJSON();
 
             expect(json.maxFeePerGas).toBe(mockMaxFeePerGas);
@@ -519,7 +519,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             const json = transaction.toJSON();
 
             expect(json.clauses).toEqual([]);
@@ -539,7 +539,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             const json = transaction.toJSON();
 
             expect(json.clauses).toHaveLength(2);
@@ -561,7 +561,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
 
             expect(transaction.dependsOn).toBeNull();
             expect(transaction.maxFeePerGas).toBeUndefined();
@@ -584,7 +584,7 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             expect(transaction.gas).toBe(largeGas);
             expect(transaction.toJSON().gas).toBe(largeGas);
         });
@@ -601,7 +601,7 @@ describe('TransactionRequest', () => {
                 nonce: 0n
             };
 
-            const transaction = new TransactionRequest(params);
+            const transaction = TransactionRequest.of(params);
             expect(transaction.chainTag).toBe(0);
             expect(transaction.expiration).toBe(0);
             expect(transaction.gas).toBe(0n);

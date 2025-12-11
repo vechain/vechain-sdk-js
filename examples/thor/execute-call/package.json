@@ -1,5 +1,5 @@
 {
-    "name": "contract-deploy-example",
+    "name": "example-template",
     "private": true,
     "type": "module",
     "scripts": {
@@ -7,7 +7,7 @@
         "dev": "tsx index.ts"
     },
     "dependencies": {
-        "@vechain/sdk-temp": "portal:../../packages/sdk"
+        "@vechain/sdk-temp": "portal:../../../packages/sdk"
     },
     "devDependencies": {
         "tsx": "4.21.0",

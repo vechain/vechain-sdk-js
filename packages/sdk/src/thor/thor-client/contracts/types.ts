@@ -6,7 +6,7 @@ import {
     type Address,
     type AddressLike,
     type Hex,
-    Revision
+    type RevisionLike
 } from '@common/vcdm';
 import { type EstimateGasOptions } from '../../thor-client/model/gas/EstimateGasOptions';
 import { type TransactionRequest } from '../../thor-client/model/transactions/TransactionRequest';
@@ -162,9 +162,9 @@ type ContractCallOptions = EstimateGasOptions & {
 
     /**
      * The revision to query the contract state at (block number, block ID, or label like "best")
-     * Use Revision.of() to create from string/number or use Revision.BEST, Revision.FINALIZED, etc.
+     * Accepts a Revision instance, block number (number/bigint), or string alias ('best', 'finalized', etc.)
      */
-    revision?: Revision;
+    revision?: RevisionLike;
 };
 
 // SimulateTransactionOptions is imported from model/transactions/SimulateTransactionOptions

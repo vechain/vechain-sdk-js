@@ -1,4 +1,4 @@
-import { type Revision } from '@common/vcdm';
+import { type RevisionLike } from '@common/vcdm';
 
 /**
  * Options for gas estimation.
@@ -6,8 +6,9 @@ import { type Revision } from '@common/vcdm';
 interface EstimateGasOptions {
     /**
      * The revision (block) to estimate gas at.
+     * Accepts a Revision instance, block number (number/bigint), or string alias ('best', 'finalized', etc.)
      */
-    revision?: Revision;
+    revision?: RevisionLike;
 
     /**
      * The maximum gas to use for the transaction.
