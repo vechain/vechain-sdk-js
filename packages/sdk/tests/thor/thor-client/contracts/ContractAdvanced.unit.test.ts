@@ -370,7 +370,7 @@ describe.skip('Contract Advanced Functionality', () => {
             contract.clearContractTransactOptions();
 
             const options = contract.getContractTransactOptions();
-            expect(options).toEqual({});
+            expect(options).toBeUndefined();
         });
     });
 

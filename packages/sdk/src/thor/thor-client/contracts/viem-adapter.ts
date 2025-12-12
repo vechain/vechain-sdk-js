@@ -12,7 +12,7 @@ import type {
     SimulationResult,
     ContractCallOptions
 } from './types';
-import { TransactionRequest } from '../../thor-client/model/transactions/TransactionRequest';
+import { type TransactionBodyOptions } from '../../thor-client/model/transactions/TransactionBody';
 
 // Proper function arguments type using VeChain SDK types (runtime values, not ABI definitions)
 type FunctionArgs = readonly unknown[];
@@ -78,7 +78,7 @@ export interface ViemContract<TAbi extends Abi> {
      */
     _vechain?: {
         setReadOptions: (options: ContractCallOptions) => void;
-        setTransactOptions: (options: TransactionRequest) => void;
+        setTransactOptions: (options: TransactionBodyOptions) => void;
         clause: Record<
             string,
             (...args: FunctionArgs) => {
@@ -140,7 +140,7 @@ export function createViemContract<TAbi extends Abi>(
         _vechain: {
             setReadOptions: (options: ContractCallOptions) =>
                 contract.setReadOptions(options),
-            setTransactOptions: (options: TransactionRequest) =>
+            setTransactOptions: (options: TransactionBodyOptions) =>
                 contract.setTransactOptions(options),
             clause: contract.clause as any,
             criteria: contract.criteria as any
@@ -176,29 +176,38 @@ export function createViemContract<TAbi extends Abi>(
             ) => {
                 const args = params?.args || [];
 
-                // Create a TransactionRequest if any params are provided
-                if (
-                    params &&
-                    (params.value ||
-                        params.gas ||
-                        params.gasPriceCoef ||
-                        params.maxFeePerGas ||
-                        params.maxPriorityFeePerGas)
-                ) {
-                    const transactionRequest = TransactionRequest.of({
-                        clauses: [], // Will be set by the contract method
-                        gas: params.gas ?? 21000n,
-                        gasPriceCoef: params.gasPriceCoef ?? 0n,
-                        nonce: 0n,
-                        blockRef: Hex.of('0x0000000000000000'),
-                        chainTag: 0x27,
-                        dependsOn: null,
-                        expiration: 720,
-                        maxFeePerGas: params.maxFeePerGas,
-                        maxPriorityFeePerGas: params.maxPriorityFeePerGas
-                    });
-                    contract.setTransactOptions(transactionRequest);
+                // Apply transaction options only when explicitly provided
+                const transactionOptions: TransactionBodyOptions = {
+                    useLegacyDefaults: true
+                };
+                let hasOverrides = false;
+
+                if (params?.gas !== undefined) {
+                    transactionOptions.gas = params.gas;
+                    hasOverrides = true;
                 }
+
+                if (params?.gasPriceCoef !== undefined) {
+                    transactionOptions.gasPriceCoef = params.gasPriceCoef;
+                    hasOverrides = true;
+                }
+
+                if (params?.maxFeePerGas !== undefined) {
+                    transactionOptions.maxFeePerGas = params.maxFeePerGas;
+                    hasOverrides = true;
+                }
+
+                if (params?.maxPriorityFeePerGas !== undefined) {
+                    transactionOptions.maxPriorityFeePerGas =
+                        params.maxPriorityFeePerGas;
+                    hasOverrides = true;
+                }
+
+                if (hasOverrides) {
+                    delete transactionOptions.useLegacyDefaults;
+                }
+
+                contract.setTransactOptions(transactionOptions);
 
                 const result = await (contract.transact as any)[abiItem.name](
                     ...args
