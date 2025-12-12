@@ -88,7 +88,7 @@ async function createTransactionRequest(): Promise<TransactionRequest> {
 
 // Converts a TransactionRequest to a TransactionRequestInput for dappkit compatibility
 const toTransactionRequestInput = (request: TransactionRequest): TransactionRequestInput => {
-    // convert to primative types
+    // convert to primitive types
     const json = request.toJSON();
     // return a TransactionRequestInput
     return {
