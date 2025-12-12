@@ -122,7 +122,7 @@ if (sendTxButton) {
 const signTypedDataButton = document.getElementById('sign-typed-data-button');
 if (signTypedDataButton) {
     signTypedDataButton.addEventListener('click', () => {
-        DAppKitUI.signer.signTypedData(
+        DAppKitUI.signer?.signTypedData(
             {
                 name: 'Test Data',
                 version: '1',
