@@ -27,10 +27,10 @@ type ContractReadResult<
           ExtractAbiFunction<TAbi, TFunctionName>['outputs'],
           'outputs'
       >;
-import { encodeFunctionData, toEventSelector } from 'viem';
+import { encodeFunctionData, toEventSelector, toFunctionSignature } from 'viem';
 import { type Signer } from '@thor/signer';
 import { Address, AddressLike, Hex, Revision } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
+import { IllegalArgumentError, ContractCallError } from '@common/errors';
 import { log } from '@common/logging';
 import type { ContractCallOptions } from '../types';
 // Forward reference to avoid circular dependency with ContractsModule
@@ -421,9 +421,12 @@ class Contract<TAbi extends Abi> {
                                 );
 
                             if (!result.success) {
-                                throw new IllegalArgumentError(
-                                    'Contract.initializeProxies',
-                                    'Contract call failed',
+                                const errorMessage =
+                                    (result.result as { errorMessage?: string }).errorMessage ||
+                                    'Unknown error';
+                                throw new ContractCallError(
+                                    toFunctionSignature(abiItem),
+                                    errorMessage,
                                     {
                                         functionName,
                                         errorMessage:
