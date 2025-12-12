@@ -1,5 +1,5 @@
 {
-    "name": "example-template",
+    "name": "dappkit-example",
     "private": true,
     "type": "module",
     "scripts": {
