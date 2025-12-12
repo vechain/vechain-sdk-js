@@ -128,16 +128,6 @@ class SimpleHttpClient implements HttpClient {
                 });
             }
 
-            if (
-                params?.query !== undefined &&
-                params?.query != null &&
-                url !== undefined
-            ) {
-                Object.entries(params.query).forEach(([key, value]) => {
-                    (url as URL).searchParams.append(key, String(value));
-                });
-            }
-
             const headers = new Headers(this.headers);
             if (params?.headers !== undefined && params?.headers != null) {
                 Object.entries(params.headers).forEach(([key, value]) => {
