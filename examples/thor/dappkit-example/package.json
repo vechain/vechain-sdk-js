@@ -1,0 +1,17 @@
+{
+    "name": "dappkit-example",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "dependencies": {
+        "@vechain/dapp-kit-ui": "^2.0.4",
+        "@vechain/sdk-temp": "portal:../../../packages/sdk"
+    },
+    "devDependencies": {
+        "typescript": "5.9.3",
+        "vite": "7.2.6"
+    }
+}
