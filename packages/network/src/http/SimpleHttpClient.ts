@@ -122,10 +122,7 @@ class SimpleHttpClient implements HttpClient {
                 url = new URL(path, baseURL);
             }
 
-            if (
-                params?.query &&
-                url !== undefined
-            ) {
+            if (params?.query && url !== undefined) {
                 Object.entries(params.query).forEach(([key, value]) => {
                     (url as URL).searchParams.append(key, String(value));
                 });
