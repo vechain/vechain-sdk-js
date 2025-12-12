@@ -1,0 +1,16 @@
+{
+    "name": "example-template",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsx index.ts"
+    },
+    "dependencies": {
+        "@vechain/sdk-temp": "portal:../../../packages/sdk"
+    },
+    "devDependencies": {
+        "tsx": "4.21.0",
+        "typescript": "5.9.3"
+    }
+}
