@@ -13,7 +13,8 @@ import { IllegalArgumentError, ContractCallError } from '../../../common/errors'
 import { log } from '@common/logging';
 import {
     encodeFunctionData,
-    decodeFunctionResult
+    decodeFunctionResult,
+    toFunctionSignature
 } from 'viem';
 import type { ContractCallOptions, ContractCallResult } from './types';
 import { EventLogFilter } from '../model/logs/EventLogFilter';
@@ -237,10 +238,9 @@ class ContractsModule extends AbstractThorModule {
                 const errorMessage =
                     error instanceof Error ? error.message : 'Unknown encoding error';
                 throw new ContractCallError(
-                    'ContractsModule.executeCall',
+                    toFunctionSignature(resolvedFunctionAbi),
                     errorMessage,
                     {
-                        functionName: resolvedFunctionAbi.name,
                         contractAddress: contractAddress.toString()
                     },
                     error instanceof Error ? error : undefined
@@ -318,10 +318,9 @@ class ContractsModule extends AbstractThorModule {
                     // This matches v2 behavior where encodeData() fails for non-existent functions
                     if (hasNoRevertMessage && isGenericError) {
                         throw new ContractCallError(
-                            'ContractsModule.executeCall',
+                            toFunctionSignature(resolvedFunctionAbi),
                             'Contract call reverted without a specific error message. This may indicate the function does not exist in the contract.',
                             {
-                                functionName: resolvedFunctionAbi.name,
                                 contractAddress: contractAddress.toString(),
                                 vmError: vmError || 'execution reverted'
                             }
@@ -432,20 +431,21 @@ class ContractsModule extends AbstractThorModule {
                     ? error.message
                     : 'Unknown error occurred';
             // Use resolvedFunctionAbi if available, otherwise try to extract from functionAbi
-            const functionName =
-                resolvedFunctionAbi?.name ??
+            const functionAbiForSignature =
+                resolvedFunctionAbi ??
                 (functionAbi &&
                 'type' in functionAbi &&
-                functionAbi.type === 'function' &&
-                'name' in functionAbi
-                    ? (functionAbi as AbiFunction).name
+                functionAbi.type === 'function'
+                    ? (functionAbi as AbiFunction)
                     : undefined);
+            const fqn = functionAbiForSignature
+                ? toFunctionSignature(functionAbiForSignature)
+                : 'ContractsModule.executeCall';
             throw new ContractCallError(
-                'ContractsModule.executeCall',
+                fqn,
                 errorMessage,
                 {
-                    contractAddress: contractAddress?.toString(),
-                    functionName
+                    contractAddress: contractAddress?.toString()
                 },
                 error instanceof Error ? error : undefined
             );
