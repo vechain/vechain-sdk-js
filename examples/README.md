@@ -1,10 +1,10 @@
 # Examples
 
 The `examples/` directory is a growing & living folder, and open for contributions.  
-Each example can be opened in a StackBlitz project, so people can start with the example easily.  
+Each example can be opened in a StackBlitz project, so people can start with the example easily.
 
 The `examples/thor` directory gives examples using `thor-client` and thor specifics.  
-The `examples/viem` directory gives examples using the `viem` compatibility layer. 
+The `examples/viem` directory gives examples using the `viem` compatibility layer.
 
 ## Example List
 
@@ -28,13 +28,25 @@ The `examples/viem` directory gives examples using the `viem` compatibility laye
         - [Filtering VET Transfers](./thor/filter-vet-transfers/)
         - [Filtering Raw Event Logs and Decoding](./thor/filter-event-logs/)
 
-
-- Viem
-    - Blocks
-        - example 1
-        - example 2
-        - example 3
-
+- Viem (PublicClient & WalletClient)
+    - Contracts
+        - [Contract deployment using viem clients](./viem/contract-deploy-example/)
+        - [Read-only contract call via viem Contract](./viem/execute-call/)
+        - [Write to contract with fee delegation (VIP-191)](./viem/write-contracts-delegation/)
+    - Mnemonics and Keys
+        - [Mnemonic and HDKey](./viem/mnemonic-hdkey-example/)
+    - Accounts
+        - [Read an addresses VET & VTHO balance and contract bytecode](./viem/get-account-details/)
+    - Transactions
+        - [Read a transaction and transaction receipt](./viem/get-transaction-details/)
+        - [Transfer VIP-180/ERC-20 tokens without ABI](./viem/transfer-token-wo-abi/)
+        - [Request gas sponsorship from the generic delegator (VET, B3TR)](./viem/generic-delegator-tx/)
+        - [Decode a raw transaction](./viem/decode-raw-transaction/)
+        - [Build a transaction request](./viem/build-transaction-request/)
+        - [Transfer VTHO transaction](./viem/transfer-vtho-transaction/)
+    - Events & Logs
+        - [Filtering VET Transfers](./viem/filter-vet-transfers/)
+        - [Filtering Raw Event Logs and Decoding](./viem/filter-event-logs/)
 
 ## Adding an Example
 
@@ -43,8 +55,7 @@ Two templates are provided:
 - `_vite_template`: For Vite web based examples
 - `_tsx_template`: For executable script examples
 
-Each example must include a `README.md` that explains the example, and gives a "open in Stackblitz" link. 
-
+Each example must include a `README.md` that explains the example, and gives a "open in Stackblitz" link.
 
 ## Opening in Stackblitz
 
