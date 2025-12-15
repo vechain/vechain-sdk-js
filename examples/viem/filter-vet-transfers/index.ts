@@ -1,25 +1,20 @@
-import { Revision } from '@vechain/sdk-temp/common';
-import { ThorNetworks } from '@vechain/sdk-temp/thor';
+import { ThorNetworks, TransferLog } from '@vechain/sdk-temp/thor';
 import { createPublicClient } from '@vechain/sdk-temp/viem';
 
 async function example(): Promise<void> {
+    // Create viem-compatible public client
     const publicClient = createPublicClient({ network: ThorNetworks.MAINNET });
-    const thorLogs = (
-        publicClient as unknown as { thorClient: { logs: any; blocks: any } }
-    ).thorClient;
 
-    const currentBlock = await thorLogs.blocks.getBlock(Revision.BEST);
-    if (!currentBlock) {
-        throw new Error('Failed to get current block');
-    }
-    const currentBlockNumber = currentBlock.number;
-    const startBlock = currentBlockNumber - 8640;
+    // Get current block number using publicClient
+    const currentBlockNumber = await publicClient.getBlockNumber();
+    const startBlock = currentBlockNumber - 8640; // ~24 hours of blocks
 
     let offset = 0;
-    const logs: any[] = [];
+    const logs: TransferLog[] = [];
 
+    // Filter VET transfers using publicClient.getTransferLogs()
     while (true) {
-        const transferLogs = await thorLogs.logs.filterTransferLogs({
+        const transferLogs = await publicClient.getTransferLogs({
             range: {
                 unit: 'block',
                 from: startBlock,
@@ -37,7 +32,7 @@ async function example(): Promise<void> {
             order: 'asc'
         });
         if (transferLogs.length > 0) {
-            transferLogs.forEach((transferLog: any) => logs.push(transferLog));
+            transferLogs.forEach((transferLog) => logs.push(transferLog));
             offset += 1000;
         } else {
             break;

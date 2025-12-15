@@ -35,6 +35,8 @@ import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventL
 import { type FilterRange } from '@thor/thor-client/model/logs/FilterRange';
 import { type FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
 import { type EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
+import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
+import { type TransferLog } from '@thor/thor-client/model/logs/TransferLog';
 import { type AbiEvent, toEventSelector } from 'viem';
 import type { FeeHistory } from '@thor/thor-client/model/gas/FeeHistory';
 import {
@@ -757,6 +759,31 @@ class PublicClient {
                     error:
                         error instanceof Error ? error.message : String(error),
                     filterId: eventFilter.id
+                }
+            });
+            throw error;
+        }
+    }
+
+    /**
+     * Gets historical VET transfer logs matching a filter.
+     * This is a VeChain-specific method for filtering native VET token transfers.
+     *
+     * @param {TransferLogFilter} filter - The transfer log filter options.
+     * @returns {Promise<TransferLog[]>} The transfer logs.
+     */
+    public async getTransferLogs(
+        filter: TransferLogFilter
+    ): Promise<TransferLog[]> {
+        try {
+            return await this.thorClient.logs.filterTransferLogs(filter);
+        } catch (error) {
+            log.error({
+                message: 'Failed to get transfer logs',
+                source: 'PublicClient.getTransferLogs',
+                context: {
+                    error:
+                        error instanceof Error ? error.message : String(error)
                 }
             });
             throw error;

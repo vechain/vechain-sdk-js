@@ -26,11 +26,7 @@ const delegatorBaseUrl = `https://${NETWORK}.delegator.vechain.org/`;
 
 async function main(): Promise<void> {
     const network =
-        NETWORK === 'mainnet'
-            ? ThorNetworks.MAINNET
-            : NETWORK === 'testnet'
-              ? ThorNetworks.TESTNET
-              : 'http://localhost:8669/';
+        NETWORK === 'mainnet' ? ThorNetworks.MAINNET : ThorNetworks.TESTNET;
 
     const publicClient = createPublicClient({ network });
     const walletClient = createWalletClient({
