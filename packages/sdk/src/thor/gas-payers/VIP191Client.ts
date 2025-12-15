@@ -79,7 +79,7 @@ class VIP191Client {
         if (!transactionRequest.isDelegated) {
             throw new VIP191Error(
                 'VIP191Client.requestGasPayerSignature',
-                'Transaction is delegated, cannot request signature from VIP-191 service'
+                'Transaction is not delegated, cannot request signature from VIP-191 service'
             );
         }
         // build http post request body
