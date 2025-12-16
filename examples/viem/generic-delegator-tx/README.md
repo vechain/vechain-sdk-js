@@ -1,6 +1,6 @@
 # Generic Delegator Fee Sponsorship Example
 
-[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/thor/generic-delegator-tx)
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/viem/generic-delegator-tx)
 
 This example demonstrates how to use the generic delegator service to sponsor gas costs using **VET** or **B3TR** tokens.
 

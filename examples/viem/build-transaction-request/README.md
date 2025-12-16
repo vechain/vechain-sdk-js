@@ -2,7 +2,7 @@
 
 This example demonstrates building and sending transactions using viem-compatible clients.
 
-[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/thor/build-transaction-request)
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/viem/build-transaction-request)
 
 ## Usage
 

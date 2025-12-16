@@ -30,18 +30,14 @@ The `examples/viem` directory gives examples using the `viem` compatibility laye
 
 - Viem (PublicClient & WalletClient)
     - Contracts
-        - [Contract deployment using viem clients](./viem/contract-deploy-example/)
         - [Read-only contract call via viem Contract](./viem/execute-call/)
         - [Write to contract with fee delegation (VIP-191)](./viem/write-contracts-delegation/)
-    - Mnemonics and Keys
-        - [Mnemonic and HDKey](./viem/mnemonic-hdkey-example/)
     - Accounts
         - [Read an addresses VET & VTHO balance and contract bytecode](./viem/get-account-details/)
     - Transactions
         - [Read a transaction and transaction receipt](./viem/get-transaction-details/)
         - [Transfer VIP-180/ERC-20 tokens without ABI](./viem/transfer-token-wo-abi/)
         - [Request gas sponsorship from the generic delegator (VET, B3TR)](./viem/generic-delegator-tx/)
-        - [Decode a raw transaction](./viem/decode-raw-transaction/)
         - [Build a transaction request](./viem/build-transaction-request/)
         - [Transfer VTHO transaction](./viem/transfer-vtho-transaction/)
     - Events & Logs

@@ -1,6 +1,6 @@
 # Transfer Token Without ABI Example
 
-[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/thor/transfer-token-wo-abi)
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/viem/transfer-token-wo-abi)
 
 This example demonstrates:
 
