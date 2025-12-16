@@ -2,6 +2,9 @@
 
 This example demonstrates filtering and decoding event logs using viem-compatible APIs.
 
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/vechain/vechain-sdk-js/tree/sdk-v3/examples/thor/filter-event-logs)
+
+
 ## Usage
 
 ```bash
