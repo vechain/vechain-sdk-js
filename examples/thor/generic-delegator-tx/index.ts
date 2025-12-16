@@ -82,7 +82,7 @@ async function main(): Promise<void> {
     );
 
     // Sign the delegator's transaction as the origin
-    const originSignedTx = signer.sign(delegatorTx);
+    const originSignedTx = await signer.sign(delegatorTx);
     const originSig = originSignedTx.signature ?? new Uint8Array();
 
     // Combine origin signature with delegator signature
