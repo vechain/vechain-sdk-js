@@ -1,35 +1,42 @@
 import { Address, Hex, Revision } from '@vechain/sdk-temp/common';
 import {
-    ThorClient,
-    PrivateKeySigner,
     ClauseBuilder,
+    ThorClient,
+    ThorNetworks,
     TransactionBuilder,
     TransactionRequest,
-    TransactionRequestRLPCodec,
-    ThorNetworks
+    TransactionRequestRLPCodec
 } from '@vechain/sdk-temp/thor';
-import { HexUInt } from '@vechain/sdk-temp/common';
+import {
+    createPublicClient,
+    createWalletClient,
+    privateKeyToAccount
+} from '@vechain/sdk-temp/viem';
 
-// Sender account with private key
 const senderAccount = {
-    privateKey: HexUInt.of(
-        'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26'
-    ).bytes,
+    privateKey: Hex.of(
+        '0xf9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26'
+    ),
     address: Address.of('0x7a28e7361fd10f4f058f9fefc77544349ecff5d6')
 };
 
-// change accordingly to the network you are using and the token you want to pay with
 const NETWORK: 'mainnet' | 'testnet' | 'solo' = 'testnet';
 const TOKEN: 'vet' | 'b3tr' = 'b3tr';
 const delegatorBaseUrl = `https://${NETWORK}.delegator.vechain.org/`;
 
 async function main(): Promise<void> {
-    const thorClient = ThorClient.at(
-        NETWORK === 'mainnet' ? ThorNetworks.MAINNET : ThorNetworks.TESTNET
-    );
+    const network =
+        NETWORK === 'mainnet' ? ThorNetworks.MAINNET : ThorNetworks.TESTNET;
+
+    const publicClient = createPublicClient({ network });
+    const walletClient = createWalletClient({
+        network,
+        account: privateKeyToAccount(senderAccount.privateKey)
+    });
+    const thorClient = ThorClient.at(network);
+
     console.log('NETWORK', NETWORK);
     console.log('PAYING WITH', TOKEN);
-    const signer = new PrivateKeySigner(senderAccount.privateKey);
 
     const clauses = [
         ClauseBuilder.transferVET(
@@ -38,7 +45,6 @@ async function main(): Promise<void> {
         )
     ];
 
-    // Build the transaction with fee delegation
     const txBuilder = TransactionBuilder.create(thorClient);
     const txRequest = await txBuilder
         .withClauses(clauses)
@@ -46,7 +52,6 @@ async function main(): Promise<void> {
         .withEstimatedGas(senderAccount.address, { revision: Revision.BEST })
         .build();
 
-    // Request the generic delegator to pay with the selected token (VET or B3TR)
     const delegatorUrl = `${delegatorBaseUrl}api/v1/sign/transaction/${TOKEN}`;
     const delegatorResponse = await fetch(delegatorUrl, {
         method: 'POST',
@@ -73,19 +78,17 @@ async function main(): Promise<void> {
 
     console.log('Delegator address:', delegatorData.address);
 
-    // Decode the delegator's raw transaction (has payment clause added)
     const rawHex = delegatorData.raw.startsWith('0x')
         ? delegatorData.raw.slice(2)
         : delegatorData.raw;
-    const delegatorTx = TransactionRequestRLPCodec.decode(
-        HexUInt.of(rawHex).bytes
-    );
+    const delegatorTx = TransactionRequestRLPCodec.decode(Hex.of(rawHex).bytes);
 
-    // Sign the delegator's transaction as the origin
-    const originSignedTx = signer.sign(delegatorTx);
+    // Sign as origin (sender)
+    const originSignedHex = await walletClient.signTransaction(delegatorTx);
+    const originSignedTx = TransactionRequest.decode(originSignedHex);
     const originSig = originSignedTx.signature ?? new Uint8Array();
 
-    // Combine origin signature with delegator signature
+    // Combine delegator signature with origin signature
     const delegatorSig = Hex.of(delegatorData.signature).bytes;
     const combinedSignature = new Uint8Array(
         originSig.length + delegatorSig.length
@@ -93,14 +96,12 @@ async function main(): Promise<void> {
     combinedSignature.set(originSig, 0);
     combinedSignature.set(delegatorSig, originSig.length);
 
-    // Create fully signed transaction using delegator's transaction body
     const fullySigned = TransactionRequest.of(delegatorTx, combinedSignature);
-    const txId = await thorClient.transactions.sendTransaction(fullySigned);
+
+    const txId = await walletClient.sendRawTransaction(fullySigned.encoded);
     console.log('Transaction id:', txId.toString());
 
-    // Wait for receipt
-    const receipt =
-        await thorClient.transactions.waitForTransactionReceipt(txId);
+    const receipt = await publicClient.waitForTransactionReceipt(txId);
     if (receipt) {
         console.log('Transaction confirmed!');
         console.log('Block number:', receipt.meta?.blockNumber);
