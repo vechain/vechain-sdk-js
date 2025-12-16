@@ -46,7 +46,7 @@ describe('WaitForTxReceipt SOLO tests', () => {
             .withEstimatedGas(sender, { revision: Revision.BEST })
             .build();
         // sign the tx request
-        const signedTxRequest = senderSigner.sign(txRequest);
+        const signedTxRequest = await senderSigner.sign(txRequest);
         // send the transaction
         const txId =
             await thorClient.transactions.sendTransaction(signedTxRequest);
@@ -79,7 +79,7 @@ describe('WaitForTxReceipt SOLO tests', () => {
             .withEstimatedGas(sender, { revision: Revision.BEST })
             .build();
         // sign the tx request
-        const signedTxRequest = senderSigner.sign(txRequest);
+        const signedTxRequest = await senderSigner.sign(txRequest);
         // send the transaction
         const txId =
             await thorClient.transactions.sendTransaction(signedTxRequest);

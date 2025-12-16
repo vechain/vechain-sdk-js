@@ -347,7 +347,7 @@ class TransactionsModule extends AbstractThorModule {
             txOptions
         );
         // sign the transaction
-        const signedTransaction = signer.sign(txRequest);
+        const signedTransaction = await signer.sign(txRequest);
         // encode the signed transaction
         const encodedTransaction = signedTransaction.encoded;
         // send the transaction to the network

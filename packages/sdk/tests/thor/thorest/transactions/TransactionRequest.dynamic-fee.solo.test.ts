@@ -60,7 +60,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             const blockRef = await getLatestBlockRef();
             const chainTag = await thorClient.nodes.getChainTag();
 
-            const legacyTx = new TransactionRequest({
+            const legacyTx = TransactionRequest.of({
                 blockRef: HexUInt.of(blockRef),
                 chainTag,
                 clauses: [createTransferClause()],
@@ -68,7 +68,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 expiration: 32,
                 gas: 21000000n,
                 gasPriceCoef: 128n,
-                // eslint-disable-next-line sonarjs/pseudo-random
+
                 nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
@@ -79,12 +79,12 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             expect(legacyTx.maxPriorityFeePerGas).toBeUndefined();
 
             // Sign the transaction
-            const signedTx = fromSigner.sign(legacyTx);
+            const signedTx = await fromSigner.sign(legacyTx);
             expect(signedTx.isDynamicFee).toBe(false);
             expect(signedTx.isSigned).toBe(true);
 
             // Encode and verify no type prefix
-            const encoded = signedTx.encoded;
+            const { encoded } = signedTx;
             expect(encoded.bytes[0]).not.toBe(0x51);
 
             // Send to solo network
@@ -118,7 +118,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             const blockRef = await getLatestBlockRef();
             const chainTag = await thorClient.nodes.getChainTag();
 
-            const dynamicTx = new TransactionRequest({
+            const dynamicTx = TransactionRequest.of({
                 blockRef: HexUInt.of(blockRef),
                 chainTag,
                 clauses: [createTransferClause()],
@@ -127,7 +127,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 gas: 25000n,
                 maxFeePerGas: 10027000000000n, // 20 Gwei
                 maxPriorityFeePerGas: 27000000000n, // 5 Gwei
-                // eslint-disable-next-line sonarjs/pseudo-random
+
                 nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
@@ -137,14 +137,14 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             expect(dynamicTx.maxPriorityFeePerGas).toBe(27000000000n);
 
             // Sign the transaction
-            const signedTx = fromSigner.sign(dynamicTx);
+            const signedTx = await fromSigner.sign(dynamicTx);
             expect(signedTx.isDynamicFee).toBe(true);
             expect(signedTx.isSigned).toBe(true);
             expect(signedTx.maxFeePerGas).toBe(10027000000000n);
             expect(signedTx.maxPriorityFeePerGas).toBe(27000000000n);
 
             // Encode and verify 0x51 type prefix
-            const encoded = signedTx.encoded;
+            const { encoded } = signedTx;
             expect(encoded.bytes[0]).toBe(0x51);
 
             // Send to solo network
@@ -175,7 +175,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
         test('Should handle dynamic fee transaction with only maxFeePerGas', async () => {
             const blockRef = await getLatestBlockRef();
 
-            const dynamicTx = new TransactionRequest({
+            const dynamicTx = TransactionRequest.of({
                 blockRef: HexUInt.of(blockRef),
                 chainTag: await thorClient.nodes.getChainTag(),
                 clauses: [createTransferClause()],
@@ -184,7 +184,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 gas: 25000n,
                 maxFeePerGas: 10027000000000n, // 15 Gwei,
                 maxPriorityFeePerGas: 0n,
-                // eslint-disable-next-line sonarjs/pseudo-random
+
                 nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
@@ -194,8 +194,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             expect(dynamicTx.maxPriorityFeePerGas).not.toBeUndefined();
 
             // Sign and encode
-            const signedTx = fromSigner.sign(dynamicTx);
-            const encoded = signedTx.encoded;
+            const signedTx = await fromSigner.sign(dynamicTx);
+            const { encoded } = signedTx;
             expect(encoded.bytes[0]).toBe(0x51);
 
             // Send to solo network
@@ -216,7 +216,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             const blockRef = await getLatestBlockRef();
 
             // Simulate existing code that only uses gasPriceCoef
-            const existingLegacyTx = new TransactionRequest({
+            const existingLegacyTx = TransactionRequest.of({
                 blockRef: HexUInt.of(blockRef),
                 chainTag: await thorClient.nodes.getChainTag(),
                 clauses: [createTransferClause()],
@@ -224,7 +224,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 expiration: 32,
                 gas: 210000n,
                 gasPriceCoef: 255n, // Max legacy coefficient
-                // eslint-disable-next-line sonarjs/pseudo-random
+
                 nonce: BigInt(Math.floor(Math.random() * 1000000))
                 // No dynamic fee fields at all
             });
@@ -234,12 +234,12 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             expect(existingLegacyTx.gasPriceCoef).toBe(255n);
 
             // Should work with existing signer patterns
-            const signedTx = fromSigner.sign(existingLegacyTx);
+            const signedTx = await fromSigner.sign(existingLegacyTx);
             expect(signedTx.isDynamicFee).toBe(false);
             expect(signedTx.gasPriceCoef).toBe(255n);
 
             // Should encode without type prefix
-            const encoded = signedTx.encoded;
+            const { encoded } = signedTx;
             expect(encoded.bytes[0]).not.toBe(0x51);
 
             // Should send successfully to solo network
@@ -260,7 +260,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             const blockRef = await getLatestBlockRef();
 
             // Create both types
-            const legacyTx = new TransactionRequest({
+            const legacyTx = TransactionRequest.of({
                 blockRef: HexUInt.of(blockRef),
                 chainTag: await thorClient.nodes.getChainTag(),
                 clauses: [createTransferClause()],
@@ -268,11 +268,11 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 expiration: 32,
                 gas: 21000n,
                 gasPriceCoef: 100n,
-                // eslint-disable-next-line sonarjs/pseudo-random
+
                 nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
-            const dynamicTx = new TransactionRequest({
+            const dynamicTx = TransactionRequest.of({
                 blockRef: HexUInt.of(blockRef),
                 chainTag: await thorClient.nodes.getChainTag(),
                 clauses: [createTransferClause()],
@@ -281,7 +281,7 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
                 gas: 25000n,
                 maxFeePerGas: 10027000000000n,
                 maxPriorityFeePerGas: 27000000000n,
-                // eslint-disable-next-line sonarjs/pseudo-random
+
                 nonce: BigInt(Math.floor(Math.random() * 1000000))
             });
 
@@ -290,8 +290,8 @@ describe('TransactionRequest Dynamic Fee Support - Solo', () => {
             expect(dynamicTx.isDynamicFee).toBe(true);
 
             // Sign both
-            const signedLegacy = fromSigner.sign(legacyTx);
-            const signedDynamic = fromSigner.sign(dynamicTx);
+            const signedLegacy = await fromSigner.sign(legacyTx);
+            const signedDynamic = await fromSigner.sign(dynamicTx);
 
             // Encode both
             const legacyEncoded = signedLegacy.encoded;

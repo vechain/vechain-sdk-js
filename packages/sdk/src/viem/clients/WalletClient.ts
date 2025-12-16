@@ -189,12 +189,12 @@ class WalletClient extends PublicClient {
         } else {
             tx = transactionRequest;
         }
-        const func = (): Hex => {
+        const func = async (): Promise<Hex> => {
             if (this.account !== null) {
                 if (sender !== undefined) {
-                    return this.account.signAsGasPayer(sender, tx);
+                    return await this.account.signAsGasPayer(sender, tx);
                 }
-                return this.account.sign(tx);
+                return await this.account.sign(tx);
             }
             throw new UnsupportedOperationError(
                 `${FQP}WalletClient.signTransaction(transactionRequest: TransactionRequest): Promise<Hex>`,

@@ -1,4 +1,4 @@
-import { Address, Hex, Revision, Secp256k1 } from '@common';
+import { Address, Hex, Revision } from '@common';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import { PrivateKeySigner } from '@thor/signer';
 import {
@@ -14,7 +14,7 @@ import { getConfigData } from '@vechain/sdk-solo-setup';
 // simple generic delegator client for testing
 const genericDelegatorClient = {
     estimate: async (encodedTx: Hex, origin: Address): Promise<Response> => {
-        return fetch(
+        return await fetch(
             'https://mainnet.delegator.vechain.org/api/v1/estimate/transaction/b3tr?type=dynamic&speed=high',
             {
                 method: 'POST',
@@ -29,7 +29,7 @@ const genericDelegatorClient = {
         );
     },
     sign: async (encodedTx: Hex, origin: Address): Promise<Response> => {
-        return fetch(
+        return await fetch(
             'https://mainnet.delegator.vechain.org/api/v1/sign/transaction/vet',
             {
                 method: 'POST',
@@ -121,7 +121,7 @@ describe('GenericDelegator mainnet tests', () => {
                     revision: Revision.BEST
                 })
                 .build();
-            const signedTx = senderSigner.sign(transaction);
+            const signedTx = await senderSigner.sign(transaction);
             const encodedTx = signedTx.encoded;
             // send to genreic delegator
             const response = await genericDelegatorClient.estimate(
@@ -149,7 +149,7 @@ describe('GenericDelegator mainnet tests', () => {
                     revision: Revision.BEST
                 })
                 .build();
-            const signedTx = senderSigner.sign(transaction);
+            const signedTx = await senderSigner.sign(transaction);
             const encodedTx = signedTx.encoded;
             // send to genreic delegator
             const response = await genericDelegatorClient.estimate(

@@ -37,7 +37,7 @@ describe('PrivateKeySigner SOLO test', () => {
             throw new Error('Failed to retrieve latest block');
         }
         const chainTag = await thorClient.nodes.getChainTag();
-        const txRequest = new TransactionRequest({
+        const txRequest = TransactionRequest.of({
             blockRef: BlockRef.of(latestBlock.id),
             chainTag,
             clauses: [
@@ -54,7 +54,7 @@ describe('PrivateKeySigner SOLO test', () => {
         const signer = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = signer.sign(txRequest);
+        const txRequestSaS = await signer.sign(txRequest);
         const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
@@ -78,8 +78,7 @@ describe('PrivateKeySigner SOLO test', () => {
             throw new Error('Failed to retrieve latest block');
         }
         const chainTag = await thorClient.nodes.getChainTag();
-        const txRequest = new TransactionRequest({
-            beggar: Address.of(TRANSACTION_SENDER.address),
+        const txRequest = TransactionRequest.of({
             blockRef: BlockRef.of(latestBlock.id),
             chainTag,
             clauses: [
@@ -96,60 +95,16 @@ describe('PrivateKeySigner SOLO test', () => {
         const originSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = originSigner.sign(txRequest);
+        const txRequestSaS = await originSigner.sign(txRequest);
         // Sign as Gas Payer. Finalized signature.
         const gasPayerSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
         );
-        const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+        const txRequestSaGP = await gasPayerSigner.sign(
+            txRequestSaS,
+            Address.of(TRANSACTION_SENDER.address)
+        );
         const encodedTx = txRequestSaGP.encoded;
-        log.debug({ message: HexUInt.of(encodedTx).toString() });
-
-        const txId = (
-            await SendTransaction.of(encodedTx.bytes).askTo(httpClient)
-        ).response;
-        expect(txId).toBeDefined();
-        expect(txId).toBeInstanceOf(TXID);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
-            .response;
-        expect(tx).not.toBeNull();
-        log.debug({ message: `${tx?.toJSON()}` });
-    });
-
-    test('ok <- dynamic fee - sponsored than signed', async () => {
-        const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
-        ).response;
-        if (latestBlock === null || latestBlock === undefined) {
-            throw new Error('Failed to retrieve latest block');
-        }
-        const chainTag = await thorClient.nodes.getChainTag();
-        const txRequest = new TransactionRequest({
-            beggar: Address.of(TRANSACTION_SENDER.address),
-            blockRef: BlockRef.of(latestBlock.id),
-            chainTag,
-            clauses: [
-                new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
-            ],
-            dependsOn: null,
-            expiration: mockExpiration,
-            gas: mockGas,
-            maxFeePerGas: mockMaxFeePerGas,
-            maxPriorityFeePerGas: mockMaxPriorityFeePerGas,
-            nonce: mockNonce + 2n
-        });
-        // Sign as Gas Payer. Partial signature.
-        const gasPayerSigner = new PrivateKeySigner(
-            HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
-        );
-        const txRequestSaGP = gasPayerSigner.sign(txRequest);
-        // SIgn as Sender. Finalized signature.
-        const originSigner = new PrivateKeySigner(
-            HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
-        );
-        const txRequestSaS = originSigner.sign(txRequestSaGP);
-        const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (
@@ -172,7 +127,7 @@ describe('PrivateKeySigner SOLO test', () => {
             throw new Error('Failed to retrieve latest block');
         }
         const chainTag = await thorClient.nodes.getChainTag();
-        const txRequest = new TransactionRequest({
+        const txRequest = TransactionRequest.of({
             blockRef: BlockRef.of(latestBlock.id),
             chainTag,
             clauses: [
@@ -188,7 +143,7 @@ describe('PrivateKeySigner SOLO test', () => {
         const signer = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = signer.sign(txRequest);
+        const txRequestSaS = await signer.sign(txRequest);
         const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
@@ -210,8 +165,7 @@ describe('PrivateKeySigner SOLO test', () => {
             throw new Error('Failed to retrieve latest block');
         }
         const chainTag = await thorClient.nodes.getChainTag();
-        const txRequest = new TransactionRequest({
-            beggar: Address.of(TRANSACTION_SENDER.address),
+        const txRequest = TransactionRequest.of({
             blockRef: BlockRef.of(latestBlock.id),
             chainTag,
             clauses: [
@@ -228,58 +182,16 @@ describe('PrivateKeySigner SOLO test', () => {
         const originSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const txRequestSaS = originSigner.sign(txRequest);
+        const txRequestSaS = await originSigner.sign(txRequest);
         // Sign as Gas Payer. Finalized signature.
         const gasPayerSigner = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
         );
-        const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+        const txRequestSaGP = await gasPayerSigner.sign(
+            txRequestSaS,
+            Address.of(TRANSACTION_SENDER.address)
+        );
         const encodedTx = txRequestSaGP.encoded;
-        log.debug({ message: HexUInt.of(encodedTx).toString() });
-
-        const txId = (
-            await SendTransaction.of(encodedTx.bytes).askTo(httpClient)
-        ).response;
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        const tx = (await RetrieveTransactionByID.of(txId.id).askTo(httpClient))
-            .response;
-        expect(tx).not.toBeNull();
-        log.debug({ message: `${tx?.toJSON()}` });
-    });
-
-    test('ok <- legacy - sponsored then signed', async () => {
-        const latestBlock = (
-            await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
-        ).response;
-        if (latestBlock === null || latestBlock === undefined) {
-            throw new Error('Failed to retrieve latest block');
-        }
-        const chainTag = await thorClient.nodes.getChainTag();
-        const txRequest = new TransactionRequest({
-            beggar: Address.of(TRANSACTION_SENDER.address),
-            blockRef: BlockRef.of(latestBlock.id),
-            chainTag,
-            clauses: [
-                new Clause(Address.of(TRANSACTION_RECEIVER.address), mockValue)
-            ],
-            dependsOn: null,
-            expiration: mockExpiration,
-            gas: mockGas,
-            gasPriceCoef: mockGasPriceCoef,
-            nonce: mockNonce + 5n
-        });
-        expect(txRequest.isSigned).toBe(false);
-        // Sign as Gas Payer. Partial signature.
-        const gasPayerSigner = new PrivateKeySigner(
-            HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
-        );
-        const txRequestSaGP = gasPayerSigner.sign(txRequest);
-        // Sign as Sender. Finalized signature.
-        const originSigner = new PrivateKeySigner(
-            HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
-        );
-        const txRequestSaS = originSigner.sign(txRequestSaGP);
-        const encodedTx = txRequestSaS.encoded;
         log.debug({ message: HexUInt.of(encodedTx).toString() });
 
         const txId = (
