@@ -171,10 +171,10 @@ class TransactionRequest extends BaseTransaction {
      * @param {Uint8Array} privateKey - Secp256k1 private key bytes.
      * @returns {TransactionRequest} A new, signed transaction request.
      */
-    public sign(privateKey: Uint8Array): TransactionRequest {
+    public async sign(privateKey: Uint8Array): Promise<TransactionRequest> {
         const signer = new PrivateKeySigner(privateKey);
         try {
-            return signer.sign(this);
+            return await signer.sign(this);
         } finally {
             signer.dispose();
         }

@@ -1,14 +1,16 @@
 import {
     Address,
     Blake2b256,
+    IllegalArgumentError,
     InvalidPrivateKeyError,
     InvalidSignatureError,
     Secp256k1
 } from '@common';
 import { TransactionRequest } from '@thor/thor-client/model/transactions';
-import { type Signer } from './Signer';
+import { Signer, SignerOptions } from './Signer';
 import { concatBytes } from '@noble/curves/utils.js';
 import { log } from '@common/logging';
+import { VIP191Client } from '@thor/gas-payers';
 
 /**
  * The class implements the {@link Signer} interface,
@@ -17,7 +19,7 @@ import { log } from '@common/logging';
  * when the signer is not needed anymore.
  * This will clear the private key from memory, minimizing the risk of leaking it.
  */
-class PrivateKeySigner implements Signer {
+class PrivateKeySigner extends Signer {
     /**
      * Represents the private key used to sign with.
      *
@@ -32,13 +34,28 @@ class PrivateKeySigner implements Signer {
     public readonly address: Address;
 
     /**
+     * The VIP-191 client the signer will use for gas sponsorship.
+     */
+    public readonly vip191Client?: VIP191Client;
+
+    /**
      * Constructs a new instance of the PrivateKeySigner using the provided private key.
      * Initializes the address and validates the private key during construction.
      *
      * @param {Uint8Array} privateKey The private key to be used for signing. Must be a valid Secp256k1 private key.
+     * @param {SignerOptions} [options] The options for constructing the signer.
      * @throws {InvalidPrivateKeyError} Throws an error if the provided private key is invalid.
      */
-    constructor(privateKey: Uint8Array) {
+    constructor(privateKey: Uint8Array, options?: SignerOptions) {
+        super();
+        // if vip191 client is provided, use it
+        if (options?.vip191Client !== undefined) {
+            this.vip191Client = options.vip191Client;
+        } else if (options?.vip191ServiceURL !== undefined) {
+            this.vip191Client = VIP191Client.of(options.vip191ServiceURL);
+        } else {
+            this.vip191Client = undefined;
+        }
         if (Secp256k1.isValidPrivateKey(privateKey)) {
             // Defensive copies to avoid external mutation.
             this.#privateKey = new Uint8Array(privateKey);
@@ -81,10 +98,10 @@ class PrivateKeySigner implements Signer {
      * @return {TransactionRequest} The signed transaction request object.
      * @throws {InvalidSignatureError} Throws an error if the signing process fails.
      */
-    public sign(
+    public async sign(
         transactionRequest: TransactionRequest,
         sender?: Address
-    ): TransactionRequest {
+    ): Promise<TransactionRequest> {
         try {
             if (transactionRequest.isDelegated) {
                 if (sender === undefined) {
@@ -92,7 +109,7 @@ class PrivateKeySigner implements Signer {
                     return this.signAsDelegatedOrigin(transactionRequest);
                 } else {
                     // specified, sign as gas payer, append signature to the current signature.
-                    return this.signAsDelegatedGasPayer(
+                    return await this.signAsDelegatedGasPayer(
                         sender,
                         transactionRequest
                     );
@@ -116,58 +133,100 @@ class PrivateKeySigner implements Signer {
     }
 
     /**
-     * Signs the given transaction request as a gas payer using a private key.
+     * Signs the given transaction request as a gas payer
+     * If the signer supports VIP-191 gas sponsorship, it will use the VIP-191 client to sign the transaction as gas payer.
+     * Otherwise, it will sign the transaction as gas payer using the private key.
      * If current signature is empty, it replaces the signature with the gas payer signature.
      * If current signature is not empty, it concatenates the current signature with the gas payer signature.
      *
      * @param {TransactionRequest} transactionRequest - The transaction request to sign
      * @return {TransactionRequest} The signed transaction request with updated gas payer signature.
      * @throws {InvalidPrivateKeyError} Throws an error if the private key is not available.
+     * @throws {VIP191Error} Throws an error if the VIP-191 service returns an error.
      */
-    private signAsDelegatedGasPayer(
+    private async signAsDelegatedGasPayer(
         sender: Address,
         transactionRequest: TransactionRequest
-    ): TransactionRequest {
-        if (this.#privateKey !== null) {
-            if (transactionRequest.isDelegated) {
+    ): Promise<TransactionRequest> {
+        // check transaction is delegated
+        if (!transactionRequest.isDelegated) {
+            log.error({
+                message: 'transaction request is not delegated',
+                source: 'PrivateKeySigner.signAsDelegatedGasPayer',
+                context: { transactionRequest }
+            });
+            throw new IllegalArgumentError(
+                'PrivateKeySigner.signAsDelegatedGasPayer',
+                'transaction request is not delegated',
+                { transactionRequest }
+            );
+        }
+        // hold signature bytes
+        let gasPayerSignature: Uint8Array | null = null;
+        // check if to get signature via VIP-191 client
+        if (this.isVIP191Supported && this.vip191Client !== undefined) {
+            // use VIP-191 client to sign transaction request as gas payer
+            gasPayerSignature = (
+                await this.vip191Client.requestSignature(
+                    sender,
+                    transactionRequest
+                )
+            ).bytes;
+        } else {
+            // sign transaction request as gas payer using the private key
+            if (this.#privateKey !== null) {
                 const senderHash = Blake2b256.of(
                     concatBytes(
                         transactionRequest.hash.bytes,
                         sender.bytes ?? new Uint8Array()
                     )
                 ).bytes;
-                const gasPayerSignature = Secp256k1.sign(
+                gasPayerSignature = Secp256k1.sign(
                     senderHash,
                     this.#privateKey
                 );
-                if (transactionRequest.signature !== undefined) {
-                    return TransactionRequest.of(
-                        { ...transactionRequest },
-                        concatBytes(
-                            transactionRequest.signature.slice(
-                                0,
-                                Secp256k1.SIGNATURE_LENGTH
-                            ),
-                            gasPayerSignature
-                        )
-                    );
-                } else {
-                    return TransactionRequest.of(
-                        { ...transactionRequest },
-                        gasPayerSignature
-                    );
-                }
+            } else {
+                // no private key available to sign transaction request as gas payer
+                log.error({
+                    message:
+                        'no private key available to sign transaction request as gas payer',
+                    source: 'PrivateKeySigner.signAsDelegatedGasPayer'
+                });
+                throw new InvalidPrivateKeyError(
+                    'PrivateKeySigner.signAsDelegatedGasPayer',
+                    'no private key'
+                );
             }
         }
-        log.error({
-            message:
-                'no private key available to sign transaction request as gas payer',
-            source: 'PrivateKeySigner.signAsDelegatedGasPayer'
-        });
-        throw new InvalidPrivateKeyError(
-            'PrivateKeySigner.signAsDelegatedGasPayer',
-            'no private key'
-        );
+        // concatenate signature
+        if (gasPayerSignature !== null) {
+            if (transactionRequest.signature !== undefined) {
+                return TransactionRequest.of(
+                    { ...transactionRequest },
+                    concatBytes(
+                        transactionRequest.signature.slice(
+                            0,
+                            Secp256k1.SIGNATURE_LENGTH
+                        ),
+                        gasPayerSignature
+                    )
+                );
+            } else {
+                return TransactionRequest.of(
+                    { ...transactionRequest },
+                    gasPayerSignature
+                );
+            }
+        } else {
+            log.error({
+                message: 'no gas payer signature available',
+                source: 'PrivateKeySigner.signAsDelegatedGasPayer'
+            });
+            throw new InvalidSignatureError(
+                'PrivateKeySigner.signAsDelegatedGasPayer',
+                'no gas payer signature'
+            );
+        }
     }
 
     /**

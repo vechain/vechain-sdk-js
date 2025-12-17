@@ -58,6 +58,9 @@ describe('VIP191Client Unit Tests', () => {
         test('ok <-should create a new VIP191 client', () => {
             const vip191Client = VIP191Client.of('https://vip191.vechain.org');
             expect(vip191Client).toBeInstanceOf(VIP191Client);
+            expect(vip191Client.serviceUrl).toEqual(
+                new URL('https://vip191.vechain.org')
+            );
         });
         test('err <- should throw an error if the URL is invalid', () => {
             expect(() => VIP191Client.of('invalid-url')).toThrow(

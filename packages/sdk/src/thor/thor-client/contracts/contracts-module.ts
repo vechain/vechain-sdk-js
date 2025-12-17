@@ -528,7 +528,7 @@ class ContractsModule extends AbstractThorModule {
                     .build();
             }
             // Sign the transaction
-            const signedTransaction = signer.sign(finalTransactionRequest);
+            const signedTransaction = await signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction to Hex
             const encodedTransaction = signedTransaction.encoded;
@@ -697,7 +697,7 @@ class ContractsModule extends AbstractThorModule {
                   });
 
             // Sign the transaction
-            const signedTransaction = signer.sign(finalTransactionRequest);
+            const signedTransaction = await signer.sign(finalTransactionRequest);
 
             // Encode the signed transaction to Hex
             const encodedTransaction = signedTransaction.encoded;

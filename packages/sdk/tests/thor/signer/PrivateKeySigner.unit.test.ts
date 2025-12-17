@@ -2,11 +2,12 @@ import { describe, expect, test } from '@jest/globals';
 import {
     Address,
     HexUInt,
+    IllegalArgumentError,
     InvalidPrivateKeyError,
     InvalidSignatureError,
     Secp256k1
 } from '@common';
-import { PrivateKeySigner } from '@thor';
+import { PrivateKeySigner, VIP191Client } from '@thor';
 import { Clause, TransactionRequest } from '@thor/thor-client';
 import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
 
@@ -48,7 +49,7 @@ describe('PrivateKeySigner UNIT test', () => {
             expect(signer.address.toString()).toBe(mockSenderAccount.address);
         });
 
-        test('ok <- make defensive copy of private key', () => {
+        test('ok <- make defensive copy of private key', async () => {
             const originalPrivateKey = HexUInt.of(
                 mockSenderAccount.privateKey
             ).bytes;
@@ -61,7 +62,7 @@ describe('PrivateKeySigner UNIT test', () => {
             privateKeyCopy.fill(0);
 
             // Signer should still be functional (proving it made a defensive copy)
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -79,7 +80,7 @@ describe('PrivateKeySigner UNIT test', () => {
 
             // Should still be able to sign (proving internal copy wasn't affected)
             expect(() => signer.sign(txRequest)).not.toThrow();
-            const signedTx = signer.sign(txRequest);
+            const signedTx = await signer.sign(txRequest);
             expect(signedTx.isSigned).toBe(true);
         });
 
@@ -88,7 +89,7 @@ describe('PrivateKeySigner UNIT test', () => {
             const invalidPrivateKey = new Uint8Array(32).fill(0);
 
             expect(() => {
-                // eslint-disable-next-line sonarjs/constructor-for-side-effects,no-new
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects
                 new PrivateKeySigner(invalidPrivateKey);
             }).toThrow(InvalidPrivateKeyError);
         });
@@ -99,12 +100,12 @@ describe('PrivateKeySigner UNIT test', () => {
             const longPrivateKey = new Uint8Array(33).fill(1);
 
             expect(() => {
-                // eslint-disable-next-line sonarjs/constructor-for-side-effects,no-new
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects
                 new PrivateKeySigner(shortPrivateKey);
             }).toThrow(InvalidPrivateKeyError);
 
             expect(() => {
-                // eslint-disable-next-line sonarjs/constructor-for-side-effects,no-new
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects
                 new PrivateKeySigner(longPrivateKey);
             }).toThrow(InvalidPrivateKeyError);
         });
@@ -114,14 +115,14 @@ describe('PrivateKeySigner UNIT test', () => {
             const invalidPrivateKey = new Uint8Array(32).fill(0xff);
 
             expect(() => {
-                // eslint-disable-next-line sonarjs/constructor-for-side-effects,no-new
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects
                 new PrivateKeySigner(invalidPrivateKey);
             }).toThrow(InvalidPrivateKeyError);
         });
     });
 
     describe('dispose', () => {
-        test('err <- sign throws after disponse call ', () => {
+        test('err <- sign throws after disponse call ', async () => {
             // Create a valid private key
             const privateKeyBytes = HexUInt.of(
                 mockSenderAccount.privateKey
@@ -132,7 +133,7 @@ describe('PrivateKeySigner UNIT test', () => {
             expect(signer.address.toString()).toBe(mockSenderAccount.address);
 
             // Create a simple transaction request to test signing before disposal
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -149,22 +150,22 @@ describe('PrivateKeySigner UNIT test', () => {
             });
 
             // Should be able to sign before disposal
-            const signedTx = signer.sign(txRequest);
+            const signedTx = await signer.sign(txRequest);
             expect(signedTx.isSigned).toBe(true);
 
             // Dispose the signer
             signer.dispose();
 
             // After disposal, signing should fail with InvalidPrivateKeyError
-            expect(() => {
-                signer.sign(txRequest);
-            }).toThrow('signing failed');
+            await expect(signer.sign(txRequest)).rejects.toThrow(
+                'signing failed'
+            );
         });
     });
 
     describe('sign', () => {
-        test('ok <- dynamic fee - no sponsored', () => {
-            const txRequest = new TransactionRequest({
+        test('ok <- dynamic fee - no sponsored', async () => {
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -185,15 +186,15 @@ describe('PrivateKeySigner UNIT test', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequest);
+            const txRequestSaS = await originSigner.sign(txRequest);
             expect(txRequestSaS.isSigned).toBe(true);
             expect(txRequestSaS.signature).toStrictEqual(
                 txRequestSaS.signature
             );
         });
 
-        test('ok <- dynamic fee - signed then sponsored', () => {
-            const txRequest = new TransactionRequest({
+        test('ok <- dynamic fee - signed then sponsored', async () => {
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -219,7 +220,7 @@ describe('PrivateKeySigner UNIT test', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequest);
+            const txRequestSaS = await originSigner.sign(txRequest);
             expect(txRequestSaS.signature?.length).toBe(
                 Secp256k1.SIGNATURE_LENGTH
             );
@@ -228,7 +229,7 @@ describe('PrivateKeySigner UNIT test', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(
+            const txRequestSaGP = await gasPayerSigner.sign(
                 txRequestSaS,
                 Address.of(mockSenderAccount.address)
             );
@@ -238,8 +239,8 @@ describe('PrivateKeySigner UNIT test', () => {
             expect(txRequestSaGP.isSigned).toBe(true);
         });
 
-        test('ok <- dynamic fee - sponsored than signed', () => {
-            const txRequest = new TransactionRequest({
+        test('ok <- dynamic fee - sponsored than signed', async () => {
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -263,7 +264,7 @@ describe('PrivateKeySigner UNIT test', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(
+            const txRequestSaGP = await gasPayerSigner.sign(
                 txRequest,
                 Address.of(mockSenderAccount.address)
             );
@@ -275,7 +276,7 @@ describe('PrivateKeySigner UNIT test', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequestSaGP);
+            const txRequestSaS = await originSigner.sign(txRequestSaGP);
             // expect only origin signature to remain
             expect(txRequestSaS.signature?.length).toBe(
                 Secp256k1.SIGNATURE_LENGTH
@@ -283,8 +284,8 @@ describe('PrivateKeySigner UNIT test', () => {
             expect(txRequestSaS.isSigned).toBe(false);
         });
 
-        test('ok <- dynamic fee - x-flow aka ghostbuster test', () => {
-            const txRequest = new TransactionRequest({
+        test('ok <- dynamic fee - x-flow aka ghostbuster test', async () => {
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -312,11 +313,11 @@ describe('PrivateKeySigner UNIT test', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const originSignedTxRequest = originSigner.sign(
-                gasPayerSigner.sign(txRequest)
+            const originSignedTxRequest = await originSigner.sign(
+                await gasPayerSigner.sign(txRequest)
             );
-            const fullySignedTxRequest = gasPayerSigner.sign(
-                originSigner.sign(txRequest),
+            const fullySignedTxRequest = await gasPayerSigner.sign(
+                await originSigner.sign(txRequest),
                 Address.of(mockSenderAccount.address)
             );
             // check signature lengths
@@ -328,8 +329,8 @@ describe('PrivateKeySigner UNIT test', () => {
             );
         });
 
-        test('ok <- legacy - no sponsored', () => {
-            const txRequest = new TransactionRequest({
+        test('ok <- legacy - no sponsored', async () => {
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -349,15 +350,15 @@ describe('PrivateKeySigner UNIT test', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequest);
+            const txRequestSaS = await originSigner.sign(txRequest);
             expect(txRequestSaS.isSigned).toBe(true);
             expect(txRequestSaS.signature).toStrictEqual(
                 txRequestSaS.signature
             );
         });
 
-        test('ok <- legacy - signed then sponsored', () => {
-            const txRequest = new TransactionRequest({
+        test('ok <- legacy - signed then sponsored', async () => {
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -381,7 +382,7 @@ describe('PrivateKeySigner UNIT test', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequest);
+            const txRequestSaS = await originSigner.sign(txRequest);
             expect(txRequestSaS.signature?.length).toBe(
                 Secp256k1.SIGNATURE_LENGTH
             );
@@ -390,7 +391,7 @@ describe('PrivateKeySigner UNIT test', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(
+            const txRequestSaGP = await gasPayerSigner.sign(
                 txRequestSaS,
                 Address.of(mockSenderAccount.address)
             );
@@ -400,8 +401,8 @@ describe('PrivateKeySigner UNIT test', () => {
             expect(txRequestSaGP.isSigned).toBe(true);
         });
 
-        test('ok <- legacy - sponsored then signed', () => {
-            const txRequest = new TransactionRequest({
+        test('ok <- legacy - sponsored then signed', async () => {
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -425,7 +426,7 @@ describe('PrivateKeySigner UNIT test', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(
+            const txRequestSaGP = await gasPayerSigner.sign(
                 txRequest,
                 Address.of(mockSenderAccount.address)
             );
@@ -437,7 +438,7 @@ describe('PrivateKeySigner UNIT test', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequestSaGP);
+            const txRequestSaS = await originSigner.sign(txRequestSaGP);
             // expect only origin signature to remain
             expect(txRequestSaS.signature?.length).toBe(
                 Secp256k1.SIGNATURE_LENGTH
@@ -445,8 +446,8 @@ describe('PrivateKeySigner UNIT test', () => {
             expect(txRequestSaS.isSigned).toBe(false);
         });
 
-        test('ok <- legacy - x-flow aka ghostbuster test', () => {
-            const txRequest = new TransactionRequest({
+        test('ok <- legacy - x-flow aka ghostbuster test', async () => {
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -471,11 +472,11 @@ describe('PrivateKeySigner UNIT test', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const originSignedTxRequest = originSigner.sign(
-                gasPayerSigner.sign(txRequest)
+            const originSignedTxRequest = await originSigner.sign(
+                await gasPayerSigner.sign(txRequest)
             );
-            const fullySignedTxRequest = gasPayerSigner.sign(
-                originSigner.sign(txRequest),
+            const fullySignedTxRequest = await gasPayerSigner.sign(
+                await originSigner.sign(txRequest),
                 Address.of(mockSenderAccount.address)
             );
             // check signature lengths
@@ -494,7 +495,7 @@ describe('PrivateKeySigner UNIT test', () => {
             );
 
             // Create a transaction request
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -530,14 +531,14 @@ describe('PrivateKeySigner UNIT test', () => {
             }
         });
 
-        test('err <- sign as gas payer - throws when private key is null', () => {
+        test('err <- sign as gas payer - throws when private key is null', async () => {
             // Create a valid signer first
             const signer = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
 
             // Create a sponsored transaction request
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -561,18 +562,66 @@ describe('PrivateKeySigner UNIT test', () => {
             signer.dispose();
 
             // Try to call sign - need to access the private method
-            expect(() => {
-                signer.sign(txRequest);
-            }).toThrow(InvalidSignatureError);
+            await expect(signer.sign(txRequest)).rejects.toThrow(
+                InvalidSignatureError
+            );
 
             // verify the caused error
             try {
-                signer.sign(txRequest);
+                await signer.sign(txRequest);
             } catch (error) {
                 expect(error).toBeInstanceOf(InvalidSignatureError);
                 const innerError = (error as InvalidSignatureError).cause;
                 expect(innerError).toBeInstanceOf(InvalidPrivateKeyError);
             }
+        });
+    });
+    describe('vip191 support', () => {
+        test('ok <- can construct signer with vip191 service URL', () => {
+            const signer = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes,
+                { vip191ServiceURL: 'https://vip191.vechain.org' }
+            );
+            expect(signer).toBeInstanceOf(PrivateKeySigner);
+            expect(signer.address.toString()).toBe(mockSenderAccount.address);
+            expect(signer.isVIP191Supported).toBe(true);
+        });
+        test('err <- throw error if vip191 service URL is invalid', () => {
+            expect(() => {
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects
+                new PrivateKeySigner(
+                    HexUInt.of(mockSenderAccount.privateKey).bytes,
+                    { vip191ServiceURL: 'invalid-url' }
+                );
+            }).toThrow(IllegalArgumentError);
+        });
+        test('ok <- can construct signer with vip191 client', () => {
+            const vip191Client = VIP191Client.of('https://vip191.vechain.org');
+            const signer = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes,
+                { vip191Client }
+            );
+            expect(signer).toBeInstanceOf(PrivateKeySigner);
+            expect(signer.address.toString()).toBe(mockSenderAccount.address);
+            expect(signer.isVIP191Supported).toBe(true);
+        });
+        test('ok <- if vip191 url and client are provided, use the client', () => {
+            const vip191Client = VIP191Client.of(
+                'https://vip191-client.vechain.org'
+            );
+            const signer = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes,
+                {
+                    vip191ServiceURL: 'https://vip191-url.vechain.org',
+                    vip191Client
+                }
+            );
+            expect(signer).toBeInstanceOf(PrivateKeySigner);
+            expect(signer.address.toString()).toBe(mockSenderAccount.address);
+            expect(signer.isVIP191Supported).toBe(true);
+            expect(signer.vip191Client?.serviceUrl).toEqual(
+                new URL('https://vip191-client.vechain.org')
+            );
         });
     });
 });

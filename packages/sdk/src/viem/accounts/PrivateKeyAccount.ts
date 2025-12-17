@@ -10,11 +10,11 @@ import { type TransactionRequest } from '@thor/thor-client/model/transactions';
 export interface PrivateKeyAccount {
     privateKey: Hex;
     address: Address;
-    sign: (transactionRequest: TransactionRequest) => Hex;
+    sign: (transactionRequest: TransactionRequest) => Promise<Hex>;
     signAsGasPayer: (
         sender: Address,
         transactionRequest: TransactionRequest
-    ) => Hex;
+    ) => Promise<Hex>;
 }
 /**
  * Creates a private key account from a private key.
@@ -26,17 +26,17 @@ export function privateKeyToAccount(privateKey: Hex): PrivateKeyAccount {
     const account: PrivateKeyAccount = {
         privateKey,
         address,
-        sign: (transactionRequest: TransactionRequest) => {
+        sign: async (transactionRequest: TransactionRequest) => {
             const signer = new PrivateKeySigner(privateKey.bytes);
-            const signedTx = signer.sign(transactionRequest);
+            const signedTx = await signer.sign(transactionRequest);
             return signedTx.encoded;
         },
-        signAsGasPayer: (
+        signAsGasPayer: async (
             sender: Address,
             transactionRequest: TransactionRequest
         ) => {
             const signer = new PrivateKeySigner(privateKey.bytes);
-            const signedTx = signer.sign(transactionRequest, sender);
+            const signedTx = await signer.sign(transactionRequest, sender);
             return signedTx.encoded;
         }
     };

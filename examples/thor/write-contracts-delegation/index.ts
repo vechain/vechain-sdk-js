@@ -72,7 +72,7 @@ if (sponsorResponse.ok) {
     console.log('Sponsor address:', sponsorData.address);
 
     // Combine sender signature with sponsor signature
-    const senderSig = senderSignedTx.signature!;
+    const senderSig = (await senderSignedTx).signature!;
     const sponsorSig = Hex.of(sponsorData.signature).bytes;
     const combinedSignature = new Uint8Array(
         senderSig.length + sponsorSig.length

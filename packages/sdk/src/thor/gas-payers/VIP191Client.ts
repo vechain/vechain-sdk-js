@@ -32,19 +32,26 @@ class VIP191Client {
     }
 
     /**
+     * Get the URL of the VIP-191 gas payer service.
+     */
+    public get serviceUrl(): URL {
+        return this.httpClient.baseURL;
+    }
+
+    /**
      * Creates a new VIP-191 client from a string URL.
-     * @param {string} stringUrl - The URL of the VIP-191 gas payer service.
+     * @param {string} serviceUrl - The URL of the VIP-191 gas payer service.
      * @returns {VIP191Client} A new VIP-191 client.
      * @throws {IllegalArgumentError} If the URL is invalid.
      */
-    public static of(stringUrl: string): VIP191Client {
+    public static of(serviceUrl: string): VIP191Client {
         try {
-            return new VIP191Client(new FetchHttpClient(new URL(stringUrl)));
+            return new VIP191Client(new FetchHttpClient(new URL(serviceUrl)));
         } catch (error) {
             throw new IllegalArgumentError(
                 'VIP191Client.of',
                 'Invalid VIP-191 URL',
-                { stringUrl },
+                { serviceUrl },
                 error instanceof Error ? error : undefined
             );
         }
