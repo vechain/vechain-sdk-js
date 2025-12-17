@@ -602,7 +602,7 @@ describe('TransactionRequest UNIT tests', () => {
                 '0x51f89f81f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c6800080850649534e0086091e97c5ee008261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c0b841ff9ecc2a0cba9d8713457bd2b26fbb5524b0aae8494defb4269ea6257cb440260a0fa10d3b0ffc382f551979ed3c9759e7323e4a4463961034b46a47053363e001'.toLowerCase()
             );
         });
-        test('ok <- encodedynamic fee - sponsored - signed by origin and gas payer', async () => {
+        test('ok <- encode dynamic fee - sponsored - signed by origin and gas payer', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
