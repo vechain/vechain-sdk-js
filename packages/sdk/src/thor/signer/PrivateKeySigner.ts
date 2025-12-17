@@ -198,7 +198,7 @@ class PrivateKeySigner extends Signer {
                 );
             }
         }
-        // concatinate signature
+        // concatenate signature
         if (gasPayerSignature !== null) {
             if (transactionRequest.signature !== undefined) {
                 return TransactionRequest.of(
