@@ -15,7 +15,7 @@ abstract class Signer {
     /**
      * Represents the VIP-191 client the signer will use for gas sponsorship.
      */
-    protected abstract vip191Client?: VIP191Client;
+    public abstract readonly vip191Client?: VIP191Client;
 
     /**
      * Signs a given transaction request
@@ -39,4 +39,19 @@ abstract class Signer {
     }
 }
 
-export { Signer };
+/**
+ * Options for constructing a signer.
+ */
+interface SignerOptions {
+    /**
+     * The URL of the VIP-191 service to use for gas sponsorship.
+     */
+    vip191ServiceURL?: string;
+    /**
+     * The VIP-191 client to use for gas sponsorship.
+     * If provided, it will be used instead of the VIP-191 service URL.
+     */
+    vip191Client?: VIP191Client;
+}
+
+export { Signer, type SignerOptions };

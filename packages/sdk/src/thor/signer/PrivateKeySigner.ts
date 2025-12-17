@@ -7,7 +7,7 @@ import {
     Secp256k1
 } from '@common';
 import { TransactionRequest } from '@thor/thor-client/model/transactions';
-import { Signer } from './Signer';
+import { Signer, SignerOptions } from './Signer';
 import { concatBytes } from '@noble/curves/utils.js';
 import { log } from '@common/logging';
 import { VIP191Client } from '@thor/gas-payers';
@@ -36,22 +36,26 @@ class PrivateKeySigner extends Signer {
     /**
      * The VIP-191 client the signer will use for gas sponsorship.
      */
-    protected readonly vip191Client?: VIP191Client;
+    public readonly vip191Client?: VIP191Client;
 
     /**
      * Constructs a new instance of the PrivateKeySigner using the provided private key.
      * Initializes the address and validates the private key during construction.
      *
      * @param {Uint8Array} privateKey The private key to be used for signing. Must be a valid Secp256k1 private key.
-     * @param {string} [vip191ServiceURL] The URL of the VIP-191 service to use for gas sponsorship.
+     * @param {SignerOptions} [options] The options for constructing the signer.
      * @throws {InvalidPrivateKeyError} Throws an error if the provided private key is invalid.
      */
-    constructor(privateKey: Uint8Array, vip191ServiceURL?: string) {
+    constructor(privateKey: Uint8Array, options?: SignerOptions) {
         super();
-        // create VIP-191 client if provided
-        this.vip191Client = vip191ServiceURL
-            ? VIP191Client.of(vip191ServiceURL)
-            : undefined;
+        // if vip191 client is provided, use it
+        if (options?.vip191Client !== undefined) {
+            this.vip191Client = options.vip191Client;
+        } else if (options?.vip191ServiceURL !== undefined) {
+            this.vip191Client = VIP191Client.of(options.vip191ServiceURL);
+        } else {
+            this.vip191Client = undefined;
+        }
         if (Secp256k1.isValidPrivateKey(privateKey)) {
             // Defensive copies to avoid external mutation.
             this.#privateKey = new Uint8Array(privateKey);

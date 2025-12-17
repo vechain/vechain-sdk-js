@@ -2,11 +2,12 @@ import { describe, expect, test } from '@jest/globals';
 import {
     Address,
     HexUInt,
+    IllegalArgumentError,
     InvalidPrivateKeyError,
     InvalidSignatureError,
     Secp256k1
 } from '@common';
-import { PrivateKeySigner } from '@thor';
+import { PrivateKeySigner, VIP191Client } from '@thor';
 import { Clause, TransactionRequest } from '@thor/thor-client';
 import { type ThorSoloAccount } from '@vechain/sdk-solo-setup';
 
@@ -573,6 +574,54 @@ describe('PrivateKeySigner UNIT test', () => {
                 const innerError = (error as InvalidSignatureError).cause;
                 expect(innerError).toBeInstanceOf(InvalidPrivateKeyError);
             }
+        });
+    });
+    describe('vip191 support', () => {
+        test('ok <- can construct signer with vip191 service URL', () => {
+            const signer = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes,
+                { vip191ServiceURL: 'https://vip191.vechain.org' }
+            );
+            expect(signer).toBeInstanceOf(PrivateKeySigner);
+            expect(signer.address.toString()).toBe(mockSenderAccount.address);
+            expect(signer.isVIP191Supported).toBe(true);
+        });
+        test('err <- throw error if vip191 service URL is invalid', () => {
+            expect(() => {
+                // eslint-disable-next-line sonarjs/constructor-for-side-effects
+                new PrivateKeySigner(
+                    HexUInt.of(mockSenderAccount.privateKey).bytes,
+                    { vip191ServiceURL: 'invalid-url' }
+                );
+            }).toThrow(IllegalArgumentError);
+        });
+        test('ok <- can construct signer with vip191 client', () => {
+            const vip191Client = VIP191Client.of('https://vip191.vechain.org');
+            const signer = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes,
+                { vip191Client }
+            );
+            expect(signer).toBeInstanceOf(PrivateKeySigner);
+            expect(signer.address.toString()).toBe(mockSenderAccount.address);
+            expect(signer.isVIP191Supported).toBe(true);
+        });
+        test('ok <- if vip191 url and client are provided, use the client', () => {
+            const vip191Client = VIP191Client.of(
+                'https://vip191-client.vechain.org'
+            );
+            const signer = new PrivateKeySigner(
+                HexUInt.of(mockSenderAccount.privateKey).bytes,
+                {
+                    vip191ServiceURL: 'https://vip191-url.vechain.org',
+                    vip191Client
+                }
+            );
+            expect(signer).toBeInstanceOf(PrivateKeySigner);
+            expect(signer.address.toString()).toBe(mockSenderAccount.address);
+            expect(signer.isVIP191Supported).toBe(true);
+            expect(signer.vip191Client?.serviceUrl).toEqual(
+                new URL('https://vip191-client.vechain.org')
+            );
         });
     });
 });
