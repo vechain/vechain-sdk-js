@@ -143,7 +143,6 @@ class PrivateKeySigner extends Signer {
      * @return {TransactionRequest} The signed transaction request with updated gas payer signature.
      * @throws {InvalidPrivateKeyError} Throws an error if the private key is not available.
      * @throws {VIP191Error} Throws an error if the VIP-191 service returns an error.
-     * @throws {InvalidPrivateKeyError} Throws an error if the private key is not available.
      */
     private async signAsDelegatedGasPayer(
         sender: Address,
