@@ -181,7 +181,7 @@ class PrivateKeySigner extends Signer {
                 )
             ).bytes;
         } else {
-            // sign transaction request as using the private key
+            // sign transaction request using the private key
             if (this.#privateKey !== null) {
                 const senderHash = Blake2b256.of(
                     concatBytes(
