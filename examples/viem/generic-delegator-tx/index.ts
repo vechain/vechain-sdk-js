@@ -96,7 +96,7 @@ async function main(): Promise<void> {
     combinedSignature.set(originSig, 0);
     combinedSignature.set(delegatorSig, originSig.length);
 
-    const fullySigned = TransactionRequest.of(delegatorTx, combinedSignature);
+    const fullySigned = TransactionRequest.of(delegatorTx, { signature: combinedSignature });
 
     const txId = await walletClient.sendRawTransaction(fullySigned.encoded);
     console.log('Transaction id:', txId.toString());

@@ -69,7 +69,7 @@ class FetchHttpClient implements HttpClient {
         httpOptions: HttpOptions = {},
         // Default dependencies to global objects, allows for testing injection or custom implementations
         requestConstructor: RequestConstructor = Request,
-        fetchFunction: FetchFunction = fetch
+        fetchFunction: FetchFunction = globalThis.fetch.bind(globalThis)
     ) {
         if (!baseURL.pathname.endsWith(FetchHttpClient.PATH_SEPARATOR)) {
             baseURL.pathname += FetchHttpClient.PATH_SEPARATOR;

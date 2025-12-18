@@ -94,7 +94,7 @@ async function main(): Promise<void> {
     combinedSignature.set(delegatorSig, originSig.length);
 
     // Create fully signed transaction using delegator's transaction body
-    const fullySigned = TransactionRequest.of(delegatorTx, combinedSignature);
+    const fullySigned = TransactionRequest.of(delegatorTx, { signature: combinedSignature });
     const txId = await thorClient.transactions.sendTransaction(fullySigned);
     console.log('Transaction id:', txId.toString());
 

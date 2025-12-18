@@ -291,6 +291,10 @@ class TransactionsModule extends AbstractThorModule {
             ) {
                 txBuilder.withDefaultMaxFeePerGas();
             }
+            // fee delegation url
+            if (options?.feeDelegationUrl !== undefined) {
+                txBuilder.withFeeDelegationUrl(options.feeDelegationUrl);
+            }
             // build the transaction request
             return await txBuilder.build();
         } catch (error) {

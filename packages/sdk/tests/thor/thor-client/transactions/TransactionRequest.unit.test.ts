@@ -73,7 +73,9 @@ describe('TransactionRequest', () => {
                 maxPriorityFeePerGas: mockMaxPriorityFeePerGas
             };
 
-            const transaction = TransactionRequest.of(params, mockSignature);
+            const transaction = TransactionRequest.of(params, {
+                signature: mockSignature
+            });
 
             expect(transaction.blockRef).toBe(mockBlockRef);
             expect(transaction.chainTag).toBe(1);
@@ -103,7 +105,9 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = TransactionRequest.of(params, mockSignature);
+            const transaction = TransactionRequest.of(params, {
+                signature: mockSignature
+            });
 
             expect(transaction.blockRef).toBe(mockBlockRef);
             expect(transaction.chainTag).toBe(1);
@@ -131,7 +135,9 @@ describe('TransactionRequest', () => {
             };
             const originalSig = new Uint8Array([7, 8, 9]);
 
-            const transaction = TransactionRequest.of(params, originalSig);
+            const transaction = TransactionRequest.of(params, {
+                signature: originalSig
+            });
 
             // Modify original arrays
             originalSig[0] = 99;
@@ -279,10 +285,9 @@ describe('TransactionRequest', () => {
                 nonce: mockNonce
             };
 
-            const transaction = TransactionRequest.of(
-                params,
-                mockOriginSignature
-            );
+            const transaction = TransactionRequest.of(params, {
+                signature: mockOriginSignature
+            });
             expect(transaction.isSigned).toBe(true);
         });
 
@@ -304,10 +309,9 @@ describe('TransactionRequest', () => {
             };
 
             // Only origin signature
-            const transaction1 = TransactionRequest.of(
-                params,
-                mockOriginSignature
-            );
+            const transaction1 = TransactionRequest.of(params, {
+                signature: mockOriginSignature
+            });
             expect(transaction1.isSigned).toBe(false);
         });
 
@@ -331,7 +335,9 @@ describe('TransactionRequest', () => {
                 ...mockOriginSignature,
                 ...mockGasPayerSignature
             ]);
-            const transaction = TransactionRequest.of(params, fullSignature);
+            const transaction = TransactionRequest.of(params, {
+                signature: fullSignature
+            });
             expect(transaction.isSigned).toBe(true);
         });
 
@@ -348,7 +354,9 @@ describe('TransactionRequest', () => {
             };
 
             const wrongSignature = new Uint8Array([1, 2, 3]); // Different length
-            const transaction = TransactionRequest.of(params, wrongSignature);
+            const transaction = TransactionRequest.of(params, {
+                signature: wrongSignature
+            });
             expect(transaction.isSigned).toBe(false);
         });
 
@@ -370,7 +378,9 @@ describe('TransactionRequest', () => {
             };
 
             const wrongSignature = new Uint8Array([1, 2, 3]); // Different length
-            const transaction = TransactionRequest.of(params, wrongSignature);
+            const transaction = TransactionRequest.of(params, {
+                signature: wrongSignature
+            });
             expect(transaction.isSigned).toBe(false);
         });
     });
@@ -421,7 +431,9 @@ describe('TransactionRequest', () => {
                 }
             };
 
-            const transaction = TransactionRequest.of(params, mockSignature);
+            const transaction = TransactionRequest.of(params, {
+                signature: mockSignature
+            });
             const json = transaction.toJSON();
 
             expect(json.blockRef).toBe(mockBlockRef.toString());
@@ -452,7 +464,9 @@ describe('TransactionRequest', () => {
                 }
             };
 
-            const transaction = TransactionRequest.of(params, mockSignature);
+            const transaction = TransactionRequest.of(params, {
+                signature: mockSignature
+            });
             const json = transaction.toJSON();
 
             expect(json.blockRef).toBe(mockBlockRef.toString());

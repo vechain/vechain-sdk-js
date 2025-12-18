@@ -1,7 +1,8 @@
 import { DAppKitUI, friendlyAddress } from '@vechain/dapp-kit-ui';
-import { Address, Revision } from '@vechain/sdk-temp/common';
+import { Address } from '@vechain/sdk-temp/common';
 import { ClauseBuilder, ThorClient, ThorNetworks, TransactionBuilder, TransactionRequest } from '@vechain/sdk-temp/thor';
 import type { TransactionRequestInput } from '@vechain/sdk-network';
+import type { TransactionMessage } from '@vechain/dapp-kit';
 
 // Inject the demo card layout directly into the #app container.
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -14,7 +15,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         <div class="label">Custom button</div>
         <button class="cta" id="custom-button">Connect Custom Button</button>
         <div class="label">Transaction</div>
-        <button class="secondary" id="send-tx">Send Transaction</button>
+        <button class="secondary" id="send-tx">Send UnDelegated Transaction</button>
+        <button class="secondary" id="send-tx-with-fee-delegation">Send Transaction with Fee Delegation</button>
         <div class="label">Typed data</div>
         <button class="secondary" id="sign-typed-data-button">Sign Typed Data</button>
     </div>
@@ -75,15 +77,23 @@ if (customButton) {
 
 // Create a transaction request for a simple VET transfer
 // No need to estimate gas, it will be done by veworld wallet when sending the transaction
-async function createTransactionRequest(): Promise<TransactionRequest> {
+async function createTransactionRequest(isDelegated: boolean = false): Promise<TransactionRequest> {
     const thorClient = ThorClient.at(ThorNetworks.TESTNET);
     const builder = TransactionBuilder.create(thorClient);
     const clauses = ClauseBuilder.transferVET(Address.of('0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'), 1n);
-    const txRequest = await builder
+    if (!isDelegated) {
+        return await builder
+            .withClauses([clauses])
+            .withDynFeeTxDefaults()
+            .build();
+    }
+    // return a delegated transaction request
+    return await builder
         .withClauses([clauses])
         .withDynFeeTxDefaults()
+        .withDelegatedFee()
+        .withFeeDelegationUrl('https://sponsor-testnet.vechain.energy/by/883')
         .build();
-    return txRequest;
 }
 
 // Converts a TransactionRequest to a TransactionRequestInput for dappkit compatibility
@@ -91,7 +101,7 @@ const toTransactionRequestInput = (request: TransactionRequest): TransactionRequ
     // convert to primitive types
     const json = request.toJSON();
     // return a TransactionRequestInput
-    return {
+    const input = {
       chainTag: json.chainTag,
       blockRef: json.blockRef,
       expiration: json.expiration,
@@ -101,15 +111,28 @@ const toTransactionRequestInput = (request: TransactionRequest): TransactionRequ
       maxPriorityFeePerGas: json.maxPriorityFeePerGas?.toString(),
       nonce: json.nonce,
       dependsOn: json.dependsOn ?? undefined,
+      delegationUrl: request.feeDelegationUrl?.toString() ?? undefined,
       clauses: json.clauses.map((clause) => ({
         to: clause.to,
         value: clause.value,
         data: clause.data ?? '0x',
       })),
     };
+    return input;
 };
 
-// Button that triggers a simple VET transfer.
+// Converts a TransactionRequest to a TransactionMessage[] for dappkit compatibility
+const toTransactionMessage = (request: TransactionRequest): TransactionMessage[] => {
+    return request.clauses.map((clause) => ({
+        to: clause.to?.toString() ?? '',
+        value: clause.value.toString(),
+        data: clause.data?.toString() ?? undefined,
+        comment: clause.comment ?? undefined,
+    } satisfies TransactionMessage));
+};
+
+// Button that triggers a simple VET transfer (undelegated).
+// This uses the sendTransaction function which requires a TransactionRequestInput
 const sendTxButton = document.getElementById('send-tx');
 if (sendTxButton) {
     sendTxButton.addEventListener('click', async () => {
@@ -118,6 +141,15 @@ if (sendTxButton) {
     });
 }
 
+// Button that triggers a simple VET transfer (delegated).
+// This uses the signTx function which requires a TransactionMessage[] and TransactionOptions
+const sendTxWithFeeDelegationButton = document.getElementById('send-tx-with-fee-delegation');
+if (sendTxWithFeeDelegationButton) {
+    sendTxWithFeeDelegationButton.addEventListener('click', async () => {
+        const txRequest = await createTransactionRequest(true);
+        DAppKitUI.wallet.signTx(toTransactionMessage(txRequest), {delegator: {url: 'https://sponsor-testnet.vechain.energy/by/883'}});
+    });
+}
 // Button that asks the wallet to sign typed data payload.
 const signTypedDataButton = document.getElementById('sign-typed-data-button');
 if (signTypedDataButton) {

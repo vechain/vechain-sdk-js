@@ -76,7 +76,7 @@ if (sponsorResponse.ok) {
     combinedSignature.set(senderSig, 0);
     combinedSignature.set(sponsorSig, senderSig.length);
 
-    const fullySigned = TransactionRequest.of(txRequest, combinedSignature);
+    const fullySigned = TransactionRequest.of(txRequest, { signature: combinedSignature });
     const txId = await walletClient.sendTransaction(fullySigned);
     console.log('Transaction id:', txId.toString());
 

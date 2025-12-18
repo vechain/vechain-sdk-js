@@ -81,7 +81,7 @@ if (sponsorResponse.ok) {
     combinedSignature.set(sponsorSig, senderSig.length);
 
     // Create fully signed transaction
-    const fullySigned = TransactionRequest.of(txRequest, combinedSignature);
+    const fullySigned = TransactionRequest.of(txRequest, { signature: combinedSignature });
     const txId = await thorClient.transactions.sendTransaction(fullySigned);
     console.log('Transaction id:', txId.toString());
 } else {
