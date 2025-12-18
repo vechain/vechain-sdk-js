@@ -118,7 +118,6 @@ const toTransactionRequestInput = (request: TransactionRequest): TransactionRequ
         data: clause.data ?? '0x',
       })),
     };
-    console.log('input', input);
     return input;
 };
 
