@@ -164,7 +164,7 @@ class PrivateKeySigner extends Signer {
         // hold signature bytes
         let gasPayerSignature: Uint8Array | null = null;
         // check for VIP-191
-        // if transaction request has feel delegation url on it, use it
+        // if transaction request has fee delegation url on it, use it
         if (transactionRequest.feeDelegationUrl !== undefined) {
             const vip191Client = VIP191Client.of(
                 transactionRequest.feeDelegationUrl.toString()
