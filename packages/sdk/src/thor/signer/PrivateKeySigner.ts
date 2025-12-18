@@ -163,9 +163,17 @@ class PrivateKeySigner extends Signer {
         }
         // hold signature bytes
         let gasPayerSignature: Uint8Array | null = null;
-        // check if to get signature via VIP-191 client
-        if (this.isVIP191Supported && this.vip191Client !== undefined) {
-            // use VIP-191 client to sign transaction request as gas payer
+        // check for VIP-191
+        // if transaction request has feel delegation url on it, use it
+        if (transactionRequest.feeDelegationUrl !== undefined) {
+            const vip191Client = VIP191Client.of(
+                transactionRequest.feeDelegationUrl.toString()
+            );
+            gasPayerSignature = (
+                await vip191Client.requestSignature(sender, transactionRequest)
+            ).bytes;
+        } else if (this.isVIP191Supported && this.vip191Client !== undefined) {
+            // if this signer supports VIP-191, use it
             gasPayerSignature = (
                 await this.vip191Client.requestSignature(
                     sender,
@@ -173,7 +181,7 @@ class PrivateKeySigner extends Signer {
                 )
             ).bytes;
         } else {
-            // sign transaction request as gas payer using the private key
+            // sign transaction request as using the private key
             if (this.#privateKey !== null) {
                 const senderHash = Blake2b256.of(
                     concatBytes(
@@ -203,18 +211,22 @@ class PrivateKeySigner extends Signer {
             if (transactionRequest.signature !== undefined) {
                 return TransactionRequest.of(
                     { ...transactionRequest },
-                    concatBytes(
-                        transactionRequest.signature.slice(
-                            0,
-                            Secp256k1.SIGNATURE_LENGTH
-                        ),
-                        gasPayerSignature
-                    )
+                    {
+                        signature: concatBytes(
+                            transactionRequest.signature.slice(
+                                0,
+                                Secp256k1.SIGNATURE_LENGTH
+                            ),
+                            gasPayerSignature
+                        )
+                    }
                 );
             } else {
                 return TransactionRequest.of(
                     { ...transactionRequest },
-                    gasPayerSignature
+                    {
+                        signature: gasPayerSignature
+                    }
                 );
             }
         } else {
@@ -250,17 +262,21 @@ class PrivateKeySigner extends Signer {
                 if (transactionRequest.signature !== undefined) {
                     return TransactionRequest.of(
                         { ...transactionRequest },
-                        concatBytes(
-                            originSignature,
-                            transactionRequest.signature.slice(
-                                Secp256k1.SIGNATURE_LENGTH
+                        {
+                            signature: concatBytes(
+                                originSignature,
+                                transactionRequest.signature.slice(
+                                    Secp256k1.SIGNATURE_LENGTH
+                                )
                             )
-                        )
+                        }
                     );
                 } else {
                     return TransactionRequest.of(
                         { ...transactionRequest },
-                        originSignature
+                        {
+                            signature: originSignature
+                        }
                     );
                 }
             }
@@ -290,7 +306,12 @@ class PrivateKeySigner extends Signer {
         if (this.#privateKey !== null) {
             return TransactionRequest.of(
                 { ...transactionRequest },
-                Secp256k1.sign(transactionRequest.hash.bytes, this.#privateKey)
+                {
+                    signature: Secp256k1.sign(
+                        transactionRequest.hash.bytes,
+                        this.#privateKey
+                    )
+                }
             );
         }
         log.error({

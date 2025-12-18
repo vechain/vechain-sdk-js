@@ -12,6 +12,8 @@ yarn dev
 
 * Creating a TransactionRequest using this version of the SDK
 * Adapting the TransactionRequest to a format that can be sent to dapp-kit for signing
+* Sending a undelegated transaction to VeWorld chrome extension
+* Sending a fee delegated transaction to VeWorld chrome extension
 
 ## Technical Notes
 

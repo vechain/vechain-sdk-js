@@ -66,7 +66,9 @@ describe('TransactionRequest UNIT tests', () => {
             } satisfies TransactionBody;
 
             const originSig = new Uint8Array([1, 2, 3]);
-            const txRequest = TransactionRequest.of(body, originSig);
+            const txRequest = TransactionRequest.of(body, {
+                signature: originSig
+            });
             expect(txRequest.blockRef).toBe(body.blockRef);
             expect(txRequest.chainTag).toBe(body.chainTag);
             expect(txRequest.clauses).toEqual(body.clauses);
@@ -106,7 +108,9 @@ describe('TransactionRequest UNIT tests', () => {
             } satisfies TransactionBody;
 
             const originSig = new Uint8Array([1, 2, 3]);
-            const txRequest = TransactionRequest.of(body, originSig);
+            const txRequest = TransactionRequest.of(body, {
+                signature: originSig
+            });
             expect(txRequest.blockRef).toBe(body.blockRef);
             expect(txRequest.chainTag).toBe(body.chainTag);
             expect(txRequest.clauses).toEqual(body.clauses);
@@ -450,6 +454,75 @@ describe('TransactionRequest UNIT tests', () => {
                 expect(invalidFieldError.args).toBeDefined();
             }
         });
+        test('ok <- constructor with fee delegation url for delegated transaction', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: 1n,
+                maxPriorityFeePerGas: 0n,
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
+            } satisfies TransactionBody;
+            const txRequest = TransactionRequest.of(params, {
+                feeDelegationUrl:
+                    'https://sponsor-testnet.vechain.energy/by/883'
+            });
+            expect(txRequest.feeDelegationUrl?.toString()).toBe(
+                'https://sponsor-testnet.vechain.energy/by/883'
+            );
+        });
+        test('ok <- constructor with no fee delegation url for delegated transaction', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: 1n,
+                maxPriorityFeePerGas: 0n,
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
+            } satisfies TransactionBody;
+            const txRequest = TransactionRequest.of(params);
+            expect(txRequest.feeDelegationUrl).toBeUndefined();
+        });
+        test('err <- throws InvalidTransactionField for fee delegation url for non-delegated transaction', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: 1n,
+                maxPriorityFeePerGas: 0n,
+                nonce: mockNonce,
+                reserved: {
+                    features: 0,
+                    unused: []
+                }
+            } satisfies TransactionBody;
+            expect(() => {
+                TransactionRequest.of(params, {
+                    feeDelegationUrl:
+                        'https://sponsor-testnet.vechain.energy/by/883'
+                });
+            }).toThrow(InvalidTransactionField);
+        });
     });
 
     describe('defensive copying of signature', () => {
@@ -466,7 +539,9 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             const originalSig = new Uint8Array([1, 2, 3]);
-            const txRequest = TransactionRequest.of(params, originalSig);
+            const txRequest = TransactionRequest.of(params, {
+                signature: originalSig
+            });
 
             // Modify original array
             originalSig[0] = 99;

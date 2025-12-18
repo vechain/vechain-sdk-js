@@ -5,7 +5,8 @@ import { PrivateKeySigner } from '@thor/signer';
 import {
     ClauseBuilder,
     ThorClient,
-    TransactionBuilder
+    TransactionBuilder,
+    TransactionRequest
 } from '@thor/thor-client';
 import { ThorNetworks } from '@thor/utils';
 
@@ -73,5 +74,49 @@ describe('PrivateKeySigner VIP191 Testnet Tests', () => {
         expect(fullySignedGasPayerSignature).not.toEqual(
             senderSignedTxRequest.signature
         );
+    });
+    test('ok <- signer will use the vip191 service url on the transaction request', async () => {
+        const thorClient = ThorClient.at(ThorNetworks.TESTNET);
+        // create tx request with a VET transfer clause and a fee delegation url
+        const clause = ClauseBuilder.transferVET(receiverAddress, 1n);
+        const txRequest = await TransactionBuilder.create(thorClient)
+            .withClauses([clause])
+            .withEstimatedGas(senderAddress, { revision: Revision.BEST })
+            .withDynFeeTxDefaults()
+            .withDelegatedFee()
+            .withFeeDelegationUrl(
+                'https://sponsor-testnet.vechain.energy/by/883'
+            )
+            .build();
+        // create a private key signer without a vip191 service url
+        const signer = new PrivateKeySigner(HexUInt.of(senderPrivateKey).bytes);
+        // sign the transaction as sender
+        const senderSignedTxRequest = await signer.sign(txRequest);
+        // sign the transaction using vechain energy as gas payer
+        const vechainEnergySignedTxRequest = await signer.sign(
+            senderSignedTxRequest,
+            senderAddress
+        );
+        // remove the fee delegation url from the transaction request
+        const txRequestWithoutFeeDelegationUrl = TransactionRequest.of(
+            { ...txRequest },
+            {
+                feeDelegationUrl: undefined,
+                signature: senderSignedTxRequest.signature
+            }
+        );
+        // sign the transaction using now just the private key as gas payer
+        const privateKeySignedTxRequest = await signer.sign(
+            txRequestWithoutFeeDelegationUrl
+        );
+        // check the vechain energy signature is different from the private key signature
+        const vechainEnergySignature =
+            vechainEnergySignedTxRequest.signature?.slice(
+                Secp256k1.SIGNATURE_LENGTH
+            );
+        const privateKeySignature = privateKeySignedTxRequest.signature?.slice(
+            Secp256k1.SIGNATURE_LENGTH
+        );
+        expect(vechainEnergySignature).not.toEqual(privateKeySignature);
     });
 });

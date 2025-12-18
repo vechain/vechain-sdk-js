@@ -1,3 +1,4 @@
+import { InvalidTransactionField } from '@common/errors';
 import { IllegalArgumentError } from '@common/errors/IllegalArgumentError';
 import { Address, Hex } from '@common/vcdm';
 import { describe, expect, test } from '@jest/globals';
@@ -107,5 +108,48 @@ describe('BuildTransactionBody UNIT tests', () => {
             bodyOptions
         );
         await expect(txRequest).rejects.toThrow(IllegalArgumentError);
+    });
+    test('should be able to build a transaction request with a fee delegation url', async () => {
+        const thorClient = ThorClient.at('http://localhost:8669');
+        const clauses = [new Clause(Address.of('0x0'), 1n, null, null, null)];
+        const bodyOptions: TransactionBodyOptions = {
+            blockRef: Hex.of('0x1234'),
+            chainTag: 1,
+            expiration: 1,
+            maxFeePerGas: 100000n,
+            maxPriorityFeePerGas: 100000n,
+            nonce: 9n,
+            isDelegated: true,
+            feeDelegationUrl: 'https://sponsor-testnet.vechain.energy/by/883'
+        };
+        const txRequest = await thorClient.transactions.buildTransactionBody(
+            clauses,
+            100000,
+            bodyOptions
+        );
+        expect(txRequest).toBeDefined();
+        expect(txRequest.feeDelegationUrl?.toString()).toBe(
+            'https://sponsor-testnet.vechain.energy/by/883'
+        );
+    });
+    test('should throw an error if a fee delegation url is provided for a non-delegated transaction', async () => {
+        const thorClient = ThorClient.at('http://localhost:8669');
+        const clauses = [new Clause(Address.of('0x0'), 1n, null, null, null)];
+        const bodyOptions: TransactionBodyOptions = {
+            blockRef: Hex.of('0x1234'),
+            chainTag: 1,
+            expiration: 1,
+            maxFeePerGas: 100000n,
+            maxPriorityFeePerGas: 100000n,
+            nonce: 9n,
+            isDelegated: false,
+            feeDelegationUrl: 'https://sponsor-testnet.vechain.energy/by/883'
+        };
+        const txRequest = thorClient.transactions.buildTransactionBody(
+            clauses,
+            100000,
+            bodyOptions
+        );
+        await expect(txRequest).rejects.toThrow(InvalidTransactionField);
     });
 });
