@@ -26,7 +26,7 @@ async function main(): Promise<void> {
     // create a thor client for the testnet
     const thorClient = ThorClient.at(network);
 
-    console.log('Address:', account.address.toString())
+    console.log('Address:', account.address.toString());
     const contractAddress = '0x8384738c995d49c5b692560ae688fc8b51af1059';
 
     // define the ABI for the contract function call
