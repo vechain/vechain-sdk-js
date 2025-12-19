@@ -15,7 +15,6 @@ import {
     type SubscriptionEventResponse,
     type TransfersSubscription
 } from '@thor/thorest';
-import type { TXID } from '@thor/thorest/transactions';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import type { ThorNetworks } from '@thor/utils/const';
 import {
@@ -60,6 +59,10 @@ import {
     TimeoutError as ThorTimeoutError,
     IllegalArgumentError
 } from '@common/errors';
+
+type TxId = {
+    id: Hex
+}
 
 /**
  * Filter types for viem compatibility.
@@ -1115,8 +1118,8 @@ class PublicClient {
 
                 txFilter.txQueue = [];
 
-                const listener: WebSocketListener<TXID> = {
-                    onMessage: (event: MessageEvent<TXID>) => {
+                const listener: WebSocketListener<TxId> = {
+                    onMessage: (event: MessageEvent<TxId>) => {
                         const { data } = event;
                         // Extract the transaction hash from TXID
                         const txHash = data.id.toString();
