@@ -47,7 +47,7 @@ async function main(): Promise<void> {
         0n
     );
 
-    // build a delegatedtransaction request with the clause
+    // build a delegated transaction request with the clause
     const txBuilder = TransactionBuilder.create(thorClient);
     const txRequest = await txBuilder
         .withClauses([clause])
