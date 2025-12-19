@@ -527,11 +527,18 @@ class ContractsModule extends AbstractThorModule {
                     .withDynFeeTxDefaults()
                     .build();
             }
-            // Sign the transaction
+            // Sign the transaction as sender first 
             const signedTransaction = await signer.sign(finalTransactionRequest);
-
+            // if delegated, sign the transaction as gas payer
+            let fullSignedTransaction = signedTransaction;
+            if (signedTransaction.isDelegated) {
+                fullSignedTransaction = await signer.sign(
+                    signedTransaction,
+                    signer.address
+                );
+            }
             // Encode the signed transaction to Hex
-            const encodedTransaction = signedTransaction.encoded;
+            const encodedTransaction = fullSignedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
             const transactionId: Hex =
@@ -696,11 +703,18 @@ class ContractsModule extends AbstractThorModule {
                       expiration: 720
                   });
 
-            // Sign the transaction
+            // Sign the transaction as sender first
             const signedTransaction = await signer.sign(finalTransactionRequest);
-
+            // if delegated, sign the transaction as gas payer
+            let fullSignedTransaction = signedTransaction;
+            if (signedTransaction.isDelegated) {
+                fullSignedTransaction = await signer.sign(
+                    signedTransaction,
+                    signer.address
+                );
+            }
             // Encode the signed transaction to Hex
-            const encodedTransaction = signedTransaction.encoded;
+            const encodedTransaction = fullSignedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
             const transactionId: Hex =

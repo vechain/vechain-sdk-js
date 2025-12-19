@@ -23,10 +23,12 @@ abstract class Signer {
      * the signer will use the VIP-191 client to sign the transaction as gas payer.
      *
      * @param {TransactionRequest} transactionRequest - The transaction request object to be signed.
-     * @returns {TransactionRequest} The signed transaction request object.
+     * @param {Address} [sender] - The sender address (only for delegated transactions)
+     * @returns {Promise<TransactionRequest>} The signed transaction request object.
      */
     public abstract sign(
-        transactionRequest: TransactionRequest
+        transactionRequest: TransactionRequest,
+        sender?: Address
     ): Promise<TransactionRequest>;
 
     /**

@@ -24,8 +24,7 @@ VeChain's fee delegation allows a third party (sponsor) to pay the gas fees for 
 1. **Build transaction** with `.withDelegatedFee()` - marks the transaction as delegated
 2. **Sign as origin** - The sender signs the transaction first
 3. **Send to sponsor** - Request the sponsor's signature from the service
-4. **Combine signatures** - Merge sender and sponsor signatures
-5. **Broadcast** - Send the fully signed transaction to the network
+4. **Broadcast** - Send the fully signed transaction to the network
 
 ### TransactionBuilder
 
