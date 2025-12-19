@@ -61,8 +61,8 @@ import {
 } from '@common/errors';
 
 type TxId = {
-    id: Hex
-}
+    id: Hex;
+};
 
 /**
  * Filter types for viem compatibility.
