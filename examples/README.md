@@ -24,9 +24,12 @@ The `examples/viem` directory gives examples using the `viem` compatibility laye
         - [Decode a raw transaction](./thor/decode-raw-transaction/)
         - [Build a transaction request](./thor/build-transaction-request/)
         - [Transfer VTHO transaction](./thor/transfer-vtho-transaction/)
+        - [VIP 191 Fee delegation](./thor/vip191-fee-delegation/)
     - Events & Logs
         - [Filtering VET Transfers](./thor/filter-vet-transfers/)
         - [Filtering Raw Event Logs and Decoding](./thor/filter-event-logs/)
+    - Wallets
+        - [DAppKit VeWorld Wallet integration](./thor/dappkit-example/)
 
 - Viem (PublicClient & WalletClient)
     - Contracts
