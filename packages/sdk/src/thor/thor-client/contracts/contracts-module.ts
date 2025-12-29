@@ -186,22 +186,22 @@ class ContractsModule extends AbstractThorModule {
                 );
             }
 
-            // Convert Address objects to strings for viem compatibility
-            const processedArgs = functionData.map((arg) => {
+            // Normalize arguments to strings for viem compatibility
+            const normalizeArg = (arg: unknown): unknown => {
+                if (Array.isArray(arg)) return arg.map(normalizeArg);
                 if (
-                    arg &&
-                    typeof arg === 'object' &&
-                    'toString' in arg &&
-                    typeof arg.toString === 'function'
+                  arg &&
+                  typeof arg === 'object' &&
+                  'toString' in arg &&
+                  typeof (arg as any).toString === 'function'
                 ) {
-                    // Check if it's an Address-like object by validating string representation
-                    const str = arg.toString();
-                    if (Address.isValid(str)) {
-                        return str;
-                    }
+                  const str = (arg as { toString(): string }).toString();
+                  if (Address.isValid(str)) return str;
                 }
                 return arg;
-            });
+            };
+            // Process arguments
+            const processedArgs = functionData.map(normalizeArg);
 
             log.debug({
                 message: 'encodeFunctionData inputs',

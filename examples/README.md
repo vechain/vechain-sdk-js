@@ -30,6 +30,8 @@ The `examples/viem` directory gives examples using the `viem` compatibility laye
         - [Filtering Raw Event Logs and Decoding](./thor/filter-event-logs/)
     - Wallets
         - [DAppKit VeWorld Wallet integration](./thor/dappkit-example/)
+    - VNS
+        - [VNS Resolve Names](./thor/vns-resolve-names/)
 
 - Viem (PublicClient & WalletClient)
     - Contracts
