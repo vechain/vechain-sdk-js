@@ -1,10 +1,10 @@
 import { Address } from '@vechain/sdk-temp/common';
 import { ThorClient, ThorNetworks, VNSResolver } from '@vechain/sdk-temp/thor';
 
-async function example(): Promise<void> {       
+async function example(): Promise<void> {
     const thorClient = ThorClient.at(ThorNetworks.MAINNET);
     
-    // resolve a single domain name to an address   
+    // resolve a single domain name to an address
     const address = await VNSResolver.resolveName(thorClient, 'treasury.greencartdapp.vet');
     console.log('Resolved address of treasury.greencartdapp.vet:', address);
 
