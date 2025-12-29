@@ -1,5 +1,5 @@
 {
-    "name": "example-template",
+    "name": "vns-resolve-names",
     "private": true,
     "type": "module",
     "scripts": {
