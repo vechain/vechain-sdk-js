@@ -63,18 +63,18 @@ class EventLogFilterRequest {
      */
     static of(filter: EventLogFilter): EventLogFilterRequest {
         return new EventLogFilterRequest(
-            filter.range != null
+            filter.range !== undefined
                 ? FilterRangeRequest.of(filter.range)
                 : undefined,
-            filter.options != null
+            filter.options !== undefined
                 ? FilterOptionsRequest.of(filter.options)
                 : undefined,
-            filter.criteriaSet != null
+            filter.criteriaSet !== undefined
                 ? filter.criteriaSet.map((criteria) =>
                       EventCriteriaRequest.of(criteria)
                   )
                 : undefined,
-            filter.order != null
+            filter.order !== undefined
                 ? (filter.order as unknown as LogSortRequest)
                 : undefined
         );

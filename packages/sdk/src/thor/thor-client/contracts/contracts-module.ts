@@ -548,6 +548,16 @@ class ContractsModule extends AbstractThorModule {
 
             return transactionId;
         } catch (error) {
+            log.error({
+                source: 'ContractsModule.executeTransaction',
+                message: 'Failed to execute transaction',
+                context: {
+                    error: error instanceof Error ? error.message : 'Unknown error',
+                    contractAddress: contractAddress.toString(),
+                    functionAbi,
+                    functionData
+                }
+            });
             throw new IllegalArgumentError(
                 'ContractsModule.executeTransaction',
                 'Failed to execute transaction',
@@ -860,15 +870,15 @@ class ContractsModule extends AbstractThorModule {
         const addr = Address.of(address);
         try {
             // Create the filter for the contract events
-            const range: FilterRange | null =
+            const range: FilterRange | undefined =
                 fromBlock !== undefined && toBlock !== undefined
                     ? { unit: 'block', from: fromBlock, to: toBlock }
-                    : null;
+                    : undefined;
 
             const criteria: EventCriteria = {
                 address: Address.of(address)
             };
-            const filter = EventLogFilter.of(range, null, [criteria], null);
+            const filter = EventLogFilter.of(range, undefined, [criteria], undefined);
 
             // Use thorest to get raw event logs directly
             const query = QuerySmartContractEvents.of(filter);

@@ -174,7 +174,7 @@ describe('Hex class tests', () => {
             const exp = '-C0c0a';
             const hex = Hex.of(exp);
             expect(hex).toBeInstanceOf(Hex);
-            expect('-' + hex.digits).toEqual(exp.toLowerCase()); // Normalized from is lower case.
+            expect(`-${hex.digits}`).toEqual(exp.toLowerCase()); // Normalized from is lower case.
         });
 
         test('Return an Hex instance if the passed argument is an empty string with 0x prefix', () => {
@@ -395,7 +395,7 @@ describe('Hex class tests', () => {
                 console.log('Hex with inspect hook:', hex);
 
                 // Test 2: Verify util.inspect is using custom method
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
+
                 const util = require('util');
                 const inspected = util.inspect(hex);
                 expect(inspected).toBe('0x000000000000000000000000000caca0');
@@ -426,6 +426,28 @@ describe('Hex class tests', () => {
             expect(Hex.of(hex)).toEqual(
                 Hex.of('0x000000000000000000000000000caca0')
             );
+        });
+    });
+    describe('toPaddedString method tests', () => {
+        test('Return a padded string representation of the Hex instance', () => {
+            const hex = Hex.of('0xcaca0');
+            expect(hex.toPaddedString(32)).toEqual(
+                '0x000000000000000000000000000caca0'
+            );
+        });
+        test('Return a padded string representation of the Hex instance with negative sign', () => {
+            const hex = Hex.of('-0xcaca0');
+            expect(hex.toPaddedString(32)).toEqual(
+                '-0x000000000000000000000000000caca0'
+            );
+        });
+        test('Return original string if digits is less than the length of the hex string', () => {
+            const hex = Hex.of('0xcaca0');
+            expect(hex.toPaddedString(2)).toEqual('0xcaca0');
+        });
+        test('Return original string if digits is equal to the length of the hex string', () => {
+            const hex = Hex.of('0xcaca0');
+            expect(hex.toPaddedString(5)).toEqual('0xcaca0');
         });
     });
 });

@@ -14,7 +14,6 @@ import {
 } from 'viem';
 import type { AbiParameter, AbiEvent as ViemAbiEvent } from 'viem';
 
-// THIS WILL BE REPLACED BY ABI VIP-190
 /**
  * Represents an ABI (Application Binary Interface) item
  */
