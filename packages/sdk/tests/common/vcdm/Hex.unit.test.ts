@@ -395,7 +395,6 @@ describe('Hex class tests', () => {
                 console.log('Hex with inspect hook:', hex);
 
                 // Test 2: Verify util.inspect is using custom method
-
                 const util = require('util');
                 const inspected = util.inspect(hex);
                 expect(inspected).toBe('0x000000000000000000000000000caca0');
