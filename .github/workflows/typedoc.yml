@@ -72,23 +72,7 @@ jobs:
       - name: Create index.html
         run: |
           mkdir -p "$BUILD_ROOT"
-          cat > "$BUILD_ROOT/index.html" << 'EOF'
-          <!doctype html>
-          <html>
-            <head>
-              <meta charset="utf-8" />
-              <meta http-equiv="refresh" content="0;url=./v3/" />
-              <title>vechain-sdk-js docs</title>
-            </head>
-            <body>
-              <h1>vechain-sdk-js API Docs</h1>
-              <ul>
-                <li><a href="./v3/">v3 docs (githubpages branch)</a></li>
-                <li><a href="./main/">main branch docs</a></li>
-              </ul>
-            </body>
-          </html>
-          EOF
+          cp ./docs/typedoc/index.html "$BUILD_ROOT/index.html"
 
       - name: Setup pages
         uses: actions/configure-pages@v5

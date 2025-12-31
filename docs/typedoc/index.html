@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SDK TypeDoc</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #1f2937;
+      --accent: #4f46e5;
+      --background: #f9fafb;
+      --card-bg: #fff;
+      --card-border: #e5e7eb;
+      --hover-shadow: 0 10px 24px rgba(79,70,229,.12);
+      --transition: 0.2s cubic-bezier(.4,0,.2,1);
+      --rounded: 1rem;
+      --gap: 2rem;
+    }
+    body {
+      background: var(--background);
+      min-height: 100vh;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      color: var(--primary);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0;
+    }
+    .container {
+      max-width: 520px;
+      margin: 4rem auto 0;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .subtitle {
+      color: #6b7280;
+      font-size: 1.1rem;
+      font-weight: 400;
+      margin-bottom: 2.5rem;
+      margin-top: 0;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+      margin: 0 auto;
+      width: 100%;
+      max-width: 460px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--rounded);
+      box-shadow: 0 2px 10px rgba(31,41,55,0.03);
+      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+      text-decoration: none;
+      color: inherit;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover, .card:focus {
+      border-color: var(--accent);
+      box-shadow: var(--hover-shadow);
+      transform: translateY(-4px) scale(1.02);
+      outline: none;
+    }
+    .card-version {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    .card-label {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.2rem;
+    }
+    .card-desc {
+      font-size: 0.95rem;
+      color: #6b7280;
+      margin: 0;
+    }
+    @media (max-width: 700px) {
+      .cards {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .container { margin-top: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>VeChain SDK TypeDoc</h1>
+    <div class="subtitle">
+      API documentation for the vechain SDK for JavaScript. <br>
+      Choose a version below.
+    </div>
+    <div class="cards">
+      <a class="card" href="./main/" tabindex="0" aria-label="View V2 TypeDoc">
+        <span class="card-version">SDK v2</span>
+        <span class="card-label">main branch</span>
+        <span class="card-desc">Typedoc generated from main branch</span>
+      </a>
+      <a class="card" href="./v3/" tabindex="0" aria-label="View V3 TypeDoc">
+        <span class="card-version">SDK v3</span>
+        <span class="card-label">sdk-v3 branch</span>
+        <span class="card-desc">Typedoc generated from sdk-v3 branch</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
