@@ -1,35 +1,119 @@
 name: Publish TypeDoc
 
 on:
-    push:
-      branches:
-        - 'githubpages'
-    workflow_dispatch:
+  push:
+    branches:
+      - githubpages
+  workflow_dispatch:
 
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-    contents: read
-    pages: write
-    id-token: write
+  contents: read
 
-# Allow only one instance of wf to run at once
 concurrency:
-    group: "pages"
-    cancel-in-progress: false
+  group: "pages"
+  cancel-in-progress: false
 
 env:
-    BUILD_PATH: "./api-docs/"
+  BUILD_ROOT: "./api-docs"
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout (v3) branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install packages (v3)
+        run: corepack yarn install --immutable
+
+      - name: Build (v3)
+        run: corepack yarn build
+
+      - name: Generate v3 api docs
+        run: |
+          mkdir -p "$BUILD_ROOT/v3"
+          typedoc --options typedoc.json --out "$BUILD_ROOT/v3" --logLevel Error
+
+      # --- Build docs for main branch into /main (or /v2) ---
+
+      - name: Checkout main branch into subfolder
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Install packages (main)
+        working-directory: main
+        run: yarn install
+
+      - name: Build (main)
+        working-directory: main
+        run: yarn build
+
+      - name: Generate main api docs
+        working-directory: main
+        run: |
+          mkdir -p "../$BUILD_ROOT/main"
+          npx typedoc --options typedoc.json --out "../$BUILD_ROOT/main" --logLevel Error
+
+      # Optional: index that links or redirects
+      - name: Create index.html
+        run: |
+          mkdir -p "$BUILD_ROOT"
+          cat > "$BUILD_ROOT/index.html" << 'EOF'
+          <!doctype html>
+          <html>
+            <head>
+              <meta charset="utf-8" />
+              <meta http-equiv="refresh" content="0;url=./v3/" />
+              <title>vechain-sdk-js docs</title>
+            </head>
+            <body>
+              <h1>vechain-sdk-js API Docs</h1>
+              <ul>
+                <li><a href="./v3/">v3 docs (githubpages branch)</a></li>
+                <li><a href="./main/">main branch docs</a></li>
+              </ul>
+            </body>
+          </html>
+          EOF
+
+      - name: Setup pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact (combined docs)
+        uses: actions/upload-pages-artifact@v4
+        with:
+          # IMPORTANT: single artifact with both /v3 and /main
+          path: ${{ env.BUILD_ROOT }}
+          # omit name → default "github-pages" which deploy-pages expects
 
   deploy:
-    environment:
-        name: github-pages
-        url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      pages: write
+      id-token: write
+
     steps:
-        - name: Deploy to GitHub Pages
-          id: deployment
-          uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
