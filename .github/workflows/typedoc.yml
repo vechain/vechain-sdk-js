@@ -44,7 +44,7 @@ jobs:
       - name: Generate v3 api docs
         run: |
           mkdir -p "$BUILD_ROOT/v3"
-          typedoc --options typedoc.json --out "$BUILD_ROOT/v3" --logLevel Error
+          npx typedoc --options typedoc.json --out "$BUILD_ROOT/v3" --logLevel Error
 
       # --- Build docs for main branch into /main (or /v2) ---
 
