@@ -24,7 +24,7 @@ Thanks for helping improve the SDK!
 
 ## Docs & Examples
 - Docs live under `docs/`; update as necessary
-- Examples line under `examples/`; update and add new examples if needed
+- Examples live under `examples/`; update and add new examples if needed
 - If you add public APIs, update any relevant docs and examples as needed
 
 ## Issue & Security
