@@ -6,12 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
-      --primary: #1f2937;
-      --accent: #4f46e5;
-      --background: #f9fafb;
-      --card-bg: #fff;
+      --primary: #0f172a;
+      --accent: #6366f1;
+      --background: radial-gradient(120% 120% at 50% 20%, #eef2ff 0%, #f8fafc 40%, #fdfdff 100%);
+      --card-bg: #ffffffcc;
       --card-border: #e5e7eb;
-      --hover-shadow: 0 10px 24px rgba(79,70,229,.12);
+      --hover-shadow: 0 12px 30px rgba(99,102,241,.18);
       --transition: 0.2s cubic-bezier(.4,0,.2,1);
       --rounded: 1rem;
       --gap: 2rem;
@@ -24,87 +24,215 @@
       margin: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
       padding: 0;
     }
+    header {
+      width: 100%;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(8px);
+      background: #ffffffcc;
+      border-bottom: 1px solid #e5e7eb;
+      z-index: 10;
+    }
+    .header-inner {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-sizing: border-box;
+      padding: 0 0.5rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: inherit;
+    }
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1, #22d3ee);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      box-shadow: 0 6px 18px rgba(99,102,241,.35);
+    }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+    .brand-text .title {
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .brand-text .subtitle {
+      font-size: 0.9rem;
+      color: #475569;
+      margin: 0;
+    }
     .container {
-      max-width: 520px;
-      margin: 4rem auto 0;
+      max-width: 1100px;
+      margin: 0 auto;
       width: 100%;
       text-align: center;
+      padding: 4rem 1.25rem 3rem;
+      box-sizing: border-box;
     }
     h1 {
-      font-size: 2.25rem;
+      font-size: 2.4rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
       letter-spacing: -0.01em;
     }
     .subtitle {
-      color: #6b7280;
-      font-size: 1.1rem;
+      color: #475569;
+      font-size: 1.05rem;
       font-weight: 400;
       margin-bottom: 2.5rem;
       margin-top: 0;
     }
     .cards {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: var(--gap);
       margin: 0 auto;
       width: 100%;
-      max-width: 460px;
+      max-width: 760px;
+      padding: 0 0.5rem;
+      box-sizing: border-box;
     }
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: var(--rounded);
-      box-shadow: 0 2px 10px rgba(31,41,55,0.03);
+      box-shadow: 0 8px 24px rgba(15,23,42,0.06);
       transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
       text-decoration: none;
       color: inherit;
-      padding: 2rem 1.5rem;
+      padding: 1.9rem 1.6rem;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 0.6rem;
+      align-items: flex-start;
+      gap: 0.55rem;
       cursor: pointer;
       position: relative;
       overflow: hidden;
     }
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(34,211,238,0.06));
+      opacity: 0;
+      transition: opacity var(--transition);
+      pointer-events: none;
+    }
     .card:hover, .card:focus {
       border-color: var(--accent);
       box-shadow: var(--hover-shadow);
-      transform: translateY(-4px) scale(1.02);
+      transform: translateY(-4px) scale(1.01);
       outline: none;
     }
+    .card:hover::after,
+    .card:focus::after { opacity: 1; }
     .card-version {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 1.85rem;
+      font-weight: 800;
       color: var(--accent);
       letter-spacing: -0.02em;
     }
     .card-label {
       font-size: 1rem;
-      font-weight: 500;
-      color: #374151;
-      margin-bottom: 0.2rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 0.15rem;
     }
     .card-desc {
-      font-size: 0.95rem;
-      color: #6b7280;
+      font-size: 0.97rem;
+      color: #475569;
       margin: 0;
+      text-align: left;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color var(--transition), text-decoration-color var(--transition);
+    }
+    /* Only apply underline to text links that opt in */
+    .text-link:hover,
+    .text-link:focus {
+      color: #334155;
+      text-decoration: underline;
+      text-decoration-color: #334155;
+    }
+    footer {
+      width: 100%;
+      padding: 1.25rem 1.5rem 2rem;
+      text-align: center;
+      color: #475569;
+      font-size: 0.95rem;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .pill {
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(99,102,241,0.08);
+      color: #3730a3;
+      font-weight: 600;
+      font-size: 0.9rem;
     }
     @media (max-width: 700px) {
       .cards {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        padding: 0;
       }
-      .container { margin-top: 2rem; }
+      .container { padding: 3rem 1rem 2.5rem; }
+      header { position: sticky; }
+      .header-inner { padding: 0; }
+    }
+    @media (max-width: 540px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      .pill { align-self: center; }
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="header-inner">
+      <a class="brand" href="#">
+        <div class="logo">V</div>
+        <div class="brand-text">
+          <span class="title">VeChain SDK</span>
+          <span class="subtitle">API Documentation</span>
+        </div>
+      </a>
+      <div class="pill">TypeDoc</div>
+    </div>
+  </header>
   <div class="container">
     <h1>VeChain SDK TypeDoc</h1>
     <div class="subtitle">
@@ -124,5 +252,12 @@
       </a>
     </div>
   </div>
+  <footer>
+    <div class="footer-inner">
+      <a class="text-link" href="https://vechain.org" target="_blank" rel="noopener">VeChain</a>
+      <span>•</span>
+      <a class="text-link" href="https://docs.vechain.org/" target="_blank" rel="noopener">VeChain Docs</a>
+    </div>
+  </footer>
 </body>
 </html>
