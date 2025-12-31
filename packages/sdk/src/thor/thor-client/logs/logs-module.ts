@@ -124,12 +124,11 @@ class LogsModule extends AbstractThorModule {
                 context: { filterOptions }
             });
             return [];
-        } else {
-            log.debug({
-                source: 'LogsModule.getRawEventLogs',
-                message: `Found ${eventLogs.length} event logs.`
-            });
         }
+        log.debug({
+            source: 'LogsModule.getRawEventLogs',
+            message: `Found ${eventLogs.length} event logs.`
+        });
         return eventLogs;
     }
 
