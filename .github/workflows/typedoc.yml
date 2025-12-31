@@ -1,9 +1,6 @@
 name: Publish TypeDoc
 
 on:
-  push:
-    branches:
-      - githubpages
   workflow_dispatch:
 
 permissions:
@@ -68,7 +65,7 @@ jobs:
           mkdir -p "../$BUILD_ROOT/main"
           npx typedoc --options typedoc.json --out "../$BUILD_ROOT/main" --logLevel Error
 
-      # Optional: index that links or redirects
+      # Optional: index page for both v3 and main branches
       - name: Create index.html
         run: |
           mkdir -p "$BUILD_ROOT"
