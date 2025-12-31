@@ -7,7 +7,7 @@ import {
 } from '@thor/thorest';
 import { EventLog } from '@thor/thor-client/model/logs/EventLog';
 import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
-import { type AbiEvent, toEventSelector, decodeEventLog } from 'viem';
+import { type AbiEvent, toEventSelector } from 'viem';
 import { DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import { IllegalArgumentError } from '@common/errors';
 import { log } from '@common/logging';
@@ -18,6 +18,32 @@ import { log } from '@common/logging';
  */
 class LogsModule extends AbstractThorModule {
     /**
+     * Gets the event ABI from the provided map of unique event ABIs.
+     * @param unique - A map of unique event ABIs indexed by topic0.
+     * @param topic0 - The topic0 of the event.
+     * @returns The event ABI.
+     */
+    private getEventAbiFromMap(
+        unique: Map<string, AbiEvent>,
+        topic0: string
+    ): AbiEvent {
+        const abi = unique.get(topic0.toLowerCase());
+        if (!abi) {
+            log.error({
+                source: 'LogsModule.getEventAbiFromMap',
+                message: 'Topic not found in the provided ABIs.',
+                context: { type: 'event', value: topic0 }
+            });
+            throw new IllegalArgumentError(
+                'LogsModule.getEventAbiFromMap',
+                'Topic not found in the provided ABIs.',
+                { type: 'event', value: topic0 }
+            );
+        }
+        return abi;
+    }
+
+    /**
      * Filters event logs based on the provided criteria and decodes them using the provided ABI items.
      * The decoded data is added to the event logs as a new property.
      * @param filterOptions - An object specifying filtering criteria for event logs.
@@ -27,7 +53,6 @@ class LogsModule extends AbstractThorModule {
         filterOptions: EventLogFilter,
         eventAbis: AbiEvent[]
     ): Promise<DecodedEventLog[]> {
-        // get the raw event logs
         const eventLogs = await this.getRawEventLogs(filterOptions);
         if (eventLogs.length === 0) {
             log.warn({
@@ -36,47 +61,13 @@ class LogsModule extends AbstractThorModule {
                 context: { filterOptions }
             });
             return [];
-        } else {
-            log.debug({
-                source: 'LogsModule.filterEventLogs',
-                message: `Found ${eventLogs.length} event logs.`
-            });
         }
-
-        const result: DecodedEventLog[] = [];
-
-        if (eventAbis !== undefined) {
-            const uniqueEventAbis = this.removeDuplicatedAbis(eventAbis);
-
-            eventLogs.forEach((eventLog) => {
-                const eventAbi = uniqueEventAbis.get(
-                    eventLog.topics[0].toString().toLowerCase()
-                );
-                if (eventAbi === undefined || eventAbi === null) {
-                    log.error({
-                        source: 'LogsModule.filterEventLogs',
-                        message: 'Topic not found in the provided ABIs.',
-                        context: { type: 'event', value: eventLog.topics[0] }
-                    });
-                    throw new IllegalArgumentError(
-                        'LogsModule.filterEventLogs',
-                        'Topic not found in the provided ABIs.',
-                        { type: 'event', value: eventLog.topics[0] }
-                    );
-                }
-                const topics = eventLog.topics.map(
-                    (topic) => topic.toString() as `0x${string}`
-                );
-                const decodedData = decodeEventLog({
-                    abi: [eventAbi],
-                    data: eventLog.data.toString() as `0x${string}`,
-                    topics: [topics[0], ...topics.slice(1)]
-                });
-                result.push(DecodedEventLog.of(eventLog, decodedData));
-            });
-        }
-
-        return result;
+        const unique = this.removeDuplicatedAbis(eventAbis);
+        return eventLogs.map((eventLog) =>
+            eventLog.decode(
+                this.getEventAbiFromMap(unique, eventLog.topics[0].toString())
+            )
+        );
     }
 
     /**
@@ -90,7 +81,6 @@ class LogsModule extends AbstractThorModule {
         filterOptions: EventLogFilter,
         eventAbis: AbiEvent[]
     ): Promise<DecodedEventLog[][]> {
-        // get the raw event logs
         const eventLogs = await this.getRawEventLogs(filterOptions);
         if (eventLogs.length === 0) {
             log.warn({
@@ -99,57 +89,21 @@ class LogsModule extends AbstractThorModule {
                 context: { filterOptions }
             });
             return [];
-        } else {
-            log.debug({
-                source: 'LogsModule.filterGroupedEventLogs',
-                message: `Found ${eventLogs.length} event logs.`
-            });
         }
-
-        const result = new Map<string, DecodedEventLog[]>();
-
-        if (eventAbis !== undefined) {
-            const uniqueEventAbis = this.removeDuplicatedAbis(eventAbis);
-
-            // Initialize the result map with empty arrays for each unique ABI item
-            uniqueEventAbis.forEach((abi) =>
-                result.set(toEventSelector(abi).toLowerCase(), [])
+        const unique = this.removeDuplicatedAbis(eventAbis);
+        const groups = new Map<string, DecodedEventLog[]>();
+        for (const abi of unique.values()) {
+            groups.set(toEventSelector(abi).toLowerCase(), []);
+        }
+        for (const eventLog of eventLogs) {
+            const decoded = eventLog.decode(
+                this.getEventAbiFromMap(unique, eventLog.topics[0].toString())
             );
-
-            eventLogs.forEach((eventLog) => {
-                const eventAbi = uniqueEventAbis.get(
-                    eventLog.topics[0].toString().toLowerCase()
-                );
-                if (eventAbi === undefined || eventAbi === null) {
-                    log.error({
-                        source: 'LogsModule.filterGroupedEventLogs',
-                        message: 'Topic not found in the provided ABIs.',
-                        context: { type: 'event', value: eventLog.topics[0] }
-                    });
-                    throw new IllegalArgumentError(
-                        'LogsModule.filterGroupedEventLogs',
-                        'Topic not found in the provided ABIs.',
-                        { type: 'event', value: eventLog.topics[0] }
-                    );
-                }
-                const topics = eventLog.topics.map(
-                    (topic) => topic.toString() as `0x${string}`
-                );
-                const decodedData = decodeEventLog({
-                    abi: [eventAbi],
-                    data: eventLog.data.toString() as `0x${string}`,
-                    topics: [topics[0], ...topics.slice(1)]
-                });
-                const decodedEventLog = DecodedEventLog.of(
-                    eventLog,
-                    decodedData
-                );
-                result
-                    .get(eventLog.topics[0].toString().toLowerCase())
-                    ?.push(decodedEventLog);
-            });
+            groups
+                .get(eventLog.topics[0].toString().toLowerCase())
+                ?.push(decoded);
         }
-        return Array.from(result.values());
+        return [...groups.values()];
     }
 
     /**
@@ -162,7 +116,21 @@ class LogsModule extends AbstractThorModule {
     ): Promise<EventLog[]> {
         const query = QuerySmartContractEvents.of(filterOptions);
         const resp = await query.askTo(this.httpClient);
-        return resp.response.map((log) => EventLog.of(log));
+        const eventLogs = resp.response.map((log) => EventLog.of(log));
+        if (eventLogs.length === 0) {
+            log.warn({
+                source: 'LogsModule.getRawEventLogs',
+                message: 'No event logs found.',
+                context: { filterOptions }
+            });
+            return [];
+        } else {
+            log.debug({
+                source: 'LogsModule.getRawEventLogs',
+                message: `Found ${eventLogs.length} event logs.`
+            });
+        }
+        return eventLogs;
     }
 
     /**
