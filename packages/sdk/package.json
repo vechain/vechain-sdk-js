@@ -28,9 +28,9 @@
       "require": "./dist/thor.js"
     },
     "./viem": {
-      "types": "./dist/viem.d.ts",
-      "import": "./dist/viem.mjs",
-      "require": "./dist/viem.js"
+      "types": "./dist/sdk-viem.d.ts",
+      "import": "./dist/sdk-viem.mjs",
+      "require": "./dist/sdk-viem.js"
     }
   },
   "typesVersions": {
@@ -42,7 +42,7 @@
         "dist/thor.d.ts"
       ],
       "viem": [
-        "dist/viem.d.ts"
+        "dist/sdk-viem.d.ts"
       ]
     }
   },
