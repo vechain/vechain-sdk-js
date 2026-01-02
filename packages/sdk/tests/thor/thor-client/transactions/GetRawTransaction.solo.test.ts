@@ -22,8 +22,8 @@ describe('TransactionsModule-GetRawTransaction', () => {
         );
         expect(txDetails).toBeDefined();
         expect(txDetails?.raw).toBeDefined();
-        expect(txDetails?.meta.blockNumber).toBeDefined();
-        expect(txDetails?.meta.blockTimestamp).toBeDefined();
-        expect(txDetails?.meta.blockID).toBeDefined();
+        expect(txDetails?.meta?.blockNumber).toBeDefined();
+        expect(txDetails?.meta?.blockTimestamp).toBeDefined();
+        expect(txDetails?.meta?.blockID).toBeDefined();
     });
 });
