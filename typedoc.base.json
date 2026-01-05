@@ -4,7 +4,6 @@
   "skipErrorChecking": true,
   "excludeExternals": true,
   "exclude": [
-    "**/*index.ts",
     "**/*.spec.ts",
     "**/*.e2e.ts",
     "**/*test.ts",
@@ -16,5 +15,14 @@
   "excludeInternal": true,
   "validation": {
     "notDocumented": false
+  },
+  "entryPointStrategy": "resolve",
+  "categorizeByGroup": false,
+  "groupOrder": ["Modules"],
+  "sort": ["source-order"],
+  "excludeProtected": false,
+  "navigation": {
+    "includeGroups": true,
+    "includeCategories": false
   }
 }

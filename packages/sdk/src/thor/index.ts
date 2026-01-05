@@ -1,3 +1,6 @@
+/**
+ * @module thor
+ */
 export * from './certificate';
 export * from './signer';
 export * from './thor-client';
