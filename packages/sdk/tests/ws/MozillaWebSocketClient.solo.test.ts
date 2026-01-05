@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import { MozillaWebSocketClient } from '@thor/ws';
-import log from 'loglevel';
+import { log } from '@common/logging';
 
 /*
  * @group solo/ws/MozillaWebSocketClient
@@ -16,7 +16,7 @@ describe('MozillaWebSocketClient solo tests', () => {
             onClose: () => {},
             onError: () => {},
             onMessage: (message) => {
-                log.debug(message.data);
+                log.debug({ message: JSON.stringify(message.data) });
                 done();
             },
             onOpen: () => {}

@@ -3155,7 +3155,6 @@ __metadata:
     ethers: "npm:6.14.0"
     fast-json-stable-stringify: "npm:2.1.0"
     jest-fetch-mock: "npm:3.0.3"
-    loglevel: "npm:1.9.2"
     thor-devkit: "npm:2.1.1"
     tsd: "npm:0.31.2"
     tsup: "npm:8.5.1"
@@ -8201,13 +8200,6 @@ __metadata:
     chalk: "npm:^4.1.0"
     is-unicode-supported: "npm:^0.1.0"
   checksum: 10c0/67f445a9ffa76db1989d0fa98586e5bc2fd5247260dafb8ad93d9f0ccd5896d53fb830b0e54dade5ad838b9de2006c826831a3c528913093af20dff8bd24aca6
-  languageName: node
-  linkType: hard
-
-"loglevel@npm:1.9.2":
-  version: 1.9.2
-  resolution: "loglevel@npm:1.9.2"
-  checksum: 10c0/1e317fa4648fe0b4a4cffef6de037340592cee8547b07d4ce97a487abe9153e704b98451100c799b032c72bb89c9366d71c9fb8192ada8703269263ae77acdc7
   languageName: node
   linkType: hard
 

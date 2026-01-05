@@ -1,8 +1,7 @@
 import { describe, test } from '@jest/globals';
 import { RetrieveConnectedPeers } from '@thor/thorest';
 import { FetchHttpClient } from '@common/http';
-import log from 'loglevel';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { log } from '@common/logging';
 import { ThorNetworks } from '@thor/utils/const/network';
 
 describe('RetrieveConnectedPeers TESTNET tests', () => {
@@ -12,6 +11,6 @@ describe('RetrieveConnectedPeers TESTNET tests', () => {
                 FetchHttpClient.at(new URL(ThorNetworks.TESTNET))
             )
         ).response;
-        log.debug(fastJsonStableStringify(actual));
+        log.debug({ message: JSON.stringify(actual) });
     });
 });
