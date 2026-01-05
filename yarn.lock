@@ -11461,52 +11461,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsdown@npm:^0.19.0-beta.1":
-  version: 0.19.0-beta.1
-  resolution: "tsdown@npm:0.19.0-beta.1"
-  dependencies:
-    ansis: "npm:^4.2.0"
-    cac: "npm:^6.7.14"
-    defu: "npm:^6.1.4"
-    empathic: "npm:^2.0.0"
-    hookable: "npm:^6.0.1"
-    import-without-cache: "npm:^0.2.5"
-    obug: "npm:^2.1.1"
-    picomatch: "npm:^4.0.3"
-    rolldown: "npm:1.0.0-beta.58"
-    rolldown-plugin-dts: "npm:^0.20.0"
-    semver: "npm:^7.7.3"
-    tinyexec: "npm:^1.0.2"
-    tinyglobby: "npm:^0.2.15"
-    tree-kill: "npm:^1.2.2"
-    unconfig-core: "npm:^7.4.2"
-    unrun: "npm:^0.2.22"
-  peerDependencies:
-    "@arethetypeswrong/core": ^0.18.1
-    "@vitejs/devtools": "*"
-    publint: ^0.3.0
-    typescript: ^5.0.0
-    unplugin-lightningcss: ^0.4.0
-    unplugin-unused: ^0.5.0
-  peerDependenciesMeta:
-    "@arethetypeswrong/core":
-      optional: true
-    "@vitejs/devtools":
-      optional: true
-    publint:
-      optional: true
-    typescript:
-      optional: true
-    unplugin-lightningcss:
-      optional: true
-    unplugin-unused:
-      optional: true
-  bin:
-    tsdown: dist/run.mjs
-  checksum: 10c0/416b86e5f03ba0436ee99f438444c01ccad7b7d9dde64fa6b3ee5185be9159bc059bb2aa6acdd88420b23158f5238f54ea27281c4555380dacb46d0af1aa611a
-  languageName: node
-  linkType: hard
-
 "tslib@npm:2.7.0":
   version: 2.7.0
   resolution: "tslib@npm:2.7.0"
@@ -12021,7 +11975,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unrun@npm:^0.2.21, unrun@npm:^0.2.22":
+"unrun@npm:^0.2.21":
   version: 0.2.22
   resolution: "unrun@npm:0.2.22"
   dependencies:
@@ -12158,7 +12112,7 @@ __metadata:
     ts-jest: "npm:29.4.1"
     ts-node: "npm:10.9.2"
     tsc-alias: "npm:^1.8.16"
-    tsdown: "npm:^0.19.0-beta.1"
+    tsdown: "npm:0.18.4"
     turbo: "npm:2.6.1"
     typedoc: "npm:0.26.11"
     typedoc-plugin-missing-exports: "npm:3.1.0"
