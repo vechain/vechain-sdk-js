@@ -1,13 +1,14 @@
 {
     "$schema": "https://typedoc.org/schema.json",
-    "entryPoints": ["./packages/*"],
+    "entryPoints": ["./packages/sdk"],
     "entryPointStrategy": "packages",
+    "exclude": ["./packages/solo-setup/**"],
     "out": "./api-docs",
     "readme": "README.md",
     "name": "vechain-sdk",
     "navigationLinks": {
-        "vechain": "https://www.vechain.org/",
-        "docs": "https://docs.vechain.org/",
-        "github": "https://github.com/vechain"
+      "vechain": "https://www.vechain.org/",
+      "docs": "https://docs.vechain.org/",
+      "github": "https://github.com/vechain"
     }
-}
+  }

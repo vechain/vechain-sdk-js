@@ -7,9 +7,13 @@
     "**/*.spec.ts",
     "**/*.e2e.ts",
     "**/*test.ts",
-    "**/*JSON.ts"
+    "**/*JSON.ts",
+    "packages/solo-setup/**"
   ],
-  "externalPattern": ["**/node_modules/**"],
+  "externalPattern": [
+    "**/node_modules/**",
+    "**/packages/solo-setup/**"
+  ],
   "readme": "none",
   "excludePrivate": true,
   "excludeInternal": true,
