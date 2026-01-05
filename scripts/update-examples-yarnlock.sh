@@ -6,7 +6,7 @@ EXAMPLES_DIR="./examples"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-echo "Updating examples tslock files..."
+echo "Updating examples yarn.lock files..."
 
 # Find all subdirectories in examples (excluding node_modules and hidden dirs)
 find "$EXAMPLES_DIR" -mindepth 1 -maxdepth 2 -type d -not -name "node_modules" -not -name ".*" | while read -r example_dir; do
