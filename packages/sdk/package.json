@@ -28,12 +28,11 @@
       "require": "./dist/thor.js"
     },
     "./viem": {
-      "types": "./dist/viem.d.ts",
-      "import": "./dist/viem.mjs",
-      "require": "./dist/viem.js"
+      "types": "./dist/sdk-viem.d.ts",
+      "import": "./dist/sdk-viem.mjs",
+      "require": "./dist/sdk-viem.js"
     }
   },
-  "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
       "common": [
@@ -43,7 +42,7 @@
         "dist/thor.d.ts"
       ],
       "viem": [
-        "dist/viem.d.ts"
+        "dist/sdk-viem.d.ts"
       ]
     }
   },
@@ -59,7 +58,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "rm -rf ./dist && npx tsup",
+    "build": "rm -rf ./dist && npx tsdown && tsc-alias -p tsconfig.json",
     "check:circular-dependencies": "npx madge --json --circular --extensions ts src | jq '. | length' | awk '{if($1 > 15) exit 1}'",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write src/**/**/**/**/*.ts tests/**/**/**/**/*.ts",
@@ -98,21 +97,19 @@
     "@scure/bip32": "1.7.0",
     "@scure/bip39": "1.6.0",
     "abitype": "1.2.0",
-    "ethers": "6.14.0",
     "fast-json-stable-stringify": "2.1.0",
-    "viem": "2.40.3",
-    "ws": "8.18.3"
+    "viem": "2.40.3"
   },
   "devDependencies": {
-    "@types/ws": "8.18.1",
-    "@vechain/sdk-solo-setup": "3.0.0-beta.1",
-    "bignumber.js": "9.3.1",
+    "@vechain/sdk-solo-setup": "workspace:*",
     "jest-fetch-mock": "3.0.3",
     "loglevel": "1.9.2",
+    "madge": "8.0.0",
     "thor-devkit": "2.1.1",
     "tsd": "0.31.2",
-    "tsup": "8.5.1",
-    "whatwg-fetch": "3.6.20"
+    "tsdown": "0.18.4",
+    "whatwg-fetch": "3.6.20",
+    "ws": "8.18.3"
   },
   "engines": {
     "node": ">=20.0.0"
