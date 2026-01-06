@@ -9,13 +9,17 @@ import { Contract, ContractFactory } from './model';
 import { ClauseBuilder } from '@thor/thor-client/transactions/ClauseBuilder';
 import { TransactionRequest } from '../model/transactions/TransactionRequest';
 import { Clause } from '../model/transactions/Clause';
-import { IllegalArgumentError, ContractCallError } from '../../../common/errors';
+import {
+    IllegalArgumentError,
+    ContractCallError
+} from '../../../common/errors';
 import { log } from '@common/logging';
 import {
     encodeFunctionData,
     decodeFunctionResult,
     toFunctionSignature
 } from 'viem';
+import { normalizeVcdmArgs } from '@thor/utils';
 import type { ContractCallOptions, ContractCallResult } from './types';
 import { EventLogFilter } from '../model/logs/EventLogFilter';
 import { type EventCriteria } from '../model/logs/EventCriteria';
@@ -186,22 +190,8 @@ class ContractsModule extends AbstractThorModule {
                 );
             }
 
-            // Normalize arguments to strings for viem compatibility
-            const normalizeArg = (arg: unknown): unknown => {
-                if (Array.isArray(arg)) return arg.map(normalizeArg);
-                if (
-                  arg &&
-                  typeof arg === 'object' &&
-                  'toString' in arg &&
-                  typeof (arg as any).toString === 'function'
-                ) {
-                  const str = (arg as { toString(): string }).toString();
-                  if (Address.isValid(str)) return str;
-                }
-                return arg;
-            };
-            // Process arguments
-            const processedArgs = functionData.map(normalizeArg);
+            // Process arguments - normalize VCDM types to strings for viem compatibility
+            const processedArgs = normalizeVcdmArgs(functionData);
 
             log.debug({
                 message: 'encodeFunctionData inputs',
@@ -236,7 +226,9 @@ class ContractsModule extends AbstractThorModule {
                 });
                 // Throw ContractCallError for encoding errors (e.g., "Function not found on ABI")
                 const errorMessage =
-                    error instanceof Error ? error.message : 'Unknown encoding error';
+                    error instanceof Error
+                        ? error.message
+                        : 'Unknown encoding error';
                 throw new ContractCallError(
                     toFunctionSignature(resolvedFunctionAbi),
                     errorMessage,
@@ -290,9 +282,14 @@ class ContractsModule extends AbstractThorModule {
                 if (clauseResult.reverted) {
                     // Try to decode the revert reason from the data
                     let decodedReason: string | undefined;
-                    if (clauseResult.data && clauseResult.data.toString() !== '0x') {
+                    if (
+                        clauseResult.data &&
+                        clauseResult.data.toString() !== '0x'
+                    ) {
                         try {
-                            decodedReason = decodeRevertReason(clauseResult.data);
+                            decodedReason = decodeRevertReason(
+                                clauseResult.data
+                            );
                         } catch {
                             // If decoding fails, decodedReason remains undefined
                         }
@@ -513,11 +510,12 @@ class ContractsModule extends AbstractThorModule {
             // build the transaction request
             if (transactionOptions !== undefined) {
                 // use provided transaction options
-                finalTransactionRequest = await this.thorClient.transactions.buildTransactionBody(
-                    [clause],
-                    gasEstimate,
-                    transactionOptions
-                );
+                finalTransactionRequest =
+                    await this.thorClient.transactions.buildTransactionBody(
+                        [clause],
+                        gasEstimate,
+                        transactionOptions
+                    );
             } else {
                 // use transaction builder to build the transaction request with default values
                 const builder = TransactionBuilder.create(this.thorClient);
@@ -527,8 +525,10 @@ class ContractsModule extends AbstractThorModule {
                     .withDynFeeTxDefaults()
                     .build();
             }
-            // Sign the transaction as sender first 
-            const signedTransaction = await signer.sign(finalTransactionRequest);
+            // Sign the transaction as sender first
+            const signedTransaction = await signer.sign(
+                finalTransactionRequest
+            );
             // if delegated, sign the transaction as gas payer
             let fullSignedTransaction = signedTransaction;
             if (signedTransaction.isDelegated) {
@@ -704,7 +704,9 @@ class ContractsModule extends AbstractThorModule {
                   });
 
             // Sign the transaction as sender first
-            const signedTransaction = await signer.sign(finalTransactionRequest);
+            const signedTransaction = await signer.sign(
+                finalTransactionRequest
+            );
             // if delegated, sign the transaction as gas payer
             let fullSignedTransaction = signedTransaction;
             if (signedTransaction.isDelegated) {
@@ -759,14 +761,22 @@ class ContractsModule extends AbstractThorModule {
 
         try {
             // Get account details and bytecode using ThorClient accounts module
-            const accountDetails: AccountDetail = await (this.thorClient.accounts as { getAccount: (address: AddressLike, revision?: Revision) => Promise<AccountDetail> }).getAccount(
-                addr,
-                revision
-            );
-            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
-                addr,
-                revision
-            );
+            const accountDetails: AccountDetail = await (
+                this.thorClient.accounts as {
+                    getAccount: (
+                        address: AddressLike,
+                        revision?: Revision
+                    ) => Promise<AccountDetail>;
+                }
+            ).getAccount(addr, revision);
+            const bytecode: HexUInt = await (
+                this.thorClient.accounts as {
+                    getBytecode: (
+                        address: AddressLike,
+                        revision?: Revision
+                    ) => Promise<HexUInt>;
+                }
+            ).getBytecode(addr, revision);
 
             // Check if it's a contract by looking at bytecode
             const isContract =
@@ -819,10 +829,14 @@ class ContractsModule extends AbstractThorModule {
         const addr = Address.of(address);
         try {
             // Use ThorClient accounts module to get bytecode
-            const bytecode: HexUInt = await (this.thorClient.accounts as { getBytecode: (address: AddressLike, revision?: Revision) => Promise<HexUInt> }).getBytecode(
-                addr,
-                revision
-            );
+            const bytecode: HexUInt = await (
+                this.thorClient.accounts as {
+                    getBytecode: (
+                        address: AddressLike,
+                        revision?: Revision
+                    ) => Promise<HexUInt>;
+                }
+            ).getBytecode(addr, revision);
             return bytecode.toString();
         } catch (error) {
             throw new IllegalArgumentError(
@@ -911,10 +925,11 @@ class ContractsModule extends AbstractThorModule {
         transactionId: Hex,
         options?: WaitForTransactionReceiptOptions
     ): Promise<TransactionReceipt | null> {
-        const receipt: TransactionReceipt | null = await this.thorClient.transactions.waitForTransactionReceipt(
-            transactionId,
-            options
-        );
+        const receipt: TransactionReceipt | null =
+            await this.thorClient.transactions.waitForTransactionReceipt(
+                transactionId,
+                options
+            );
         return receipt;
     }
 }

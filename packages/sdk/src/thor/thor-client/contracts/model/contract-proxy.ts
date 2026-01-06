@@ -4,6 +4,7 @@ import { Address, AddressLike, Hex, Revision } from '@common/vcdm';
 import type { AbiParameter, AbiFunction } from 'abitype';
 import { IllegalArgumentError, InvalidTransactionField, ContractCallError } from '@common/errors';
 import { log } from '@common/logging';
+import { normalizeVcdmArgs } from '@thor/utils';
 import { encodeFunctionData, toFunctionSignature } from 'viem';
 import { Clause } from '@thor/thor-client/model/transactions/Clause';
 import { ContractFilter } from './ContractFilter';
@@ -313,7 +314,7 @@ function getClauseProxy<TAbi extends Abi>(
                 const encodedData = encodeFunctionData({
                     abi: contract.abi as any,
                     functionName: prop.toString() as any,
-                    args: args as any
+                    args: normalizeVcdmArgs(args) as any
                 });
                 const clause = new Clause(
                     Address.of(contract.address),

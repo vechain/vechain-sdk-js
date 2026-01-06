@@ -32,6 +32,7 @@ import { type Signer } from '@thor/signer';
 import { Address, AddressLike, Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError, ContractCallError } from '@common/errors';
 import { log } from '@common/logging';
+import { normalizeVcdmArgs } from '@thor/utils';
 import type { ContractCallOptions } from '../types';
 // Forward reference to avoid circular dependency with ContractsModule
 import type { ContractCallResult } from '../types';
@@ -550,7 +551,7 @@ class Contract<TAbi extends Abi> {
                     const data = encodeFunctionData({
                         abi: this.abi as any,
                         functionName: functionName as any,
-                        args: cleanArgs as any
+                        args: normalizeVcdmArgs(cleanArgs) as any
                     });
                     return {
                         to: this.address.toString(),
