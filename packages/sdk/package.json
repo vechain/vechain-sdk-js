@@ -103,7 +103,6 @@
   "devDependencies": {
     "@vechain/sdk-solo-setup": "workspace:*",
     "jest-fetch-mock": "3.0.3",
-    "loglevel": "1.9.2",
     "madge": "8.0.0",
     "thor-devkit": "2.1.1",
     "tsd": "0.31.2",
