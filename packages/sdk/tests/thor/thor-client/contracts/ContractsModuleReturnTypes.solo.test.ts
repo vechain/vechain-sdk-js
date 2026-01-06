@@ -369,15 +369,23 @@ describe('ContractsModule Return Types Solo Tests', () => {
     // ==================== Tuple / Multiple Return Values ====================
 
     describe('Tuple / Multiple Return Values', () => {
+        // Define max values for each uint type using computed expressions
+        const MAX_UINT8 = 2 ** 8 - 1; // 255
+        const MAX_UINT16 = 2 ** 16 - 1; // 65535
+        const MAX_UINT32 = 2 ** 32 - 1; // 4294967295
+        const MAX_UINT64 = 2n ** 64n - 1n;
+        const MAX_UINT160 = 2n ** 160n - 1n;
+        const MAX_UINT256 = 2n ** 256n - 1n;
+
         test('Should decode multiple int return values (tuple)', async () => {
             const functionAbi = getFunctionAbi('multipleIntData');
             const inputs = [
-                255, // uint8
-                65535, // uint16
-                4294967295, // uint32
-                18446744073709551615n, // uint64
-                1461501637330902918203684832716283019655932542975n, // uint160
-                115792089237316195423570985008687907853269984665640564039457584007913129639935n // uint256 (max)
+                MAX_UINT8,
+                MAX_UINT16,
+                MAX_UINT32,
+                MAX_UINT64,
+                MAX_UINT160,
+                MAX_UINT256
             ];
 
             const result = await thorClient.contracts.executeCall(
@@ -391,11 +399,10 @@ describe('ContractsModule Return Types Solo Tests', () => {
             const decoded = result.result.array;
             expect(decoded).toBeDefined();
             expect(decoded?.length).toBe(6);
-            expect(decoded?.[0]).toBe(255);
-            expect(decoded?.[1]).toBe(65535);
-            expect(decoded?.[2]).toBe(4294967295);
-            expect(decoded?.[3]).toBe(18446744073709551615n);
-            // Note: large numbers may be returned as bigint
+            expect(decoded?.[0]).toBe(MAX_UINT8);
+            expect(decoded?.[1]).toBe(MAX_UINT16);
+            expect(decoded?.[2]).toBe(MAX_UINT32);
+            expect(decoded?.[3]).toBe(MAX_UINT64);
         });
 
         test('Should decode complex multiple return values (multipleData)', async () => {
@@ -564,7 +571,9 @@ describe('Contract.read Return Types Solo Tests', () => {
             const positiveResult = await (contract.read as any).intData(12345n);
             expect(positiveResult).toBe(12345n);
 
-            const negativeResult = await (contract.read as any).intData(-12345n);
+            const negativeResult = await (contract.read as any).intData(
+                -12345n
+            );
             expect(negativeResult).toBe(-12345n);
         });
 
@@ -586,7 +595,9 @@ describe('Contract.read Return Types Solo Tests', () => {
                 testingContractAbi
             );
 
-            const result = await (contract.read as any).addressData(testAddress);
+            const result = await (contract.read as any).addressData(
+                testAddress
+            );
             expect((result as string).toLowerCase()).toBe(
                 testAddress.toLowerCase()
             );
@@ -729,6 +740,14 @@ describe('Contract.read Return Types Solo Tests', () => {
 
     // ==================== Tuple / Multiple Return Values via contract.read ====================
 
+    // Define max values for each uint type using computed expressions
+    const MAX_UINT8 = 2 ** 8 - 1; // 255
+    const MAX_UINT16 = 2 ** 16 - 1; // 65535
+    const MAX_UINT32 = 2 ** 32 - 1; // 4294967295
+    const MAX_UINT64 = 2n ** 64n - 1n;
+    const MAX_UINT160 = 2n ** 160n - 1n;
+    const MAX_UINT256 = 2n ** 256n - 1n;
+
     describe('Tuple / Multiple Return Values via contract.read', () => {
         test('Should decode multiple int values via contract.read.multipleIntData', async () => {
             const contract = thorClient.contracts.load(
@@ -737,21 +756,21 @@ describe('Contract.read Return Types Solo Tests', () => {
             );
 
             const result = await (contract.read as any).multipleIntData(
-                255, // uint8
-                65535, // uint16
-                4294967295, // uint32
-                18446744073709551615n, // uint64
-                1461501637330902918203684832716283019655932542975n, // uint160
-                115792089237316195423570985008687907853269984665640564039457584007913129639935n // uint256 (max)
+                MAX_UINT8,
+                MAX_UINT16,
+                MAX_UINT32,
+                MAX_UINT64,
+                MAX_UINT160,
+                MAX_UINT256
             );
 
             // Multiple return values are returned as array
             expect(Array.isArray(result)).toBe(true);
             expect(result.length).toBe(6);
-            expect(result[0]).toBe(255);
-            expect(result[1]).toBe(65535);
-            expect(result[2]).toBe(4294967295);
-            expect(result[3]).toBe(18446744073709551615n);
+            expect(result[0]).toBe(MAX_UINT8);
+            expect(result[1]).toBe(MAX_UINT16);
+            expect(result[2]).toBe(MAX_UINT32);
+            expect(result[3]).toBe(MAX_UINT64);
         });
 
         test('Should decode complex multiple return values via contract.read.multipleData', async () => {
@@ -833,4 +852,3 @@ describe('Contract.read Return Types Solo Tests', () => {
         });
     });
 });
-
