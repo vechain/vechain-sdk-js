@@ -4,7 +4,7 @@ import { type Abi, type AbiParameter } from 'viem';
 import { type Address, AddressLike, Revision } from '@common/vcdm';
 import { type PublicClient, type WalletClient } from '@viem/clients';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions/response';
-import { type DecodedEventLog } from '@/thor/thor-client/model/logs/DecodedEventLog';
+import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import {
     type ClauseSimulationResult,
     type SimulateTransactionOptions
