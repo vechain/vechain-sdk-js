@@ -32,7 +32,6 @@ class RetrieveExpandedBlock implements ThorRequest<
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<RetrieveExpandedBlock, RegularBlockResponse | null>>}
      * Returns a promise that resolves to a ThorResponse containing the requested block.
-     * @throws ThorError if the response is invalid or the request fails.
      */
     async askTo(
         httpClient: HttpClient

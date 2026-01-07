@@ -43,7 +43,6 @@ class RetrieveContractBytecode implements ThorRequest<
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>}
      * Returns a promise that resolves to a ThorResponse containing the requested contract bytecode.
-     * @throws {InvalidThorestResponse} if the response cannot be parsed
      */
     async askTo(
         httpClient: HttpClient

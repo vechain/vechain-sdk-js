@@ -44,7 +44,6 @@ class RetrieveAccountDetails implements ThorRequest<
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>}
      * Returns a promise that resolves to a ThorResponse containing the requested get account response.
-     * @throws {InvalidThorestResponse} if the response cannot be parsed
      */
     async askTo(
         httpClient: HttpClient
