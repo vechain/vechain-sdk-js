@@ -2,17 +2,11 @@ import { type Hex, HexUInt } from '@common/vcdm';
 import { TransferResponse } from '@thor/thorest/common/TransferResponse';
 import { type EventJSON, type TransferJSON } from '@thor/thorest/json';
 import { EventResponse } from '@thor/thorest/common/EventResponse';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestResponseError } from '@common/errors';
 import {
     type ExecuteCodeResponseJSON,
     type ExecuteCodesResponseJSON
 } from '@thor/thorest/accounts/json';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/accounts/response/ExecuteCodesResponse.ts!';
 
 /**
  * Execute Code Response
@@ -56,7 +50,7 @@ class ExecuteCodeResponse {
      * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {ExecuteCodeResponseJSON} json - The JSON object containing execute code response data.
-     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponse} if the parsing of the JSON object fails.
      */
     constructor(json: ExecuteCodeResponseJSON) {
         try {
@@ -73,8 +67,8 @@ class ExecuteCodeResponse {
             this.reverted = json.reverted;
             this.vmError = json.vmError;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: ExecuteCodeResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                'ExecuteCodeResponse.constructor',
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

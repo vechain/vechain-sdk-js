@@ -4,10 +4,7 @@ import {
     type Clause,
     type SimulateTransactionOptions
 } from '@thor/thor-client/model/transactions';
-import { IllegalArgumentError } from '@common';
-
-const FQP =
-    'packages/sdk/src/thor/thorest/accounts/methods/ExecuteCodesRequest.ts!';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * Execute Codes Request
@@ -62,11 +59,12 @@ class ExecuteCodesRequest {
      *
      * @param {Clause[]} clauses - The clauses to execute.
      * @param {SimulateTransactionOptions} options - The options for the request.
+     * @throws {InvalidThorestRequest} If the clauses are empty.
      */
     constructor(clauses: Clause[], options?: SimulateTransactionOptions) {
         if (clauses.length === 0) {
-            throw new IllegalArgumentError(
-                `${FQP}<ExecuteCodesRequest>.constructor()`,
+            throw new InvalidThorestRequestError(
+                'ExecuteCodesRequest.constructor',
                 'clauses must not be empty'
             );
         }

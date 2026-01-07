@@ -1,15 +1,9 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
 import { GetAccountResponse } from '@thor/thorest';
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { type Address, type Revision } from '@common/vcdm';
 import { type GetAccountResponseJSON } from '../json';
-import { handleHttpError } from '@thor/thorest/utils';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/accounts/methods/RetrieveAccountDetails.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Retrieve account details](http://localhost:8669/doc/stoplight-ui/#/paths/accounts-address/get)
@@ -45,40 +39,29 @@ class RetrieveAccountDetails implements ThorRequest<
     }
 
     /**
-     * Asynchronously fetches and processes a block response using the provided HTTP client.
+     * Fetches and processes a get account response using the provided HTTP client.
      *
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>}
-     * Returns a promise that resolves to a ThorResponse containing the requested block.
-     * @throws ThorError if the response is invalid or the request fails.
+     * Returns a promise that resolves to a ThorResponse containing the requested get account response.
+     * @throws {InvalidThorestResponse} if the response cannot be parsed
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>`;
-        try {
-            const response = await httpClient.get(this.path, this.query);
-            const json = (await response.json()) as GetAccountResponseJSON;
-            try {
-                return {
-                    request: this,
-                    response: new GetAccountResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = 'RetrieveAccountDetails.askTo';
+        // do http get request - this will throw an error if the request fails
+        const response = await httpClient.get(this.path, this.query);
+        // parse the response - this will throw an error if the response cannot be parsed
+        const getAccountResponse = await parseResponseHandler<
+            GetAccountResponse,
+            GetAccountResponseJSON
+        >(fqp, response, GetAccountResponse);
+        // return a thor response
+        return {
+            request: this,
+            response: getAccountResponse
+        };
     }
 
     /**

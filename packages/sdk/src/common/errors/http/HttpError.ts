@@ -8,7 +8,7 @@ import { VeChainSDKError } from '@common/errors';
  * when the server returns a non-200 status code (e.g., 400, 404, 500, etc.).
  * It includes additional information about the HTTP status code and response details.
  */
-class HttpException extends VeChainSDKError {
+class HttpError extends VeChainSDKError {
     /**
      * The [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status)
      * returned by the server.
@@ -60,4 +60,4 @@ class HttpException extends VeChainSDKError {
     }
 }
 
-export { HttpException };
+export { HttpError };

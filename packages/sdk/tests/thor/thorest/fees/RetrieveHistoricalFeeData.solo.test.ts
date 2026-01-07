@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { type Hex, Revision } from '@common/vcdm';
-import { FetchHttpClient, HttpException } from '@common/http';
+import { FetchHttpClient, HttpError } from '@common/http';
 import {
     GetFeesHistoryResponse,
     RetrieveHistoricalFeeData,
@@ -23,11 +23,11 @@ describe('RetrieveHistoricalFeeData SOLO tests', () => {
             throw new Error('Should not reach here.');
         } catch (error) {
             // Can receive either HttpException (direct from FetchHttpClient) or ThorError (wrapped)
-            expect([HttpException, ThorError]).toContain(
+            expect([HttpError, ThorError]).toContain(
                 (error as Error).constructor
             );
             const errorStatus =
-                error instanceof HttpException
+                error instanceof HttpError
                     ? error.status
                     : (error as ThorError).status;
             expect([0, 400]).toContain(errorStatus);
@@ -42,11 +42,11 @@ describe('RetrieveHistoricalFeeData SOLO tests', () => {
             throw new Error('Should not reach here.');
         } catch (error) {
             // Can receive either HttpException (direct from FetchHttpClient) or ThorError (wrapped)
-            expect([HttpException, ThorError]).toContain(
+            expect([HttpError, ThorError]).toContain(
                 (error as Error).constructor
             );
             const errorStatus =
-                error instanceof HttpException
+                error instanceof HttpError
                     ? error.status
                     : (error as ThorError).status;
             expect([0, 400]).toContain(errorStatus);

@@ -1,4 +1,4 @@
-import { HttpException, HttpNetworkException } from '@common/http';
+import { HttpError, HttpNetworkError } from '@common/errors';
 import { ThorError } from '../ThorError';
 
 /**
@@ -11,7 +11,7 @@ import { ThorError } from '../ThorError';
  */
 export function handleHttpError(fqp: string, error: unknown): ThorError {
     // Handle HTTP exceptions from FetchHttpClient
-    if (error instanceof HttpException) {
+    if (error instanceof HttpError) {
         return new ThorError(
             fqp,
             error.responseBody,
@@ -26,7 +26,7 @@ export function handleHttpError(fqp: string, error: unknown): ThorError {
     }
 
     // Handle network exceptions from FetchHttpClient
-    if (error instanceof HttpNetworkException) {
+    if (error instanceof HttpNetworkError) {
         return new ThorError(
             fqp,
             error.message,

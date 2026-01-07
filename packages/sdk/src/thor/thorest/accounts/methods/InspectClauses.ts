@@ -1,26 +1,19 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import {
     ExecuteCodesResponse,
     type ExecuteCodesRequest,
-    ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
 import { Revision } from '@common/vcdm';
 import { type ExecuteCodesResponseJSON } from '@thor/thorest/accounts/json';
-
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/accounts/methods/InspectClauses.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * Inspect the clauses of a contract identified by its address.
  *
- * API endpoint: `POST /accounts/*`
+ * Thorest API endpoint: `POST /accounts/*`
  */
-/// Documentation: http://localhost:8669/doc/stoplight-ui/#/paths/accounts-*/post/
 class InspectClauses implements ThorRequest<
     InspectClauses,
     ExecuteCodesResponse
@@ -52,65 +45,32 @@ class InspectClauses implements ThorRequest<
     }
 
     /**
-     * Asynchronously fetches and processes a block response using the provided HTTP client.
+     * Fetches and processes a execute codes response using the provided HTTP client.
      *
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<InspectClauses, ExecuteCodesResponse>>}
-     * Returns a promise that resolves to a ThorResponse containing the requested block.
-     * @throws ThorError if the response is invalid or the request fails.
+     * Returns a promise that resolves to a ThorResponse containing the requested execute codes response.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<InspectClauses, ExecuteCodesResponse>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<InspectClauses, ExecuteCodesResponse>>`;
-        try {
-            const response = await httpClient.post(
-                InspectClauses.PATH,
-                this.query,
-                this.request.toJSON()
-            );
-            let json: ExecuteCodesResponseJSON;
-            try {
-                json = (await response.json()) as ExecuteCodesResponseJSON;
-            } catch (parseErr) {
-                const body = await response.text().catch(() => undefined);
-                throw new ThorError(
-                    fqp,
-                    parseErr instanceof Error
-                        ? parseErr.message
-                        : 'Bad response.',
-                    {
-                        url: response.url,
-                        status: response.status,
-                        statusText: response.statusText,
-                        body
-                    },
-                    parseErr instanceof Error ? parseErr : undefined,
-                    response.status
-                );
-            }
-            try {
-                return {
-                    request: this,
-                    response: new ExecuteCodesResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        status: response.status,
-                        statusText: response.statusText,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = 'InspectClauses.askTo';
+        // do http post request - this will throw an error if the request fails
+        const response = await httpClient.post(
+            InspectClauses.PATH,
+            this.query,
+            this.request.toJSON()
+        );
+        // parse the response - this will throw an error if the response cannot be parsed
+        const executeCodesResponse = await parseResponseHandler<
+            ExecuteCodesResponse,
+            ExecuteCodesResponseJSON
+        >(fqp, response, ExecuteCodesResponse);
+        // return a thor response
+        return {
+            request: this,
+            response: executeCodesResponse
+        };
     }
 
     /**

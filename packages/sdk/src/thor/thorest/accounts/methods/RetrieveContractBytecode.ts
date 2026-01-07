@@ -1,15 +1,9 @@
 import type { HttpQuery, HttpClient, HttpPath } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import type { Address, Revision } from '@common/vcdm';
 import { type ContractBytecodeJSON } from '@thor/thorest/json';
 import { ContractBytecode } from '@thor/thorest';
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/accounts/methods/RetrieveContractBytecode.ts!';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Retrieve a contract bytecode](http://localhost:8669/doc/stoplight-ui/#/paths/accounts-address--code/get)
@@ -44,40 +38,29 @@ class RetrieveContractBytecode implements ThorRequest<
     }
 
     /**
-     * Asynchronously fetches and processes a block response using the provided HTTP client.
+     * Fetches and processes a contract bytecode response using the provided HTTP client.
      *
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>}
-     * Returns a promise that resolves to a ThorResponse containing the requested block.
-     * @throws ThorError if the response is invalid or the request fails.
+     * Returns a promise that resolves to a ThorResponse containing the requested contract bytecode.
+     * @throws {InvalidThorestResponse} if the response cannot be parsed
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>`;
-        try {
-            const response = await httpClient.get(this.path, this.query);
-            const json = (await response.json()) as ContractBytecodeJSON;
-            try {
-                return {
-                    request: this,
-                    response: new ContractBytecode(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = 'RetrieveContractBytecode.askTo';
+        // do http get request - this will throw an error if the request fails
+        const response = await httpClient.get(this.path, this.query);
+        // parse the response - this will throw an error if the response cannot be parsed
+        const contractBytecode = await parseResponseHandler<
+            ContractBytecode,
+            ContractBytecodeJSON
+        >(fqp, response, ContractBytecode);
+        // return a thor response
+        return {
+            request: this,
+            response: contractBytecode
+        };
     }
 
     /**

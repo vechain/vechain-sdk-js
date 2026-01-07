@@ -3,7 +3,7 @@ import {
     Transactions
 } from '@thor/thorest';
 import { log } from '@common/logging';
-import { FetchHttpClient, HttpException } from '@common/http';
+import { FetchHttpClient, HttpError } from '@common/http';
 import { expect } from '@jest/globals';
 import { ThorNetworks } from '@thor/utils/const/network';
 
@@ -23,8 +23,8 @@ describe('RetrieveExpandedTransactionsFromTransactionPool TESTNET tests', () => 
             expect(actual).toBeInstanceOf(Transactions);
         } catch (error) {
             // Endpoint is disabled
-            expect(error).toBeInstanceOf(HttpException);
-            const thorError = error as HttpException;
+            expect(error).toBeInstanceOf(HttpError);
+            const thorError = error as HttpError;
             expect(thorError.status).toEqual(404);
             log.debug({ message: JSON.stringify(thorError) });
         }

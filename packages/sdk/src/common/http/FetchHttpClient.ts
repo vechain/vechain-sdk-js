@@ -3,8 +3,8 @@ import { type HttpQuery, type HttpPath, type HttpClient } from '@common/http';
 import { type HttpOptions } from './HttpOptions';
 import { CookieStore } from './CookieStore';
 import { log, type LogItemWithVerbosity } from '@common/logging';
-import { HttpException } from './HttpException';
-import { HttpNetworkException } from './HttpNetworkException';
+import { HttpError } from '../errors/http/HttpError';
+import { HttpNetworkError } from '../errors/http/HttpNetworkError';
 
 /**
  * Full-Qualified Path
@@ -226,7 +226,7 @@ class FetchHttpClient implements HttpClient {
                 // Check for non-200 responses and raise HttpException
                 if (!response.ok) {
                     const responseBody = await response.text();
-                    throw new HttpException(
+                    throw new HttpError(
                         `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
                         `HTTP request failed with status ${response.status}`,
                         response.status,
@@ -255,13 +255,13 @@ class FetchHttpClient implements HttpClient {
                 }
 
                 // Handle network errors and timeouts
-                if (error instanceof HttpException) {
+                if (error instanceof HttpError) {
                     throw error; // Re-throw HTTP exceptions
                 }
 
                 // Handle abort signal (timeout)
                 if (error instanceof Error && error.name === 'AbortError') {
-                    throw new HttpNetworkException(
+                    throw new HttpNetworkError(
                         `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
                         'Request timed out',
                         'timeout',
@@ -277,7 +277,7 @@ class FetchHttpClient implements HttpClient {
                 }
 
                 // Handle other network errors
-                throw new HttpNetworkException(
+                throw new HttpNetworkError(
                     `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
                     error instanceof Error
                         ? error.message
@@ -304,7 +304,7 @@ class FetchHttpClient implements HttpClient {
                 retrySocketErrorCount: this.retrySocketErrorCount
             }
         });
-        throw new HttpNetworkException(
+        throw new HttpNetworkError(
             `${FQP}get(httpPath: HttpPath, httpQuery: HttpQuery): Promise<Response>`,
             'Http Socket error detected after retries',
             'connection',
@@ -361,7 +361,7 @@ class FetchHttpClient implements HttpClient {
                 // Check for non-200 responses and raise HttpException
                 if (!response.ok) {
                     const responseBody = await response.text();
-                    throw new HttpException(
+                    throw new HttpError(
                         `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
                         `HTTP request failed with status ${response.status}`,
                         response.status,
@@ -390,13 +390,13 @@ class FetchHttpClient implements HttpClient {
                     continue;
                 }
                 // Handle network errors and timeouts
-                if (error instanceof HttpException) {
+                if (error instanceof HttpError) {
                     throw error; // Re-throw HTTP exceptions
                 }
 
                 // Handle abort signal (timeout)
                 if (error instanceof Error && error.name === 'AbortError') {
-                    throw new HttpNetworkException(
+                    throw new HttpNetworkError(
                         `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
                         'Request timed out',
                         'timeout',
@@ -413,7 +413,7 @@ class FetchHttpClient implements HttpClient {
                 }
 
                 // Handle other network errors
-                throw new HttpNetworkException(
+                throw new HttpNetworkError(
                     `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
                     error instanceof Error
                         ? error.message
@@ -441,7 +441,7 @@ class FetchHttpClient implements HttpClient {
                 retrySocketErrorCount: this.retrySocketErrorCount
             }
         });
-        throw new HttpNetworkException(
+        throw new HttpNetworkError(
             `${FQP}post(httpPath: HttpPath, httpQuery: HttpQuery, body?: unknown): Promise<Response>`,
             'Http Socket error detected after retries',
             'connection',

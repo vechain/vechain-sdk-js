@@ -4,7 +4,6 @@ import {
     RetrieveStoragePositionValue,
     RetrieveStoragePositionValuePath,
     GetStorageResponse,
-    ThorError,
     RetrieveStoragePositionValueQuery
 } from '@thor/thorest';
 import {
@@ -12,6 +11,7 @@ import {
     mockHttpClientWithError
 } from '../../../MockHttpClient';
 import { type GetStorageResponseJSON } from '@thor/thorest/json';
+import { HttpError } from '@common/errors';
 /**
  * VeChain retrieve storage position value - unit
  *
@@ -113,20 +113,15 @@ describe('RetrieveStoragePositionValue unit tests', () => {
                 // Triggers the catch block
                 expect(true).toBe(false);
             } catch (error) {
-                expect(error).toBeInstanceOf(ThorError);
-                const thorError = error as ThorError;
+                expect(error).toBeInstanceOf(HttpError);
+                const thorError = error as HttpError;
 
-                expect(thorError.message).toBe('"Network error"');
-                expect(thorError.fqn).toBe(
-                    'packages/sdk/src/thor/thorest/accounts/methods/RetrieveStoragePositionValue.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>'
+                expect(thorError.message).toBe(
+                    'HTTP request failed with status 400'
                 );
                 expect(thorError.status).toBe(400);
-                expect(thorError.args).toEqual({
-                    url: expect.any(String),
-                    status: 400,
-                    statusText: 'Bad Request'
-                });
-                expect(thorError.cause).toBeInstanceOf(Error);
+                expect(thorError.statusText).toBe('Bad Request');
+                expect(thorError.url).toEqual(expect.any(String));
                 expect(thorError).toBeInstanceOf(Error);
             }
         });
