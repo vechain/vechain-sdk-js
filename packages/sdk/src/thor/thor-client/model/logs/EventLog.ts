@@ -1,6 +1,8 @@
 import { type Address, type Hex } from '@common/vcdm';
 import { type EventLogResponse } from '@thor/thorest/logs/response/EventLogResponse';
 import { LogMeta } from './LogMeta';
+import { DecodedEventLog } from './DecodedEventLog';
+import { AbiEvent, decodeEventLog } from 'viem';
 
 class EventLog {
     /**
@@ -49,6 +51,24 @@ class EventLog {
             eventLog.data,
             new LogMeta(eventLog.meta)
         );
+    }
+
+    /**
+     * Decodes an event log using the provided ABI event item.
+     * @param eventLog - The event log to decode.
+     * @param eventAbi - The ABI event item to decode the event log.
+     * @returns The decoded event log.
+     */
+    public decode(eventAbi: AbiEvent): DecodedEventLog {
+        const normalizedTopics = this.topics.map(
+            (topic) => topic.toString() as `0x${string}`
+        );
+        const decoded = decodeEventLog({
+            abi: [eventAbi],
+            data: this.data.toString() as `0x${string}`,
+            topics: [normalizedTopics[0], ...normalizedTopics.slice(1)]
+        });
+        return DecodedEventLog.of(this, decoded);
     }
 }
 
