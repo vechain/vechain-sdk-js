@@ -8,6 +8,7 @@ import {
 } from '@thor/thorest';
 import { type HttpClient } from '@common/http';
 import { type ExpandedBlockResponseJSON } from '@thor/thorest/json';
+import { InvalidThorestResponseError } from '@common/errors/thorest';
 
 class InvalidRevision extends Revision {
     constructor() {
@@ -51,8 +52,10 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(InvalidThorestResponseError);
+            expect((error as InvalidThorestResponseError).message).toBe(
+                'Bad parse'
+            );
         }
     });
 
@@ -72,8 +75,10 @@ describe('RetrieveExpandedBlock UNIT tests', () => {
                 )
             );
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(InvalidThorestResponseError);
+            expect((error as InvalidThorestResponseError).message).toBe(
+                'Bad parse'
+            );
         }
     });
 

@@ -1,19 +1,14 @@
 import { TxWithReceipt } from '@thor/thorest/transactions/model';
-
 import {
     type ExpandedBlockResponseJSON,
     type TxWithReceiptJSON
 } from '@thor/thorest/json';
 import { Block } from '@thor/thorest/blocks/model';
-
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestResponseError } from '@common/errors/thorest';
 
 /**
- * Full-Qualified Path
+ * Expanded Block Response
  */
-const FQP =
-    'packages/sdk/src/thor/thorest/blocks/response/ExpandedBlockResponse.ts!';
-
 class ExpandedBlockResponse extends Block {
     /**
      * Whether the block is trunk (true) or not (false).
@@ -34,7 +29,7 @@ class ExpandedBlockResponse extends Block {
      * Initializes an instance of the class using the provided JSON object.
      *
      * @param {ExpandedBlockResponseJSON} json - The JSON object used to initialize the instance.
-     * @throws {IllegalArgumentError} Throws an error if the JSON object is invalid or if an error occurs during parsing.
+     * @throws {InvalidThorestResponseError} Thrown if an error occurs during parsing.
      */
     constructor(json: ExpandedBlockResponseJSON) {
         try {
@@ -46,8 +41,8 @@ class ExpandedBlockResponse extends Block {
                     new TxWithReceipt(transaction)
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: ExpandedBlockResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                'ExpandedBlockResponse.constructor',
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

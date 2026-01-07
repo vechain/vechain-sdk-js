@@ -4,21 +4,12 @@ import {
     type ThorResponse
 } from '@thor/thorest';
 import { type RawBlockJSON } from '@thor/thorest/blocks/json/RawBlockJSON';
-import { ThorError } from '@thor/thorest';
 import { type HttpClient, type HttpPath } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import { type Revision } from '@common/vcdm';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/blocks/methods/RetrieveRawBlock.ts!';
-
-/**
- * [Retrieve a raw block](http://localhost:8669/doc/stoplight-ui/#/paths/blocks-revision/get)
- *
- * Retrieve information about a block identified by its revision.
- * If the provided revision is not found, the response will be `null`
+ * Retrieve a raw block
  */
 class RetrieveRawBlock implements ThorRequest<
     RetrieveRawBlock,
@@ -49,32 +40,21 @@ class RetrieveRawBlock implements ThorRequest<
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveRawBlock, RawBlockResponse | null>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveRawBlock, RawBlockResponse | null>>`;
-        try {
-            const response = await httpClient.get(this.path, {
-                query: '?raw=true'
-            });
-            const json = (await response.json()) as RawBlockJSON | null;
-            try {
-                return {
-                    request: this,
-                    response: json === null ? null : new RawBlockResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = 'RetrieveRawBlock.askTo';
+        // do http get request - this will throw an error if the request fails
+        const response = await httpClient.get(this.path, {
+            query: '?raw=true'
+        });
+        // parse the nullable response - this will throw an error if the response cannot be parsed
+        const rawBlockResponse = await parseResponseHandler<
+            RawBlockResponse,
+            RawBlockJSON
+        >(fqp, response, RawBlockResponse);
+        // return a thor response
+        return {
+            request: this,
+            response: rawBlockResponse
+        };
     }
 
     /**

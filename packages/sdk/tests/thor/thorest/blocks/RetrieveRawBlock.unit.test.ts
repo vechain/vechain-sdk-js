@@ -4,6 +4,7 @@ import { RawBlockResponse, RetrieveRawBlock, ThorError } from '@thor/thorest';
 import { Revision } from '@common/vcdm';
 import { type HttpClient } from '@common/http';
 import { type RawBlockJSON } from '@thor/thorest/blocks/json/RawBlockJSON';
+import { InvalidThorestResponseError } from '@common/errors/thorest';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -35,8 +36,10 @@ describe('RetrieveBlock unit tests', () => {
                 )
             );
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(InvalidThorestResponseError);
+            expect((error as InvalidThorestResponseError).message).toBe(
+                'Bad parse'
+            );
         }
     });
 

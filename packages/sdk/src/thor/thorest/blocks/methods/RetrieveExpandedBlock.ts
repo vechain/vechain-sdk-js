@@ -1,21 +1,12 @@
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { ExpandedBlockResponse } from '@thor/thorest/blocks/response';
 import { type ExpandedBlockResponseJSON } from '@thor/thorest/json';
 import { type HttpClient, type HttpPath } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import { type Revision } from '@common/vcdm';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/blocks/methods/RetrieveExpandedBlock.ts!';
-
-/**
- * [Retrieve an expanded block](http://localhost:8669/doc/stoplight-ui/#/paths/blocks-revision/get)
- *
- * Retrieve information about a block identified by its revision.
- * If the provided revision is not found, the response will be `null`.
+ * Retrieve an expanded block
  */
 class RetrieveExpandedBlock implements ThorRequest<
     RetrieveExpandedBlock,
@@ -48,34 +39,21 @@ class RetrieveExpandedBlock implements ThorRequest<
     ): Promise<
         ThorResponse<RetrieveExpandedBlock, ExpandedBlockResponse | null>
     > {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveExpandedBlock, ExpandedBlockResponse>>`;
-        try {
-            const response = await httpClient.get(this.path, {
-                query: '?expanded=true&raw=false'
-            });
-            const json =
-                (await response.json()) as ExpandedBlockResponseJSON | null;
-            try {
-                return {
-                    request: this,
-                    response:
-                        json === null ? null : new ExpandedBlockResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = 'RetrieveExpandedBlock.askTo';
+        // do http get request - this will throw an error if the request fails
+        const response = await httpClient.get(this.path, {
+            query: '?expanded=true&raw=false'
+        });
+        // parse the nullable response - this will throw an error if the response cannot be parsed
+        const expandedBlockResponse = await parseResponseHandler<
+            ExpandedBlockResponse,
+            ExpandedBlockResponseJSON
+        >(fqp, response, ExpandedBlockResponse);
+        // return a thor response
+        return {
+            request: this,
+            response: expandedBlockResponse
+        };
     }
 
     /**

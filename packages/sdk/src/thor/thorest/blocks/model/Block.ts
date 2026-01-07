@@ -1,14 +1,9 @@
 import { Address, HexUInt, HexUInt32, UInt, type Hex } from '@common/vcdm';
 import { type BlockJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/blocks/model/Block.ts!';
-
-/**
- * [Block](http://localhost:8669/doc/stoplight-ui/#/schemas/Block)
+ * Block from thorest response
  */
 class Block {
     /**
@@ -95,7 +90,7 @@ class Block {
      * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {BlockJSON} json - The JSON object containing block data.
-     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponseError} Thrown if an error occurs during parsing.
      */
     constructor(json: BlockJSON) {
         try {
@@ -119,8 +114,8 @@ class Block {
             this.com = json.com;
             this.signer = Address.of(json.signer);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: BlockJSON)`,
+            throw new InvalidThorestResponseError(
+                'Block.constructor',
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
@@ -131,7 +126,7 @@ class Block {
     /**
      * Converts the current block data into a JSON representation conforming to the BlockJSON structure.
      *
-     * @returns {BlockJSON} A JSON object containing the block's data, including its number, id, size, parentID, timestamp, gasLimit, beneficiary, gasUsed, baseFeePerGas, totalScore, txsRoot, txsFeatures, stateRoot, receiptsRoot, com, and signer values.
+     * @returns {BlockJSON} A JSON object containing the block's data.
      */
     toJSON(): BlockJSON {
         return {

@@ -61,11 +61,11 @@ class InspectClauses implements ThorRequest<
             this.query,
             this.request.toJSON()
         );
-        // parse the response - this will throw an error if the response cannot be parsed
+        // parse the not nullable response - this will throw an error if the response cannot be parsed
         const executeCodesResponse = await parseResponseHandler<
             ExecuteCodesResponse,
             ExecuteCodesResponseJSON
-        >(fqp, response, ExecuteCodesResponse);
+        >(fqp, response, ExecuteCodesResponse, false);
         // return a thor response
         return {
             request: this,

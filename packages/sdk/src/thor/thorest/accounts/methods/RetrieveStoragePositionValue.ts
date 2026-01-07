@@ -51,11 +51,11 @@ class RetrieveStoragePositionValue implements ThorRequest<
         const fqp = 'RetrieveStoragePositionValue.askTo';
         // do http get request - this will throw an error if the request fails
         const response = await httpClient.get(this.path, this.query);
-        // parse the response - this will throw an error if the response cannot be parsed
+        // parse the not nullable response - this will throw an error if the response cannot be parsed
         const getStorageResponse = await parseResponseHandler<
             GetStorageResponse,
             GetStorageResponseJSON
-        >(fqp, response, GetStorageResponse);
+        >(fqp, response, GetStorageResponse, false);
         // return a thor response
         return {
             request: this,

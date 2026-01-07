@@ -51,11 +51,11 @@ class RetrieveContractBytecode implements ThorRequest<
         const fqp = 'RetrieveContractBytecode.askTo';
         // do http get request - this will throw an error if the request fails
         const response = await httpClient.get(this.path, this.query);
-        // parse the response - this will throw an error if the response cannot be parsed
+        // parse the not nullable response - this will throw an error if the response cannot be parsed
         const contractBytecode = await parseResponseHandler<
             ContractBytecode,
             ContractBytecodeJSON
-        >(fqp, response, ContractBytecode);
+        >(fqp, response, ContractBytecode, false);
         // return a thor response
         return {
             request: this,
