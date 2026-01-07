@@ -32,7 +32,6 @@ import { ThorClient } from '@thor/thor-client/ThorClient';
 import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import { type FilterRange } from '@thor/thor-client/model/logs/FilterRange';
-import { type FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
 import { type EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
 import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
 import { type TransferLog } from '@thor/thor-client/model/logs/TransferLog';
@@ -835,8 +834,6 @@ class PublicClient {
             args?.[2]
         ];
 
-        // filterOptions is needed by Thor but not used by viem
-        const filterOptions: FilterOptions | null = null;
         // create an EventCriteria for each address
         const criteriaSet: EventCriteria[] = [];
         if (address !== undefined) {
@@ -857,9 +854,8 @@ class PublicClient {
         // create the EventLogFilter
         const eventFilter = new EventLogFilter(
             filterRange,
-            filterOptions,
-            criteriaSet,
-            null
+            undefined,
+            criteriaSet
         );
         // Create final event filter
         const filter: EventFilter = {

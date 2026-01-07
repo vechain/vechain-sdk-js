@@ -373,6 +373,21 @@ class Hex implements VeChainDataModel<Hex> {
     }
 
     /**
+     * Returns a padded string representation of the object.
+     *
+     * @param {number} digits - The number of digits to pad the string to.
+     * @return {string} The padded string representation of the object.
+     */
+    public toPaddedString(digits: number): string {
+        const padCount =
+            digits - this.digits.length > 0 ? digits - this.digits.length : 0;
+        if (this.sign < 0) {
+            return `-0x${'0'.repeat(padCount)}${this.digits}`;
+        }
+        return `0x${'0'.repeat(padCount)}${this.digits}`;
+    }
+
+    /**
      * Returns a JSON representation of the object.
      *
      * @return {string} The JSON representation of the object.

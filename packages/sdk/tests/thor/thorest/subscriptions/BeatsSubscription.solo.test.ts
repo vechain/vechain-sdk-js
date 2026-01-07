@@ -4,8 +4,7 @@ import {
     BeatsSubscription,
     type SubscriptionBeat2Response
 } from '@thor/thorest/subscriptions';
-import log from 'loglevel';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { log } from '@common/logging';
 
 /**
  * VeChain beats subscription - unit
@@ -24,18 +23,21 @@ describe('BlocksSubscription solo tests', () => {
         subscription
             .addListener({
                 onMessage: (message) => {
-                    const data = message.data;
-                    log.debug(fastJsonStableStringify(data));
+                    const { data } = message;
+                    log.debug({ message: JSON.stringify(data) });
                     done();
                 },
                 onOpen: () => {
-                    log.debug('WebSocket connection opened');
+                    log.debug({ message: 'WebSocket connection opened' });
                 },
                 onClose: () => {
-                    log.debug(`WebSocket connection closed`);
+                    log.debug({ message: 'WebSocket connection closed' });
                 },
                 onError: (error) => {
-                    log.error('WebSocket encountered an error:', error);
+                    log.error({
+                        message: 'WebSocket encountered an error',
+                        context: { error }
+                    });
                 }
             } satisfies WebSocketListener<SubscriptionBeat2Response>)
             .open();

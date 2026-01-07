@@ -4,17 +4,29 @@
   "skipErrorChecking": true,
   "excludeExternals": true,
   "exclude": [
-    "**/*index.ts",
     "**/*.spec.ts",
     "**/*.e2e.ts",
     "**/*test.ts",
-    "**/*JSON.ts"
+    "**/*JSON.ts",
+    "packages/solo-setup/**"
   ],
-  "externalPattern": ["**/node_modules/**"],
+  "externalPattern": [
+    "**/node_modules/**",
+    "**/packages/solo-setup/**"
+  ],
   "readme": "none",
   "excludePrivate": true,
   "excludeInternal": true,
   "validation": {
     "notDocumented": false
+  },
+  "entryPointStrategy": "resolve",
+  "categorizeByGroup": false,
+  "groupOrder": ["Modules"],
+  "sort": ["source-order"],
+  "excludeProtected": false,
+  "navigation": {
+    "includeGroups": true,
+    "includeCategories": false
   }
 }

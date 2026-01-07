@@ -7,22 +7,22 @@ class EventLogFilter {
     /**
      * Defines the range for filtering. Setting values to null indicates the entire range.
      */
-    readonly range: FilterRange | null;
+    readonly range?: FilterRange;
 
     /**
      * Include these parameters to receive filtered results in a paged format.
      */
-    readonly options: FilterOptions | null;
+    readonly options?: FilterOptions;
 
     /**
      * Criteria to filter events. All fields are joined with the AND operator.
      */
-    readonly criteriaSet: EventCriteria[] | null;
+    readonly criteriaSet?: EventCriteria[];
 
     /**
      * Specifies the order of the results. Use `asc` for ascending order, and `desc` for descending order.S
      */
-    readonly order: LogSort | null;
+    readonly order?: LogSort;
 
     /**
      * Constructs a new EventLogFilter instance.
@@ -33,10 +33,10 @@ class EventLogFilter {
      * @param order - The order of the results.
      */
     constructor(
-        range: FilterRange | null,
-        options: FilterOptions | null,
-        criteriaSet: EventCriteria[] | null,
-        order: LogSort | null
+        range?: FilterRange,
+        options?: FilterOptions,
+        criteriaSet?: EventCriteria[],
+        order?: LogSort
     ) {
         this.range = range;
         this.options = options;
@@ -54,10 +54,10 @@ class EventLogFilter {
      * @return {EventLogFilter} A new EventLogFilter instance.
      */
     static of(
-        range: FilterRange | null,
-        options: FilterOptions | null,
-        criteriaSet: EventCriteria[] | null,
-        order: LogSort | null
+        range?: FilterRange,
+        options?: FilterOptions,
+        criteriaSet?: EventCriteria[],
+        order?: LogSort
     ): EventLogFilter {
         return new EventLogFilter(range, options, criteriaSet, order);
     }
