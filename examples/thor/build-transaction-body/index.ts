@@ -69,7 +69,7 @@ log.info({
     }
 });
 
-const signed = signer.sign(builtRequest);
+const signed = await signer.sign(builtRequest);
 const transactionId = await thorClient.transactions.sendRawTransaction(
     signed.encoded
 );
