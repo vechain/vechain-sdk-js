@@ -2,8 +2,7 @@ import {
     RetrieveExpandedTransactionsFromTransactionPool,
     Transactions
 } from '@thor/thorest';
-import log from 'loglevel';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { log } from '@common/logging';
 import { FetchHttpClient, HttpException } from '@common/http';
 import { expect } from '@jest/globals';
 import { ThorNetworks } from '@thor/utils/const/network';
@@ -19,7 +18,7 @@ describe('RetrieveExpandedTransactionsFromTransactionPool TESTNET tests', () => 
                     FetchHttpClient.at(new URL(ThorNetworks.TESTNET))
                 )
             ).response;
-            log.debug(fastJsonStableStringify(actual));
+            log.debug({ message: JSON.stringify(actual) });
             expect(actual).toBeDefined();
             expect(actual).toBeInstanceOf(Transactions);
         } catch (error) {
@@ -27,7 +26,7 @@ describe('RetrieveExpandedTransactionsFromTransactionPool TESTNET tests', () => 
             expect(error).toBeInstanceOf(HttpException);
             const thorError = error as HttpException;
             expect(thorError.status).toEqual(404);
-            log.debug(fastJsonStableStringify(thorError));
+            log.debug({ message: JSON.stringify(thorError) });
         }
     });
 });

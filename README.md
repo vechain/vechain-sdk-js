@@ -33,14 +33,19 @@
 npm install @vechain/sdk
 ```
 
+## Documentation
+
 ### Examples
 
-Code examples reside in the `./docs/examples` folder. Each example is a stand-alone script that showcases various operations achievable with the SDK. Some of the code examples require a Thor Solo node to be available.
+Code examples reside in the `./examples` folder. Each example is a stand-alone project that showcases various operations achievable with the SDK. Some of the code examples require a Thor Solo node to be available.
 
-To run the scripts within `./docs/examples` as tests, use:
-``` bash
-yarn test:examples
-```
+### Tech Designs
+
+Technical design documents reside in the `./docs` folder. This includes markdown docs and mermaid design diagrams.
+
+### Type Documentation
+
+Type documentation for the SDK can be found at the github pages site: [click here](https://vechain.github.io/vechain-sdk-js/)
 
 ## Contributing
 
