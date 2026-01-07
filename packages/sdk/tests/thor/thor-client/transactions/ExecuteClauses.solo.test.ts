@@ -43,7 +43,7 @@ describe('ExecuteClauses SOLO tests', () => {
             clauses,
             senderSigner,
             { revision: Revision.BEST },
-            { gasPriceCoef: 100 }
+            { gasPriceCoef: 100n }
         );
         expect(txId).toBeDefined();
         const receipt =

@@ -58,7 +58,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
             Address.of(TRANSACTION_RECEIVER.address),
             OneVET
         );
-        const expectedTxBody = new TransactionRequest({
+        const expectedTxBody = TransactionRequest.of({
             chainTag: 179, // Mock chainTag for unit test
             blockRef:
                 latestBlock !== null
@@ -74,7 +74,7 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
         const signer = new PrivateKeySigner(
             HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
         );
-        const signedTx = signer.sign(expectedTxBody);
+        const signedTx = await signer.sign(expectedTxBody);
         const actualTXID = (
             await SendTransaction.of(signedTx.encoded.bytes).askTo(
                 mockHttpClient(expectedTXID, 'post')

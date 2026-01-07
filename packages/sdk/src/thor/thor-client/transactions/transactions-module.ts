@@ -291,6 +291,10 @@ class TransactionsModule extends AbstractThorModule {
             ) {
                 txBuilder.withDefaultMaxFeePerGas();
             }
+            // fee delegation url
+            if (options?.feeDelegationUrl !== undefined) {
+                txBuilder.withFeeDelegationUrl(options.feeDelegationUrl);
+            }
             // build the transaction request
             return await txBuilder.build();
         } catch (error) {
@@ -346,10 +350,18 @@ class TransactionsModule extends AbstractThorModule {
             gasEstimate.totalGas,
             txOptions
         );
-        // sign the transaction
-        const signedTransaction = signer.sign(txRequest);
+        // sign the transaction as sender first
+        const senderSignedTransaction = await signer.sign(txRequest);
+        // if delegated, sign the transaction as gas payer
+        let fullSignedTransaction = senderSignedTransaction;
+        if (senderSignedTransaction.isDelegated) {
+            fullSignedTransaction = await signer.sign(
+                senderSignedTransaction,
+                signer.address
+            );
+        }
         // encode the signed transaction
-        const encodedTransaction = signedTransaction.encoded;
+        const encodedTransaction = fullSignedTransaction.encoded;
         // send the transaction to the network
         return await this.sendRawTransaction(encodedTransaction);
     }

@@ -39,7 +39,7 @@ describe('SendTransaction SOLO tests', () => {
                 .withEstimatedGas(sender, { revision: Revision.BEST })
                 .build();
             // sign the tx request
-            const signedTxRequest = senderSigner.sign(txRequest);
+            const signedTxRequest = await senderSigner.sign(txRequest);
             // send the transaction
             const txId =
                 await thorClient.transactions.sendTransaction(signedTxRequest);
@@ -69,7 +69,7 @@ describe('SendTransaction SOLO tests', () => {
                 })
                 .build();
             // sign the tx request
-            const signedTxRequest = senderSigner.sign(txRequest);
+            const signedTxRequest = await senderSigner.sign(txRequest);
             // send the transaction
             const txId =
                 await thorClient.transactions.sendTransaction(signedTxRequest);
@@ -100,9 +100,9 @@ describe('SendTransaction SOLO tests', () => {
                 .withEstimatedGas(sender, { revision: Revision.BEST })
                 .build();
             // sign the tx request as sender
-            const senderSignedTxRequest = senderSigner.sign(txRequest);
+            const senderSignedTxRequest = await senderSigner.sign(txRequest);
             // sign the tx request as gas payer
-            const gasPayerSignedTxRequest = gasPayerSigner.sign(
+            const gasPayerSignedTxRequest = await gasPayerSigner.sign(
                 senderSignedTxRequest,
                 Address.of(sender.toString())
             );
@@ -141,9 +141,9 @@ describe('SendTransaction SOLO tests', () => {
                 })
                 .build();
             // sign the tx request
-            const senderSignedTxRequest = senderSigner.sign(txRequest);
+            const senderSignedTxRequest = await senderSigner.sign(txRequest);
             // sign the tx request as gas payer
-            const gasPayerSignedTxRequest = gasPayerSigner.sign(
+            const gasPayerSignedTxRequest = await gasPayerSigner.sign(
                 senderSignedTxRequest,
                 Address.of(sender.toString())
             );

@@ -80,18 +80,19 @@ class EventCriteriaRequest {
     }
 
     /**
-     * Converts into a JSON representation.
+     * Converts into a JSON representation
+     * Hex topic values are padded to 64 characters.
      *
      * @return {EventCriteriaJSON} The JSON object representing the current EventCriteriaRequest instance.
      */
     toJSON(): EventCriteriaJSON {
         return {
             address: this.address?.toString(),
-            topic0: this.topic0?.toString(),
-            topic1: this.topic1?.toString(),
-            topic2: this.topic2?.toString(),
-            topic3: this.topic3?.toString(),
-            topic4: this.topic4?.toString()
+            topic0: this.topic0?.toPaddedString(64),
+            topic1: this.topic1?.toPaddedString(64),
+            topic2: this.topic2?.toPaddedString(64),
+            topic3: this.topic3?.toPaddedString(64),
+            topic4: this.topic4?.toPaddedString(64)
         } satisfies EventCriteriaJSON;
     }
 }

@@ -1,10 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    RetrieveExpandedBlock,
-    RetrieveTransactionByID,
-    ThorClient,
-    ThorNetworks
-} from '@thor';
+import { ThorClient, ThorNetworks } from '@thor';
 import {
     Address,
     BlockRef,
@@ -38,14 +33,12 @@ describe('WalletClient SOLO tests', () => {
 
     describe('sendTransaction', () => {
         test('ok <- dynamic fee - no sponsored', async () => {
-            const latestBlock = (
-                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
-            ).response;
+            const latestBlock = await thorClient.blocks.getBlock(Revision.BEST);
             if (latestBlock === null || latestBlock === undefined) {
                 throw new Error('Failed to retrieve latest block');
             }
             const chainTag = await thorClient.nodes.getChainTag();
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: BlockRef.of(latestBlock.id),
                 chainTag,
                 clauses: [
@@ -71,22 +64,17 @@ describe('WalletClient SOLO tests', () => {
             const txid = await originWallet.sendTransaction(txRequest);
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
-            const tx = (
-                await RetrieveTransactionByID.of(txid).askTo(httpClient)
-            ).response;
+            const tx = await thorClient.transactions.getTransaction(txid);
             expect(tx).not.toBeNull();
-            log.debug({ message: `${tx?.toJSON()}` });
         });
 
         test('ok <- dynamic fee, signed then sponsored', async () => {
-            const latestBlock = (
-                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
-            ).response;
+            const latestBlock = await thorClient.blocks.getBlock(Revision.BEST);
             if (latestBlock === null || latestBlock === undefined) {
                 throw new Error('Failed to retrieve latest block');
             }
             const chainTag = await thorClient.nodes.getChainTag();
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: BlockRef.of(latestBlock.id),
                 chainTag,
                 clauses: [
@@ -132,22 +120,17 @@ describe('WalletClient SOLO tests', () => {
             );
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
-            const tx = (
-                await RetrieveTransactionByID.of(txid).askTo(httpClient)
-            ).response;
+            const tx = await thorClient.transactions.getTransaction(txid);
             expect(tx).not.toBeNull();
-            log.debug({ message: `${tx?.toJSON()}` });
         });
 
         test('ok <- legacy - no sponsored', async () => {
-            const latestBlock = (
-                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
-            ).response;
+            const latestBlock = await thorClient.blocks.getBlock(Revision.BEST);
             if (latestBlock === null || latestBlock === undefined) {
                 throw new Error('Failed to retrieve latest block');
             }
             const chainTag = await thorClient.nodes.getChainTag();
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: BlockRef.of(latestBlock.id),
                 chainTag,
                 clauses: [
@@ -172,22 +155,17 @@ describe('WalletClient SOLO tests', () => {
             const txid = await originWallet.sendTransaction(txRequest);
             expect(txid).toBeDefined();
             await new Promise((resolve) => setTimeout(resolve, 3000));
-            const tx = (
-                await RetrieveTransactionByID.of(txid).askTo(httpClient)
-            ).response;
+            const tx = await thorClient.transactions.getTransaction(txid);
             expect(tx).not.toBeNull();
-            log.debug({ message: `${tx?.toJSON()}` });
         });
 
         test('ok <- legacy - signed as origin, then signed as gas payer', async () => {
-            const latestBlock = (
-                await RetrieveExpandedBlock.of(Revision.BEST).askTo(httpClient)
-            ).response;
+            const latestBlock = await thorClient.blocks.getBlock(Revision.BEST);
             if (latestBlock === null || latestBlock === undefined) {
                 throw new Error('Failed to retrieve latest block');
             }
             const chainTag = await thorClient.nodes.getChainTag();
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: BlockRef.of(latestBlock.id),
                 chainTag,
                 clauses: [
@@ -230,11 +208,8 @@ describe('WalletClient SOLO tests', () => {
                 TransactionRequest.decode(HexUInt.of(gasPayerSignedEncoded))
             );
             await new Promise((resolve) => setTimeout(resolve, 3000));
-            const tx = (
-                await RetrieveTransactionByID.of(txid).askTo(httpClient)
-            ).response;
+            const tx = await thorClient.transactions.getTransaction(txid);
             expect(tx).not.toBeNull();
-            log.debug({ message: `${tx?.toJSON()}` });
         });
     });
 });

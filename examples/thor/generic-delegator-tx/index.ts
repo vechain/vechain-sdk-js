@@ -25,11 +25,7 @@ const delegatorBaseUrl = `https://${NETWORK}.delegator.vechain.org/`;
 
 async function main(): Promise<void> {
     const thorClient = ThorClient.at(
-        NETWORK === 'mainnet'
-            ? ThorNetworks.MAINNET
-            : NETWORK === 'testnet'
-                ? ThorNetworks.TESTNET
-                : 'http://localhost:8669/'
+        NETWORK === 'mainnet' ? ThorNetworks.MAINNET : ThorNetworks.TESTNET
     );
     console.log('NETWORK', NETWORK);
     console.log('PAYING WITH', TOKEN);
@@ -86,7 +82,7 @@ async function main(): Promise<void> {
     );
 
     // Sign the delegator's transaction as the origin
-    const originSignedTx = signer.sign(delegatorTx);
+    const originSignedTx = await signer.sign(delegatorTx);
     const originSig = originSignedTx.signature ?? new Uint8Array();
 
     // Combine origin signature with delegator signature
@@ -98,7 +94,7 @@ async function main(): Promise<void> {
     combinedSignature.set(delegatorSig, originSig.length);
 
     // Create fully signed transaction using delegator's transaction body
-    const fullySigned = TransactionRequest.of(delegatorTx, combinedSignature);
+    const fullySigned = TransactionRequest.of(delegatorTx, { signature: combinedSignature });
     const txId = await thorClient.transactions.sendTransaction(fullySigned);
     console.log('Transaction id:', txId.toString());
 

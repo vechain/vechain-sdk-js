@@ -36,7 +36,7 @@ describe('WalletClient UNIT tests', () => {
 
     describe('signTransaction', () => {
         test('ok <- dynamic fee - no sponsored', async () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -61,14 +61,14 @@ describe('WalletClient UNIT tests', () => {
                 mockHttpClient({}, 'post'),
                 privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
             );
-            const expected = originSigner.sign(txRequest).encoded;
+            const expected = (await originSigner.sign(txRequest)).encoded;
             const actual = (await originWallet.signTransaction(txRequest))
                 .bytes;
             expect(actual).toEqual(expected.bytes);
         });
 
         test('ok <- dynamic fee - signed then sponsored', async () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -88,7 +88,7 @@ describe('WalletClient UNIT tests', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequest);
+            const txRequestSaS = await originSigner.sign(txRequest);
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
@@ -101,7 +101,7 @@ describe('WalletClient UNIT tests', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+            const txRequestSaGP = await gasPayerSigner.sign(txRequestSaS);
             const gasPayerWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
@@ -116,7 +116,7 @@ describe('WalletClient UNIT tests', () => {
         });
 
         test('ok <- dynamic fee - sponsored than signed', async () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -142,7 +142,7 @@ describe('WalletClient UNIT tests', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestThorSigned = gasPayerSigner.sign(
+            const txRequestThorSigned = await gasPayerSigner.sign(
                 txRequest,
                 Address.of(mockReceiverAccount.address)
             );
@@ -177,7 +177,7 @@ describe('WalletClient UNIT tests', () => {
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
             const txRequestThorFullySigned =
-                originSigner.sign(txRequestThorSigned);
+                await originSigner.sign(txRequestThorSigned);
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
@@ -198,7 +198,7 @@ describe('WalletClient UNIT tests', () => {
         });
 
         test('ok <- legacy - no sponsored', async () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -222,13 +222,13 @@ describe('WalletClient UNIT tests', () => {
                 mockHttpClient({}, 'post'),
                 privateKeyToAccount(Hex.of(mockSenderAccount.privateKey))
             );
-            const expected = originSigner.sign(txRequest).encoded;
+            const expected = (await originSigner.sign(txRequest)).encoded;
             const actual = await originWallet.signTransaction(txRequest);
             expect(actual).toStrictEqual(expected);
         });
 
         test('ok <- legacy - signed then sponsored', async () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -251,7 +251,7 @@ describe('WalletClient UNIT tests', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequest);
+            const txRequestSaS = await originSigner.sign(txRequest);
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
@@ -264,7 +264,7 @@ describe('WalletClient UNIT tests', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(
+            const txRequestSaGP = await gasPayerSigner.sign(
                 txRequestSaS,
                 Address.of(mockSenderAccount.address)
             );
@@ -284,7 +284,7 @@ describe('WalletClient UNIT tests', () => {
         });
 
         test('ok <- legacy - sponsored then signed', async () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -307,7 +307,7 @@ describe('WalletClient UNIT tests', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(txRequest);
+            const txRequestSaGP = await gasPayerSigner.sign(txRequest);
             const gasPayerWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
@@ -321,7 +321,7 @@ describe('WalletClient UNIT tests', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequestSaGP);
+            const txRequestSaS = await originSigner.sign(txRequestSaGP);
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
@@ -336,7 +336,7 @@ describe('WalletClient UNIT tests', () => {
         });
 
         test('ok <- no need to decode for gas payer signature', async () => {
-            const txRequest = new TransactionRequest({
+            const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
                 clauses: [
@@ -356,7 +356,7 @@ describe('WalletClient UNIT tests', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const txRequestSaS = originSigner.sign(txRequest);
+            const txRequestSaS = await originSigner.sign(txRequest);
             const originWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),
@@ -369,7 +369,7 @@ describe('WalletClient UNIT tests', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const txRequestSaGP = gasPayerSigner.sign(txRequestSaS);
+            const txRequestSaGP = await gasPayerSigner.sign(txRequestSaS);
             const gasPayerWallet = new WalletClient(
                 MOCK_URL,
                 mockHttpClient({}, 'post'),

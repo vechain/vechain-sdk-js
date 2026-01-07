@@ -1,7 +1,6 @@
 import { type RegularBlockResponse } from '@vechain/sdk/thor';
 import * as fs from 'fs';
 import * as path from 'path';
-import { fileURLToPath } from 'url';
 import {
     THOR_SOLO_DEFAULT_ACCOUNT_ADDRESSES,
     THOR_SOLO_DEFAULT_ACCOUNT_PRIVATE_KEYS

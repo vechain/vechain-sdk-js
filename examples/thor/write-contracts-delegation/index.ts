@@ -1,89 +1,70 @@
-import { Address, Secp256k1, Revision, Hex } from '@vechain/sdk-temp/common';
+import { Address, Secp256k1, Revision } from '@vechain/sdk-temp/common';
 import {
     ThorClient,
     PrivateKeySigner,
     ClauseBuilder,
     TransactionBuilder,
-    TransactionRequest,
     ThorNetworks
 } from '@vechain/sdk-temp/thor';
 
-// Create ThorClient for testnet
-const thorClient = ThorClient.at(ThorNetworks.TESTNET);
+async function main(): Promise<void> {
 
-// Generate a private key, from which we get the address and instantiate a signer
-const privateKey = await Secp256k1.generatePrivateKey();
-const senderAddress = Address.ofPrivateKey(privateKey);
+    // Create ThorClient for testnet
+    const thorClient = ThorClient.at(ThorNetworks.TESTNET);
 
-console.log('Address:', senderAddress.toString());
+    // Generate a private key, from which we get the address and instantiate a signer
+    const privateKey = await Secp256k1.generatePrivateKey();
+    const senderAddress = Address.ofPrivateKey(privateKey);
 
-// Create a signer from the private key
-const signer = new PrivateKeySigner(privateKey);
+    console.log('Address:', senderAddress.toString());
 
-const contractAddress = '0x8384738c995d49c5b692560ae688fc8b51af1059';
+    // Create a signer from the private key
+    // use the vechain energy as gas payer
+    const signer = new PrivateKeySigner(privateKey, {
+        vip191ServiceURL: 'https://sponsor-testnet.vechain.energy/by/441'
+    });
 
-// Define the ABI function as a plain object (no type import needed)
-const incrementAbi = {
-    name: 'increment',
-    inputs: [],
-    outputs: [],
-    type: 'function',
-    stateMutability: 'nonpayable'
-} as const;
+    const contractAddress = '0x8384738c995d49c5b692560ae688fc8b51af1059';
 
-// Build the clause for the contract function call
-const clause = ClauseBuilder.callFunction(
-    Address.of(contractAddress),
-    [incrementAbi],
-    'increment',
-    [], // function arguments
-    0n // value to send
-);
+    // Define the ABI function as a plain object (no type import needed)
+    const incrementAbi = {
+        name: 'increment',
+        inputs: [],
+        outputs: [],
+        type: 'function',
+        stateMutability: 'nonpayable'
+    } as const;
 
-// Build the transaction with fee delegation
-// Note: Using legacy transaction format for sponsor service compatibility
-const txBuilder = TransactionBuilder.create(thorClient);
-const txRequest = await txBuilder
-    .withClauses([clause])
-    .withDelegatedFee()
-    .withLegacyTxDefaults()
-    .withEstimatedGas(senderAddress, { revision: Revision.BEST })
-    .build();
-
-// Sign the transaction as the origin (sender) first
-const senderSignedTx = signer.sign(txRequest);
-
-// For fee delegation with an external sponsor service
-const sponsorUrl = 'https://sponsor-testnet.vechain.energy/by/441';
-const sponsorResponse = await fetch(sponsorUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        raw: txRequest.encoded.toString(),
-        origin: senderAddress.toString()
-    })
-});
-
-if (sponsorResponse.ok) {
-    const sponsorData = (await sponsorResponse.json()) as {
-        signature: string;
-        address: string;
-    };
-    console.log('Sponsor address:', sponsorData.address);
-
-    // Combine sender signature with sponsor signature
-    const senderSig = senderSignedTx.signature!;
-    const sponsorSig = Hex.of(sponsorData.signature).bytes;
-    const combinedSignature = new Uint8Array(
-        senderSig.length + sponsorSig.length
+    // Build the clause for the contract function call
+    const clause = ClauseBuilder.callFunction(
+        Address.of(contractAddress),
+        [incrementAbi],
+        'increment',
+        [], // function arguments
+        0n // value to send
     );
-    combinedSignature.set(senderSig, 0);
-    combinedSignature.set(sponsorSig, senderSig.length);
 
-    // Create fully signed transaction
-    const fullySigned = TransactionRequest.of(txRequest, combinedSignature);
-    const txId = await thorClient.transactions.sendTransaction(fullySigned);
+    // Build the transaction with fee delegation
+    // Note: Using legacy transaction format for sponsor service compatibility
+    const txBuilder = TransactionBuilder.create(thorClient);
+    const txRequest = await txBuilder
+        .withClauses([clause])
+        .withDelegatedFee()
+        .withLegacyTxDefaults()
+        .withEstimatedGas(senderAddress, { revision: Revision.BEST })
+        .build();
+
+    // Sign the transaction as the origin (sender) first
+    const senderSignedTx = await signer.sign(txRequest);
+
+    // sign the transaction as the gas payer
+    // this will use the vechain energy as gas payer as specified in the signer options
+    const fullySignedTx = await signer.sign(senderSignedTx, senderAddress);
+    const txId = await thorClient.transactions.sendTransaction(fullySignedTx);
     console.log('Transaction id:', txId.toString());
-} else {
-    console.error('Sponsor service error:', await sponsorResponse.text());
 }
+
+// run the main function
+main().catch((error) => {
+    console.error(error);
+});

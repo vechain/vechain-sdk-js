@@ -100,12 +100,39 @@ describe('TransactionBuilder SOLO tests', () => {
     test('create transaction with gas estimation not set by the user', async () => {
         const builder =
             TransactionBuilder.create(thorClient).withClauses(clauses);
-        // expect error on build as user did not call withEstimatedGas
-        await expect(async () => await builder.build()).rejects.toThrow(
-            new InvalidTransactionField(
-                'TransactionBuilder.build',
-                'Gas estimation was not called, cannot build transaction'
+        // expect gas to be set to 0
+        const txRequest = await builder.build();
+        expect(txRequest.gas).toBe(0n);
+    });
+    test('create delegated transaction with fee delegation url', async () => {
+        const builder = TransactionBuilder.create(thorClient);
+        const transaction = await builder
+            .withClauses(clauses)
+            .withEstimatedGas(sender, {
+                revision: Revision.BEST
+            })
+            .withDelegatedFee()
+            .withFeeDelegationUrl(
+                'https://sponsor-testnet.vechain.energy/by/883'
             )
+            .build();
+        expect(transaction.feeDelegationUrl?.toString()).toBe(
+            'https://sponsor-testnet.vechain.energy/by/883'
         );
+        expect(transaction.isDelegated).toBe(true);
+    });
+    test('should throw an error if a fee delegation url is provided for a non-delegated transaction', async () => {
+        const builder = TransactionBuilder.create(thorClient);
+        await expect(() =>
+            builder
+                .withClauses(clauses)
+                .withEstimatedGas(sender, {
+                    revision: Revision.BEST
+                })
+                .withFeeDelegationUrl(
+                    'https://sponsor-testnet.vechain.energy/by/883'
+                )
+                .build()
+        ).rejects.toThrow(InvalidTransactionField);
     });
 });

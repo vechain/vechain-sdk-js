@@ -66,7 +66,9 @@ describe('TransactionRequest UNIT tests', () => {
             } satisfies TransactionBody;
 
             const originSig = new Uint8Array([1, 2, 3]);
-            const txRequest = TransactionRequest.of(body, originSig);
+            const txRequest = TransactionRequest.of(body, {
+                signature: originSig
+            });
             expect(txRequest.blockRef).toBe(body.blockRef);
             expect(txRequest.chainTag).toBe(body.chainTag);
             expect(txRequest.clauses).toEqual(body.clauses);
@@ -106,7 +108,9 @@ describe('TransactionRequest UNIT tests', () => {
             } satisfies TransactionBody;
 
             const originSig = new Uint8Array([1, 2, 3]);
-            const txRequest = TransactionRequest.of(body, originSig);
+            const txRequest = TransactionRequest.of(body, {
+                signature: originSig
+            });
             expect(txRequest.blockRef).toBe(body.blockRef);
             expect(txRequest.chainTag).toBe(body.chainTag);
             expect(txRequest.clauses).toEqual(body.clauses);
@@ -450,6 +454,75 @@ describe('TransactionRequest UNIT tests', () => {
                 expect(invalidFieldError.args).toBeDefined();
             }
         });
+        test('ok <- constructor with fee delegation url for delegated transaction', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: 1n,
+                maxPriorityFeePerGas: 0n,
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
+            } satisfies TransactionBody;
+            const txRequest = TransactionRequest.of(params, {
+                feeDelegationUrl:
+                    'https://sponsor-testnet.vechain.energy/by/883'
+            });
+            expect(txRequest.feeDelegationUrl?.toString()).toBe(
+                'https://sponsor-testnet.vechain.energy/by/883'
+            );
+        });
+        test('ok <- constructor with no fee delegation url for delegated transaction', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: 1n,
+                maxPriorityFeePerGas: 0n,
+                nonce: mockNonce,
+                reserved: {
+                    features: 1,
+                    unused: []
+                }
+            } satisfies TransactionBody;
+            const txRequest = TransactionRequest.of(params);
+            expect(txRequest.feeDelegationUrl).toBeUndefined();
+        });
+        test('err <- throws InvalidTransactionField for fee delegation url for non-delegated transaction', () => {
+            const params = {
+                blockRef: mockBlockRef,
+                chainTag: mockChainTag,
+                clauses: [],
+                dependsOn: null,
+                expiration: mockExpiration,
+                gas: mockGas,
+                gasPriceCoef: undefined,
+                maxFeePerGas: 1n,
+                maxPriorityFeePerGas: 0n,
+                nonce: mockNonce,
+                reserved: {
+                    features: 0,
+                    unused: []
+                }
+            } satisfies TransactionBody;
+            expect(() => {
+                TransactionRequest.of(params, {
+                    feeDelegationUrl:
+                        'https://sponsor-testnet.vechain.energy/by/883'
+                });
+            }).toThrow(InvalidTransactionField);
+        });
     });
 
     describe('defensive copying of signature', () => {
@@ -466,7 +539,9 @@ describe('TransactionRequest UNIT tests', () => {
             };
 
             const originalSig = new Uint8Array([1, 2, 3]);
-            const txRequest = TransactionRequest.of(params, originalSig);
+            const txRequest = TransactionRequest.of(params, {
+                signature: originalSig
+            });
 
             // Modify original array
             originalSig[0] = 99;
@@ -576,7 +651,7 @@ describe('TransactionRequest UNIT tests', () => {
                 '0xf85281f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c680008081808261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c101'.toLowerCase()
             );
         });
-        test('ok <- encode dynamic fee - no sponsored - signed', () => {
+        test('ok <- encode dynamic fee - no sponsored - signed', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -596,13 +671,13 @@ describe('TransactionRequest UNIT tests', () => {
             const signer = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const signedTxRequest = signer.sign(txRequest);
+            const signedTxRequest = await signer.sign(txRequest);
             const { encoded } = signedTxRequest;
             expect(encoded.toString().toLowerCase()).toBe(
                 '0x51f89f81f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c6800080850649534e0086091e97c5ee008261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c0b841ff9ecc2a0cba9d8713457bd2b26fbb5524b0aae8494defb4269ea6257cb440260a0fa10d3b0ffc382f551979ed3c9759e7323e4a4463961034b46a47053363e001'.toLowerCase()
             );
         });
-        test('ok <- encodedynamic fee - sponsored - signed by origin and gas payer', () => {
+        test('ok <- encode dynamic fee - sponsored - signed by origin and gas payer', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -626,8 +701,8 @@ describe('TransactionRequest UNIT tests', () => {
             const signer = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const signedTxRequest = signer.sign(txRequest);
-            const gasPayerSignedTx = signer.sign(
+            const signedTxRequest = await signer.sign(txRequest);
+            const gasPayerSignedTx = await signer.sign(
                 signedTxRequest,
                 Address.of(mockSenderAccount.address)
             );
@@ -636,7 +711,7 @@ describe('TransactionRequest UNIT tests', () => {
                 '0x51f8e181f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c6800080850649534e0086091e97c5ee008261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c101b88252c1f233540111e774baee5f3c7c573b9fba4db0a31811be2dd42f2c39dfef40061b56f1f9932ae525d98631dc6f9297d42b49fc46a1e96e1461ed9a33f78fee005ddde31520f1b1f49aa00c2b5f953970e73760f96877937fea5d8785c680f7226e3c5ef73728b5c30f8911c4c670d2fc0e985b3dbb054d21b8517bd74722ffc801'.toLowerCase()
             );
         });
-        test('ok <- encode dynamic fee - sponsored - signed by origin only', () => {
+        test('ok <- encode dynamic fee - sponsored - signed by origin only', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -660,7 +735,7 @@ describe('TransactionRequest UNIT tests', () => {
             const signer = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const originSignedTxRequest = signer.sign(txRequest);
+            const originSignedTxRequest = await signer.sign(txRequest);
             const { encoded } = originSignedTxRequest;
             expect(encoded.toString().toLowerCase()).toBe(
                 '0x51f8a081f685b7b199485620dfde949e4e0efb170070e35a6b76b683aee91dd77805b387038d7ea4c6800080850649534e0086091e97c5ee008261a8a0abcdef1234567890abcdef1234567890abcdef1234567890abcdef123456789003c101b84152c1f233540111e774baee5f3c7c573b9fba4db0a31811be2dd42f2c39dfef40061b56f1f9932ae525d98631dc6f9297d42b49fc46a1e96e1461ed9a33f78fee00'.toLowerCase()
@@ -807,7 +882,7 @@ describe('TransactionRequest UNIT tests', () => {
             expect(actual.toJSON()).toEqual(txRequest.toJSON());
         });
 
-        test('ok <- dynamic fee - no sponsored - signed', () => {
+        test('ok <- dynamic fee - no sponsored - signed', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -827,7 +902,7 @@ describe('TransactionRequest UNIT tests', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
-            const expected = originSigner.sign(txRequest);
+            const expected = await originSigner.sign(txRequest);
             const actual = TransactionRequest.decode(
                 HexUInt.of(expected.encoded)
             );
@@ -869,7 +944,7 @@ describe('TransactionRequest UNIT tests', () => {
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- dynamic fee - sponsored - gas payer signed only', () => {
+        test('ok <- dynamic fee - sponsored - gas payer signed only', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -894,7 +969,7 @@ describe('TransactionRequest UNIT tests', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(mockReceiverAccount.privateKey).bytes
             );
-            const expected = gasPayerSigner.sign(txRequest);
+            const expected = await gasPayerSigner.sign(txRequest);
             const actual = TransactionRequest.decode(
                 HexUInt.of(expected.encoded)
             );
@@ -904,7 +979,7 @@ describe('TransactionRequest UNIT tests', () => {
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- dynamic fee - sponsored - origin signed only', () => {
+        test('ok <- dynamic fee - sponsored - origin signed only', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -929,7 +1004,7 @@ describe('TransactionRequest UNIT tests', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const expected = originSigner.sign(txRequest);
+            const expected = await originSigner.sign(txRequest);
             const actual = TransactionRequest.decode(
                 HexUInt.of(expected.encoded)
             );
@@ -939,7 +1014,7 @@ describe('TransactionRequest UNIT tests', () => {
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- dynamic fee - sponsored - both signed', () => {
+        test('ok <- dynamic fee - sponsored - both signed', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -967,8 +1042,8 @@ describe('TransactionRequest UNIT tests', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(mockSenderAccount.privateKey).bytes
             );
-            const originSignedTxRequest = originSigner.sign(txRequest);
-            const gasPayerSignedTxRequest = gasPayerSigner.sign(
+            const originSignedTxRequest = await originSigner.sign(txRequest);
+            const gasPayerSignedTxRequest = await gasPayerSigner.sign(
                 originSignedTxRequest,
                 Address.of(mockSenderAccount.address)
             );
@@ -1027,7 +1102,7 @@ describe('TransactionRequest UNIT tests', () => {
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- legacy - no sponsored - signed', () => {
+        test('ok <- legacy - no sponsored - signed', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -1046,7 +1121,7 @@ describe('TransactionRequest UNIT tests', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
-            const expected = originSigner.sign(txRequest);
+            const expected = await originSigner.sign(txRequest);
             const actual = TransactionRequest.decode(
                 HexUInt.of(expected.encoded)
             );
@@ -1087,7 +1162,7 @@ describe('TransactionRequest UNIT tests', () => {
             expect(actual.toJSON()).toEqual(txRequest.toJSON());
         });
 
-        test('ok <- legacy - - sponsored - gas payer signed', () => {
+        test('ok <- legacy - - sponsored - gas payer signed', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -1110,7 +1185,7 @@ describe('TransactionRequest UNIT tests', () => {
             const gasPayerSigner = new PrivateKeySigner(
                 HexUInt.of(TRANSACTION_RECEIVER.privateKey).bytes
             );
-            const expected = gasPayerSigner.sign(txRequest);
+            const expected = await gasPayerSigner.sign(txRequest);
             const actual = TransactionRequest.decode(
                 HexUInt.of(expected.encoded)
             );
@@ -1121,7 +1196,7 @@ describe('TransactionRequest UNIT tests', () => {
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- legacy - sponsored - origin signed', () => {
+        test('ok <- legacy - sponsored - origin signed', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -1144,7 +1219,7 @@ describe('TransactionRequest UNIT tests', () => {
             const originSIgner = new PrivateKeySigner(
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
-            const expected = originSIgner.sign(txRequest);
+            const expected = await originSIgner.sign(txRequest);
             const actual = TransactionRequest.decode(
                 HexUInt.of(expected.encoded)
             );
@@ -1155,7 +1230,7 @@ describe('TransactionRequest UNIT tests', () => {
             expect(actual.toJSON()).toEqual(expected.toJSON());
         });
 
-        test('ok <- legacy - sponsored - both signed', () => {
+        test('ok <- legacy - sponsored - both signed', async () => {
             const txRequest = TransactionRequest.of({
                 blockRef: mockBlockRef,
                 chainTag: mockChainTag,
@@ -1181,8 +1256,8 @@ describe('TransactionRequest UNIT tests', () => {
             const originSigner = new PrivateKeySigner(
                 HexUInt.of(TRANSACTION_SENDER.privateKey).bytes
             );
-            const expected = gasPayerSigner.sign(
-                originSigner.sign(txRequest),
+            const expected = await gasPayerSigner.sign(
+                await originSigner.sign(txRequest),
                 Address.of(mockSenderAccount.address)
             );
             const actual = TransactionRequest.decode(

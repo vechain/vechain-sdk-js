@@ -120,6 +120,11 @@ interface TransactionBodyOptions {
     isDelegated?: boolean;
 
     /**
+     * The URL of the fee delegation service.
+     */
+    feeDelegationUrl?: string;
+
+    /**
      * Nonce value for various purposes.
      * Basic is to prevent replay attack by make transaction unique.
      * Every transaction with same chainTag, blockRef, ... must have different nonce.

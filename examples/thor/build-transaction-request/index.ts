@@ -42,7 +42,7 @@ async function example1(): Promise<void> {
     console.log('Example 1: TransactionRequest:', txRequest);
 
     // Sign the transaction using the private key
-    const signedTransaction = txRequest.sign(privateKey);
+    const signedTransaction = await txRequest.sign(privateKey);
 
     // Send the transaction to thor network
     const transactionId = await thorClient.transactions.sendTransaction(signedTransaction);
@@ -84,7 +84,7 @@ async function example2(): Promise<void> {
     console.log('Example 2: TransactionRequest:', txRequest);
 
     // Sign the transaction using the private key
-    const signedTransaction = txRequest.sign(privateKey);
+    const signedTransaction = await txRequest.sign(privateKey);
 
     // Send the transaction to thor network
     const transactionId = await thorClient.transactions.sendTransaction(signedTransaction);

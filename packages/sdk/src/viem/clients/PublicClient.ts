@@ -15,7 +15,6 @@ import {
     type SubscriptionEventResponse,
     type TransfersSubscription
 } from '@thor/thorest';
-import type { TXID } from '@thor/thorest/transactions';
 import { MozillaWebSocketClient, type WebSocketListener } from '@thor/ws';
 import type { ThorNetworks } from '@thor/utils/const';
 import {
@@ -33,8 +32,9 @@ import { ThorClient } from '@thor/thor-client/ThorClient';
 import { EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
 import { type DecodedEventLog } from '@thor/thor-client/model/logs/DecodedEventLog';
 import { type FilterRange } from '@thor/thor-client/model/logs/FilterRange';
-import { type FilterOptions } from '@thor/thor-client/model/logs/FilterOptions';
 import { type EventCriteria } from '@thor/thor-client/model/logs/EventCriteria';
+import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
+import { type TransferLog } from '@thor/thor-client/model/logs/TransferLog';
 import { type AbiEvent, toEventSelector } from 'viem';
 import type { FeeHistory } from '@thor/thor-client/model/gas/FeeHistory';
 import {
@@ -58,6 +58,10 @@ import {
     TimeoutError as ThorTimeoutError,
     IllegalArgumentError
 } from '@common/errors';
+
+type TxId = {
+    id: Hex;
+};
 
 /**
  * Filter types for viem compatibility.
@@ -764,6 +768,31 @@ class PublicClient {
     }
 
     /**
+     * Gets historical VET transfer logs matching a filter.
+     * This is a VeChain-specific method for filtering native VET token transfers.
+     *
+     * @param {TransferLogFilter} filter - The transfer log filter options.
+     * @returns {Promise<TransferLog[]>} The transfer logs.
+     */
+    public async getTransferLogs(
+        filter: TransferLogFilter
+    ): Promise<TransferLog[]> {
+        try {
+            return await this.thorClient.logs.filterTransferLogs(filter);
+        } catch (error) {
+            log.error({
+                message: 'Failed to get transfer logs',
+                source: 'PublicClient.getTransferLogs',
+                context: {
+                    error:
+                        error instanceof Error ? error.message : String(error)
+                }
+            });
+            throw error;
+        }
+    }
+
+    /**
      * Creates a filter for querying event logs.
      *
      * @param {object} params - Filter parameters (optional).
@@ -805,8 +834,6 @@ class PublicClient {
             args?.[2]
         ];
 
-        // filterOptions is needed by Thor but not used by viem
-        const filterOptions: FilterOptions | null = null;
         // create an EventCriteria for each address
         const criteriaSet: EventCriteria[] = [];
         if (address !== undefined) {
@@ -827,9 +854,8 @@ class PublicClient {
         // create the EventLogFilter
         const eventFilter = new EventLogFilter(
             filterRange,
-            filterOptions,
-            criteriaSet,
-            null
+            undefined,
+            criteriaSet
         );
         // Create final event filter
         const filter: EventFilter = {
@@ -1088,8 +1114,8 @@ class PublicClient {
 
                 txFilter.txQueue = [];
 
-                const listener: WebSocketListener<TXID> = {
-                    onMessage: (event: MessageEvent<TXID>) => {
+                const listener: WebSocketListener<TxId> = {
+                    onMessage: (event: MessageEvent<TxId>) => {
                         const { data } = event;
                         // Extract the transaction hash from TXID
                         const txHash = data.id.toString();

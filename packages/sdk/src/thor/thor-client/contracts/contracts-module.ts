@@ -267,22 +267,22 @@ class ContractsModule extends AbstractThorModule {
                 );
             }
 
-            // Convert Address objects to strings for viem compatibility
-            const processedArgs = functionData.map((arg) => {
+            // Normalize arguments to strings for viem compatibility
+            const normalizeArg = (arg: unknown): unknown => {
+                if (Array.isArray(arg)) return arg.map(normalizeArg);
                 if (
-                    arg &&
-                    typeof arg === 'object' &&
-                    'toString' in arg &&
-                    typeof arg.toString === 'function'
+                  arg &&
+                  typeof arg === 'object' &&
+                  'toString' in arg &&
+                  typeof (arg as any).toString === 'function'
                 ) {
-                    // Check if it's an Address-like object by validating string representation
-                    const str = arg.toString();
-                    if (Address.isValid(str)) {
-                        return str;
-                    }
+                  const str = (arg as { toString(): string }).toString();
+                  if (Address.isValid(str)) return str;
                 }
                 return arg;
-            });
+            };
+            // Process arguments
+            const processedArgs = functionData.map(normalizeArg);
 
             log.debug({
                 message: 'encodeFunctionData inputs',
@@ -609,11 +609,18 @@ class ContractsModule extends AbstractThorModule {
                 gasLimit,
                 builderOptions
             );
-            // Sign the transaction
-            const signedTransaction = signer.sign(finalTransactionRequest);
-
+            // Sign the transaction as sender first
+            const signedTransaction = await signer.sign(finalTransactionRequest);
+            // if delegated, sign the transaction as gas payer
+            let fullSignedTransaction = signedTransaction;
+            if (signedTransaction.isDelegated) {
+                fullSignedTransaction = await signer.sign(
+                    signedTransaction,
+                    signer.address
+                );
+            }
             // Encode the signed transaction to Hex
-            const encodedTransaction = signedTransaction.encoded;
+            const encodedTransaction = fullSignedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
             const transactionId: Hex = await this.sendRawTransaction(
@@ -623,12 +630,13 @@ class ContractsModule extends AbstractThorModule {
             return transactionId;
         } catch (error) {
             log.error({
-                message: 'executeTransaction failed',
                 source: 'ContractsModule.executeTransaction',
+                message: 'Failed to execute transaction',
                 context: {
+                    error: error instanceof Error ? error.message : 'Unknown error',
                     contractAddress: contractAddress.toString(),
-                    functionName: functionAbi.name,
-                    error
+                    functionAbi,
+                    functionData
                 }
             });
             throw new IllegalArgumentError(
@@ -810,11 +818,18 @@ class ContractsModule extends AbstractThorModule {
                 builderOptions
             );
 
-            // Sign the transaction
-            const signedTransaction = signer.sign(finalTransactionRequest);
-
+            // Sign the transaction as sender first
+            const signedTransaction = await signer.sign(finalTransactionRequest);
+            // if delegated, sign the transaction as gas payer
+            let fullSignedTransaction = signedTransaction;
+            if (signedTransaction.isDelegated) {
+                fullSignedTransaction = await signer.sign(
+                    signedTransaction,
+                    signer.address
+                );
+            }
             // Encode the signed transaction to Hex
-            const encodedTransaction = signedTransaction.encoded;
+            const encodedTransaction = fullSignedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
             const transactionId: Hex = await this.sendRawTransaction(
@@ -959,15 +974,15 @@ class ContractsModule extends AbstractThorModule {
         const addr = Address.of(address);
         try {
             // Create the filter for the contract events
-            const range: FilterRange | null =
+            const range: FilterRange | undefined =
                 fromBlock !== undefined && toBlock !== undefined
                     ? { unit: 'block', from: fromBlock, to: toBlock }
-                    : null;
+                    : undefined;
 
             const criteria: EventCriteria = {
                 address: Address.of(address)
             };
-            const filter = EventLogFilter.of(range, null, [criteria], null);
+            const filter = EventLogFilter.of(range, undefined, [criteria], undefined);
 
             // Use thorest to get raw event logs directly
             const query = QuerySmartContractEvents.of(filter);

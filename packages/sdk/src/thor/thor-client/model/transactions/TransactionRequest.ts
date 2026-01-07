@@ -12,6 +12,20 @@ import { BaseTransaction, type TransactionBody } from './BaseTransaction';
 import { PrivateKeySigner } from '@thor/signer';
 
 /**
+ * Options for the transaction request.
+ */
+interface TransactionRequestOptions {
+    /**
+     * The transaction signature.
+     */
+    signature?: Uint8Array;
+    /**
+     * The URL of the fee delegation service.
+     */
+    feeDelegationUrl?: string;
+}
+
+/**
  * Represents a transaction request to **Thor** blockchain system.
  * Encapsulates all information required to process and execute a transaction.
  */
@@ -22,19 +36,42 @@ class TransactionRequest extends BaseTransaction {
     public readonly signature?: Uint8Array;
 
     /**
+     * The URL of the fee delegation service.
+     */
+    public readonly feeDelegationUrl?: URL;
+
+    /**
      * Constructs a new instance of the class with the provided parameters.
      *
      * @param {TransactionBody} body - The transaction request parameters.
-     * @param {Uint8Array} [signature] - Optional overall transaction signature
+     * @param {TransactionRequestOptions} options - The options for the transaction request.
      */
-    protected constructor(body: TransactionBody, signature?: Uint8Array) {
+    protected constructor(
+        body: TransactionBody,
+        options?: TransactionRequestOptions
+    ) {
         super(body);
         if (
             TransactionRequest.isLegacy(body) ||
             TransactionRequest.isDynamicFee(body)
         ) {
             this.signature =
-                signature !== undefined ? new Uint8Array(signature) : undefined;
+                options?.signature !== undefined
+                    ? new Uint8Array(options.signature)
+                    : undefined;
+            this.feeDelegationUrl =
+                options?.feeDelegationUrl !== undefined
+                    ? new URL(options.feeDelegationUrl)
+                    : undefined;
+            if (!this.isDelegated) {
+                if (this.feeDelegationUrl !== undefined) {
+                    throw new InvalidTransactionField(
+                        'TransactionRequest.constructor',
+                        'Fee delegation URL is not allowed for non-delegated transactions',
+                        { body }
+                    );
+                }
+            }
         } else {
             throw new InvalidTransactionField(
                 'TransactionRequest.constructor',
@@ -48,14 +85,14 @@ class TransactionRequest extends BaseTransaction {
      * Creates a new instance of the class with the provided parameters.
      *
      * @param {TransactionBody} body - The transaction request parameters.
-     * @param {Uint8Array} [signature] - Optional overall transaction signature
+     * @param {TransactionRequestOptions} options - The options for the transaction request.
      * @return {TransactionRequest} A new instance of the class.
      */
     public static of(
         body: TransactionBody,
-        signature?: Uint8Array
+        options?: TransactionRequestOptions
     ): TransactionRequest {
-        return new TransactionRequest(body, signature);
+        return new TransactionRequest(body, options);
     }
 
     /**
@@ -171,10 +208,10 @@ class TransactionRequest extends BaseTransaction {
      * @param {Uint8Array} privateKey - Secp256k1 private key bytes.
      * @returns {TransactionRequest} A new, signed transaction request.
      */
-    public sign(privateKey: Uint8Array): TransactionRequest {
+    public async sign(privateKey: Uint8Array): Promise<TransactionRequest> {
         const signer = new PrivateKeySigner(privateKey);
         try {
-            return signer.sign(this);
+            return await signer.sign(this);
         } finally {
             signer.dispose();
         }
@@ -205,4 +242,4 @@ class TransactionRequest extends BaseTransaction {
     }
 }
 
-export { TransactionRequest };
+export { TransactionRequest, type TransactionRequestOptions };

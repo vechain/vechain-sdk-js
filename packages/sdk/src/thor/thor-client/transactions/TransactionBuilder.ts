@@ -4,12 +4,14 @@ import {
     type AddressLike,
     BlockRef,
     Hex,
+    HexUInt,
     Revision
 } from '@common/vcdm';
 import { type EstimateGasOptions, type ThorClient } from '@thor/thor-client';
 import {
     type Clause,
-    TransactionRequest
+    TransactionRequest,
+    TransactionRequestOptions
 } from '@thor/thor-client/model/transactions';
 import { type TransactionBody } from '@thor/thor-client/model/transactions/BaseTransaction';
 import { RetrieveRegularBlock } from '@thor/thorest/blocks';
@@ -39,6 +41,7 @@ interface AsyncBuildTask {
  */
 class TransactionBuilder {
     private params: TransactionBody;
+    private options: TransactionRequestOptions;
     private buildTasks: AsyncBuildTask[];
 
     private readonly thorClient: ThorClient;
@@ -49,7 +52,7 @@ class TransactionBuilder {
     private static readonly STARTING_NONCE = 0n;
     private static readonly STARTING_GAS = 0n;
 
-    // starting values for the builder
+    // starting values for the transaction body
     private readonly startingParams: TransactionBody = {
         blockRef: TransactionBuilder.STARTING_BLOCK_REF,
         chainTag: TransactionBuilder.STARTING_CHAIN_TAG,
@@ -64,10 +67,17 @@ class TransactionBuilder {
         reserved: undefined
     } satisfies TransactionBody;
 
+    // starting values for the transaction request options
+    private readonly startingOptions: TransactionRequestOptions = {
+        signature: undefined,
+        feeDelegationUrl: undefined
+    };
+
     // constructor from thor client
     private constructor(thorClient: ThorClient) {
         this.thorClient = thorClient;
         this.params = { ...this.startingParams, clauses: [] };
+        this.options = { ...this.startingOptions };
         this.buildTasks = [];
         log.debug({
             message: 'TransactionBuilder created',
@@ -323,6 +333,34 @@ class TransactionBuilder {
     }
 
     /**
+     * Sets the signature for the transaction.
+     * @param signature - The signature to set.
+     * @returns The builder instance.
+     */
+    public withSignature(signature: Uint8Array): this {
+        this.options.signature = signature;
+        log.debug({
+            message: 'TransactionBuilder.withSignature',
+            context: { signature: HexUInt.of(signature).toString() }
+        });
+        return this;
+    }
+
+    /**
+     * Sets the fee delegation URL for the transaction.
+     * @param feeDelegationUrl - The fee delegation URL to set.
+     * @returns The builder instance.
+     */
+    public withFeeDelegationUrl(feeDelegationUrl: string): this {
+        this.options.feeDelegationUrl = feeDelegationUrl;
+        log.debug({
+            message: 'TransactionBuilder.withFeeDelegationUrl',
+            context: { feeDelegationUrl }
+        });
+        return this;
+    }
+
+    /**
      * Sets the default block ref for the transaction to the current best block.
      * @returns The builder instance.
      */
@@ -471,11 +509,12 @@ class TransactionBuilder {
     }
 
     /**
-     * Resets the builder, erasing all the set parameters.
+     * Resets the builder, erasing all the set parameters and options.
      * @returns The builder instance.
      */
     public reset(): this {
         this.params = { ...this.startingParams, clauses: [] };
+        this.options = { ...this.startingOptions };
         this.buildTasks = [];
         log.debug({
             message: 'TransactionBuilder reset'
@@ -535,25 +574,6 @@ class TransactionBuilder {
                 this.withDefaultChainTag();
             }
         }
-        // check if estimating gas was not set by the user
-        if (this.params.gas === TransactionBuilder.STARTING_GAS) {
-            // not directly set by the user, perhaps use estimated gas task added
-            const estimatedGasTask = this.buildTasks.find(
-                (t) => t.name === BuildTaskName.WITH_ESTIMATED_GAS
-            );
-            if (estimatedGasTask === undefined) {
-                // no estimated gas task added, throw error
-                log.error({
-                    message:
-                        'TransactionBuilder.build: Gas estimation was not called, cannot build transaction'
-                });
-                throw new InvalidTransactionField(
-                    'TransactionBuilder.build',
-                    'Gas estimation was not called, cannot build transaction',
-                    { params: this.params }
-                );
-            }
-        }
     }
 
     /**
@@ -604,7 +624,7 @@ class TransactionBuilder {
             // check if the transaction request can be built after running all async tasks
             await this.postBuildChecks();
             // build the transaction request
-            return TransactionRequest.of(this.params);
+            return TransactionRequest.of(this.params, this.options);
         } finally {
             this.reset();
         }

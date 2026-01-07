@@ -41,7 +41,7 @@ describe('ClauseBuilder transferVTHO SOLO tests', () => {
             })
             .build();
 
-        const signedTxRequest = senderSigner.sign(txRequest);
+        const signedTxRequest = await senderSigner.sign(txRequest);
         const txId =
             await thorClient.transactions.sendTransaction(signedTxRequest);
 
@@ -54,5 +54,3 @@ describe('ClauseBuilder transferVTHO SOLO tests', () => {
         expect(receipt?.reverted).toBe(false);
     }, 30000);
 });
-
-

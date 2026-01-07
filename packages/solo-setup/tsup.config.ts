@@ -1,7 +1,0 @@
-import { defineConfig } from 'tsup';
-
-export default defineConfig({
-    treeshake: true,
-    minify: true,
-    sourcemap: true
-}); 

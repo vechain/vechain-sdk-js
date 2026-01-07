@@ -72,8 +72,7 @@ describe('unit tests', () => {
             outputs: []
         } satisfies GetTxReceiptResponseJSON;
 
-        const txRequest = new TransactionRequest({
-            beggar: sender.address,
+        const txRequest = TransactionRequest.of({
             chainTag: mockChainTag,
             blockRef: BlockRef.of(mockBlockResponse.id),
             expiration: 0,
@@ -86,8 +85,8 @@ describe('unit tests', () => {
 
         const senderSigner = new PrivateKeySigner(sender.privateKey.bytes);
         const gasPayerSigner = new PrivateKeySigner(gasPayer.privateKey.bytes);
-        const signedTxRequest = gasPayerSigner.sign(
-            senderSigner.sign(txRequest)
+        const signedTxRequest = await gasPayerSigner.sign(
+            await senderSigner.sign(txRequest)
         );
 
         const mockClient = mockHttpClient<TXIDJSON>(mockTxResponse, 'post');
@@ -112,7 +111,7 @@ describe('unit tests', () => {
         expect(await txReceipt.json()).toEqual(mockTxReceiptResponse);
     });
 
-    test('verify signatures', () => {
+    test('verify signatures', async () => {
         const latestBlock = {
             id: '0x0000000000000000000000000000000000000000000000000000000000000123'
         };
@@ -125,7 +124,7 @@ describe('unit tests', () => {
             sender.privateKey.bytes,
             false
         );
-        const txRequest = new TransactionRequest({
+        const txRequest = TransactionRequest.of({
             chainTag: mockChainTag,
             blockRef: BlockRef.of(latestBlock.id),
             expiration: 0,
@@ -141,12 +140,12 @@ describe('unit tests', () => {
         });
         const senderSigner = new PrivateKeySigner(sender.privateKey.bytes);
         const gasPayerSigner = new PrivateKeySigner(gasPayer.privateKey.bytes);
-        const txSenderSigned = senderSigner.sign(txRequest);
+        const txSenderSigned = await senderSigner.sign(txRequest);
         const senderSignature = txSenderSigned.signature?.slice(
             0,
             64
         ) as Uint8Array;
-        const txSenderAndGasPayerSigned = gasPayerSigner.sign(
+        const txSenderAndGasPayerSigned = await gasPayerSigner.sign(
             txSenderSigned,
             sender.address
         );
@@ -178,7 +177,7 @@ describe('unit tests', () => {
         expect(isGasPayerSignatureVerified).toBe(true);
 
         // repeat for non-delegated transaction
-        const txRequestNonDelegated = new TransactionRequest({
+        const txRequestNonDelegated = TransactionRequest.of({
             chainTag: mockChainTag,
             blockRef: BlockRef.of(latestBlock.id),
             expiration: 0,
@@ -188,12 +187,12 @@ describe('unit tests', () => {
             dependsOn: null,
             nonce: 2n
         });
-        const txSenderSignedNonDelegated = senderSigner.sign(
+        const txSenderSignedNonDelegated = await senderSigner.sign(
             txRequestNonDelegated
         );
         const senderSignatureNonDelegated =
             txSenderSignedNonDelegated.signature?.slice(0, 64) as Uint8Array;
-        const txSenderAndGasPayerSignedNonDelegated = gasPayerSigner.sign(
+        const txSenderAndGasPayerSignedNonDelegated = await gasPayerSigner.sign(
             txSenderSignedNonDelegated,
             sender.address
         );
