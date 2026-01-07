@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { type ClauseJSON } from '@thor/thorest/json';
-import { ClauseData } from '@thor';
+import { ClauseData } from '@thor/thorest/common';
 import { IllegalArgumentError } from '@common';
 
 /**

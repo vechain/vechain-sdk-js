@@ -4,8 +4,7 @@ import {
     BlocksSubscription,
     type SubscriptionBlockResponse
 } from '@thor/thorest/subscriptions';
-import log from 'loglevel';
-import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { log } from '@common/logging';
 
 /**
  * VeChain blocks subscription with baseFeePerGas field - solo test
@@ -26,33 +25,38 @@ describe('BlocksSubscription baseFeePerGas solo tests', () => {
         subscription
             .addListener({
                 onMessage: (message) => {
-                    const data = message.data;
-                    log.debug(
-                        'Received block notification:',
-                        fastJsonStableStringify(data)
-                    );
+                    const { data } = message;
+                    log.debug({
+                        message: 'Received block notification',
+                        context: { data: JSON.stringify(data) }
+                    });
                     // Check if baseFeePerGas field is present
                     if (data.baseFeePerGas !== undefined) {
-                        log.debug(
-                            'baseFeePerGas field found:',
-                            data.baseFeePerGas
-                        );
+                        log.debug({
+                            message: 'baseFeePerGas field found',
+                            context: { baseFeePerGas: data.baseFeePerGas }
+                        });
                         notificationReceived = true;
                         done();
                     } else {
-                        log.debug(
-                            'baseFeePerGas field not present in this notification, waiting...'
-                        );
+                        log.debug({
+                            message:
+                                'baseFeePerGas field not present in this notification, waiting...',
+                            context: { data: JSON.stringify(data) }
+                        });
                     }
                 },
                 onOpen: () => {
-                    log.debug('WebSocket connection opened');
+                    log.debug({ message: 'WebSocket connection opened' });
                 },
                 onClose: () => {
-                    log.debug(`WebSocket connection closed`);
+                    log.debug({ message: 'WebSocket connection closed' });
                 },
                 onError: (error) => {
-                    log.error('WebSocket encountered an error:', error);
+                    log.error({
+                        message: 'WebSocket encountered an error',
+                        context: { error }
+                    });
                     if (!notificationReceived) {
                         done(error);
                     }

@@ -1,14 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import { Address, BlockRef, FetchHttpClient, HexUInt, Revision } from '@common';
 import { Clause, ThorClient, TransactionRequest } from '@thor/thor-client';
+import { PrivateKeySigner, ThorNetworks } from '@thor';
 import {
-    PrivateKeySigner,
     RetrieveExpandedBlock,
     RetrieveTransactionByID,
     SendTransaction,
-    ThorNetworks,
     TXID
-} from '@thor';
+} from '@thor/thorest';
 import { TEST_ACCOUNTS } from '../../../fixture';
 import { log } from '@common/logging';
 
