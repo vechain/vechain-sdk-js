@@ -33,56 +33,19 @@ import {
     type EstimateGasResult
 } from '../model/gas';
 
-const DEFAULT_TRANSACTION_LEGACY_FIELDS = {
-    gas: 21000n,
-    gasPriceCoef: 0n,
-    nonce: 0n,
-    blockRef: Hex.of('0x0000000000000000'),
-    chainTag: 0x27,
-    dependsOn: null,
-    expiration: 720
-} as const;
-
-const DEFAULT_GAS_LIMIT = 21000n;
-
-const hasTransactionOverrides = (
-    options?: TransactionBodyOptions
-): boolean => {
-    if (!options) {
-        return false;
-    }
-
-    return (
-        options.blockRef !== undefined ||
-        options.chainTag !== undefined ||
-        options.dependsOn !== undefined ||
-        options.expiration !== undefined ||
-        options.gas !== undefined ||
-        options.gasPriceCoef !== undefined ||
-        options.maxFeePerGas !== undefined ||
-        options.maxPriorityFeePerGas !== undefined ||
-        options.nonce !== undefined ||
-        options.isDelegated !== undefined
-    );
-};
-
 const normalizeBuilderOverrides = (
     options?: TransactionBodyOptions
 ): {
-    gasLimit: bigint;
+    gasLimit: bigint | undefined;
     builderOptions?: TransactionBodyOptions;
 } => {
     if (!options) {
-        return { gasLimit: DEFAULT_GAS_LIMIT, builderOptions: undefined };
+        return { gasLimit: undefined, builderOptions: undefined };
     }
 
     const normalizedOptions: TransactionBodyOptions = { ...options };
-    if ('useLegacyDefaults' in normalizedOptions) {
-        delete (normalizedOptions as { useLegacyDefaults?: boolean })
-            .useLegacyDefaults;
-    }
 
-    let gasLimit: bigint = DEFAULT_GAS_LIMIT;
+    let gasLimit: bigint | undefined = undefined;
     if (normalizedOptions.gas !== undefined) {
         gasLimit = normalizedOptions.gas;
         delete normalizedOptions.gas;
@@ -131,6 +94,58 @@ class ContractsModule extends AbstractThorModule {
             'abi' in obj &&
             Array.isArray((obj as { abi: unknown }).abi)
         );
+    }
+
+    /**
+     * Helper method to estimate gas for clauses.
+     * Extracts the type assertion for this.thorClient.gas.estimateGas
+     */
+    private async estimateGas(
+        clauses: Clause[],
+        caller: AddressLike,
+        options?: EstimateGasOptions
+    ): Promise<EstimateGasResult> {
+        return await (
+            this.thorClient.gas as {
+                estimateGas: (
+                    clauses: Clause[],
+                    caller: AddressLike,
+                    options?: EstimateGasOptions
+                ) => Promise<EstimateGasResult>;
+            }
+        ).estimateGas(clauses, caller, options);
+    }
+
+    /**
+     * Helper method to build a transaction body.
+     * Extracts the type assertion for this.thorClient.transactions.buildTransactionBody
+     */
+    private async buildTransactionBody(
+        clauses: Clause[],
+        gas: bigint,
+        options?: TransactionBodyOptions
+    ): Promise<TransactionRequest> {
+        return await (
+            this.thorClient.transactions as {
+                buildTransactionBody: (
+                    clauses: Clause[],
+                    gas: bigint,
+                    options?: TransactionBodyOptions
+                ) => Promise<TransactionRequest>;
+            }
+        ).buildTransactionBody(clauses, gas, options);
+    }
+
+    /**
+     * Helper method to send a raw transaction.
+     * Extracts the type assertion for this.thorClient.transactions.sendRawTransaction
+     */
+    private async sendRawTransaction(encoded: Hex): Promise<Hex> {
+        return await (
+            this.thorClient.transactions as {
+                sendRawTransaction: (encoded: Hex) => Promise<Hex>;
+            }
+        ).sendRawTransaction(encoded);
     }
 
     /**
@@ -551,27 +566,18 @@ class ContractsModule extends AbstractThorModule {
 
             const clauses = [clause];
 
-            const overridesProvided =
-                hasTransactionOverrides(transactionOptions);
-            const legacyRequested =
-                transactionOptions?.useLegacyDefaults === true &&
-                !overridesProvided;
             const { gasLimit: normalizedGasLimit, builderOptions } =
                 normalizeBuilderOverrides(transactionOptions);
             let gasLimit = normalizedGasLimit;
-            const shouldEstimateGas =
-                !legacyRequested && transactionOptions?.gas === undefined;
 
-            if (shouldEstimateGas) {
-                const gasEstimateResult: EstimateGasResult = await (
-                    this.thorClient.gas as {
-                        estimateGas: (
-                            clauses: Clause[],
-                            caller: AddressLike,
-                            options?: EstimateGasOptions
-                        ) => Promise<EstimateGasResult>;
-                    }
-                ).estimateGas(clauses, signer.address, estimateGasOptions);
+            // Gas must always be estimated if not provided
+            if (gasLimit === undefined) {
+                const gasEstimateResult: EstimateGasResult =
+                    await this.estimateGas(
+                        clauses,
+                        signer.address,
+                        estimateGasOptions
+                    );
 
                 if (gasEstimateResult.reverted) {
                     log.warn({
@@ -589,25 +595,20 @@ class ContractsModule extends AbstractThorModule {
                 gasLimit = gasEstimateResult.totalGas;
             }
 
-            let finalTransactionRequest: TransactionRequest;
-
-            if (legacyRequested) {
-                finalTransactionRequest = TransactionRequest.of({
-                    ...DEFAULT_TRANSACTION_LEGACY_FIELDS,
-                    gas: gasLimit,
-                    clauses
-                });
-            } else {
-                finalTransactionRequest = await (
-                    this.thorClient.transactions as {
-                        buildTransactionBody: (
-                            clauses: Clause[],
-                            gas: bigint,
-                            options?: TransactionBodyOptions
-                        ) => Promise<TransactionRequest>;
-                    }
-                ).buildTransactionBody(clauses, gasLimit, builderOptions);
+            // At this point, gasLimit must be defined (either provided or estimated)
+            if (gasLimit === undefined) {
+                throw new IllegalArgumentError(
+                    'ContractsModule.executeTransaction',
+                    'Gas limit must be provided or estimated',
+                    {}
+                );
             }
+
+            const finalTransactionRequest = await this.buildTransactionBody(
+                clauses,
+                gasLimit,
+                builderOptions
+            );
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
 
@@ -615,10 +616,9 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId: Hex =
-                await this.thorClient.transactions.sendRawTransaction(
-                    encodedTransaction
-                );
+            const transactionId: Hex = await this.sendRawTransaction(
+                encodedTransaction
+            );
 
             return transactionId;
         } catch (error) {
@@ -770,27 +770,14 @@ class ContractsModule extends AbstractThorModule {
                 );
             });
 
-            const overridesProvided =
-                hasTransactionOverrides(transactionOptions);
-            const legacyRequested =
-                transactionOptions?.useLegacyDefaults === true &&
-                !overridesProvided;
             const { gasLimit: normalizedGasLimit, builderOptions } =
                 normalizeBuilderOverrides(transactionOptions);
             let gasLimit = normalizedGasLimit;
-            const shouldEstimateGas =
-                !legacyRequested && transactionOptions?.gas === undefined;
 
-            if (shouldEstimateGas) {
-                const gasEstimateResult: EstimateGasResult = await (
-                    this.thorClient.gas as {
-                        estimateGas: (
-                            clauses: Clause[],
-                            caller: AddressLike,
-                            options?: EstimateGasOptions
-                        ) => Promise<EstimateGasResult>;
-                    }
-                ).estimateGas(transactionClauses, signer.address);
+            // Gas must always be estimated if not provided
+            if (gasLimit === undefined) {
+                const gasEstimateResult: EstimateGasResult =
+                    await this.estimateGas(transactionClauses, signer.address);
 
                 if (gasEstimateResult.reverted) {
                     log.warn({
@@ -808,35 +795,20 @@ class ContractsModule extends AbstractThorModule {
                 gasLimit = gasEstimateResult.totalGas;
             }
 
-            if (legacyRequested) {
-                const finalTransactionRequest = TransactionRequest.of({
-                    clauses: transactionClauses,
-                    ...DEFAULT_TRANSACTION_LEGACY_FIELDS,
-                    gas: gasLimit
-                });
-
-                const signedTransaction = signer.sign(
-                    finalTransactionRequest
+            // At this point, gasLimit must be defined (either provided or estimated)
+            if (gasLimit === undefined) {
+                throw new IllegalArgumentError(
+                    'ContractsModule.executeMultipleClausesTransaction',
+                    'Gas limit must be provided or estimated',
+                    {}
                 );
-                const encodedTransaction = signedTransaction.encoded;
-
-                const transactionId: Hex =
-                    await (this.thorClient.transactions as { sendRawTransaction: (encoded: Hex) => Promise<Hex> }).sendRawTransaction(
-                        encodedTransaction
-                    );
-
-                return transactionId;
             }
 
-            const finalTransactionRequest = await (
-                this.thorClient.transactions as {
-                    buildTransactionBody: (
-                        clauses: Clause[],
-                        gas: bigint,
-                        options?: TransactionBodyOptions
-                    ) => Promise<TransactionRequest>;
-                }
-            ).buildTransactionBody(transactionClauses, gasLimit, builderOptions);
+            const finalTransactionRequest = await this.buildTransactionBody(
+                transactionClauses,
+                gasLimit,
+                builderOptions
+            );
 
             // Sign the transaction
             const signedTransaction = signer.sign(finalTransactionRequest);
@@ -845,10 +817,9 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = signedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId: Hex =
-                await this.thorClient.transactions.sendRawTransaction(
-                    encodedTransaction
-                );
+            const transactionId: Hex = await this.sendRawTransaction(
+                encodedTransaction
+            );
 
             return transactionId;
         } catch (error) {

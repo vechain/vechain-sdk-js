@@ -177,34 +177,23 @@ export function createViemContract<TAbi extends Abi>(
                 const args = params?.args || [];
 
                 // Apply transaction options only when explicitly provided
-                const transactionOptions: TransactionBodyOptions = {
-                    useLegacyDefaults: true
-                };
-                let hasOverrides = false;
+                const transactionOptions: TransactionBodyOptions = {};
 
                 if (params?.gas !== undefined) {
                     transactionOptions.gas = params.gas;
-                    hasOverrides = true;
                 }
 
                 if (params?.gasPriceCoef !== undefined) {
                     transactionOptions.gasPriceCoef = params.gasPriceCoef;
-                    hasOverrides = true;
                 }
 
                 if (params?.maxFeePerGas !== undefined) {
                     transactionOptions.maxFeePerGas = params.maxFeePerGas;
-                    hasOverrides = true;
                 }
 
                 if (params?.maxPriorityFeePerGas !== undefined) {
                     transactionOptions.maxPriorityFeePerGas =
                         params.maxPriorityFeePerGas;
-                    hasOverrides = true;
-                }
-
-                if (hasOverrides) {
-                    delete transactionOptions.useLegacyDefaults;
                 }
 
                 contract.setTransactOptions(transactionOptions);
