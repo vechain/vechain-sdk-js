@@ -32,7 +32,7 @@ import { type Signer } from '@thor/signer';
 import { Address, AddressLike, Hex, Revision } from '@common/vcdm';
 import { IllegalArgumentError, ContractCallError } from '@common/errors';
 import { log } from '@common/logging';
-import { normalizeVcdmArgs } from '@thor/utils';
+import { normalizeVcdmArgs } from '../utils';
 import type { ContractCallOptions } from '../types';
 // Forward reference to avoid circular dependency with ContractsModule
 import type { ContractCallResult } from '../types';

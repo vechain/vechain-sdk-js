@@ -4,7 +4,7 @@ import { Address, AddressLike, Hex, Revision } from '@common/vcdm';
 import type { AbiParameter, AbiFunction } from 'abitype';
 import { IllegalArgumentError, InvalidTransactionField, ContractCallError } from '@common/errors';
 import { log } from '@common/logging';
-import { normalizeVcdmArgs } from '@thor/utils';
+import { normalizeVcdmArgs } from '../utils';
 import { encodeFunctionData, toFunctionSignature } from 'viem';
 import { Clause } from '@thor/thor-client/model/transactions/Clause';
 import { ContractFilter } from './ContractFilter';

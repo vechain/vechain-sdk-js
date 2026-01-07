@@ -19,7 +19,7 @@ import {
     decodeFunctionResult,
     toFunctionSignature
 } from 'viem';
-import { normalizeVcdmArgs } from '@thor/utils';
+import { normalizeVcdmArgs } from './utils';
 import type { ContractCallOptions, ContractCallResult } from './types';
 import { EventLogFilter } from '../model/logs/EventLogFilter';
 import { type EventCriteria } from '../model/logs/EventCriteria';

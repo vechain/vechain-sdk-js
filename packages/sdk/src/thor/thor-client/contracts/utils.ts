@@ -1,5 +1,5 @@
 import { type Abi, decodeErrorResult } from '@viem';
-import type { Hex } from '@common/vcdm';
+import { Address, type Hex } from '@common/vcdm';
 import { ABIDecodeError } from '@common/errors/ABIDecodeError';
 import { log } from '@common/logging';
 
@@ -88,6 +88,45 @@ export function decodeRevertReason(data: Hex, abi?: Abi): string | undefined {
         );
     }
 }
+
+/**
+ * Normalizes a single argument for viem compatibility.
+ * Converts VCDM types (Address, Hex, etc.) to their string representations.
+ */
+const normalizeArg = (arg: unknown): unknown => {
+    // Handle arrays recursively
+    if (Array.isArray(arg)) {
+        return arg.map(normalizeArg);
+    }
+
+    // Handle objects with toString method (VCDM types like Address, Hex)
+    if (
+        arg !== null &&
+        typeof arg === 'object' &&
+        'toString' in arg &&
+        typeof (arg as { toString: unknown }).toString === 'function'
+    ) {
+        const str = (arg as { toString(): string }).toString();
+        // Validate it looks like an address or hex string
+        if (Address.isValid(str) || str.startsWith('0x')) {
+            return str;
+        }
+    }
+
+    // Return primitives (string, number, bigint, boolean) unchanged
+    return arg;
+};
+
+/**
+ * Normalizes an array of function arguments for viem compatibility.
+ * Converts VCDM types (Address, Hex, etc.) to their string representations
+ * while leaving primitive types unchanged.
+ *
+ * This is an internal utility used before calling viem's encodeFunctionData.
+ */
+export const normalizeVcdmArgs = <T extends readonly unknown[]>(args: T): T => {
+    return args.map(normalizeArg) as unknown as T;
+};
 
 /**
  * Data utilities for contract interactions

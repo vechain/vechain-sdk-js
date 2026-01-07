@@ -1,11 +1,7 @@
 import { IllegalArgumentError } from '@common/errors';
 import { Address, type AddressLike, Hex, type HexUInt } from '@common/vcdm';
-import {
-    ERC721_ABI,
-    VIP180_ABI,
-    VTHO_ADDRESS,
-    normalizeVcdmArgs
-} from '@thor/utils';
+import { ERC721_ABI, VIP180_ABI, VTHO_ADDRESS } from '@thor/utils';
+import { normalizeVcdmArgs } from '@thor/thor-client/contracts/utils';
 import {
     encodeAbiParameters,
     encodeFunctionData,
