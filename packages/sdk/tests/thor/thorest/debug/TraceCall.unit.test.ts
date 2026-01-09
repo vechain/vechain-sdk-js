@@ -1,9 +1,8 @@
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { Hex, Revision } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestRequestError } from '@common/errors';
 import { TraceCall } from '@thor/thorest/debug';
 import { type PostDebugTracerCallRequestJSON } from '@thor/thorest/json';
-import type { HttpClient } from '@common/http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { ThorError } from '@thor/thorest';
 import { mockHttpClientForDebug } from '../../../MockHttpClient';
@@ -29,7 +28,9 @@ describe('TraceCall UNIT tests', () => {
             data: 'illegal data',
             to: 'illegal to'
         } satisfies PostDebugTracerCallRequestJSON;
-        expect(() => TraceCall.of(json)).toThrowError(IllegalArgumentError);
+        expect(() => TraceCall.of(json)).toThrowError(
+            InvalidThorestRequestError
+        );
     });
 
     test('err <- askTo() - mock invalid request body response', async () => {
@@ -162,7 +163,9 @@ describe('TraceCall UNIT tests', () => {
         const actual = (
             await TraceCall.of(request)
                 .withRevison(Revision.FINALIZED)
-                .askTo(mockHttpClientForDebug(mockResponse(expected, 200), 'post'))
+                .askTo(
+                    mockHttpClientForDebug(mockResponse(expected, 200), 'post')
+                )
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toEqual(expected);
@@ -195,7 +198,9 @@ describe('TraceCall UNIT tests', () => {
         const actual = (
             await TraceCall.of(request)
                 .withRevison(Revision.of(0))
-                .askTo(mockHttpClientForDebug(mockResponse(expected, 200), 'post'))
+                .askTo(
+                    mockHttpClientForDebug(mockResponse(expected, 200), 'post')
+                )
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toEqual(expected);
@@ -228,7 +233,9 @@ describe('TraceCall UNIT tests', () => {
         const actual = (
             await TraceCall.of(request)
                 .withRevison(Hex.of('0x0'))
-                .askTo(mockHttpClientForDebug(mockResponse(expected, 200), 'post'))
+                .askTo(
+                    mockHttpClientForDebug(mockResponse(expected, 200), 'post')
+                )
         ).response;
         expect(actual).toBeDefined();
         expect(actual).toEqual(expected);

@@ -1,8 +1,7 @@
-import { describe, expect, jest, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { TraceTransactionClause } from '@thor/thorest/debug';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-import type { HttpClient } from '@common/http';
+import { InvalidThorestRequestError } from '@common/errors';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { ThorError } from '@thor/thorest';
 import { mockHttpClientForDebug } from '../../../MockHttpClient';
@@ -28,7 +27,7 @@ describe('TraceTransactionClause UNIT tests', () => {
             target: 'illegal terget'
         };
         expect(() => TraceTransactionClause.of(expected)).toThrowError(
-            IllegalArgumentError
+            InvalidThorestRequestError
         );
     });
 
@@ -41,7 +40,10 @@ describe('TraceTransactionClause UNIT tests', () => {
         };
         try {
             await TraceTransactionClause.of(request).askTo(
-                mockHttpClientForDebug(mockResponse('Invalid target', status), 'post')
+                mockHttpClientForDebug(
+                    mockResponse('Invalid target', status),
+                    'post'
+                )
             );
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');

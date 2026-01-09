@@ -1,9 +1,9 @@
 import { FetchHttpClient } from '@common/http';
-import { ThorError, TraceTransactionClause } from '@thor/thorest';
+import { TraceTransactionClause } from '@thor/thorest';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
 import { expect } from '@jest/globals';
 import { ThorNetworks } from '@thor/utils/const/network';
-
+import { HttpError } from '@common/errors';
 /**
  * @group solo/thor/debug
  */
@@ -21,10 +21,10 @@ describe('TraceTransactionClause SOLO tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
+            expect(error).toBeInstanceOf(HttpError);
             // Now we expect status 0 for network errors (when server is not running)
             // or status 500 for HTTP errors (when server is running but endpoint not implemented)
-            const thorError = error as ThorError;
+            const thorError = error as HttpError;
             expect([0, 500]).toContain(thorError.status);
         }
     });

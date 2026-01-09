@@ -6,12 +6,7 @@ import {
     type EventJSON,
     type TransferJSON
 } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/model/Output.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [Receipt.outputs](http://localhost:8669/doc/stoplight-ui/#/schemas/Receipt)
@@ -52,8 +47,8 @@ class OutputResponse {
                     new TransferResponse(transfer)
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: OutputJSON)`,
+            throw new InvalidThorestResponseError(
+                `OutputResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

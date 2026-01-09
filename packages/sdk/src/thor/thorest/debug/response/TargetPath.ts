@@ -1,10 +1,5 @@
+import { InvalidThorestRequestError } from '@common/errors';
 import { Hex } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/debug/response/TargetPath.ts!';
 
 /**
  * Represents a target path for transaction clauses
@@ -22,12 +17,12 @@ class TargetPath {
      * Creates a new TargetPath instance
      *
      * @param targetPath The target path string
-     * @throws {IllegalArgumentError} If the string is not a valid target path
+     * @throws {InvalidThorestRequestError} If the string is not a valid target path
      */
     private constructor(targetPath: string) {
         if (targetPath === '' || !TargetPath.isValid(targetPath)) {
-            throw new IllegalArgumentError(
-                `${FQP}TargetPath(targetPath: string)`,
+            throw new InvalidThorestRequestError(
+                `TargetPath.constructor`,
                 'Invalid target path format',
                 { targetPath }
             );
@@ -54,7 +49,7 @@ class TargetPath {
      *
      * @param value The target path string or existing TargetPath instance
      * @returns {TargetPath} A new TargetPath instance
-     * @throws {IllegalArgumentError} If the string is not a valid target path
+     * @throws {InvalidThorestRequestError} If the string is not a valid target path
      */
     static of(value: string | TargetPath): TargetPath {
         if (value instanceof TargetPath) {
@@ -65,8 +60,8 @@ class TargetPath {
             return new TargetPath(value);
         }
 
-        throw new IllegalArgumentError(
-            `${FQP}TargetPath.of(value: string | TargetPath)`,
+        throw new InvalidThorestRequestError(
+            `TargetPath.of`,
             'Invalid target path format',
             { value }
         );
@@ -78,21 +73,21 @@ class TargetPath {
      * @param txId Transaction ID (64-char hex)
      * @param clauseIndex Clause index (number)
      * @returns {TargetPath} A new TargetPath instance
-     * @throws {IllegalArgumentError} If txId or clauseIndex is invalid
+     * @throws {InvalidThorestRequestError} If txId or clauseIndex is invalid
      */
     static fromTxIdAndClause(txId: string, clauseIndex: number): TargetPath {
         // Validate txId is a valid 64-char hex string
         if (!/^0x[0-9a-fA-F]{64}$/.test(txId)) {
-            throw new IllegalArgumentError(
-                `${FQP}TargetPath.fromTxIdAndClause(txId: string, clauseIndex: number)`,
+            throw new InvalidThorestRequestError(
+                `TargetPath.fromTxIdAndClause`,
                 'Invalid transaction ID format',
                 { txId }
             );
         }
 
         if (clauseIndex < 0 || !Number.isInteger(clauseIndex)) {
-            throw new IllegalArgumentError(
-                `${FQP}TargetPath.fromTxIdAndClause(txId: string, clauseIndex: number)`,
+            throw new InvalidThorestRequestError(
+                `TargetPath.fromTxIdAndClause`,
                 'Invalid clause index, must be a non-negative integer',
                 { clauseIndex }
             );
@@ -109,17 +104,18 @@ class TargetPath {
      * @param blockRef Block reference (64-char hex or block number)
      * @param clauseIndex Clause index (number)
      * @returns {TargetPath} A new TargetPath instance
-     * @throws {IllegalArgumentError} If any parameter is invalid
+     * @throws {InvalidThorestRequestError} If any parameter is invalid
      */
     static fromTxIdBlockRefAndClause(
         txId: string,
         blockRef: string | number,
         clauseIndex: number
     ): TargetPath {
+        const FQP = 'TargetPath.fromTxIdBlockRefAndClause';
         // Validate txId is a valid 64-char hex string
         if (!/^0x[0-9a-fA-F]{64}$/.test(txId)) {
-            throw new IllegalArgumentError(
-                `${FQP}TargetPath.fromTxIdBlockRefAndClause(txId: string, blockRef: string | number, clauseIndex: number)`,
+            throw new InvalidThorestRequestError(
+                FQP,
                 'Invalid transaction ID format',
                 { txId }
             );
@@ -130,8 +126,8 @@ class TargetPath {
             typeof blockRef === 'string' &&
             !/^0x[0-9a-fA-F]{64}$/.test(blockRef)
         ) {
-            throw new IllegalArgumentError(
-                `${FQP}TargetPath.fromTxIdBlockRefAndClause(txId: string, blockRef: string | number, clauseIndex: number)`,
+            throw new InvalidThorestRequestError(
+                FQP,
                 'Invalid block reference format',
                 { blockRef }
             );
@@ -139,16 +135,16 @@ class TargetPath {
             typeof blockRef === 'number' &&
             (blockRef < 0 || !Number.isInteger(blockRef))
         ) {
-            throw new IllegalArgumentError(
-                `${FQP}TargetPath.fromTxIdBlockRefAndClause(txId: string, blockRef: string | number, clauseIndex: number)`,
+            throw new InvalidThorestRequestError(
+                FQP,
                 'Invalid block number, must be a non-negative integer',
                 { blockRef }
             );
         }
 
         if (clauseIndex < 0 || !Number.isInteger(clauseIndex)) {
-            throw new IllegalArgumentError(
-                `${FQP}TargetPath.fromTxIdBlockRefAndClause(txId: string, blockRef: string | number, clauseIndex: number)`,
+            throw new InvalidThorestRequestError(
+                FQP,
                 'Invalid clause index, must be a non-negative integer',
                 { clauseIndex }
             );

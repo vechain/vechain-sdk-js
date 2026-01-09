@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { RetrieveStorageRange, ThorError } from '@thor/thorest';
-import { FetchHttpClient } from '@common/http';
+import { RetrieveStorageRange } from '@thor/thorest';
+import { FetchHttpClient, HttpError } from '@common/http';
 import { type StorageRangeOptionJSON } from '@thor/thorest/json';
 import { ThorNetworks } from '@thor/utils/const/network';
 
@@ -23,10 +23,10 @@ describe('RetrieveStorageRange SOLO tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
+            expect(error).toBeInstanceOf(HttpError);
             // Now we expect status 0 for network errors (when server is not running)
             // or status 500 for HTTP errors (when server is running but endpoint not implemented)
-            const thorError = error as ThorError;
+            const thorError = error as HttpError;
             expect([0, 500]).toContain(thorError.status);
         }
     });
