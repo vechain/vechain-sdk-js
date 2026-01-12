@@ -1,14 +1,9 @@
 import { type HttpClient, type HttpPath } from '@common/http';
 import { TransferLogFilterRequest, TransferLogsResponse } from '@thor/thorest';
 import { type TransferLogsResponseJSON } from '@thor/thorest/json';
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { type TransferLogFilter } from '@thor/thor-client/model/logs/TransferLogFilter';
-
-/**
- * Full-Qualified-Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/logs/methods/QueryVETTransferEvents.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Query VET transfer events](http://localhost:8669/doc/stoplight-ui/#/paths/logs-transfer/post)
@@ -50,41 +45,23 @@ class QueryVETTransferEvents implements ThorRequest<
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<QueryVETTransferEvents, TransferLogsResponse>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<QueryVETTransferEvents, TransferLogsResponse>>`;
+        const fqp = `QueryVETTransferEvents.askTo`;
+        // http request - this will throw HttpError if the request fails
         const response = await httpClient.post(
             QueryVETTransferEvents.PATH,
             { query: '' },
             this.request.toJSON()
         );
-        if (response.ok) {
-            const json = (await response.json()) as TransferLogsResponseJSON;
-            try {
-                return {
-                    request: this,
-                    response: new TransferLogsResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        }
-        throw new ThorError(
-            fqp,
-            await response.text(),
-            {
-                url: response.url
-            },
-            undefined,
-            response.status
-        );
+        // parse the not nullable response - this will throw InvalidThorestResponseError if the response cannot be parsed
+        const transferLogsResponse = await parseResponseHandler<
+            TransferLogsResponse,
+            TransferLogsResponseJSON
+        >(fqp, response, TransferLogsResponse, false);
+        // return a thor response
+        return {
+            request: this,
+            response: transferLogsResponse
+        };
     }
 
     /**

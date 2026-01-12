@@ -4,7 +4,5 @@ export type { HttpClientFactory } from './HttpClientFactory';
 export { DefaultHttpClientFactory } from './HttpClientFactory';
 export type { HttpPath } from './HttpPath';
 export type { HttpQuery } from './HttpQuery';
-export { HttpError } from '../errors/http/HttpError';
-export { HttpNetworkError } from '../errors/http/HttpNetworkError';
 export type { HttpOptions } from './HttpOptions';
 export type { CookieStore } from './CookieStore';

@@ -4,8 +4,7 @@ import {
     EventLogsResponse,
     FilterOptionsRequest,
     FilterRangeRequest,
-    QuerySmartContractEvents,
-    ThorError
+    QuerySmartContractEvents
 } from '@thor/thorest';
 import { type EventLogsResponseJSON } from '@thor/thorest/json';
 import { expect, jest } from '@jest/globals';
@@ -14,12 +13,39 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address, Hex } from '@common/vcdm';
 import { LogSortRequest } from '@thor/thorest/logs/response/LogSortRequest';
 import { FilterRangeRequestUnits } from '@thor/thorest/logs/response/FilterRangeRequestUnits';
+import { HttpError } from '@common/errors';
 
-const mockHttpClient = <T>(response: T): HttpClient => {
-    return {
-        post: jest.fn().mockReturnValue(response)
-    } as unknown as HttpClient;
-};
+const mockHttpClient = (response: Response): HttpClient =>
+    ({
+        get: jest.fn().mockImplementation(async () => {
+            if (!response.ok) {
+                throw new HttpError(
+                    'mock',
+                    `HTTP ${response.status}`,
+                    response.status,
+                    response.statusText,
+                    await response.text(),
+                    response.url,
+                    {}
+                );
+            }
+            return response;
+        }),
+        post: jest.fn().mockImplementation(async () => {
+            if (!response.ok) {
+                throw new HttpError(
+                    'mock',
+                    `HTTP ${response.status}`,
+                    response.status,
+                    response.statusText,
+                    await response.text(),
+                    response.url,
+                    {}
+                );
+            }
+            return response;
+        })
+    }) as unknown as HttpClient;
 
 const mockResponse = <T>(body: T, status: number): Response => {
     const init: ResponseInit = {
@@ -46,8 +72,8 @@ describe('QuerySmartContractEvents UNIT tests', () => {
             await query.askTo(mockHttpClient(mockResponse({}, status)));
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(HttpError);
+            expect((error as HttpError).status).toBe(status);
         }
     });
 

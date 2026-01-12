@@ -1,4 +1,5 @@
-import { FetchHttpClient, HttpError } from '@common/http';
+import { FetchHttpClient } from '@common/http';
+import { HttpError } from '@common/errors';
 import { JSONLogger, LoggerRegistry, type LogItem } from '@common/logging';
 import { describe, expect, jest, test } from '@jest/globals';
 

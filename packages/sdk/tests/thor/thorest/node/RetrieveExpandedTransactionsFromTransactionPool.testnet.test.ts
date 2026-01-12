@@ -3,7 +3,8 @@ import {
     Transactions
 } from '@thor/thorest';
 import { log } from '@common/logging';
-import { FetchHttpClient, HttpError } from '@common/http';
+import { FetchHttpClient } from '@common/http';
+import { HttpError } from '@common/errors';
 import { expect } from '@jest/globals';
 import { ThorNetworks } from '@thor/utils/const/network';
 

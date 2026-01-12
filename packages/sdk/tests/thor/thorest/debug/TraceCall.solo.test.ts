@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { FetchHttpClient, HttpError } from '@common/http';
+import { FetchHttpClient } from '@common/http';
+import { HttpError } from '@common/errors';
 import { TraceCall } from '@thor/thorest';
 import { Hex, Revision } from '@common/vcdm';
 import { type PostDebugTracerCallRequestJSON } from '@thor/thorest/json';

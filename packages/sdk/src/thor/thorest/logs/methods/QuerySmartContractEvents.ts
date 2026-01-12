@@ -1,19 +1,13 @@
 import {
     EventLogFilterRequest,
     EventLogsResponse,
-    ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
 import { type EventLogsResponseJSON } from '@thor/thorest/logs/json';
 import { type HttpClient, type HttpPath } from '@common/http';
 import { type EventLogFilter } from '@thor/thor-client/model/logs/EventLogFilter';
-
-/**
- * Full-Qualified-Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/logs/methods/QuerySmartContractEvents.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Query smart contract events](http://localhost:8669/doc/stoplight-ui/#/paths/logs-event/post)
@@ -48,46 +42,27 @@ class QuerySmartContractEvents implements ThorRequest<
      * @return {Promise<ThorResponse<QuerySmartContractEvents, EventLogsResponse>>}
      * A promise that resolves to a ThorResponse containing the request data and processed response,
      * or rejects with an error if the response is invalid or if the request fails.
-     * @throws ThorError If there is an error while processing the response or if the response status is not OK.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<QuerySmartContractEvents, EventLogsResponse>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<QuerySmartContractEvents, EventLogsResponse>>`;
+        const fqp = `QuerySmartContractEvents.askTo`;
+        // http request - this will throw HttpError if the request fails
         const response = await httpClient.post(
             QuerySmartContractEvents.PATH,
             { query: '' },
             this.request.toJSON()
         );
-        if (response.ok) {
-            const json = (await response.json()) as EventLogsResponseJSON;
-            try {
-                return {
-                    request: this,
-                    response: new EventLogsResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        }
-        throw new ThorError(
-            fqp,
-            await response.text(),
-            {
-                url: response.url
-            },
-            undefined,
-            response.status
-        );
+        // parse the not nullable response - this will throw InvalidThorestResponseError if the response cannot be parsed
+        const eventLogsResponse = await parseResponseHandler<
+            EventLogsResponse,
+            EventLogsResponseJSON
+        >(fqp, response, EventLogsResponse, false);
+        // return a thor response
+        return {
+            request: this,
+            response: eventLogsResponse
+        };
     }
 
     /**
