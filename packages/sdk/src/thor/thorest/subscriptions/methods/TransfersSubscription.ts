@@ -2,6 +2,7 @@ import { type HttpPath, type HttpQuery } from '@common/http';
 import { type Address, type Hex } from '@common/vcdm';
 import { type WebSocketClient, type WebSocketListener } from '@thor/ws';
 import { type SubscriptionTransferResponse } from '@thor/thorest/subscriptions';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [Retrieve a subscription to the transfers endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-transfer/get)
@@ -144,10 +145,20 @@ class TransfersSubscription
         const json = JSON.parse(
             event.data as string
         ) as SubscriptionTransferResponse;
-        const message = new MessageEvent<SubscriptionTransferResponse>(
-            event.type,
-            { data: json }
-        );
+        let message;
+        try {
+            message = new MessageEvent<SubscriptionTransferResponse>(
+                event.type,
+                { data: json }
+            );
+        } catch (error) {
+            throw new InvalidThorestResponseError(
+                `TransfersSubscription.onMessage`,
+                'Invalid JSON.',
+                { body: json },
+                error instanceof Error ? error : undefined
+            );
+        }
         this.listeners.forEach((listener) => {
             listener.onMessage(message);
         });

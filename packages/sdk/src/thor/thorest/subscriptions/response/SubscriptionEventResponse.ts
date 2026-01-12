@@ -1,13 +1,7 @@
 import { Address, type Hex, HexUInt, HexUInt32 } from '@common/vcdm';
 import { type SubscriptionEventResponseJSON } from '@thor/thorest/subscriptions';
-import { IllegalArgumentError } from '@common/errors';
 import { LogMetaResponse } from '@thor/thorest';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/subscriptions/response/SubscriptionEventResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [SubscriptionEventResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/SubscriptionEventResponse)
@@ -44,7 +38,7 @@ class SubscriptionEventResponse {
      * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {SubscriptionEventResponseJSON} json - The JSON object containing event response data.
-     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponseError} If the parsing of the JSON object fails.
      */
     constructor(json: SubscriptionEventResponseJSON) {
         try {
@@ -56,8 +50,8 @@ class SubscriptionEventResponse {
             this.obsolete = json.obsolete;
             this.meta = new LogMetaResponse(json.meta);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: SubscriptionEventResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `SubscriptionEventResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
