@@ -50,7 +50,7 @@ class RetrieveStorageRange implements ThorRequest<
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveStorageRange, StorageRange>> {
         const fqp = `RetrieveStorageRange.askTo`;
-        // http request - this will throw ThorError if the request fails
+        // http request - this will throw HttpError if the request fails
         const response = await httpClient.post(
             RetrieveStorageRange.PATH,
             { query: '' },

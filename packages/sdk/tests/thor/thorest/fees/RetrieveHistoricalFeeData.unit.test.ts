@@ -4,10 +4,10 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import {
     GetFeesHistoryResponse,
     type GetFeesHistoryResponseJSON,
-    RetrieveHistoricalFeeData,
-    ThorError
+    RetrieveHistoricalFeeData
 } from '@thor/thorest';
 import { Hex, HexUInt32, Revision } from '@common/vcdm';
+import { InvalidThorestResponseError } from '@common/errors';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -44,8 +44,10 @@ describe('RetrieveHistoricalFeeData UNIT tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(InvalidThorestResponseError);
+            expect((error as InvalidThorestResponseError).message).toBe(
+                'Bad parse'
+            );
         }
     });
 
@@ -64,8 +66,10 @@ describe('RetrieveHistoricalFeeData UNIT tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(InvalidThorestResponseError);
+            expect((error as InvalidThorestResponseError).message).toBe(
+                'Bad parse'
+            );
         }
     });
 

@@ -1,19 +1,13 @@
 import {
     GetFeesHistoryResponse,
     type GetFeesHistoryResponseJSON,
-    ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
 import { type Hex, type HexUInt32, Revision } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/fees/methods/RetrieveHistoricaFeeData.ts!';
+import { InvalidThorestRequestError } from '@common/errors';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Retrieve historical fee data](http://localhost:8669/doc/stoplight-ui/#/paths/fees-history/get)
@@ -47,48 +41,28 @@ class RetrieveHistoricalFeeData implements ThorRequest<
      * @param {HttpClient} httpClient - The HTTP client used to send the request.
      * @return {Promise<ThorResponse<RetrieveHistoricalFeeData, GetFeesHistoryResponse>>} A promise that resolves
      * with the response containing the historical fee data or rejects with an error.
-     * @throws {ThorError} If there is an error while processing the response or if the response status is not OK.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<
         ThorResponse<RetrieveHistoricalFeeData, GetFeesHistoryResponse>
     > {
-        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<RetrieveHistoricaFeeData, GetFeesHistoryResponse>>`;
+        const fqp = `RetrieveHistoricalFeeData.askTo`;
+        // http request - this will throw HttpError if the request fails
         const response = await httpClient.get(
             RetrieveHistoricalFeeData.PATH,
             this.query
         );
-        if (response.ok) {
-            const json = (await response.json()) as GetFeesHistoryResponseJSON;
-            try {
-                return {
-                    request: this,
-                    response: new GetFeesHistoryResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
-        }
+        // parse the not nullable response - this will throw InvalidThorestResponseError if the response cannot be parsed
+        const feesHistory = await parseResponseHandler<
+            GetFeesHistoryResponse,
+            GetFeesHistoryResponseJSON
+        >(fqp, response, GetFeesHistoryResponse, false);
+        // return a thor response
+        return {
+            request: this,
+            response: feesHistory
+        };
     }
 
     /**
@@ -96,7 +70,7 @@ class RetrieveHistoricalFeeData implements ThorRequest<
      *
      * @param {number} blockCount - The number of blocks to be retrieved for historical fee data.
      * @return {RetrieveHistoricalFeeData} An instance of `RetrieveHistoricaFeeData` initialized with the specified block count.
-     * @throws {IllegalArgumentError} If an error occurs if `blockCount` is not a positive integer.
+     * @throws {InvalidThorestRequestError} If an error occurs if `blockCount` is not a positive integer.
      */
     static of(blockCount: number): RetrieveHistoricalFeeData {
         try {
@@ -104,8 +78,8 @@ class RetrieveHistoricalFeeData implements ThorRequest<
                 new Query(blockCount, Revision.BEST, [])
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}of(blockCount: number): RetrieveHistoricaFeeData`,
+            throw new InvalidThorestRequestError(
+                `RetrieveHistoricalFeeData.of`,
                 'Invalid blockCount.',
                 {
                     blockCount
@@ -121,7 +95,7 @@ class RetrieveHistoricalFeeData implements ThorRequest<
      *
      * @param {Revision} [newestBlock=Revision.BEST] - The block revision to be used. Defaults to `Revision.BEST` if not provided.
      * @return {RetrieveHistoricalFeeData} An instance of `RetrieveHistoricaFeeData` initialized with the given block revision.
-     * @throws {ThorError} If the provided newest block is invalid.
+     * @throws {InvalidThorestRequestError} If the provided newest block is invalid.
      */
     withNewestBlock(
         newestBlock: Hex | Revision = Revision.BEST
@@ -135,8 +109,8 @@ class RetrieveHistoricalFeeData implements ThorRequest<
                 )
             );
         } catch (error) {
-            throw new ThorError(
-                `${FQP}withNewestBlock(newestBlock: Revision): RetrieveHistoricaFeeData`,
+            throw new InvalidThorestRequestError(
+                `RetrieveHistoricalFeeData.withNewestBlock`,
                 'Invalid newestBlock.',
                 {
                     newestBlock: newestBlock.toString()
@@ -155,7 +129,7 @@ class RetrieveHistoricalFeeData implements ThorRequest<
      * @param {number[]} rewardPercentiles - An array of numbers representing the reward percentiles to configure.
      * Defaults to an empty array if not provided.
      * @return {RetrieveHistoricalFeeData} An instance of `RetrieveHistoricaFeeData` containing` the updated reward percentiles and related data.
-     * @throws {ThorError} If the provided rewardPercentiles are invalid or if an unexpected error occurs during processing.
+     * @throws {InvalidThorestRequestError} If the provided rewardPercentiles are invalid or if an unexpected error occurs during processing.
      */
     withRewardPercentiles(
         rewardPercentiles: number[] = []
@@ -169,8 +143,8 @@ class RetrieveHistoricalFeeData implements ThorRequest<
                 )
             );
         } catch (error) {
-            throw new ThorError(
-                `${FQP}withRewardPercentiles(rewardPercentiles: number[]): RetrieveHistoricaFeeData`,
+            throw new InvalidThorestRequestError(
+                `RetrieveHistoricalFeeData.withRewardPercentiles`,
                 'Invalid rewardPercentiles.',
                 {
                     rewardPercentiles
