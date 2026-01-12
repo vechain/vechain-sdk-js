@@ -1,11 +1,6 @@
+import { InvalidThorestResponseError } from '@common/errors';
 import { UInt } from '@common/vcdm';
 import { type StatusJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/node/model/Status.ts!';
 
 /**
  * [Status](http://localhost:8669/doc/stoplight-ui/#/schemas/Status)
@@ -20,8 +15,8 @@ class Status {
         try {
             this.total = UInt.of(json.total).valueOf();
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: StatusJSON)`,
+            throw new InvalidThorestResponseError(
+                `Status.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

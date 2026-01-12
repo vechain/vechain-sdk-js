@@ -1,11 +1,6 @@
+import { InvalidThorestResponseError } from '@common/errors';
 import { type Hex, HexUInt32 } from '@common/vcdm';
 import { type TransactionsIDsJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/node/model/TransactionsIDs.ts!';
 
 /**
  * [TransactionsIDs](http://localhost:8669/doc/stoplight-ui/#/schemas/TransactionsIDs)
@@ -15,7 +10,7 @@ class TransactionsIDs extends Array<Hex> {
      * Constructs a new instance of the TransactionsIDs class.
      *
      * @param {TransactionsIDsJSON} json - The JSON object containing transaction IDs to initialize the instance.
-     * @throws {IllegalArgumentError} If the provided JSON fails to parse into the required structure.
+     * @throws {InvalidThorestResponseError} If the provided JSON fails to parse into the required structure.
      */
     constructor(json: TransactionsIDsJSON) {
         super();
@@ -24,8 +19,8 @@ class TransactionsIDs extends Array<Hex> {
                 return HexUInt32.of(txId);
             }) as TransactionsIDs;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TransactionsIDsJSON)`,
+            throw new InvalidThorestResponseError(
+                `TransactionsIDs.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
