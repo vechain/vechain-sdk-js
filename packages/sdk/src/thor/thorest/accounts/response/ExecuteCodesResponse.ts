@@ -50,7 +50,7 @@ class ExecuteCodeResponse {
      * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {ExecuteCodeResponseJSON} json - The JSON object containing execute code response data.
-     * @throws {InvalidThorestResponse} if the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponseError} if the parsing of the JSON object fails.
      */
     constructor(json: ExecuteCodeResponseJSON) {
         try {
