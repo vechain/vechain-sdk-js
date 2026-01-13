@@ -7,6 +7,5 @@ export * from './common';
 export * from './node';
 export * from './subscriptions';
 export * from './transactions';
-export * from './ThorError';
 export type * from './ThorRequest';
 export type * from './ThorResponse';

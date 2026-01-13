@@ -1,11 +1,7 @@
 import { expect, jest } from '@jest/globals';
 import { Revision } from '@common/vcdm';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import {
-    ExpandedBlockResponse,
-    RetrieveExpandedBlock,
-    ThorError
-} from '@thor/thorest';
+import { ExpandedBlockResponse, RetrieveExpandedBlock } from '@thor/thorest';
 import { type HttpClient } from '@common/http';
 import { type ExpandedBlockResponseJSON } from '@thor/thorest/json';
 import { InvalidThorestResponseError } from '@common/errors/thorest';

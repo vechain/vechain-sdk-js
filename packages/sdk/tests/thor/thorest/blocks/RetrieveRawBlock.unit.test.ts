@@ -1,6 +1,6 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { expect, jest } from '@jest/globals';
-import { RawBlockResponse, RetrieveRawBlock, ThorError } from '@thor/thorest';
+import { RawBlockResponse, RetrieveRawBlock } from '@thor/thorest';
 import { Revision } from '@common/vcdm';
 import { type HttpClient } from '@common/http';
 import { type RawBlockJSON } from '@thor/thorest/blocks/json/RawBlockJSON';

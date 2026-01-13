@@ -1,9 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { TraceTransactionClause } from '@thor/thorest/debug';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
-import { InvalidThorestRequestError } from '@common/errors';
+import { HttpError, InvalidThorestRequestError } from '@common/errors';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { ThorError } from '@thor/thorest';
 import { mockHttpClientForDebug } from '../../../MockHttpClient';
 
 const mockResponse = <T>(body: T, status: number): Response => {
@@ -49,8 +48,8 @@ describe('TraceTransactionClause UNIT tests', () => {
             throw new Error('Should not reach here.');
         } catch (error) {
             // Can receive either Error (mock issues) or ThorError (proper error handling)
-            expect([Error, ThorError]).toContain((error as Error).constructor);
-            if (error instanceof ThorError) {
+            expect([Error, HttpError]).toContain((error as Error).constructor);
+            if (error instanceof HttpError) {
                 expect([0, 400]).toContain(error.status);
             }
         }
