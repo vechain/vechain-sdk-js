@@ -1,14 +1,8 @@
 import { Address, HexUInt, Quantity } from '@common/vcdm';
 import { type OutputJSON, type TxWithReceiptJSON } from '@thor/thorest/json';
 import { Tx } from '@thor/thorest/transactions/model/Tx';
-import { IllegalArgumentError } from '@common/errors';
 import { OutputResponse } from '@thor/thorest/common';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/transactions/model/TxWithReceipt.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * Type of the property
@@ -53,7 +47,7 @@ class TxWithReceipt extends Tx {
      * Constructs an instance of the class using the provided JSON object.
      *
      * @param {TxWithReceiptJSON} json - The JSON object containing the required fields to initialize the instance.
-     * @throws {IllegalArgumentError} Throws an error if the JSON object cannot be parsed or contains invalid values.
+     * @throws {InvalidThorestResponseError} Throws an error if the JSON object cannot be parsed or contains invalid values.
      */
     constructor(json: TxWithReceiptJSON) {
         try {
@@ -68,8 +62,8 @@ class TxWithReceipt extends Tx {
                     new OutputResponse(output)
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TxWithReceiptJSON)`,
+            throw new InvalidThorestResponseError(
+                `TxWithReceipt.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

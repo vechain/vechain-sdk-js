@@ -2,17 +2,14 @@
  * @group unit/transactions
  */
 import { HexUInt32 } from '@common/vcdm';
-import {
-    GetRawTxResponse,
-    RetrieveRawTransactionByID,
-    ThorError
-} from '@thor/thorest';
+import { GetRawTxResponse, RetrieveRawTransactionByID } from '@thor/thorest';
 import { type GetRawTxResponseJSON } from '@thor/thorest/json';
 import { expect } from '@jest/globals';
 import {
     mockHttpClient,
     mockHttpClientWithError
 } from '../../../MockHttpClient';
+import { HttpError } from '@common/errors';
 
 /**
  * @group unit/thor/transactions
@@ -36,8 +33,8 @@ describe('RetrieveRawTransactionByID UNIT tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(HttpError);
+            expect((error as HttpError).status).toBe(status);
         }
     });
 
@@ -52,8 +49,8 @@ describe('RetrieveRawTransactionByID UNIT tests', () => {
             throw new Error('Should not reach here.');
         } catch (error) {
             expect(error).not.toBe('Should not reach here.');
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(HttpError);
+            expect((error as HttpError).status).toBe(status);
         }
     });
 

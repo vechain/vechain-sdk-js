@@ -1,19 +1,8 @@
 import { HexUInt } from '@common/vcdm';
 import { type HttpClient, type HttpPath } from '@common/http';
-import {
-    ThorError,
-    type ThorRequest,
-    type ThorResponse,
-    TXID
-} from '@thor/thorest';
+import { type ThorRequest, type ThorResponse, TXID } from '@thor/thorest';
 import { type TXIDJSON } from '@thor/thorest/json';
-import { handleHttpError } from '@thor/thorest/utils';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/transactions/methods/SendTransaction.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Send a transaction](http://localhost:8669/doc/stoplight-ui/#/paths/transactions/post)
@@ -48,44 +37,31 @@ class SendTransaction implements ThorRequest<SendTransaction, TXID> {
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<SendTransaction, TXID>>}
      * Returns a promise that resolves to a ThorResponse containing the transaction ID.
-     * @throws ThorError if the response is invalid or the request fails.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<SendTransaction, TXID>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<SendTransaction, TXID>>`;
-        try {
-            const response = await httpClient.post(
-                SendTransaction.PATH,
-                { query: '' },
-                {
-                    raw: HexUInt.of(this.encodedTransaction).toString()
-                }
-            );
-            let raw: string | undefined;
-            try {
-                raw = await response.text();
-                const json = JSON.parse(raw) as TXIDJSON;
-                return {
-                    request: this,
-                    response: new TXID(json)
-                } satisfies ThorResponse<SendTransaction, TXID>;
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        // include raw payload to aid debugging (may be non‑JSON)
-                        body: typeof raw !== 'undefined' ? raw : undefined
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
+        const fqp = 'SendTransaction.askTo';
+        // do http post request - this will throw an error if the request fails
+        const response = await httpClient.post(
+            SendTransaction.PATH,
+            { query: '' },
+            {
+                raw: HexUInt.of(this.encodedTransaction).toString()
             }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        );
+        // parse the non nullable response - this will throw an error if the response cannot be parsed
+        const txIdResponse = await parseResponseHandler<TXID, TXIDJSON>(
+            fqp,
+            response,
+            TXID,
+            false
+        );
+        // return the response
+        return {
+            request: this,
+            response: txIdResponse
+        };
     }
 
     /**
