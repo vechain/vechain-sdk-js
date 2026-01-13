@@ -22,7 +22,7 @@ async function parseResponseHandler<ResponseType, JsonType>(
 
 /**
  * Parse the response from the HTTP client and return the response type.
- * @param fqp - The full-qualified path of the callingfunction.
+ * @param fqp - The full-qualified path of the calling function.
  * @param response - The response from the HTTP client.
  * @param constructor - The constructor of the response type.
  * @param _isNullable - Whether the response is nullable - default is true.
