@@ -19,7 +19,7 @@ class GetStorageResponse {
      * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {GetStorageResponseJSON} json - The JSON object containing storage response data.
-     * @throws {InvalidThorestResponse} if the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponseError} if the parsing of the JSON object fails.
      */
     constructor(json: GetStorageResponseJSON) {
         try {
