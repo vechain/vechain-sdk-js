@@ -7,7 +7,7 @@ import {
     Clause,
     type SimulateTransactionOptions
 } from '@thor/thor-client/model/transactions';
-import { InvalidThorestRequest } from '@common/errors';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * VeChain inspect clauses - unit
@@ -191,7 +191,7 @@ describe('InspectClauses unit tests', () => {
             InspectClauses.of(new ExecuteCodesRequest(clauses, options)).askTo(
                 mockHttpClient<ExecuteCodeResponseJSON[]>([], 'post')
             )
-        ).rejects.toThrow(InvalidThorestRequest);
+        ).rejects.toThrow(InvalidThorestRequestError);
     });
 
     test('should handle out of gas scenario', async () => {
