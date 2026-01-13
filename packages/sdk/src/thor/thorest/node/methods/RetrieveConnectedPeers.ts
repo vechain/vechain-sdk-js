@@ -1,14 +1,8 @@
 import { GetPeersResponse } from '@thor/thorest/node';
 import { type GetPeersResponseJSON } from '@thor/thorest/json';
 import { type HttpClient, type HttpPath } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/node/methods/GetTxPoolStatus.ts/RetrieveConnectedPeers.ts!';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Retrieve connected peers](http://localhost:8669/doc/stoplight-ui/#/paths/node-network-peers/get)
@@ -45,33 +39,21 @@ class RetrieveConnectedPeers implements ThorRequest<
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveConnectedPeers, GetPeersResponse | null>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveConnectedPeers, GetPeersResponse | null>>`;
-        try {
-            const response = await httpClient.get(RetrieveConnectedPeers.PATH, {
-                query: ''
-            });
-            const json: GetPeersResponseJSON | null =
-                (await response.json()) as GetPeersResponseJSON;
-            try {
-                return {
-                    request: this,
-                    response: json === null ? null : new GetPeersResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = `RetrieveConnectedPeers.askTo`;
+        // http request - this will throw HttpError if the request fails
+        const response = await httpClient.get(RetrieveConnectedPeers.PATH, {
+            query: ''
+        });
+        // parse the not nullable response - this will throw InvalidThorestResponseError if the response cannot be parsed
+        const peersResponse = await parseResponseHandler<
+            GetPeersResponse,
+            GetPeersResponseJSON
+        >(fqp, response, GetPeersResponse, false);
+        // return a thor response
+        return {
+            request: this,
+            response: peersResponse
+        };
     }
 
     /**

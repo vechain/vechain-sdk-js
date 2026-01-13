@@ -1,11 +1,6 @@
 import { PeerStat } from '@thor/thorest/node/model';
 import { type GetPeersResponseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/node/response/GetPeersResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [GetPeersResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetPeersResponse)
@@ -22,7 +17,7 @@ class GetPeersResponse extends Array<PeerStat> {
      * so we need this pattern to properly handle array data instead.
      *
      * @param json - The JSON array containing peer statistics data
-     * @throws IllegalArgumentError If there is a problem parsing the provided JSON object.
+     * @throws InvalidThorestResponseError If there is a problem parsing the provided JSON object.
      */
     constructor(json: GetPeersResponseJSON) {
         super();
@@ -34,8 +29,8 @@ class GetPeersResponse extends Array<PeerStat> {
                 GetPeersResponse.prototype
             ) as GetPeersResponse;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: GetPeerResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `GetPeersResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

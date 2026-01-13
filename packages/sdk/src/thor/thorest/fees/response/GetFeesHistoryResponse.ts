@@ -1,12 +1,6 @@
 import { type Hex, HexUInt, HexUInt32, Quantity } from '@common/vcdm';
 import { type GetFeesHistoryResponseJSON } from '@thor/thorest';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/fees/response/GetFeesHistoryResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [GetFeesHistoryResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetFeesHistoryResponse)
@@ -54,8 +48,8 @@ class GetFeesHistoryResponse {
                           reward.map((r: string): bigint => HexUInt.of(r).bi)
                       );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: GetFeesHistoryResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `GetFeesHistoryResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

@@ -1,11 +1,6 @@
+import { InvalidThorestResponseError } from '@common/errors';
 import { Address, HexUInt32, UInt, type Hex } from '@common/vcdm';
 import { type LogMetaJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/logs/LogMeta.ts!';
 
 /**
  * [LogMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/LogMeta)
@@ -57,7 +52,7 @@ class LogMetaResponse {
      *
      * @param {FilterOptionsJSON} json - The JSON object containing filter options.
      * Each property in the JSON object is parsed and converted to its respective type.
-     * @throws {IllegalArgumentError} If the provided JSON object contains invalid or unparsable data.
+     * @throws {InvalidThorestResponseError} If the provided JSON object contains invalid or unparsable data.
      */
     constructor(json: LogMetaJSON) {
         try {
@@ -81,8 +76,8 @@ class LogMetaResponse {
             this.logIndex =
                 json.logIndex != null ? UInt.of(json.logIndex).valueOf() : 0;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: LogMetaJSON)`,
+            throw new InvalidThorestResponseError(
+                `LogMetaResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

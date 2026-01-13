@@ -1,13 +1,8 @@
 import { type WebSocketClient, type WebSocketListener } from '@thor/ws';
 import type { HttpPath } from '@common/http';
-import { ThorError, TXID } from '@thor/thorest';
+import { TXID } from '@thor/thorest';
 import { type TXIDJSON } from '@thor/thorest/json';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/subscriptions/methods/NewTransactionSubscription.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [Retrieve a subscription to the new transactions endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-txpool/get)
@@ -110,6 +105,7 @@ class NewTransactionSubscription
      * Handles the message event.
      *
      * @param {MessageEvent<unknown>} event - The event to handle.
+     * @throws {InvalidThorestResponseError} - If the JSON is invalid.
      */
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(event.data as string) as TXIDJSON;
@@ -119,8 +115,8 @@ class NewTransactionSubscription
                 data: new TXID(json)
             });
         } catch (error) {
-            throw new ThorError(
-                `${FQP}onMessage(event: MessageEvent<unknown>): void`,
+            throw new InvalidThorestResponseError(
+                `NewTransactionSubscription.onMessage`,
                 'Invalid JSON.',
                 {
                     body: json

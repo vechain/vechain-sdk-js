@@ -1,21 +1,12 @@
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { RegularBlockResponse } from '@thor/thorest/blocks/response';
 import { type RegularBlockResponseJSON } from '@thor/thorest/json';
 import { type HttpClient, type HttpPath } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import { type Revision } from '@common/vcdm';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/blocks/methods/RetrieveRegularBlock.ts!';
-
-/**
- * [Retrieve a regular block](http://localhost:8669/doc/stoplight-ui/#/paths/blocks-revision/get)
- *
- * Retrieve information about a block identified by its revision.
- * If the provided revision is not found, the response will be `null`.
+ * Retrieve a regular block
  */
 class RetrieveRegularBlock implements ThorRequest<
     RetrieveRegularBlock,
@@ -41,41 +32,28 @@ class RetrieveRegularBlock implements ThorRequest<
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>>}
      * Returns a promise that resolves to a ThorResponse containing the requested block.
-     * @throws ThorError if the response is invalid or the request fails.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<
         ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>
     > {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveRegularBlock, RegularBlockResponse | null>>`;
-        try {
-            const response = await httpClient.get(this.path, {
-                query: '?raw=false'
-            });
-            const json =
-                (await response.json()) as RegularBlockResponseJSON | null;
-            try {
-                return {
-                    request: this,
-                    response:
-                        json === null ? null : new RegularBlockResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = 'RetrieveRegularBlock.askTo';
+
+        // do http get request - this will throw an error if the request fails
+        const response = await httpClient.get(this.path, {
+            query: '?raw=false'
+        });
+        // parse the nullableresponse - this will throw an error if the response cannot be parsed
+        const regularBlockResponse = await parseResponseHandler<
+            RegularBlockResponse,
+            RegularBlockResponseJSON
+        >(fqp, response, RegularBlockResponse);
+        // return a thor response
+        return {
+            request: this,
+            response: regularBlockResponse
+        };
     }
 
     /**

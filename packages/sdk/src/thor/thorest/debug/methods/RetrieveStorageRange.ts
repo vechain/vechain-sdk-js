@@ -1,18 +1,12 @@
 import type { HttpClient, HttpPath } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import { StorageRange, StorageRangeOption } from '@thor/thorest/debug';
 import {
     type StorageRangeJSON,
     type StorageRangeOptionJSON
 } from '@thor/thorest/json';
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/debug/methods/RetrieveStorageRange.ts';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { InvalidThorestRequestError } from '@common/errors';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Retrieve storage range](http://localhost:8669/doc/stoplight-ui/#/paths/debug-storage-range/post)
@@ -50,39 +44,28 @@ class RetrieveStorageRange implements ThorRequest<
      *
      * @param {HttpClient} httpClient - The HTTP client instance used to make the request.
      * @return {Promise<ThorResponse<RetrieveStorageRange, StorageRange>>} - A promise that resolves with a ThorResponse containing the request and response data.
-     * @throws {ThorError} - If the request fails or the response is invalid.
+     * @throws {InvalidThorestResponseError} - If the request fails or the response is invalid.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveStorageRange, StorageRange>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStorageRange, StorageRange>>`;
-        try {
-            const response = await httpClient.post(
-                RetrieveStorageRange.PATH,
-                { query: '' },
-                this.request.toJSON()
-            );
-            const json = (await response.json()) as StorageRangeJSON;
-            try {
-                return {
-                    request: this,
-                    response: new StorageRange(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = `RetrieveStorageRange.askTo`;
+        // http request - this will throw HttpError if the request fails
+        const response = await httpClient.post(
+            RetrieveStorageRange.PATH,
+            { query: '' },
+            this.request.toJSON()
+        );
+        // parse the not nullable response - this will throw InvalidThorestResponseError if the response cannot be parsed
+        const storageRange = await parseResponseHandler<
+            StorageRange,
+            StorageRangeJSON
+        >(fqp, response, StorageRange, false);
+        // return a thor response
+        return {
+            request: this,
+            response: storageRange
+        };
     }
 
     /**
@@ -90,14 +73,14 @@ class RetrieveStorageRange implements ThorRequest<
      *
      * @param {StorageRangeOptionJSON} request - The storage range option configuration in JSON format.
      * @return {RetrieveStorageRange} A new instance of RetrieveStorageRange initialized with the given storage range options.
-     * @throws {IllegalArgumentError} If the request can't be parsed.
+     * @throws {InvalidThorestRequestError} If the request can't be parsed.
      */
     static of(request: StorageRangeOptionJSON): RetrieveStorageRange {
         try {
             return new RetrieveStorageRange(new StorageRangeOption(request));
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}of(request: StorageRangeOptionJSON): RetrieveStorageRange`,
+            throw new InvalidThorestRequestError(
+                `RetrieveStorageRange.of`,
                 'Invalid request',
                 {
                     request

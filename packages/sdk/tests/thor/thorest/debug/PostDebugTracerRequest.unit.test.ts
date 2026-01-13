@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { PostDebugTracerRequest } from '@thor/thorest/debug';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestRequestError } from '@common/errors';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
 
 /**
@@ -14,7 +14,7 @@ describe('PostDebugTracerRequest UNIT tests', () => {
             target: 'illegal target'
         } satisfies PostDebugTracerRequestJSON;
         expect(() => new PostDebugTracerRequest(expected)).toThrow(
-            IllegalArgumentError
+            InvalidThorestRequestError
         );
     });
 

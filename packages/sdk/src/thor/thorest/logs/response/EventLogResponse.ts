@@ -1,12 +1,7 @@
 import { type EventLogResponseJSON } from '@thor/thorest/json';
 import { Address, HexUInt, HexUInt32, type Hex } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
 import { LogMetaResponse } from '@thor/thorest/logs';
-
-/**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/logs/response/EventLogsResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [EventLogFilterRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/EventLogFilterRequest) element.
@@ -37,7 +32,7 @@ class EventLogResponse {
      *
      * @param {EventLogResponseJSON} json - The JSON object containing filter criteria.
      * Each property in the JSON object is parsed and converted to its respective type.
-     * @throws {IllegalArgumentError} Thrown when the provided JSON object contains invalid or unparsable data.
+     * @throws {InvalidThorestResponseError} Thrown when the provided JSON object contains invalid or unparsable data.
      */
     constructor(json: EventLogResponseJSON) {
         try {
@@ -48,8 +43,8 @@ class EventLogResponse {
             this.data = HexUInt.of(json.data);
             this.meta = new LogMetaResponse(json.meta);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: EventLogResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `EventLogResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

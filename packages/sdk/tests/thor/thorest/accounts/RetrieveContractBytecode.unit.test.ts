@@ -4,7 +4,6 @@ import {
     RetrieveContractBytecode,
     RetrieveContractBytecodePath,
     ContractBytecode,
-    ThorError,
     RetrieveContractBytecodeQuery
 } from '@thor/thorest';
 import { type ContractBytecodeJSON } from '@thor/thorest/json';
@@ -12,6 +11,8 @@ import {
     mockHttpClient,
     mockHttpClientWithError
 } from '../../../MockHttpClient';
+import { HttpError } from '@common/errors';
+
 /**
  * VeChain retrieve contract bytecode - unit
  *
@@ -86,20 +87,15 @@ describe('RetrieveContractBytecode unit tests', () => {
                 // Triggers the catch block
                 expect(true).toBe(false);
             } catch (error) {
-                expect(error).toBeInstanceOf(ThorError);
-                const thorError = error as ThorError;
+                expect(error).toBeInstanceOf(HttpError);
+                const thorError = error as HttpError;
 
-                expect(thorError.message).toBe('"Network error"');
-                expect(thorError.fqn).toBe(
-                    'packages/sdk/src/thor/thorest/accounts/methods/RetrieveContractBytecode.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveContractBytecode, ContractBytecode>>'
+                expect(thorError.message).toBe(
+                    'HTTP request failed with status 400'
                 );
                 expect(thorError.status).toBe(400);
-                expect(thorError.args).toEqual({
-                    url: expect.any(String),
-                    status: 400,
-                    statusText: 'Bad Request'
-                });
-                expect(thorError.cause).toBeInstanceOf(Error);
+                expect(thorError.statusText).toBe('Bad Request');
+                expect(thorError.url).toEqual(expect.any(String));
                 expect(thorError).toBeInstanceOf(Error);
             }
         });

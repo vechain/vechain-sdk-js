@@ -1,15 +1,9 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import { PostDebugTracerCallRequest } from '@thor/thorest/debug';
 import { type PostDebugTracerCallRequestJSON } from '@thor/thorest/json';
 import { type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { type HexUInt32, Revision } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/debug/methods/TraceCall.ts';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * [Trace a call](http://localhost:8669/doc/stoplight-ui/#/paths/debug-tracers-call/post)
@@ -52,21 +46,18 @@ class TraceCall implements ThorRequest<TraceCall, unknown> {
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<TraceCall, unknown>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<TraceCall, undefined>>`;
-        try {
-            const response = await httpClient.post(
-                TraceCall.PATH,
-                this.query,
-                this.request.toJSON()
-            );
-            const json: unknown = await response.json();
-            return {
-                request: this,
-                response: json
-            };
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        // http request - this will throw ThorError if the request fails
+        const response = await httpClient.post(
+            TraceCall.PATH,
+            this.query,
+            this.request.toJSON()
+        );
+        // not modelled well in the sdk - TO DO: fix this
+        const json: unknown = await response.json();
+        return {
+            request: this,
+            response: json
+        };
     }
 
     /**
@@ -83,8 +74,8 @@ class TraceCall implements ThorRequest<TraceCall, unknown> {
                 new PostDebugTracerCallRequest(request)
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}of(request: PostDebugTracerCallRequestJSON): TraceCall`,
+            throw new InvalidThorestRequestError(
+                `TraceCall.of`,
                 'Invalid request',
                 {
                     request

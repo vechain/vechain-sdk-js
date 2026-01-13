@@ -1,12 +1,7 @@
 import { Address, type Hex, HexUInt32 } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestResponseError } from '@common/errors';
 import { TxMetaResponse } from '../transactions/model/TxMetaResponse';
 import { type ReceiptMetaJSON } from '@thor/thorest/json';
-
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/model/ReceiptMeta.ts!';
 
 /**
  * [ReceiptMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/ReceiptMeta)
@@ -38,8 +33,8 @@ class ReceiptMetaResponse extends TxMetaResponse {
             this.txID = HexUInt32.of(json.txID);
             this.txOrigin = Address.of(json.txOrigin);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: ReceiptMetaJSON)`,
+            throw new InvalidThorestResponseError(
+                `ReceiptMetaResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

@@ -1,4 +1,5 @@
-import { FetchHttpClient, HttpException } from '@common/http';
+import { FetchHttpClient } from '@common/http';
+import { HttpError } from '@common/errors';
 import { JSONLogger, LoggerRegistry, type LogItem } from '@common/logging';
 import { describe, expect, jest, test } from '@jest/globals';
 
@@ -43,8 +44,8 @@ describe('FetchHttpClient logging', () => {
             await httpClient.get();
             throw new Error('Should not reach here');
         } catch (error) {
-            expect(error).toBeInstanceOf(HttpException);
-            const httpError = error as HttpException;
+            expect(error).toBeInstanceOf(HttpError);
+            const httpError = error as HttpError;
             expect(httpError.status).toBe(403);
 
             // Check that error logging was called

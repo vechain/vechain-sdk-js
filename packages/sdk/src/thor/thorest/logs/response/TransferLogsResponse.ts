@@ -3,13 +3,7 @@ import {
     type TransferLogResponseJSON,
     type TransferLogsResponseJSON
 } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/logs/response/TransferLogsResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 class TransferLogsResponse extends Array<TransferLogResponse> {
     /**
@@ -20,7 +14,7 @@ class TransferLogsResponse extends Array<TransferLogResponse> {
      *
      * @param json - The JSON array containing transfer log data
      * @returns A new TransferLogsResponse instance containing TransferLogResponse objects
-     * @throws IllegalArgumentError If the provided JSON object contains invalid or unparsable data.
+     * @throws InvalidThorestResponseError If the provided JSON object contains invalid or unparsable data.
      */
     constructor(json: TransferLogsResponseJSON) {
         super();
@@ -32,8 +26,8 @@ class TransferLogsResponse extends Array<TransferLogResponse> {
                 TransferLogsResponse.prototype
             ) as TransferLogsResponse;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TransferLogsResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `TransferLogsResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

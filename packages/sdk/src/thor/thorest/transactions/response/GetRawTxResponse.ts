@@ -1,13 +1,7 @@
+import { InvalidThorestResponseError } from '@common/errors';
 import { type Hex, HexUInt } from '@common/vcdm';
 import { type GetRawTxResponseJSON } from '@thor/thorest/json';
 import { TxMetaResponse } from '@thor/thorest/transactions/model';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/transactions/response/GetRawTxResponse.ts!';
 
 /**
  * [GetRawTxResponse](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get)
@@ -29,7 +23,7 @@ class GetRawTxResponse {
      * Constructs an instance of the class using the provided JSON object.
      *
      * @param {GetRawTxResponseJSON} json - The JSON object containing raw transaction data and metadata.
-     * @throws {IllegalArgumentError} If the input JSON cannot be parsed correctly.
+     * @throws {InvalidThorestResponseError} If the input JSON cannot be parsed correctly.
      */
     constructor(json: GetRawTxResponseJSON) {
         try {
@@ -37,8 +31,8 @@ class GetRawTxResponse {
             this.meta =
                 json.meta !== null ? new TxMetaResponse(json.meta) : null;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: GetRawTxResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `GetRawTxResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

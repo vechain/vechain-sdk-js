@@ -8,7 +8,7 @@ import { VeChainSDKError } from '@common/errors';
  * when there are connection issues, timeouts, or when no response is received from the server.
  * It includes additional information about the network error type and request details.
  */
-class HttpNetworkException extends VeChainSDKError {
+class HttpNetworkError extends VeChainSDKError {
     /**
      * The type of network error that occurred.
      */
@@ -47,4 +47,4 @@ class HttpNetworkException extends VeChainSDKError {
     }
 }
 
-export { HttpNetworkException };
+export { HttpNetworkError };

@@ -1,13 +1,7 @@
 import { Address, type Hex, HexUInt32, UInt } from '@common/vcdm';
 import { type StorageRangeOptionJSON } from '@thor/thorest/json';
 import { TargetPath } from '@thor/thorest/debug/response';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/debug/response/StorageRangeOption.ts!';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * [StorageRangeOption](http://localhost:8669/doc/stoplight-ui/#/schemas/StorageRangeOption)
@@ -37,7 +31,7 @@ class StorageRangeOption {
      * Constructs an instance of the class using the provided JSON object.
      *
      * @param {StorageRangeOptionJSON} json - The JSON object containing the necessary properties.
-     * @throws {IllegalArgumentError} - Throws if there is an error during parsing or invalid input structure.
+     * @throws {InvalidThorestRequestError} - Throws if there is an error during parsing or invalid input structure.
      */
     constructor(json: StorageRangeOptionJSON) {
         try {
@@ -52,8 +46,8 @@ class StorageRangeOption {
                     : null;
             this.target = TargetPath.of(json.target);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: StorageRangeOptionJSON)`,
+            throw new InvalidThorestRequestError(
+                `StorageRangeOption.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

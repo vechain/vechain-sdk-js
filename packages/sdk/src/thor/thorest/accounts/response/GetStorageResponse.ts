@@ -1,12 +1,6 @@
 import { type GetStorageResponseJSON } from '@thor/thorest/json';
 import { type Hex, HexUInt32 } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/accounts/response/GetStorageResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * Get Storage Response
@@ -25,14 +19,14 @@ class GetStorageResponse {
      * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {GetStorageResponseJSON} json - The JSON object containing storage response data.
-     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponseError} if the parsing of the JSON object fails.
      */
     constructor(json: GetStorageResponseJSON) {
         try {
             this.value = HexUInt32.of(json.value);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: GetStorageResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                'GetStorageResponse.constructor',
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

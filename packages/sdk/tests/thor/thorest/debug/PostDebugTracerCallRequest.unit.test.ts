@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals';
 import { Address, HexUInt, UInt } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestRequestError } from '@common/errors';
 import { PostDebugTracerCallRequest } from '@thor/thorest/debug';
 import { type PostDebugTracerCallRequestJSON } from '@thor/thorest/json';
 
@@ -24,7 +24,7 @@ describe('PostDebugTracerCallRequest UNIT tests', () => {
             blockRef: '0x00000000851caf3c'
         } satisfies PostDebugTracerCallRequestJSON;
         expect(() => new PostDebugTracerCallRequest(expected)).toThrow(
-            IllegalArgumentError
+            InvalidThorestRequestError
         );
     });
 

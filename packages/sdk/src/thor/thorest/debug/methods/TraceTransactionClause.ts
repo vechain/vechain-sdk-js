@@ -1,15 +1,8 @@
 import { type HttpClient, type HttpPath } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import { PostDebugTracerRequest } from '@thor/thorest/debug';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
 import { type ThorRequest, type ThorResponse } from '@thor/thorest';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/debug/methods/TraceTransactionClause.ts!';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * [Trace a transaction clause](http://localhost:8669/doc/stoplight-ui/#/paths/debug-tracers/post)
@@ -48,21 +41,18 @@ class TraceTransactionClause implements ThorRequest<
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<TraceTransactionClause, unknown>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<TraceTransactionClause, unknown>>`;
-        try {
-            const response = await httpClient.post(
-                TraceTransactionClause.PATH,
-                { query: '' },
-                this.request.toJSON()
-            );
-            const json: unknown = await response.json();
-            return {
-                request: this,
-                response: json
-            };
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        // http request - this will throw ThorError if the request fails
+        const response = await httpClient.post(
+            TraceTransactionClause.PATH,
+            { query: '' },
+            this.request.toJSON()
+        );
+        // not modelled well in the sdk - TO DO: fix this
+        const json: unknown = await response.json();
+        return {
+            request: this,
+            response: json
+        };
     }
 
     /**
@@ -70,7 +60,7 @@ class TraceTransactionClause implements ThorRequest<
      *
      * @param {PostDebugTracerRequestJSON} request - The JSON object representing the debug tracer request.
      * @return {TraceTransactionClause} A new instance of `TraceTransactionClause` created with the given request.
-     * @throws {IllegalArgumentError} If the request is invalid or an error occurs during instantiation.
+     * @throws {InvalidThorestRequestError} If the request is invalid or an error occurs during instantiation.
      */
     static of(request: PostDebugTracerRequestJSON): TraceTransactionClause {
         try {
@@ -78,8 +68,8 @@ class TraceTransactionClause implements ThorRequest<
                 new PostDebugTracerRequest(request)
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}of(request: PostDebugTracerRequestJSON): TraceTransactionClause`,
+            throw new InvalidThorestRequestError(
+                `TraceTransactionClause.of`,
                 'Invalid request',
                 {
                     request

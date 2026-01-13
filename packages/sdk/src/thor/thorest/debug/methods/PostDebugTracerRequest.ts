@@ -1,12 +1,6 @@
 import { TargetPath, type TracerName } from '@thor/thorest/debug';
 import { type PostDebugTracerRequestJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/debug/methods/PostDebugTracerRequest.ts!';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * [PostDebugTracerRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/PostDebugTracerRequest)
@@ -31,7 +25,7 @@ class PostDebugTracerRequest {
      * Constructs an instance of the object using the provided JSON input.
      *
      * @param {PostDebugTracerRequestJSON} json - The JSON object containing the necessary data to initialize the instance.
-     * @throws {IllegalArgumentError} Throws an error when the JSON input is invalid or does not contain the expected data format.
+     * @throws {InvalidThorestRequestError} Throws an error when the JSON input is invalid or does not contain the expected data format.
      */
     constructor(json: PostDebugTracerRequestJSON) {
         try {
@@ -42,8 +36,8 @@ class PostDebugTracerRequest {
             this.config = json.config;
             this.target = TargetPath.of(json.target);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: PostDebugTracerRequestJSON)`,
+            throw new InvalidThorestRequestError(
+                `PostDebugTracerRequest.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

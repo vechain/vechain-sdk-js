@@ -2,14 +2,14 @@ import { describe, expect, test } from '@jest/globals';
 import { Hex, HexUInt32 } from '@common/vcdm';
 import {
     GetTxReceiptResponse,
-    RetrieveTransactionReceipt,
-    ThorError
+    RetrieveTransactionReceipt
 } from '@thor/thorest';
 import { type GetTxReceiptResponseJSON } from '@thor/thorest/json';
 import {
     mockHttpClient,
     mockHttpClientWithError
 } from '../../../MockHttpClient';
+import { HttpError } from '@common/errors';
 
 /**
  * @group unit/thor/transactions
@@ -27,8 +27,8 @@ describe('RetrieveTransactionReceipt UNIT tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(HttpError);
+            expect((error as HttpError).status).toBe(status);
         }
     });
 

@@ -1,24 +1,17 @@
 import { type Hex, HexUInt32 } from '@common/vcdm';
 import { type HttpClient } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import {
     RetrieveTransactionPath,
     RetrieveTransactionQuery
 } from '@thor/thorest/transactions/methods';
 import {
     GetTxResponse,
-    ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
 import { type GetTxResponseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/transactions/methods/RetrieveTransactionByID.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * [Retrieve a transaction by ID](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get)
@@ -60,38 +53,23 @@ class RetrieveTransactionByID implements ThorRequest<
      * @param {HttpClient} httpClient - The HTTP client used to send the request.
      * @return {Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse | null>>}
      * A promise that resolves to a ThorResponse object containing the transaction details or null if unavailable.
-     * @throws {ThorError} Throws a ThorError in case of an invalid or unsuccessful response.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse | null>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveTransactionByID, GetTxResponse|null>>`;
-        try {
-            const response = await httpClient.get(this.path, this.query);
-            let raw: string | undefined;
-            try {
-                raw = await response.text();
-                const json = JSON.parse(raw) as GetTxResponseJSON | null;
-                return {
-                    request: this,
-                    response: json === null ? null : new GetTxResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        // include raw payload to aid debugging (may be non‑JSON)
-                        body: typeof raw !== 'undefined' ? raw : undefined
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = 'RetrieveTransactionByID.askTo';
+        // do http get request - this will throw an error if the request fails
+        const response = await httpClient.get(this.path, this.query);
+        // try to parse json from response - this will throw an error if the response cannot be parsed
+        const txResponse = await parseResponseHandler<
+            GetTxResponse,
+            GetTxResponseJSON
+        >(fqp, response, GetTxResponse);
+        // return the response
+        return {
+            request: this,
+            response: txResponse
+        };
     }
 
     /**
@@ -99,7 +77,7 @@ class RetrieveTransactionByID implements ThorRequest<
      *
      * @param {Hex} txId - The transaction ID to retrieve the transaction details for.
      * @return {RetrieveTransactionByID} A new instance of RetrieveTransactionByID configured with the specified transaction ID.
-     * @throws {IllegalArgumentError} If a `txId` value is provided.
+     * @throws {InvalidThorestRequestError} If a `txId` value is provided.
      */
     static of(txId: Hex): RetrieveTransactionByID {
         try {
@@ -108,8 +86,8 @@ class RetrieveTransactionByID implements ThorRequest<
                 new RetrieveTransactionQuery(undefined, false)
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}of(txId: Hex): RetrieveTransactionByID`,
+            throw new InvalidThorestRequestError(
+                `RetrieveTransactionByID.of`,
                 'Invalid transaction ID.',
                 {
                     txId
@@ -125,7 +103,7 @@ class RetrieveTransactionByID implements ThorRequest<
      * @param {Hex} [head] - The block identifier representing the head block to retrieve the transaction from. Optional.
      * @return {RetrieveTransactionByID} A new instance of RetrieveTransactionByID with the specified head block identifier.
      * Best-block is assumed if omitted.
-     * @throws {ThorError} If an invalid `head` value is provided.
+     * @throws {InvalidThorestRequestError} If an invalid `head` value is provided.
      */
     withHead(head?: Hex): RetrieveTransactionByID {
         try {
@@ -137,8 +115,8 @@ class RetrieveTransactionByID implements ThorRequest<
                 )
             );
         } catch (error) {
-            throw new ThorError(
-                `${FQP}withHead(head?: Hex): RetrieveTransactionByID`,
+            throw new InvalidThorestRequestError(
+                `RetrieveTransactionByID.withHead`,
                 'Invalid head value.',
                 {
                     head
@@ -153,7 +131,7 @@ class RetrieveTransactionByID implements ThorRequest<
      *
      * @param {boolean} [pending=true] - A boolean value indicating whether to mark the transaction as pending.
      * @return {RetrieveTransactionByID} A new instance of RetrieveTransactionByID with the updated pending status.
-     * @throws {ThorError} If an invalid pending value is provided or an error occurs during instantiation.
+     * @throws {InvalidThorestRequestError} If an invalid pending value is provided or an error occurs during instantiation.
      */
     withPending(pending: boolean = true): RetrieveTransactionByID {
         try {
@@ -162,8 +140,8 @@ class RetrieveTransactionByID implements ThorRequest<
                 new RetrieveTransactionQuery(this.query.head, pending)
             );
         } catch (error) {
-            throw new ThorError(
-                `${FQP}withPending(pending: boolean): RetrieveTransactionByID`,
+            throw new InvalidThorestRequestError(
+                `RetrieveTransactionByID.withPending`,
                 'Invalid pending value.',
                 {
                     pending

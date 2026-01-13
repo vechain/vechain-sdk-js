@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { type ClauseJSON } from '@thor/thorest/json';
-import { ClauseData } from '@thor/thorest/common';
+import { Clause } from '@thor/thor-client/model';
 import { IllegalArgumentError } from '@common';
 
 /**
@@ -15,7 +15,7 @@ describe('ClauseData UNIT tests', () => {
                 data: '0x1234'
             };
 
-            const clause = ClauseData.of(validJson);
+            const clause = Clause.of(validJson);
 
             expect(clause.to?.toString().toLowerCase()).toEqual(validJson.to);
             expect(clause.value).toBe(BigInt(100)); // 0x64 is 100 in decimal
@@ -28,7 +28,7 @@ describe('ClauseData UNIT tests', () => {
                 value: '0x0'
             };
 
-            const clause = ClauseData.of(validJson);
+            const clause = Clause.of(validJson);
 
             expect(clause.to).toBeNull(); // Null indicates contract deployment
             expect(clause.value).toBe(BigInt(0));
@@ -41,9 +41,7 @@ describe('ClauseData UNIT tests', () => {
                 value: '0x64'
             };
 
-            expect(() => ClauseData.of(invalidJson)).toThrow(
-                IllegalArgumentError
-            );
+            expect(() => Clause.of(invalidJson)).toThrow(IllegalArgumentError);
         });
 
         test('err <- throw an IllegalArgumentError for invalid "value" field', () => {
@@ -52,9 +50,7 @@ describe('ClauseData UNIT tests', () => {
                 value: 'invalidHex'
             };
 
-            expect(() => ClauseData.of(invalidJson)).toThrow(
-                IllegalArgumentError
-            );
+            expect(() => Clause.of(invalidJson)).toThrow(IllegalArgumentError);
         });
 
         test('err <- throw an IllegalArgumentError for invalid "data" field', () => {
@@ -64,9 +60,7 @@ describe('ClauseData UNIT tests', () => {
                 data: 'notHexData'
             };
 
-            expect(() => ClauseData.of(invalidJson)).toThrow(
-                IllegalArgumentError
-            );
+            expect(() => Clause.of(invalidJson)).toThrow(IllegalArgumentError);
         });
     });
 });

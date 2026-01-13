@@ -4,14 +4,14 @@ import {
     RetrieveAccountDetails,
     RetrieveAccountDetailsPath,
     RetrieveAccountDetailsQuery,
-    GetAccountResponse,
-    ThorError
+    GetAccountResponse
 } from '@thor/thorest';
 import { type GetAccountResponseJSON } from '@thor/thorest/json';
 import {
     mockHttpClient,
     mockHttpClientWithError
 } from '../../../MockHttpClient';
+import { HttpError } from '@common/errors';
 
 /**
  * VeChain retrieve account details - unit
@@ -93,10 +93,10 @@ describe('RetrieveAccountDetails unit tests', () => {
                 mockResponse,
                 'get'
             );
+            const getSpy = jest.spyOn(mockClient, 'get');
             const request = RetrieveAccountDetails.of(address);
             const result = await request.askTo(mockClient);
 
-            const getSpy = jest.spyOn(mockClient, 'get');
             expect(getSpy).toHaveBeenCalledWith(
                 expect.any(RetrieveAccountDetailsPath),
                 expect.any(RetrieveAccountDetailsQuery)
@@ -123,13 +123,13 @@ describe('RetrieveAccountDetails unit tests', () => {
                 mockResponse,
                 'get'
             );
+            const getSpy = jest.spyOn(mockClient, 'get');
             const request = RetrieveAccountDetails.of(
                 address,
                 Revision.FINALIZED
             );
             const result = await request.askTo(mockClient);
 
-            const getSpy = jest.spyOn(mockClient, 'get');
             expect(getSpy).toHaveBeenCalledWith(
                 expect.any(RetrieveAccountDetailsPath),
                 expect.objectContaining({
@@ -155,20 +155,15 @@ describe('RetrieveAccountDetails unit tests', () => {
             try {
                 await request.askTo(mockClient);
             } catch (error) {
-                expect(error).toBeInstanceOf(ThorError);
-                const thorError = error as ThorError;
+                expect(error).toBeInstanceOf(HttpError);
+                const thorError = error as HttpError;
 
-                expect(thorError.message).toBe('"Network error"');
-                expect(thorError.fqn).toBe(
-                    'packages/sdk/src/thor/thorest/accounts/methods/RetrieveAccountDetails.ts!askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveAccountDetails, GetAccountResponse>>'
+                expect(thorError.message).toBe(
+                    'HTTP request failed with status 400'
                 );
                 expect(thorError.status).toBe(400);
-                expect(thorError.args).toEqual({
-                    url: expect.any(String),
-                    status: 400,
-                    statusText: 'Bad Request'
-                });
-                expect(thorError.cause).toBeInstanceOf(Error);
+                expect(thorError.statusText).toBe('Bad Request');
+                expect(thorError.url).toEqual(expect.any(String));
                 expect(thorError).toBeInstanceOf(Error);
             }
         });

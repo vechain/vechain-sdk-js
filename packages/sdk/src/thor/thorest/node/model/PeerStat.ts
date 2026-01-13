@@ -1,12 +1,6 @@
 import { Hex, HexUInt32, NetAddr, UInt } from '@common/vcdm';
 import { type PeerStatJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-
-const FQP = 'packages/sdk/src/thor/thorest/node/model/PeerStat.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [PeerStats](http://localhost:8669/doc/stoplight-ui/#/schemas/PeerStats)
@@ -39,7 +33,7 @@ class PeerStat {
      * Constructs a new instance of the class using the given PeerStatJSON object.
      *
      * @param {PeerStatJSON} json - The JSON object containing the peer's statistics and details.
-     * @throws {IllegalArgumentError} If there is a problem parsing the provided JSON object.
+     * @throws {InvalidThorestResponseError} If there is a problem parsing the provided JSON object.
      */
     constructor(json: PeerStatJSON) {
         try {
@@ -51,8 +45,8 @@ class PeerStat {
             this.inbound = json.inbound;
             this.duration = UInt.of(json.duration).valueOf();
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: PeerStatJSON)`,
+            throw new InvalidThorestResponseError(
+                `PeerStat.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

@@ -1,11 +1,11 @@
 import { expect } from '@jest/globals';
 import { type Hex, Revision } from '@common/vcdm';
-import { FetchHttpClient, HttpException } from '@common/http';
+import { FetchHttpClient } from '@common/http';
+import { HttpError, InvalidThorestRequestError } from '@common/errors';
 import {
     GetFeesHistoryResponse,
     RetrieveHistoricalFeeData,
-    RetrieveRegularBlock,
-    ThorError
+    RetrieveRegularBlock
 } from '@thor/thorest';
 import { ThorNetworks } from '@thor/utils/const/network';
 
@@ -23,13 +23,13 @@ describe('RetrieveHistoricalFeeData SOLO tests', () => {
             throw new Error('Should not reach here.');
         } catch (error) {
             // Can receive either HttpException (direct from FetchHttpClient) or ThorError (wrapped)
-            expect([HttpException, ThorError]).toContain(
+            expect([HttpError, InvalidThorestRequestError]).toContain(
                 (error as Error).constructor
             );
             const errorStatus =
-                error instanceof HttpException
+                error instanceof HttpError
                     ? error.status
-                    : (error as ThorError).status;
+                    : (error as HttpError).status;
             expect([0, 400]).toContain(errorStatus);
         }
     });
@@ -42,13 +42,13 @@ describe('RetrieveHistoricalFeeData SOLO tests', () => {
             throw new Error('Should not reach here.');
         } catch (error) {
             // Can receive either HttpException (direct from FetchHttpClient) or ThorError (wrapped)
-            expect([HttpException, ThorError]).toContain(
+            expect([HttpError, InvalidThorestRequestError]).toContain(
                 (error as Error).constructor
             );
             const errorStatus =
-                error instanceof HttpException
+                error instanceof HttpError
                     ? error.status
-                    : (error as ThorError).status;
+                    : (error as HttpError).status;
             expect([0, 400]).toContain(errorStatus);
         }
     });

@@ -1,12 +1,7 @@
 import { type TXIDJSON } from '@thor/thorest/json';
 import { type Hex, HexUInt32 } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestResponseError } from '@common/errors';
 import { log } from '@common/logging';
-
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/transactions/model/TXID.ts!';
 
 /**
  * [TXID](http://localhost:8669/doc/stoplight-ui/#/schemas/TXID)
@@ -17,7 +12,7 @@ class TXID {
     /**
      * Constructs an instance of the class using the provided JSON object.
      * @param json The JSON object containing the required fields to initialize the instance.
-     * @throws {IllegalArgumentError} If the JSON object cannot be parsed or contains invalid values.
+     * @throws {InvalidThorestResponseError} If the JSON object cannot be parsed or contains invalid values.
      */
     constructor(json: TXIDJSON) {
         try {
@@ -29,8 +24,8 @@ class TXID {
                     json
                 }
             });
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TXIDJSON)`,
+            throw new InvalidThorestResponseError(
+                `TXID.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

@@ -5,13 +5,7 @@ import {
     type SubscriptionBlockResponseJSON
 } from '@thor/thorest/subscriptions';
 import { type Hex } from '@common/vcdm';
-import { ThorError } from '@thor/thorest';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/subscriptions/methods/BlocksSubscription.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [Retrieve a subscription to the blocks endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-block/get)
@@ -136,8 +130,7 @@ class BlocksSubscription
      * Handles the message event.
      *
      * @param {MessageEvent<unknown>} event - The event to handle.
-     *
-     * @throws {ThorError} - If the JSON is invalid.
+     * @throws {InvalidThorestResponseError} - If the JSON is invalid.
      */
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(
@@ -149,8 +142,8 @@ class BlocksSubscription
                 data: new SubscriptionBlockResponse(json)
             });
         } catch (error) {
-            throw new ThorError(
-                `${FQP}onMessage(event: MessageEvent<unknown>): void`,
+            throw new InvalidThorestResponseError(
+                `BlocksSubscription.onMessage`,
                 'Invalid JSON.',
                 {
                     body: json

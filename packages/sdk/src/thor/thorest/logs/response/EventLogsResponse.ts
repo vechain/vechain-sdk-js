@@ -3,12 +3,7 @@ import {
     type EventLogResponseJSON,
     type EventLogsResponseJSON
 } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/logs/response/EventLogsResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [EventLogFilterRequest](http://localhost:8669/doc/stoplight-ui/#/schemas/EventLogFilterRequest) element.
@@ -22,6 +17,7 @@ class EventLogsResponse extends Array<EventLogResponse> {
      *
      * @param json - The JSON array containing transfer log data
      * @returns A new EventLogsResponse instance containing EventLogResponse objects
+     * @throws {InvalidThorestResponseError} Thrown when the provided JSON object contains invalid or unparsable data.
      */
     constructor(json: EventLogsResponseJSON) {
         super();
@@ -38,8 +34,8 @@ class EventLogsResponse extends Array<EventLogResponse> {
                 EventLogsResponse.prototype
             ) as EventLogsResponse;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: EventLogsResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `EventLogsResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

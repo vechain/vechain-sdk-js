@@ -1,11 +1,6 @@
 import { Tx } from '@thor/thorest/transactions/model';
 import { type TxJSON, type TransactionsJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/node/model/Transactions.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [TransactionsIDs](http://localhost:8669/doc/stoplight-ui/#/schemas/TransactionsIDs)
@@ -15,7 +10,7 @@ class Transactions extends Array<Tx> {
      * Initializes a new instance of the class with the provided TransactionsJSON.
      *
      * @param {TransactionsJSON} json The JSON object representing transactions to parse into a Transactions instance.
-     * @throws {IllegalArgumentError} If the provided JSON cannot be properly parsed.
+     * @throws {InvalidThorestResponseError} If the provided JSON cannot be properly parsed.
      */
     constructor(json: TransactionsJSON) {
         try {
@@ -25,8 +20,8 @@ class Transactions extends Array<Tx> {
                 (txJSON: TxJSON): Tx => new Tx(txJSON)
             ) as Transactions;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TransactionsJSON)`,
+            throw new InvalidThorestResponseError(
+                `Transactions.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined
