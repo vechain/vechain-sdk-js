@@ -111,11 +111,10 @@ class TargetPath {
         blockRef: string | number,
         clauseIndex: number
     ): TargetPath {
-        const FQP = 'TargetPath.fromTxIdBlockRefAndClause';
         // Validate txId is a valid 64-char hex string
         if (!/^0x[0-9a-fA-F]{64}$/.test(txId)) {
             throw new InvalidThorestRequestError(
-                FQP,
+                'TargetPath.fromTxIdBlockRefAndClause',
                 'Invalid transaction ID format',
                 { txId }
             );
@@ -127,7 +126,7 @@ class TargetPath {
             !/^0x[0-9a-fA-F]{64}$/.test(blockRef)
         ) {
             throw new InvalidThorestRequestError(
-                FQP,
+                'TargetPath.fromTxIdBlockRefAndClause',
                 'Invalid block reference format',
                 { blockRef }
             );
@@ -136,7 +135,7 @@ class TargetPath {
             (blockRef < 0 || !Number.isInteger(blockRef))
         ) {
             throw new InvalidThorestRequestError(
-                FQP,
+                'TargetPath.fromTxIdBlockRefAndClause',
                 'Invalid block number, must be a non-negative integer',
                 { blockRef }
             );
@@ -144,7 +143,7 @@ class TargetPath {
 
         if (clauseIndex < 0 || !Number.isInteger(clauseIndex)) {
             throw new InvalidThorestRequestError(
-                FQP,
+                'TargetPath.fromTxIdBlockRefAndClause',
                 'Invalid clause index, must be a non-negative integer',
                 { clauseIndex }
             );
