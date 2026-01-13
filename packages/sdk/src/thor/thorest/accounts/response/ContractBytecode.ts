@@ -17,7 +17,7 @@ class ContractBytecode {
      * Constructs a new instance of the class.
      *
      * @param {ContractBytecodeJSON} json - The JSON object to initialize the instance with.
-     * @throws {InvalidThorestResponse} if the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponseError} if the parsing of the JSON object fails.
      */
     constructor(json: ContractBytecodeJSON) {
         try {
