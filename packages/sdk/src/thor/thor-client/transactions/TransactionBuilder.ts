@@ -419,7 +419,7 @@ class TransactionBuilder {
      * @returns The builder instance.
      */
     public withRandomNonce(): this {
-        this.params.nonce = Hex.random(4).bi;
+        this.params.nonce = Hex.random(8).bi;
         log.debug({
             message: 'TransactionBuilder.withRandomNonce',
             context: { nonce: this.params.nonce }

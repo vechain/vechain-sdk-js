@@ -5,16 +5,16 @@ import { type TransactionRequest } from '@thor/thor-client/model/transactions';
 /**
  * The interface represents a private key account.
  * It is used to sign transaction requests using a private key.
- * This mirrors the PrivateKeyAccount from view, but adds the signAsGasPayer method.
+ * This mirrors the PrivateKeyAccount from viem, but adds the signAsGasPayer method & dispose method.
  */
 export interface PrivateKeyAccount {
-    privateKey: Hex;
     address: Address;
     sign: (transactionRequest: TransactionRequest) => Promise<Hex>;
     signAsGasPayer: (
         sender: Address,
         transactionRequest: TransactionRequest
     ) => Promise<Hex>;
+    dispose: () => void;
 }
 /**
  * Creates a private key account from a private key.
@@ -22,12 +22,12 @@ export interface PrivateKeyAccount {
  * @returns The private key account.
  */
 export function privateKeyToAccount(privateKey: Hex): PrivateKeyAccount {
-    const address = Address.ofPrivateKey(privateKey.bytes);
+    const keyBytes = privateKey.bytes;
+    const signer = new PrivateKeySigner(keyBytes);
+    keyBytes.fill(0);
     const account: PrivateKeyAccount = {
-        privateKey,
-        address,
+        address: signer.address,
         sign: async (transactionRequest: TransactionRequest) => {
-            const signer = new PrivateKeySigner(privateKey.bytes);
             const signedTx = await signer.sign(transactionRequest);
             return signedTx.encoded;
         },
@@ -35,9 +35,11 @@ export function privateKeyToAccount(privateKey: Hex): PrivateKeyAccount {
             sender: Address,
             transactionRequest: TransactionRequest
         ) => {
-            const signer = new PrivateKeySigner(privateKey.bytes);
             const signedTx = await signer.sign(transactionRequest, sender);
             return signedTx.encoded;
+        },
+        dispose: () => {
+            signer.dispose();
         }
     };
     return account;
