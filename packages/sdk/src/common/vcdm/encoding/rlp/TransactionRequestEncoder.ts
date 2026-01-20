@@ -29,7 +29,7 @@ class TransactionRequestEncoder {
      * @param options - The options for the conversion:
      * - maxSize: The maximum size of the hex string.
      * - cononical: Whether to remove leading zeros from the hex string.
-     * - zeroAsEmpty: Whether to return 0x if the value is 0.
+     * - zeroAsEmpty: Whether to return 0x if the value is 0 (instead of 0x00).
      * @returns The trimmed hex string.
      * @throws RLPEncodingError if the value is too large to be encoded.
      */
@@ -78,10 +78,10 @@ class TransactionRequestEncoder {
     }
 
     /**
-     * Encodes a TransactionBody into a RLP encoded Uint8Array.
-     * @param transactionBody - The TransactionBody to encode.
+     * Encodes a TransactionRequest into a RLP encoded Uint8Array.
+     * @param transactionRequest - The TransactionRequest to encode.
      * @param options - The options for the encoding:
-     * - isToHash: Whether the encoding is for hashing purposes (ignores the signature field).
+     * - withoutSignature: Whether the encoding is for hashing purposes (ignores the signature field).
      * @returns The RLP encoded Uint8Array.
      */
     public static encodeTransactionRequest(
@@ -101,8 +101,8 @@ class TransactionRequestEncoder {
     }
 
     /**
-     * Encodes a legacy transaction body into a RLP encoded Uint8Array.
-     * @param transactionBody - The transaction body to encode.
+     * Encodes a legacy transaction request into a RLP encoded Uint8Array.
+     * @param transactionRequest - The transaction request to encode.
      * @param options - The options for the encoding
      * @returns The RLP encoded Uint8Array.
      */
@@ -181,8 +181,8 @@ class TransactionRequestEncoder {
     }
 
     /**
-     * Encodes a dynamic fee transaction body into a RLP encoded Uint8Array.
-     * @param transactionBody - The transaction body to encode.
+     * Encodes a dynamic fee transaction request into a RLP encoded Uint8Array.
+     * @param transactionRequest - The transaction request to encode.
      * @param options - The options for the encoding
      * @returns The RLP encoded Uint8Array.
      */
