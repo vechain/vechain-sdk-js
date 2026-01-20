@@ -149,7 +149,7 @@ class TransactionsModule extends AbstractThorModule {
      */
     public async sendTransaction(txRequest: TransactionRequest): Promise<Hex> {
         // encode the transaction request
-        const encoded = TransactionRequestRLPCodec.encode(txRequest);
+        const { encoded } = txRequest;
         const encodedHex = Hex.of(encoded);
         // send the transaction to the network
         return await this.sendRawTransaction(encodedHex);

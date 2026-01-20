@@ -68,8 +68,8 @@ abstract class BaseTransaction implements TransactionBody {
      * The reserved field for the transaction.
      */
     public readonly reserved?: {
-        features?: number;
-        unused?: Uint8Array[];
+        features: number;
+        unused: Uint8Array[];
     };
 
     /**

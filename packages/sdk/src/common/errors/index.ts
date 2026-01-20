@@ -15,3 +15,4 @@ export * from './VIP191Error';
 
 export * from './thorest';
 export * from './http';
+export * from './rlp';

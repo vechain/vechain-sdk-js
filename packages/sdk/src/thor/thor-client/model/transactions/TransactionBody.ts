@@ -68,8 +68,8 @@ interface TransactionBody {
      * The reserved field for the transaction.
      */
     reserved?: {
-        features?: number;
-        unused?: Uint8Array[];
+        features: number;
+        unused: Uint8Array[];
     };
 }
 

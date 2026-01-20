@@ -201,6 +201,7 @@ describe('GenericDelegator mainnet tests', () => {
                 )
                 .build();
             const encodedTx = transaction.encoded;
+            console.log('encodedTx', encodedTx.toString());
             // send to genreic delegator
             const response = await genericDelegatorClient.sign(
                 encodedTx,

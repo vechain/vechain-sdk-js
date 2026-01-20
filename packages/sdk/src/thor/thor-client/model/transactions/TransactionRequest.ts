@@ -6,10 +6,10 @@ import {
     InvalidTransactionField,
     Secp256k1
 } from '@common';
-import { TransactionRequestRLPCodec } from '@thor/thor-client/rlp/TransactionRequestRLPCodec';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
 import { BaseTransaction, type TransactionBody } from './BaseTransaction';
 import { PrivateKeySigner } from '@thor/signer';
+import { TransactionRequestEncoder } from '@common/vcdm/encoding/rlp/TransactionRequestEncoder';
 
 /**
  * Options for the transaction request.
@@ -101,7 +101,7 @@ class TransactionRequest extends BaseTransaction {
      * @return {Hex} The serialized and encoded transaction request.
      */
     public get encoded(): Hex {
-        return Hex.of(TransactionRequestRLPCodec.encode(this));
+        return Hex.of(TransactionRequestEncoder.encodeTransactionRequest(this));
     }
 
     /**
@@ -110,7 +110,11 @@ class TransactionRequest extends BaseTransaction {
      * @return {Blake2b256} The Blake2b256 hash generated from the encoded transaction request.
      */
     public get hash(): Blake2b256 {
-        return Blake2b256.of(TransactionRequestRLPCodec.encode(this, true));
+        return Blake2b256.of(
+            TransactionRequestEncoder.encodeTransactionRequest(this, {
+                withoutSignature: true
+            })
+        );
     }
 
     /**
@@ -191,10 +195,8 @@ class TransactionRequest extends BaseTransaction {
      * @return {boolean} `true` if the transaction is delegated, else `false`.
      */
     public get isDelegated(): boolean {
-        // Check if is reserved or not
-        const reserved = this.reserved ?? {};
         // Features
-        const features = reserved.features ?? 0;
+        const features = this.reserved?.features ?? 0;
         // Fashion bitwise way to check if a number is even or not
         return (features & 1) === 1;
     }
