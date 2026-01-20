@@ -292,7 +292,7 @@ class TransactionRequestEncoder {
                     clause.to?.bytes ?? new Uint8Array(),
                     { maxSize: 20, canonical: false }
                 ),
-                // valie is optional, encode it as 0n if it is not present
+                // value is optional, encode it as 0n if it is not present
                 TransactionRequestEncoder.convertToHex(clause.value ?? 0n, {
                     maxSize: 32,
                     zeroAsEmpty: true
