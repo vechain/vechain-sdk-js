@@ -4,14 +4,14 @@ import {
     ThorClient,
     ThorNetworks,
     TransactionBuilder,
-    TransactionRequest,
-    TransactionRequestRLPCodec
+    TransactionRequest
 } from '@vechain/sdk-temp/thor';
 import {
     createPublicClient,
     createWalletClient,
     privateKeyToAccount
 } from '@vechain/sdk-temp/viem';
+import { TransactionBodyDecoder } from '@vechain/sdk-temp/common';
 
 const senderAccount = {
     privateKey: Hex.of(
@@ -81,10 +81,10 @@ async function main(): Promise<void> {
     const rawHex = delegatorData.raw.startsWith('0x')
         ? delegatorData.raw.slice(2)
         : delegatorData.raw;
-    const delegatorTx = TransactionRequestRLPCodec.decode(Hex.of(rawHex).bytes);
+    const delegatorTx = TransactionBodyDecoder.decode(Hex.of(rawHex));
 
     // Sign as origin (sender)
-    const originSignedHex = await walletClient.signTransaction(delegatorTx);
+    const originSignedHex = await walletClient.signTransaction(TransactionRequest.of(delegatorTx.body));
     const originSignedTx = TransactionRequest.decode(originSignedHex);
     const originSig = originSignedTx.signature ?? new Uint8Array();
 
@@ -96,7 +96,7 @@ async function main(): Promise<void> {
     combinedSignature.set(originSig, 0);
     combinedSignature.set(delegatorSig, originSig.length);
 
-    const fullySigned = TransactionRequest.of(delegatorTx, { signature: combinedSignature });
+    const fullySigned = TransactionRequest.of(delegatorTx.body, { signature: combinedSignature });
 
     const txId = await walletClient.sendRawTransaction(fullySigned.encoded);
     console.log('Transaction id:', txId.toString());

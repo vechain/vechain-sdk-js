@@ -1,15 +1,15 @@
 import { type Clause } from './Clause';
-import {
-    Blake2b256,
-    Hex,
-    HexUInt,
-    InvalidTransactionField,
-    Secp256k1
-} from '@common';
-import { TransactionRequestRLPCodec } from '@thor/thor-client/rlp/TransactionRequestRLPCodec';
+import { Secp256k1 } from '@common/cryptography';
+import { Hex, HexUInt } from '@common/vcdm';
+import { Blake2b256 } from '@common/cryptography/hash';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
 import { BaseTransaction, type TransactionBody } from './BaseTransaction';
 import { PrivateKeySigner } from '@thor/signer';
+import {
+    TransactionBodyEncoder,
+    TransactionBodyDecoder
+} from '@common/encoding/rlp/';
+import { InvalidTransactionField } from '@common/errors';
 
 /**
  * Options for the transaction request.
@@ -101,7 +101,9 @@ class TransactionRequest extends BaseTransaction {
      * @return {Hex} The serialized and encoded transaction request.
      */
     public get encoded(): Hex {
-        return Hex.of(TransactionRequestRLPCodec.encode(this));
+        return Hex.of(
+            TransactionBodyEncoder.encodeTransactionBody(this, this.signature)
+        );
     }
 
     /**
@@ -110,7 +112,9 @@ class TransactionRequest extends BaseTransaction {
      * @return {Blake2b256} The Blake2b256 hash generated from the encoded transaction request.
      */
     public get hash(): Blake2b256 {
-        return Blake2b256.of(TransactionRequestRLPCodec.encode(this, true));
+        return Blake2b256.of(
+            TransactionBodyEncoder.encodeTransactionBody(this)
+        );
     }
 
     /**
@@ -191,10 +195,8 @@ class TransactionRequest extends BaseTransaction {
      * @return {boolean} `true` if the transaction is delegated, else `false`.
      */
     public get isDelegated(): boolean {
-        // Check if is reserved or not
-        const reserved = this.reserved ?? {};
         // Features
-        const features = reserved.features ?? 0;
+        const features = this.reserved?.features ?? 0;
         // Fashion bitwise way to check if a number is even or not
         return (features & 1) === 1;
     }
@@ -215,6 +217,18 @@ class TransactionRequest extends BaseTransaction {
         } finally {
             signer.dispose();
         }
+    }
+
+    /**
+     * Checks if the current TransactionRequest is equal to the given TransactionRequest.
+     *
+     * @param {TransactionRequest} other - The TransactionRequest to compare with.
+     * @return {boolean} `true` if the TransactionRequests are equal, `false` otherwise.
+     */
+    public isEqualTo(other: TransactionRequest): boolean {
+        const thisHash = this.hash;
+        const otherHash = other.hash;
+        return thisHash.isEqual(otherHash);
     }
 
     /**
@@ -239,6 +253,17 @@ class TransactionRequest extends BaseTransaction {
                     ? HexUInt.of(this.signature).toString()
                     : undefined
         } satisfies TransactionRequestJSON;
+    }
+
+    /**
+     * Decodes an encoded transaction request into a TransactionRequest object.
+     *
+     * @param {Hex} encoded - The encoded transaction request.
+     * @return {TransactionRequest} The decoded transaction request.
+     */
+    public static decode(encoded: Hex): TransactionRequest {
+        const { body, signature } = TransactionBodyDecoder.decode(encoded);
+        return new TransactionRequest(body, { signature });
     }
 }
 

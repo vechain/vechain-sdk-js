@@ -1,10 +1,5 @@
 import { TEST_ACCOUNTS } from '../../../fixture';
-import {
-    Address,
-    HexUInt,
-    InvalidEncodingError,
-    InvalidTransactionField
-} from '@common';
+import { Address, HexUInt, InvalidTransactionField } from '@common';
 import {
     Clause,
     TransactionRequest
@@ -14,6 +9,7 @@ import { PrivateKeySigner } from '@thor';
 import { describe, expect, test } from '@jest/globals';
 import type { ThorSoloAccount } from '@vechain/sdk-solo-setup';
 import { fail } from 'assert';
+import { RLPDecodingError } from '@common/errors/rlp/RLPDecodingError';
 
 const { TRANSACTION_SENDER, TRANSACTION_RECEIVER } = TEST_ACCOUNTS.TRANSACTION;
 
@@ -784,7 +780,7 @@ describe('TransactionRequest UNIT tests', () => {
                 mockMaxPriorityFeePerGas
             );
             expect(txRequest.reserved?.features).toBe(1);
-            expect(txRequest.reserved?.unused).toBeUndefined();
+            expect(txRequest.reserved?.unused.length ?? 0).toBe(0);
             expect(txRequest.signature?.length).toBe(65);
         });
         test('ok <- decode dynamic fee - sponsored - signed by origin and gas payer', () => {
@@ -806,7 +802,7 @@ describe('TransactionRequest UNIT tests', () => {
                 mockMaxPriorityFeePerGas
             );
             expect(txRequest.reserved?.features).toBe(1);
-            expect(txRequest.reserved?.unused).toBeUndefined();
+            expect(txRequest.reserved?.unused.length ?? 0).toBe(0);
             expect(txRequest.signature?.length).toBe(65 * 2);
             const originSignature = txRequest.signature?.slice(0, 65);
             const gasPayerSignature = txRequest.signature?.slice(65);
@@ -1070,7 +1066,7 @@ describe('TransactionRequest UNIT tests', () => {
 
             expect(() => {
                 TransactionRequest.decode(HexUInt.of(malformedDynamicFeeData));
-            }).toThrow('invalid encoded transaction request');
+            }).toThrow(RLPDecodingError);
         });
     });
 
@@ -1282,7 +1278,7 @@ describe('TransactionRequest UNIT tests', () => {
 
             expect(() => {
                 TransactionRequest.decode(HexUInt.of(malformedEncodedData));
-            }).toThrow(InvalidEncodingError);
+            }).toThrow(RLPDecodingError);
         });
     });
 

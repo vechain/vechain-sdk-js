@@ -1,5 +1,6 @@
 import { Transaction } from '@vechain/sdk-temp/thor';
 import { Hex } from '@vechain/sdk-temp/common';
+import { TransactionBodyDecoder } from '@vechain/sdk-temp/common';
 
 // an encoded transaction
 const rawTx =
@@ -7,5 +8,5 @@ const rawTx =
 
 // decode the raw transaction back into a TransactionRequest
 // External services like fee delegation services can pass back a raw transaction to be decoded.
-const decodedTx = Transaction.decode(Hex.of(rawTx));
+const decodedTx = TransactionBodyDecoder.decode(Hex.of(rawTx));
 console.log(decodedTx);
