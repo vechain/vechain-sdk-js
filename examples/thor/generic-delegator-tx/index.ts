@@ -5,10 +5,9 @@ import {
     ClauseBuilder,
     TransactionBuilder,
     TransactionRequest,
-    TransactionRequestRLPCodec,
     ThorNetworks
 } from '@vechain/sdk-temp/thor';
-import { HexUInt } from '@vechain/sdk-temp/common';
+import { HexUInt, TransactionBodyDecoder } from '@vechain/sdk-temp/common';
 
 // Sender account with private key
 const senderAccount = {
@@ -77,12 +76,12 @@ async function main(): Promise<void> {
     const rawHex = delegatorData.raw.startsWith('0x')
         ? delegatorData.raw.slice(2)
         : delegatorData.raw;
-    const delegatorTx = TransactionRequestRLPCodec.decode(
-        HexUInt.of(rawHex).bytes
+    const delegatorTx = TransactionBodyDecoder.decode(
+        HexUInt.of(rawHex)
     );
 
     // Sign the delegator's transaction as the origin
-    const originSignedTx = await signer.sign(delegatorTx);
+    const originSignedTx = await signer.sign(TransactionRequest.of(delegatorTx.body));
     const originSig = originSignedTx.signature ?? new Uint8Array();
 
     // Combine origin signature with delegator signature
@@ -94,7 +93,7 @@ async function main(): Promise<void> {
     combinedSignature.set(delegatorSig, originSig.length);
 
     // Create fully signed transaction using delegator's transaction body
-    const fullySigned = TransactionRequest.of(delegatorTx, { signature: combinedSignature });
+    const fullySigned = TransactionRequest.of(delegatorTx.body, { signature: combinedSignature });
     const txId = await thorClient.transactions.sendTransaction(fullySigned);
     console.log('Transaction id:', txId.toString());
 
