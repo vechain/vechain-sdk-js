@@ -1,15 +1,15 @@
 import { type Clause } from './Clause';
-import {
-    Blake2b256,
-    Hex,
-    HexUInt,
-    InvalidTransactionField,
-    Secp256k1
-} from '@common';
+import { Secp256k1 } from '@common/cryptography';
+import { Hex, HexUInt } from '@common/vcdm';
+import { Blake2b256 } from '@common/cryptography/hash';
 import { type TransactionRequestJSON } from '@thor/thorest/json';
 import { BaseTransaction, type TransactionBody } from './BaseTransaction';
 import { PrivateKeySigner } from '@thor/signer';
-import { TransactionRequestEncoder } from '@common/vcdm/encoding/rlp/TransactionRequestEncoder';
+import {
+    TransactionBodyEncoder,
+    TransactionBodyDecoder
+} from '@common/encoding/rlp/';
+import { InvalidTransactionField } from '@common/errors';
 
 /**
  * Options for the transaction request.
@@ -101,7 +101,9 @@ class TransactionRequest extends BaseTransaction {
      * @return {Hex} The serialized and encoded transaction request.
      */
     public get encoded(): Hex {
-        return Hex.of(TransactionRequestEncoder.encodeTransactionRequest(this));
+        return Hex.of(
+            TransactionBodyEncoder.encodeTransactionBody(this, this.signature)
+        );
     }
 
     /**
@@ -111,9 +113,7 @@ class TransactionRequest extends BaseTransaction {
      */
     public get hash(): Blake2b256 {
         return Blake2b256.of(
-            TransactionRequestEncoder.encodeTransactionRequest(this, {
-                withoutSignature: true
-            })
+            TransactionBodyEncoder.encodeTransactionBody(this)
         );
     }
 
@@ -220,6 +220,18 @@ class TransactionRequest extends BaseTransaction {
     }
 
     /**
+     * Checks if the current TransactionRequest is equal to the given TransactionRequest.
+     *
+     * @param {TransactionRequest} other - The TransactionRequest to compare with.
+     * @return {boolean} `true` if the TransactionRequests are equal, `false` otherwise.
+     */
+    public isEqualTo(other: TransactionRequest): boolean {
+        const thisHash = this.hash;
+        const otherHash = other.hash;
+        return thisHash.isEqual(otherHash);
+    }
+
+    /**
      * Converts the TransactionRequest object into a JSON representation.
      *
      * @return {TransactionRequestJSON} The JSON representation of the TransactionRequest object.
@@ -241,6 +253,17 @@ class TransactionRequest extends BaseTransaction {
                     ? HexUInt.of(this.signature).toString()
                     : undefined
         } satisfies TransactionRequestJSON;
+    }
+
+    /**
+     * Decodes an encoded transaction request into a TransactionRequest object.
+     *
+     * @param {Hex} encoded - The encoded transaction request.
+     * @return {TransactionRequest} The decoded transaction request.
+     */
+    public static decode(encoded: Hex): TransactionRequest {
+        const { body, signature } = TransactionBodyDecoder.decode(encoded);
+        return new TransactionRequest(body, { signature });
     }
 }
 

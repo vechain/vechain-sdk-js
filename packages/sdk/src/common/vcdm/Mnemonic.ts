@@ -8,7 +8,7 @@ import {
     IllegalArgumentError,
     UnsupportedOperationError
 } from '@common/errors';
-import { type VeChainDataModel } from '@common/vcdm';
+import { type VeChainDataModel } from './VeChainDataModel';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
 /**

@@ -3,7 +3,7 @@ import * as s_bip32 from '@scure/bip32';
 import * as s_bip39 from '@scure/bip39';
 import { IllegalArgumentError } from '@common/errors';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
-import { Sha256 } from '@common/vcdm';
+import { Sha256 } from '@common/cryptography/hash';
 import { base58 } from '@scure/base';
 
 /**

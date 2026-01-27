@@ -4,7 +4,7 @@ import {
     IllegalArgumentError,
     UnsupportedOperationError
 } from '@common/errors';
-import { type VeChainDataModel } from '@common/vcdm';
+import { type VeChainDataModel } from './VeChainDataModel';
 import { isBrowser } from '@common/utils/browser';
 import { log } from '@common/logging/log';
 import { type HexLike } from './HexLike';

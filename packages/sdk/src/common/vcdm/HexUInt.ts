@@ -1,4 +1,4 @@
-import { Hex } from '@common/vcdm';
+import { Hex } from './Hex';
 import { HexInt } from './HexInt';
 import { IllegalArgumentError } from '@common/errors';
 

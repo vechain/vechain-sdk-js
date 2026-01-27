@@ -6,4 +6,3 @@ export * from './logs';
 export * from './ThorClient';
 export * from './model';
 export * from './transactions';
-export * from './rlp';
