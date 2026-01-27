@@ -24,7 +24,7 @@ class TransactionBodyEncoder extends TransactionBodyCodec {
      * @param value - The value to convert.
      * @param options - The options for the conversion:
      * - maxSize: The maximum size of the hex string.
-     * - cononical: Whether to remove leading zeros from the hex string.
+     * - canonical: Whether to remove leading zeros from the hex string.
      * - zeroAsEmpty: Whether to return 0x if the value is 0 (instead of 0x00).
      * @returns The trimmed hex string.
      * @throws RLPEncodingError if the value is too large to be encoded.
