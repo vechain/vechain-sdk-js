@@ -127,41 +127,51 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
     public startSubscriptionsPolling(): boolean {
         let result = false;
         if (this.pollInstance === undefined) {
-            this.pollInstance = Poll.createEventPoll(async () => {
-                const data: SubscriptionEvent[] = [];
+            this.pollInstance = Poll.createEventPoll(
+                async () => {
+                    const data: SubscriptionEvent[] = [];
 
-                const currentBlock = await this.getCurrentBlock();
+                    const currentBlock = await this.getCurrentBlock();
 
-                if (currentBlock !== null) {
-                    if (
-                        this.subscriptionManager.newHeadsSubscription !==
-                        undefined
-                    ) {
-                        data.push({
-                            method: 'eth_subscription',
-                            params: {
-                                subscription:
-                                    this.subscriptionManager
-                                        .newHeadsSubscription.subscriptionId,
-                                result: currentBlock
-                            }
-                        });
+                    if (currentBlock !== null) {
+                        if (
+                            this.subscriptionManager.newHeadsSubscription !==
+                            undefined
+                        ) {
+                            data.push({
+                                method: 'eth_subscription',
+                                params: {
+                                    subscription:
+                                        this.subscriptionManager
+                                            .newHeadsSubscription
+                                            .subscriptionId,
+                                    result: currentBlock
+                                }
+                            });
+                        }
+                        if (
+                            this.subscriptionManager.logSubscriptions.size > 0
+                        ) {
+                            const logs = await this.getLogsRPC();
+                            data.push(...logs);
+                        }
+
+                        this.subscriptionManager.currentBlockNumber++;
                     }
-                    if (this.subscriptionManager.logSubscriptions.size > 0) {
-                        const logs = await this.getLogsRPC();
-                        data.push(...logs);
-                    }
-
-                    this.subscriptionManager.currentBlockNumber++;
-                }
-                return data;
-            }, POLLING_INTERVAL).onData(
-                (subscriptionEvents: SubscriptionEvent[]) => {
+                    return data;
+                },
+                POLLING_INTERVAL,
+                false
+            )
+                .onData((subscriptionEvents: SubscriptionEvent[]) => {
                     subscriptionEvents.forEach((event) => {
                         this.emit('message', event);
                     });
-                }
-            );
+                })
+                .onError((_error: Error) => {
+                    // Transient network errors should not stop subscription polling.
+                    // The poll will retry on the next interval.
+                });
 
             this.pollInstance.startListen();
             result = true;

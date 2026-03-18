@@ -25,9 +25,10 @@ if (!global.fetch) {
   global.fetch = require('node-fetch');
 }
 } else {
-// Running in browser environment
+// Running in browser (jsdom) environment
 global.WebSocket = window.WebSocket;
+// Use node-fetch for reliable HTTP requests in jsdom + worker thread context.
+// Native Node.js fetch (undici) can fail in jsdom environments on older Node
+// versions (e.g. Node 20) due to incompatible globals (Headers, AbortSignal).
+global.fetch = require('node-fetch');
 }
-
-// Make fetch global
-global.fetch = fetch;

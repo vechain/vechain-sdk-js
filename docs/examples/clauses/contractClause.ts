@@ -62,7 +62,6 @@ const txBody = await thor.transactions.buildTransactionBody(
     gasResult.totalGas,
     {
         chainTag: chainTag,
-        blockRef: '0x0000000000000000',
         expiration: 32,
         gasPriceCoef: 128,
         dependsOn: null,
