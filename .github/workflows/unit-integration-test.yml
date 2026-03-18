@@ -92,7 +92,7 @@ jobs:
                   rpc-proxy, packages/rpc-proxy/junit.xml
 
             - name: Archive coverage
-              if: always() &&matrix.node == 'lts/*' && (steps.stop-solo.outcome == 'success')
+              if: always() && matrix.node == 'lts/*' && (steps.stop-solo.outcome == 'success')
               uses: actions/upload-artifact@v5.0.0
               with:
                 name: coverage-results
