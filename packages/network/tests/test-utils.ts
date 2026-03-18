@@ -31,13 +31,13 @@ const getSoloChainTag = async (): Promise<number> => {
  * connection issues that are common in CI environments with solo nodes.
  *
  * @param operation - The async operation to retry
- * @param maxAttempts - Maximum number of retry attempts (default: 3)
+ * @param maxAttempts - Maximum number of retry attempts (default: 5)
  * @param baseDelay - Base delay in milliseconds between retries (default: 1000)
  * @returns The result of the operation
  */
 const retryOperation = async <T>(
     operation: () => Promise<T>,
-    maxAttempts = 3,
+    maxAttempts = 5,
     baseDelay = 1000
 ): Promise<T> => {
     let lastError: Error | undefined;

@@ -8,6 +8,9 @@ solo-up: #@ Start Thor solo
 	@timeout=60; \
 	while [ $$timeout -gt 0 ]; do \
 		if docker compose -f ./docker-compose.solo.yml ps | grep -q "healthy"; then \
+			echo "Thor solo node is healthy!"; \
+			echo "Waiting additional 3 seconds for node to stabilize..."; \
+			sleep 3; \
 			echo "Thor solo node is ready!"; \
 			exit 0; \
 		fi; \
