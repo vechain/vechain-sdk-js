@@ -72,7 +72,7 @@ describe('RPC Mapper - eth_signTypedData_v4 method tests', () => {
 
         // Store the first address for tests
         walletAddress = addresses?.[0] as string;
-    });
+    }, 10000);
 
     /**
      * eth_signTypedData_v4 RPC call tests - Positive cases

@@ -57,7 +57,7 @@ describe('VeChain base signer tests - testnet', () => {
     beforeEach(async () => {
         thorClient = ThorClient.at(TESTNET_URL);
         isGalacticaActive = await thorClient.forkDetector.detectGalactica();
-    });
+    }, 10000);
 
     /**
      * Positive case tests
