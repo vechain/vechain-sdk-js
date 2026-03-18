@@ -80,9 +80,12 @@ const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])
 );
-const signer = (await provider.getSigner(
-    deployerAccount.address
-)) as VeChainSigner;
+
+// Wrap async operations in IIFE to avoid top-level await issues with test runner
+(async () => {
+    const signer = (await provider.getSigner(
+        deployerAccount.address
+    )) as VeChainSigner;
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<Contract<typeof ERC20_ABI>> => {
@@ -199,8 +202,9 @@ expect(groupedEvents[0].map((x) => x.decodedData)).toEqual([
     ]
 ]);
 
-expect(groupedEvents[1].map((x) => x.decodedData)).toEqual([
-    ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
-]);
+    expect(groupedEvents[1].map((x) => x.decodedData)).toEqual([
+        ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
+    ]);
 
-// END_SNIPPET: ERC20FilterGroupedMultipleEventCriteriaSnippet
+    // END_SNIPPET: ERC20FilterGroupedMultipleEventCriteriaSnippet
+})();

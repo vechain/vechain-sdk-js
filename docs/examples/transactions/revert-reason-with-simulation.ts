@@ -272,26 +272,29 @@ const energyABI = [
 
 const thorSoloClient = ThorClient.at(THOR_SOLO_URL);
 
-// START_SNIPPET: RevertReasonSimulationSnippet
+// Wrap async operations in IIFE to avoid top-level await issues with test runner
+(async () => {
+    // START_SNIPPET: RevertReasonSimulationSnippet
 
-const simulatedTx: TransactionSimulationResult[] =
-    await thorSoloClient.transactions.simulateTransaction([
-        {
-            to: '0x0000000000000000000000000000456e65726779',
-            value: '0',
-            data: ABIContract.ofAbi(energyABI)
-                .encodeFunctionInput('transfer', [
-                    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-                    Units.parseEther('1000000000').bi
-                ])
-                .toString()
-        }
-    ]);
+    const simulatedTx: TransactionSimulationResult[] =
+        await thorSoloClient.transactions.simulateTransaction([
+            {
+                to: '0x0000000000000000000000000000456e65726779',
+                value: '0',
+                data: ABIContract.ofAbi(energyABI)
+                    .encodeFunctionInput('transfer', [
+                        '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+                        Units.parseEther('1000000000').bi
+                    ])
+                    .toString()
+            }
+        ]);
 
-const revertReason = thorSoloClient.transactions.decodeRevertReason(
-    simulatedTx[0].data
-);
+    const revertReason = thorSoloClient.transactions.decodeRevertReason(
+        simulatedTx[0].data
+    );
 
-// END_SNIPPET: RevertReasonSimulationSnippet
+    // END_SNIPPET: RevertReasonSimulationSnippet
 
-expect(revertReason).toBe('builtin: insufficient balance');
+    expect(revertReason).toBe('builtin: insufficient balance');
+})();

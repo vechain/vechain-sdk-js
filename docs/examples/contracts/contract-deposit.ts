@@ -94,27 +94,31 @@ const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])
 );
-const signer = (await provider.getSigner(
-    deployerAccount.address
-)) as VeChainSigner;
 
-// START_SNIPPET: DepositContractSnippet
+// Wrap async operations in IIFE to avoid top-level await issues with test runner
+(async () => {
+    const signer = (await provider.getSigner(
+        deployerAccount.address
+    )) as VeChainSigner;
 
-// Creating the contract factory
-const contractFactory = thorSoloClient.contracts.createContractFactory(
-    depositContractAbi,
-    depositContractBytecode,
-    signer
-);
+    // START_SNIPPET: DepositContractSnippet
 
-const contract = await (
-    await contractFactory.startDeployment()
-).waitForDeployment();
+    // Creating the contract factory
+    const contractFactory = thorSoloClient.contracts.createContractFactory(
+        depositContractAbi,
+        depositContractBytecode,
+        signer
+    );
 
-await (await contract.transact.deposit({ value: 1000 })).wait();
+    const contract = await (
+        await contractFactory.startDeployment()
+    ).waitForDeployment();
 
-const balance = await contract.read.getBalance(deployerAccount.address);
+    await (await contract.transact.deposit({ value: 1000 })).wait();
 
-expect(balance).toEqual([BigInt(1000)]);
+    const balance = await contract.read.getBalance(deployerAccount.address);
 
-// END_SNIPPET: DepositContractSnippet
+    expect(balance).toEqual([BigInt(1000)]);
+
+    // END_SNIPPET: DepositContractSnippet
+})();
