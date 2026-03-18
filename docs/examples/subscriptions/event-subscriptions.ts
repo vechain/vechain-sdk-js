@@ -42,6 +42,10 @@ ws.on('error', console.error);
 // Connection opened
 ws.on('open', () => {
     console.log('connected');
+    // Close after connection is established
+    setTimeout(() => {
+        ws.close();
+    }, 100);
 });
 
 // Connection closed
@@ -53,6 +57,3 @@ ws.on('close', () => {
 ws.on('message', (data: unknown) => {
     console.log('received: %s', data);
 });
-
-// Close the connection to the websocket
-ws.close();
