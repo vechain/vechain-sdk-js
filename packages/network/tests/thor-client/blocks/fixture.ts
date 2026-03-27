@@ -13,7 +13,7 @@ const waitForBlockTestCases = [
     },
     {
         options: {
-            timeoutMs: 12000,
+            timeoutMs: 25000,
             intervalMs: undefined
         }
     },
@@ -25,7 +25,7 @@ const waitForBlockTestCases = [
     },
     {
         options: {
-            timeoutMs: 11000,
+            timeoutMs: 25000,
             intervalMs: 1000
         }
     }

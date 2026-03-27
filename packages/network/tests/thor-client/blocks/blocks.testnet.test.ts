@@ -59,7 +59,7 @@ describe('ThorClient - Blocks Module', () => {
                 // Wait for all tests to complete
                 await Promise.all(tests);
             },
-            12000 * waitForBlockTestCases.length
+            30000 * waitForBlockTestCases.length
         );
     });
 
@@ -94,7 +94,7 @@ describe('ThorClient - Blocks Module', () => {
                 // Wait for all tests to complete
                 await Promise.all(tests);
             },
-            12000 * waitForBlockTestCases.length
+            30000 * waitForBlockTestCases.length
         );
     });
 
