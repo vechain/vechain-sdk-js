@@ -43,7 +43,7 @@
     "@noble/hashes": "^1.5.0",
     "@scure/base": "^1.2.4",
     "@scure/bip32": "^1.4.0",
-    "@scure/bip39": "^1.5.1",
+    "@scure/bip39": "^2.0.1",
     "@vechain/sdk-errors": "2.0.7",
     "@vechain/sdk-logging": "2.0.7",
     "abitype": "^1.0.6",
