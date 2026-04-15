@@ -180,7 +180,7 @@ describe.skip('Contract', () => {
             contract.setContractTransactOptions({ gas: 21000 });
             contract.clearContractTransactOptions();
 
-            expect(contract.getContractTransactOptions()).toEqual({});
+            expect(contract.getContractTransactOptions()).toBeUndefined();
         });
     });
 

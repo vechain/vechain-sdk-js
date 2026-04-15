@@ -27,9 +27,38 @@ import { type ClauseSimulationResult } from '../model/transactions';
 import { type AccountDetail } from '../model/accounts/AccountDetail';
 import { HexUInt } from '@common/vcdm';
 import { decodeRevertReason } from './utils';
-import { TransactionBodyOptions } from '../model/transactions/TransactionBody';
-import { EstimateGasOptions, EstimateGasResult } from '../model/gas';
-import { TransactionBuilder } from '../transactions/TransactionBuilder';
+import { type TransactionBodyOptions } from '../model/transactions/TransactionBody';
+import {
+    type EstimateGasOptions,
+    type EstimateGasResult
+} from '../model/gas';
+
+const normalizeBuilderOverrides = (
+    options?: TransactionBodyOptions
+): {
+    gasLimit: bigint | undefined;
+    builderOptions?: TransactionBodyOptions;
+} => {
+    if (!options) {
+        return { gasLimit: undefined, builderOptions: undefined };
+    }
+
+    const normalizedOptions: TransactionBodyOptions = { ...options };
+
+    let gasLimit: bigint | undefined = undefined;
+    if (normalizedOptions.gas !== undefined) {
+        gasLimit = normalizedOptions.gas;
+        delete normalizedOptions.gas;
+    }
+
+    return {
+        gasLimit,
+        builderOptions:
+            Object.keys(normalizedOptions).length > 0
+                ? normalizedOptions
+                : undefined
+    };
+};
 
 // WHOLE MODULE IS IN PENDING TILL MERGED AND REWORKED THE TRANSACTIONS
 // Proper function arguments type using VeChain SDK types
@@ -65,6 +94,58 @@ class ContractsModule extends AbstractThorModule {
             'abi' in obj &&
             Array.isArray((obj as { abi: unknown }).abi)
         );
+    }
+
+    /**
+     * Helper method to estimate gas for clauses.
+     * Extracts the type assertion for this.thorClient.gas.estimateGas
+     */
+    private async estimateGas(
+        clauses: Clause[],
+        caller: AddressLike,
+        options?: EstimateGasOptions
+    ): Promise<EstimateGasResult> {
+        return await (
+            this.thorClient.gas as {
+                estimateGas: (
+                    clauses: Clause[],
+                    caller: AddressLike,
+                    options?: EstimateGasOptions
+                ) => Promise<EstimateGasResult>;
+            }
+        ).estimateGas(clauses, caller, options);
+    }
+
+    /**
+     * Helper method to build a transaction body.
+     * Extracts the type assertion for this.thorClient.transactions.buildTransactionBody
+     */
+    private async buildTransactionBody(
+        clauses: Clause[],
+        gas: bigint,
+        options?: TransactionBodyOptions
+    ): Promise<TransactionRequest> {
+        return await (
+            this.thorClient.transactions as {
+                buildTransactionBody: (
+                    clauses: Clause[],
+                    gas: bigint,
+                    options?: TransactionBodyOptions
+                ) => Promise<TransactionRequest>;
+            }
+        ).buildTransactionBody(clauses, gas, options);
+    }
+
+    /**
+     * Helper method to send a raw transaction.
+     * Extracts the type assertion for this.thorClient.transactions.sendRawTransaction
+     */
+    private async sendRawTransaction(encoded: Hex): Promise<Hex> {
+        return await (
+            this.thorClient.transactions as {
+                sendRawTransaction: (encoded: Hex) => Promise<Hex>;
+            }
+        ).sendRawTransaction(encoded);
     }
 
     /**
@@ -453,15 +534,14 @@ class ContractsModule extends AbstractThorModule {
     }
 
     /**
-     * Executes a contract transaction using VeChain thor
-     * This method sends a transaction to the blockchain.
+     * Executes a contract transaction using VeChain's transaction system.
      *
      * @param signer - The signer to use for signing the transaction.
      * @param contractAddress - The address of the contract to call.
      * @param functionAbi - The ABI of the function to call.
      * @param functionData - The arguments to pass to the function.
-     * @param transactionOptions - Optional transaction options
-     * @param estimateGasOptions - Optional estimate gas options
+     * @param transactionOptions - Optional transaction options.
+     * @param estimateGasOptions - Optional gas estimation options.
      * @param value - Optional VET in wei value to send with the transaction.
      * @returns A Promise that resolves to the transaction hash.
      */
@@ -484,50 +564,52 @@ class ContractsModule extends AbstractThorModule {
                 value ?? 0n
             );
 
-            let finalTransactionRequest: TransactionRequest;
-            let gasEstimate: bigint | undefined = undefined;
+            const clauses = [clause];
 
-            // get gas from options if provided
-            if (transactionOptions != undefined) {
-                if (transactionOptions.gas !== undefined) {
-                    gasEstimate = transactionOptions.gas;
-                }
-            }
-            // estimate gas if not provided
-            if (gasEstimate === undefined) {
-                const gasEstimateResult = await this.thorClient.gas.estimateGas(
-                    [clause],
-                    signer.address,
-                    estimateGasOptions
-                );
+            const { gasLimit: normalizedGasLimit, builderOptions } =
+                normalizeBuilderOverrides(transactionOptions);
+            let gasLimit = normalizedGasLimit;
+
+            // Gas must always be estimated if not provided
+            if (gasLimit === undefined) {
+                const gasEstimateResult: EstimateGasResult =
+                    await this.estimateGas(
+                        clauses,
+                        signer.address,
+                        estimateGasOptions
+                    );
+
                 if (gasEstimateResult.reverted) {
                     log.warn({
-                        source: 'ContractsModule.execute',
+                        source: 'ContractsModule.executeTransaction',
                         message: 'Gas estimation reverted',
                         context: { gasEstimateResult }
                     });
+                    throw new IllegalArgumentError(
+                        'ContractsModule.executeTransaction',
+                        'Gas estimation reverted',
+                        { gasEstimateResult }
+                    );
                 }
-                gasEstimate = gasEstimateResult.totalGas;
+
+                gasLimit = gasEstimateResult.totalGas;
             }
 
-            // build the transaction request
-            if (transactionOptions !== undefined) {
-                // use provided transaction options
-                finalTransactionRequest = await this.thorClient.transactions.buildTransactionBody(
-                    [clause],
-                    gasEstimate,
-                    transactionOptions
+            // At this point, gasLimit must be defined (either provided or estimated)
+            if (gasLimit === undefined) {
+                throw new IllegalArgumentError(
+                    'ContractsModule.executeTransaction',
+                    'Gas limit must be provided or estimated',
+                    {}
                 );
-            } else {
-                // use transaction builder to build the transaction request with default values
-                const builder = TransactionBuilder.create(this.thorClient);
-                finalTransactionRequest = await builder
-                    .withClauses([clause])
-                    .withGas(gasEstimate)
-                    .withDynFeeTxDefaults()
-                    .build();
             }
-            // Sign the transaction as sender first 
+
+            const finalTransactionRequest = await this.buildTransactionBody(
+                clauses,
+                gasLimit,
+                builderOptions
+            );
+            // Sign the transaction as sender first
             const signedTransaction = await signer.sign(finalTransactionRequest);
             // if delegated, sign the transaction as gas payer
             let fullSignedTransaction = signedTransaction;
@@ -541,10 +623,9 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = fullSignedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId: Hex =
-                await this.thorClient.transactions.sendRawTransaction(
-                    encodedTransaction
-                );
+            const transactionId: Hex = await this.sendRawTransaction(
+                encodedTransaction
+            );
 
             return transactionId;
         } catch (error) {
@@ -669,14 +750,11 @@ class ContractsModule extends AbstractThorModule {
             functionData?: FunctionArgs;
         }[],
         signer: Signer,
-        transactionRequest?: TransactionRequest
+        transactionOptions?: TransactionBodyOptions
     ): Promise<Hex> {
         try {
             // Build multiple clauses for a single transaction
-            const transactionClauses: (
-                | Clause
-                | { to: Address; data: string; value: bigint }
-            )[] = clauses.map((clause) => {
+            const transactionClauses: Clause[] = clauses.map((clause) => {
                 if (
                     clause.contractAddress &&
                     clause.functionAbi &&
@@ -691,27 +769,54 @@ class ContractsModule extends AbstractThorModule {
                         clause.value ?? 0n
                     );
                 }
-                return clause;
+                return new Clause(
+                    clause.to,
+                    clause.value,
+                    Hex.of(clause.data),
+                    null,
+                    null
+                );
             });
 
-            // TODO: Consider using TransactionBuilder for more flexible transaction construction
+            const { gasLimit: normalizedGasLimit, builderOptions } =
+                normalizeBuilderOverrides(transactionOptions);
+            let gasLimit = normalizedGasLimit;
 
-            // Use provided TransactionRequest or create a default one
-            const finalTransactionRequest = transactionRequest
-                ? TransactionRequest.of({
-                      ...transactionRequest,
-                      clauses: transactionClauses as Clause[] // Override clauses with our contract calls
-                  })
-                : TransactionRequest.of({
-                      clauses: transactionClauses as Clause[],
-                      gas: 21000n,
-                      gasPriceCoef: 0n,
-                      nonce: 0n,
-                      blockRef: Hex.of('0x0000000000000000'),
-                      chainTag: 0x27,
-                      dependsOn: null,
-                      expiration: 720
-                  });
+            // Gas must always be estimated if not provided
+            if (gasLimit === undefined) {
+                const gasEstimateResult: EstimateGasResult =
+                    await this.estimateGas(transactionClauses, signer.address);
+
+                if (gasEstimateResult.reverted) {
+                    log.warn({
+                        source: 'ContractsModule.executeMultipleClausesTransaction',
+                        message: 'Gas estimation reverted',
+                        context: { gasEstimateResult }
+                    });
+                    throw new IllegalArgumentError(
+                        'ContractsModule.executeMultipleClausesTransaction',
+                        'Gas estimation reverted',
+                        { gasEstimateResult }
+                    );
+                }
+
+                gasLimit = gasEstimateResult.totalGas;
+            }
+
+            // At this point, gasLimit must be defined (either provided or estimated)
+            if (gasLimit === undefined) {
+                throw new IllegalArgumentError(
+                    'ContractsModule.executeMultipleClausesTransaction',
+                    'Gas limit must be provided or estimated',
+                    {}
+                );
+            }
+
+            const finalTransactionRequest = await this.buildTransactionBody(
+                transactionClauses,
+                gasLimit,
+                builderOptions
+            );
 
             // Sign the transaction as sender first
             const signedTransaction = await signer.sign(finalTransactionRequest);
@@ -727,10 +832,9 @@ class ContractsModule extends AbstractThorModule {
             const encodedTransaction = fullSignedTransaction.encoded;
 
             // Send the transaction using ThorClient transactions module
-            const transactionId: Hex =
-                await this.thorClient.transactions.sendRawTransaction(
-                    encodedTransaction
-                );
+            const transactionId: Hex = await this.sendRawTransaction(
+                encodedTransaction
+            );
 
             return transactionId;
         } catch (error) {

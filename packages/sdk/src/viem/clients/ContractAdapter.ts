@@ -27,7 +27,7 @@ import { Clause } from '@thor/thor-client/model/transactions/Clause';
 import { ThorClient } from '@thor/thor-client/ThorClient';
 import { Contract as VeChainContract } from '@thor/thor-client/contracts/model/contract';
 import { ContractCallOptions } from '@thor/thor-client/contracts/types';
-import { TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
+import { type TransactionBodyOptions } from '@thor/thor-client/model/transactions/TransactionBody';
 import { type SimulateTransactionOptions } from '@thor/thor-client/model/transactions/SimulateTransactionOptions';
 import { log } from '@common/logging';
 import { IllegalArgumentError } from '@common/errors';
@@ -307,7 +307,7 @@ export interface Contract<TAbi extends Abi> {
         /** Set contract read options */
         setReadOptions: (options: ContractCallOptions) => void;
         /** Set contract transaction options */
-        setTransactOptions: (transactionRequest: TransactionRequest) => void;
+        setTransactOptions: (transactionRequest: TransactionBodyOptions) => void;
         /** Access to clause building */
         clause: Record<
             string,
@@ -475,7 +475,7 @@ function getContract<const TAbi extends Abi>({
         setReadOptions: (options: ContractCallOptions) => {
             vechainContract.setContractReadOptions(options);
         },
-        setTransactOptions: (options: TransactionRequest) => {
+        setTransactOptions: (options: TransactionBodyOptions) => {
             vechainContract.setContractTransactOptions(options);
         },
         clause: {} as Record<
