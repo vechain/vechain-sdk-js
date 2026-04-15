@@ -75,5 +75,11 @@ const receipt = contract.deployTransactionReceipt;
 
 // END_SNIPPET: ContractSnippet
 
+expect(receipt).toBeDefined();
+
+if (receipt == null) {
+    throw new Error('Deployment receipt is unavailable');
+}
+
 expect(receipt.reverted).toEqual(false);
-expect(receipt.outputs[0].contractAddress).toBeDefined();
+expect(receipt.outputs[0]?.contractAddress).toBeDefined();
