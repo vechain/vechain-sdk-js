@@ -3,9 +3,9 @@ import { AddressLike, Hex } from '@common/vcdm';
 import { type TransactionRequest } from '@thor/thor-client/model/transactions';
 import { log } from '@common/logging';
 import { Secp256k1 } from '@common/cryptography';
-import { TransactionRequestRLPCodec } from '@thor/thor-client/rlp/TransactionRequestRLPCodec';
 import { VIP191Error } from '@common/errors/VIP191Error';
 import { IllegalArgumentError } from '@common/errors';
+import { TransactionBodyEncoder } from '@common/encoding/rlp/TransactionBodyEncoder';
 
 /**
  * JSON representation of the response from the VIP-191 service.
@@ -90,9 +90,9 @@ class VIP191Client {
             );
         }
         // build http post request body
-        // encode the transaction request to hex - note as its unsigned, we need to encode it to hash
+        // encode the transaction request to hex - without signature
         const encodeTx = Hex.of(
-            TransactionRequestRLPCodec.encode(transactionRequest, true)
+            TransactionBodyEncoder.encodeTransactionBody(transactionRequest)
         );
         const vip191Body = {
             origin: sender.toString(),
@@ -107,7 +107,8 @@ class VIP191Client {
             // check the response status
             if (!response.ok) {
                 log.error({
-                    message: 'Failed to sign remote gas sponsorship',
+                    message:
+                        'Failed to sign remote gas sponsorship - VIP-191 service returned non 200 status code',
                     source: 'VIP191Client.requestGasPayerSignature',
                     context: {
                         request: transactionRequest,

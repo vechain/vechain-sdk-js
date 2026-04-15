@@ -1,15 +1,9 @@
 import { type HttpQuery, type HttpClient, type HttpPath } from '@common/http';
 import { type Revision, type Address, type Hex } from '@common/vcdm';
 import { GetStorageResponse } from '@thor/thorest';
-import { ThorError, type ThorRequest, type ThorResponse } from '@thor/thorest';
+import { type ThorRequest, type ThorResponse } from '@thor/thorest';
 import { type GetStorageResponseJSON } from '@thor/thorest/json';
-import { handleHttpError } from '@thor/thorest/utils';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/accounts/methods/RetrieveStoragePositionValue.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Retrieve a storage position value](http://localhost:8669/doc/stoplight-ui/#/paths/accounts-address--storage--key/get)
@@ -44,41 +38,28 @@ class RetrieveStoragePositionValue implements ThorRequest<
     }
 
     /**
-     * Asynchronously fetches and processes a block response using the provided HTTP client.
+     * Fetches and processes a get storage response using the provided HTTP client.
      *
      * @param {HttpClient} httpClient - An HTTP client used to perform the request.
      * @return {Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>}
-     * Returns a promise that resolves to a ThorResponse containing the requested block.
-     * @throws ThorError if the response is invalid or the request fails.
+     * Returns a promise that resolves to a ThorResponse containing the requested get storage response.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveStoragePositionValue, GetStorageResponse>>`;
-        try {
-            const response = await httpClient.get(this.path, this.query);
-            const json = (await response.json()) as GetStorageResponseJSON;
-            try {
-                return {
-                    request: this,
-                    response: new GetStorageResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            if (error instanceof ThorError) throw error;
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = 'RetrieveStoragePositionValue.askTo';
+        // do http get request - this will throw an error if the request fails
+        const response = await httpClient.get(this.path, this.query);
+        // parse the not nullable response - this will throw an error if the response cannot be parsed
+        const getStorageResponse = await parseResponseHandler<
+            GetStorageResponse,
+            GetStorageResponseJSON
+        >(fqp, response, GetStorageResponse, false);
+        // return a thor response
+        return {
+            request: this,
+            response: getStorageResponse
+        };
     }
 
     /**

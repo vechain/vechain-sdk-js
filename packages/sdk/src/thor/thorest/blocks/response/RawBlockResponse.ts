@@ -1,25 +1,25 @@
 import { Hex } from '@common/vcdm';
 import { type RawBlockJSON } from '../json/RawBlockJSON';
-import { IllegalArgumentError } from '@common/errors';
-
-const FQP =
-    'packages/sdk/src/thor/thorest/blocks/response/RawBlockResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors/thorest';
 
 /**
- * Type checked response for raw block.
+ * Raw Block Response
  */
 class RawBlockResponse {
     readonly raw: Hex;
 
     /**
-     * Constructor from JSON.
+     * Constructs a new instance of the class using the provided JSON object.
+     *
+     * @param {RawBlockJSON} json - The JSON object used to initialize the instance.
+     * @throws {InvalidThorestResponseError} Thrown if an error occurs during parsing.
      */
     constructor(json: RawBlockJSON) {
         try {
             this.raw = Hex.of(json.raw);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: RawBlockJSON)`,
+            throw new InvalidThorestResponseError(
+                'RawBlockResponse.constructor',
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

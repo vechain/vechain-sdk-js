@@ -1,12 +1,6 @@
 import { Hex, Quantity } from '@common/vcdm';
 import { type GetAccountResponseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/accounts/response/GetAccountResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * Get Account Response
@@ -35,7 +29,7 @@ class GetAccountResponse {
      * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {GetAccountResponseJSON} json - The JSON object containing account response data.
-     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponseError} if the parsing of the JSON object fails.
      */
     constructor(json: GetAccountResponseJSON) {
         try {
@@ -43,8 +37,8 @@ class GetAccountResponse {
             this.energy = Hex.of(json.energy).bi;
             this.hasCode = json.hasCode;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: GetAccountResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                'GetAccountResponse.constructor',
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

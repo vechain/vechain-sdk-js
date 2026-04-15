@@ -1,16 +1,11 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
 import {
     GetFeesPriorityResponse,
-    ThorError,
     type GetFeesPriorityResponseJSON,
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
-
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/fees/methods/SuggestPriorityFee.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Suggest a priority fee for a transaction to be included in a block](http://localhost:8669/doc/stoplight-ui/#/paths/fees-priority/get)
@@ -35,46 +30,26 @@ class SuggestPriorityFee implements ThorRequest<
      * @param {HttpClient} httpClient - The HTTP client used to send the request.
      * @return {Promise<ThorResponse<SuggestPriorityFee, GetFeesPriorityResponse>>}
      * A promise that resolves to a ThorResponse containing the suggested priority fee and its corresponding response.
-     * @throws {ThorError} If there is an error while processing the response or if the response status is not OK.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<ThorResponse<SuggestPriorityFee, GetFeesPriorityResponse>> {
-        const fqp = `${FQP}askTo(httpClient: HttpClient: Promise<ThorResponse<SuggestPriorityFee, GetFeesPriorityResponse>>`;
+        const fqp = `SuggestPriorityFee.askTo`;
+        // http request - this will throw HttpError if the request fails
         const response = await httpClient.get(
             SuggestPriorityFee.PATH,
             SuggestPriorityFee.QUERY
         );
-        if (response.ok) {
-            const json = (await response.json()) as GetFeesPriorityResponseJSON;
-            try {
-                return {
-                    request: this,
-                    response: new GetFeesPriorityResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
-        }
+        // parse the not nullable response - this will throw InvalidThorestResponseError if the response cannot be parsed
+        const feesPriority = await parseResponseHandler<
+            GetFeesPriorityResponse,
+            GetFeesPriorityResponseJSON
+        >(fqp, response, GetFeesPriorityResponse, false);
+        // return a thor response
+        return {
+            request: this,
+            response: feesPriority
+        };
     }
 
     /**

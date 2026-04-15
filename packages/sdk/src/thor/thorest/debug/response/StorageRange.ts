@@ -1,11 +1,6 @@
 import { type Hex, HexUInt32 } from '@common/vcdm';
 import { type StorageRangeJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified-Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/debug/response/StorageRange.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [StorageRange](http://localhost:8669/doc/stoplight-ui/#/schemas/StorageRange)
@@ -29,7 +24,7 @@ class StorageRange {
      *
      * @param {StorageRangeJSON} json - An object containing storage range data.
      * Properties should include `nextKey` and `storage`.
-     * @throws {IllegalArgumentError} Throws an error if the JSON parsing fails.
+     * @throws {InvalidThorestResponseError} Throws an error if the JSON parsing fails.
      */
     constructor(json: StorageRangeJSON) {
         try {
@@ -37,8 +32,8 @@ class StorageRange {
                 json.nextKey !== undefined ? HexUInt32.of(json.nextKey) : null;
             this.storage = json.storage;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: StorageRangeJSON)`,
+            throw new InvalidThorestResponseError(
+                `StorageRange.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
-import { type HttpClient, HttpException } from '@common/http';
+import { type HttpClient } from '@common/http';
+import { HttpError } from '@common/errors';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 
 const mockHttpClient = <T>(
@@ -17,7 +18,7 @@ const mockHttpClient = <T>(
         [httpMethod]: jest.fn().mockImplementation(async () => {
             // If status is not 200, throw HttpException to simulate FetchHttpClient behavior
             if (status !== 200) {
-                throw new HttpException(
+                throw new HttpError(
                     'MockHttpClient',
                     `HTTP request failed with status ${status}`,
                     status,
@@ -59,7 +60,7 @@ const mockHttpClientForDebug = <T>(
         [httpMethod]: jest.fn().mockImplementation(async () => {
             // If status is not 200, throw HttpException to simulate FetchHttpClient behavior
             if (status !== 200) {
-                throw new HttpException(
+                throw new HttpError(
                     'MockHttpClient',
                     `HTTP request failed with status ${status}`,
                     status,
@@ -82,7 +83,7 @@ const mockHttpClientWithError = (
     // Mock that throws HttpException directly, simulating FetchHttpClient behavior
     return {
         [httpMethod]: jest.fn(async () => {
-            throw new HttpException(
+            throw new HttpError(
                 'MockHttpClient',
                 `HTTP request failed with status 400`,
                 400,

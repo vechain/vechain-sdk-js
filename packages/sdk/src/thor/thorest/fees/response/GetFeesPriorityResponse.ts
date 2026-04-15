@@ -1,12 +1,6 @@
 import { HexUInt } from '@common/vcdm';
 import { type GetFeesPriorityResponseJSON } from '@thor/thorest';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/fees/response/GetFeesPriorityResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [GetFeesPriorityResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/GetFeesPriorityResponse)
@@ -29,8 +23,8 @@ class GetFeesPriorityResponse {
                 json.maxPriorityFeePerGas
             ).bi;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json GetFeesPriorityResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `GetFeesPriorityResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

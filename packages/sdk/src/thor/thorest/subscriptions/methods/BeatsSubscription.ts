@@ -5,13 +5,7 @@ import {
     SubscriptionBeat2Response,
     type SubscriptionBeat2ResponseJSON
 } from '@thor/thorest/subscriptions';
-import { ThorError } from '@thor/thorest';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/subscriptions/methods/BeatsSubscription.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [Retrieve a subscription to the beats endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-beat2/get)
@@ -121,8 +115,7 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
      * Handles the message event.
      *
      * @param {MessageEvent<unknown>} event - The event to handle.
-     *
-     * @throws {ThorError} - If the JSON is invalid.
+     * @throws {InvalidThorestResponseError} - If the JSON is invalid.
      */
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(
@@ -134,8 +127,8 @@ class BeatsSubscription implements WebSocketClient, WebSocketListener<unknown> {
                 data: new SubscriptionBeat2Response(json)
             });
         } catch (error) {
-            throw new ThorError(
-                `${FQP}onMessage(event: MessageEvent<unknown>): void`,
+            throw new InvalidThorestResponseError(
+                `BeatsSubscription.onMessage`,
                 'Invalid JSON.',
                 {
                     body: json

@@ -1,15 +1,10 @@
 import { Block } from '@thor/thorest/blocks/model';
 import { type Hex, HexUInt32 } from '@common/vcdm';
 import { type RegularBlockResponseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/blocks/response/RegularBlockResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors/thorest';
 
 /**
- * [RegularBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/RegularBlockResponse)
+ * Regular Block Response
  */
 class RegularBlockResponse extends Block {
     /**
@@ -31,7 +26,7 @@ class RegularBlockResponse extends Block {
      * Constructs an instance of the class using the provided JSON object.
      *
      * @param {RegularBlockResponseJSON} json - The JSON object containing data to construct the instance.
-     * @throws {IllegalArgumentError} Throws if the parsing of the provided JSON object fails.
+     * @throws {InvalidThorestResponseError} Thrown if an error occurs during parsing.
      */
     constructor(json: RegularBlockResponseJSON) {
         try {
@@ -42,8 +37,8 @@ class RegularBlockResponse extends Block {
                 (txId: string): Hex => HexUInt32.of(txId)
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: RegularBlockResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                'RegularBlockResponse.constructor',
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

@@ -1,16 +1,10 @@
+import { InvalidThorestResponseError } from '@common';
 import { Address, HexUInt, type Hex } from '@common/vcdm';
 import { type EventJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/model/Event.ts!';
 
 /**
  * [Event](http://localhost:8669/doc/stoplight-ui/#/schemas/Event)
  */
-
 class EventResponse {
     /**
      * The address of the contract that produces the event (bytes20).
@@ -41,8 +35,8 @@ class EventResponse {
             );
             this.data = HexUInt.of(json.data);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: EventJSON)`,
+            throw new InvalidThorestResponseError(
+                `EventResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

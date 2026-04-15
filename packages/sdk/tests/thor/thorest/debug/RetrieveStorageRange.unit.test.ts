@@ -1,14 +1,12 @@
-import { describe, expect, jest, test } from '@jest/globals';
-import { IllegalArgumentError } from '@common/errors';
+import { describe, expect, test } from '@jest/globals';
 import { RetrieveStorageRange, StorageRange } from '@thor/thorest/debug';
 import {
     type StorageRangeJSON,
     type StorageRangeOptionJSON
 } from '@thor/thorest/json';
-import type { HttpClient } from '@common/http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { ThorError } from '@thor/thorest';
 import { mockHttpClientForDebug } from '../../../MockHttpClient';
+import { HttpError, InvalidThorestRequestError } from '@common/errors';
 
 const mockResponse = <T>(body: T, status: number): Response => {
     const init: ResponseInit = {
@@ -33,7 +31,7 @@ describe('RetrieveStorageRange UNIT tests', () => {
             target: '0x010709463c1f0c9aa66a31182fb36d1977d99bfb6526bae0564a0eac4006c31a/0/0'
         };
         expect(() => RetrieveStorageRange.of(json)).toThrowError(
-            IllegalArgumentError
+            InvalidThorestRequestError
         );
     });
 
@@ -55,8 +53,8 @@ describe('RetrieveStorageRange UNIT tests', () => {
             throw new Error('Should not reach here.');
         } catch (error) {
             // Can receive either Error (mock issues) or ThorError (proper error handling)
-            expect([Error, ThorError]).toContain((error as Error).constructor);
-            if (error instanceof ThorError) {
+            expect([Error, HttpError]).toContain((error as Error).constructor);
+            if (error instanceof HttpError) {
                 expect([0, 400]).toContain(error.status);
             }
         }

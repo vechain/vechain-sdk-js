@@ -1,5 +1,6 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { Address, Blake2b256, HexUInt, Txt } from '@common/vcdm';
+import { Address, HexUInt, Txt } from '@common/vcdm';
+import { Blake2b256 } from '@common/cryptography/hash';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
 import { type CertificateData } from './CertificateData';
 import { IllegalArgumentError, InvalidSignatureError } from '@common/errors';

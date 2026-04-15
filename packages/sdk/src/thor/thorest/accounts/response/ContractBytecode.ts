@@ -1,11 +1,6 @@
 import { type Hex, HexUInt } from '@common/vcdm';
 import { type ContractBytecodeJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/accounts/response/ContractBytecode.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * Contract Bytecode
@@ -22,13 +17,14 @@ class ContractBytecode {
      * Constructs a new instance of the class.
      *
      * @param {ContractBytecodeJSON} json - The JSON object to initialize the instance with.
+     * @throws {InvalidThorestResponseError} if the parsing of the JSON object fails.
      */
     constructor(json: ContractBytecodeJSON) {
         try {
             this.code = HexUInt.of(json.code);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: ContractBytecodeJSON)`,
+            throw new InvalidThorestResponseError(
+                'ContractBytecode.constructor',
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

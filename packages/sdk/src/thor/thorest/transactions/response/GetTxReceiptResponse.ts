@@ -5,13 +5,7 @@ import {
     type GetTxReceiptResponseJSON,
     type OutputJSON
 } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/transactions/response/GetTxReceiptResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [GetTxReceiptResponse](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get)
@@ -57,6 +51,12 @@ class GetTxReceiptResponse {
      */
     readonly meta: ReceiptMetaResponse;
 
+    /**
+     * Constructs a new instance of the class using the provided JSON object.
+     *
+     * @param {GetTxReceiptResponseJSON} json - The JSON object containing the required fields to initialize the instance.
+     * @throws {InvalidThorestResponseError} If the JSON object cannot be parsed or contains invalid values.
+     */
     constructor(json: GetTxReceiptResponseJSON) {
         try {
             this.type =
@@ -74,8 +74,8 @@ class GetTxReceiptResponse {
             );
             this.meta = new ReceiptMetaResponse(json.meta);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: GetTxReceiptResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `GetTxReceiptResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

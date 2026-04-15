@@ -1,13 +1,7 @@
+import { InvalidThorestResponseError } from '@common/errors';
 import { Address, HexUInt, Quantity } from '@common/vcdm';
 import { type TransferLogResponseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
 import { LogMetaResponse } from '@thor/thorest/logs';
-
-/**
- * Full-Qualified-Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/logs/response/TransferLogResponse.ts!';
 
 /**
  * [TransferLogResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/TransferLogsResponse)
@@ -38,7 +32,7 @@ class TransferLogResponse {
      *
      * @param {TransferLogResponseJSON} json - The JSON object containing filter options.
      * Each property in the JSON object is parsed and converted to its respective type.
-     * @throws {IllegalArgumentError} If the provided JSON object contains invalid or unparsable data.
+     * @throws {InvalidThorestResponseError} If the provided JSON object contains invalid or unparsable data.
      */
     constructor(json: TransferLogResponseJSON) {
         try {
@@ -47,8 +41,8 @@ class TransferLogResponse {
             this.meta = new LogMetaResponse(json.meta);
             this.amount = HexUInt.of(json.amount).bi;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TransferLogResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `TransferLogResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

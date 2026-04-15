@@ -2,13 +2,7 @@ import { type WebSocketClient, type WebSocketListener } from '@thor/ws';
 import { type SubscriptionEventResponse } from '@thor/thorest/subscriptions';
 import { type HttpPath, type HttpQuery } from '@common/http';
 import { type Address, type Hex } from '@common/vcdm';
-import { ThorError } from '@thor/thorest';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/subscriptions/methods/EventsSubscription.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [Retrieve a subscription to the events endpoint](http://localhost:8669/doc/stoplight-ui/#/paths/subscriptions-event/get)
@@ -143,8 +137,7 @@ class EventsSubscription
      * Handles the message event.
      *
      * @param {MessageEvent<unknown>} event - The event to handle.
-     *
-     * @throws {ThorError} - If the JSON is invalid.
+     * @throws {InvalidThorestResponseError} - If the JSON is invalid.
      */
     onMessage(event: MessageEvent<unknown>): void {
         const json = JSON.parse(
@@ -156,8 +149,8 @@ class EventsSubscription
                 data: json
             });
         } catch (error) {
-            throw new ThorError(
-                `${FQP}onMessage(event: MessageEvent<unknown>): void`,
+            throw new InvalidThorestResponseError(
+                `EventsSubscription.onMessage`,
                 'Invalid JSON.',
                 {
                     body: json

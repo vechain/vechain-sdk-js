@@ -1,9 +1,6 @@
 import { type Clause } from './Clause';
 import { type Hex } from '@common/vcdm';
 import { type TransactionBody } from './TransactionBody';
-// Forward reference to avoid circular dependency with TransactionRequest
-// TransactionRequest is only mentioned in JSDoc comments, not used in code
-import { TransactionRequestRLPCodec } from '@thor/thor-client/rlp';
 
 /**
  * Abstract base class for all transaction types in the VeChain Thor blockchain.
@@ -68,8 +65,8 @@ abstract class BaseTransaction implements TransactionBody {
      * The reserved field for the transaction.
      */
     public readonly reserved?: {
-        features?: number;
-        unused?: Uint8Array[];
+        features: number;
+        unused: Uint8Array[];
     };
 
     /**
@@ -126,19 +123,6 @@ abstract class BaseTransaction implements TransactionBody {
             this.gasPriceCoef !== undefined &&
             this.gasPriceCoef >= 0n
         );
-    }
-
-    /**
-     * Decodes an encoded transaction request into a TransactionRequest object.
-     *
-     * @param {Uint8Array} encoded - The encoded transaction request as a Uint8Array.
-     * @return {TransactionRequest} The decoded transaction request.
-     * @throws {InvalidEncodingError} If the encoded data does not match the expected format.
-     */
-    public static decode(
-        encoded: Hex
-    ): ReturnType<typeof TransactionRequestRLPCodec.decode> {
-        return TransactionRequestRLPCodec.decode(encoded.bytes);
     }
 }
 

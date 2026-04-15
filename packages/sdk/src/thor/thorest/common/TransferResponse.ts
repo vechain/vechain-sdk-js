@@ -1,16 +1,10 @@
 import { Address, HexUInt } from '@common/vcdm';
 import { type TransferJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/model/Transfer.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [Transfer](http://localhost:8669/doc/stoplight-ui/#/schemas/Transfer)
  */
-
 class TransferResponse {
     /**
      * The address that sent the VET.
@@ -39,8 +33,8 @@ class TransferResponse {
             this.recipient = Address.of(json.recipient);
             this.amount = HexUInt.of(json.amount).bi;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TransferJSON)`,
+            throw new InvalidThorestResponseError(
+                `TransferResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

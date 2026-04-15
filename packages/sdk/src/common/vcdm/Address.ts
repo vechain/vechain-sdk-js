@@ -1,8 +1,10 @@
 import { HDKey } from '@common/cryptography/hdkey';
 import { IllegalArgumentError } from '@common/errors';
 import { Secp256k1 } from '@common/cryptography/secp256k1';
-import { Hex, Keccak256, Txt } from '@common/vcdm';
+import { Hex } from './Hex';
+import { Txt } from './Txt';
 import { HexUInt } from './HexUInt';
+import { Keccak256 } from '@common/cryptography/hash';
 
 /**
  * Full-Qualified Path.

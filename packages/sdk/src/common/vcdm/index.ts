@@ -1,7 +1,5 @@
 export * from './Address';
 export * from './BlockRef';
-export * from './encoding';
-export * from './hash';
 export * from './Hex';
 export * from './HexInt';
 export * from './HexUInt';

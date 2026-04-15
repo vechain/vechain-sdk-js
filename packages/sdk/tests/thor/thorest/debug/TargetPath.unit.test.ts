@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { TargetPath } from '@thor/thorest/debug';
 import { Hex } from '@common/vcdm';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * VeChain TargetPath - unit
@@ -73,7 +73,7 @@ describe('TargetPath UNIT tests', () => {
             const invalidPath = 'not-a-valid-path';
             expect(() => {
                 TargetPath.of(invalidPath);
-            }).toThrow(IllegalArgumentError);
+            }).toThrow(InvalidThorestRequestError);
         });
 
         test('should handle edge case path with minimum valid format', () => {
@@ -85,10 +85,12 @@ describe('TargetPath UNIT tests', () => {
 
         test('should handle null or undefined input to of() method', () => {
             // @ts-expect-error - We're purposely testing an error case with null
-            expect(() => TargetPath.of(null)).toThrow(IllegalArgumentError);
+            expect(() => TargetPath.of(null)).toThrow(
+                InvalidThorestRequestError
+            );
             // @ts-expect-error - We're purposely testing an error case with undefined
             expect(() => TargetPath.of(undefined)).toThrow(
-                IllegalArgumentError
+                InvalidThorestRequestError
             );
         });
     });
@@ -112,25 +114,14 @@ describe('TargetPath UNIT tests', () => {
 
         test('should throw for invalid string', () => {
             const path = 'invalid-path';
-            expect(() => TargetPath.of(path)).toThrow(IllegalArgumentError);
+            expect(() => TargetPath.of(path)).toThrow(
+                InvalidThorestRequestError
+            );
         });
 
         test('should throw for empty string', () => {
-            expect(() => TargetPath.of('')).toThrow(IllegalArgumentError);
+            expect(() => TargetPath.of('')).toThrow(InvalidThorestRequestError);
         });
-
-        // These tests are no longer relevant since we're restricting the input types
-        // test('should throw for number input', () => {
-        //     expect(() => TargetPath.of(123 as any)).toThrow(IllegalArgumentError);
-        // });
-
-        // test('should throw for bigint input', () => {
-        //     expect(() => TargetPath.of(123n as any)).toThrow(IllegalArgumentError);
-        // });
-
-        // test('should throw for Uint8Array input', () => {
-        //     expect(() => TargetPath.of(new Uint8Array([1, 2, 3]) as any)).toThrow(IllegalArgumentError);
-        // });
     });
 
     describe('static fromTxIdAndClause()', () => {
@@ -148,7 +139,7 @@ describe('TargetPath UNIT tests', () => {
             const clauseIndex = 0;
             expect(() =>
                 TargetPath.fromTxIdAndClause(txId, clauseIndex)
-            ).toThrow(IllegalArgumentError);
+            ).toThrow(InvalidThorestRequestError);
         });
 
         test('should throw for negative clauseIndex', () => {
@@ -157,7 +148,7 @@ describe('TargetPath UNIT tests', () => {
             const clauseIndex = -1;
             expect(() =>
                 TargetPath.fromTxIdAndClause(txId, clauseIndex)
-            ).toThrow(IllegalArgumentError);
+            ).toThrow(InvalidThorestRequestError);
         });
 
         test('should throw for non-integer clauseIndex', () => {
@@ -166,7 +157,7 @@ describe('TargetPath UNIT tests', () => {
             const clauseIndex = 1.5;
             expect(() =>
                 TargetPath.fromTxIdAndClause(txId, clauseIndex)
-            ).toThrow(IllegalArgumentError);
+            ).toThrow(InvalidThorestRequestError);
         });
     });
 
@@ -214,7 +205,7 @@ describe('TargetPath UNIT tests', () => {
                     blockRef,
                     clauseIndex
                 )
-            ).toThrow(IllegalArgumentError);
+            ).toThrow(InvalidThorestRequestError);
         });
 
         test('should throw for invalid blockRef (string not hex)', () => {
@@ -228,7 +219,7 @@ describe('TargetPath UNIT tests', () => {
                     blockRef,
                     clauseIndex
                 )
-            ).toThrow(IllegalArgumentError);
+            ).toThrow(InvalidThorestRequestError);
         });
 
         test('should throw for invalid blockRef (negative number)', () => {
@@ -242,7 +233,7 @@ describe('TargetPath UNIT tests', () => {
                     blockRef,
                     clauseIndex
                 )
-            ).toThrow(IllegalArgumentError);
+            ).toThrow(InvalidThorestRequestError);
         });
 
         test('should throw for invalid blockRef (non-integer number)', () => {
@@ -256,7 +247,7 @@ describe('TargetPath UNIT tests', () => {
                     blockRef,
                     clauseIndex
                 )
-            ).toThrow(IllegalArgumentError);
+            ).toThrow(InvalidThorestRequestError);
         });
 
         test('should throw for negative clauseIndex', () => {
@@ -270,7 +261,7 @@ describe('TargetPath UNIT tests', () => {
                     blockRef,
                     clauseIndex
                 )
-            ).toThrow(IllegalArgumentError);
+            ).toThrow(InvalidThorestRequestError);
         });
 
         test('should throw for non-integer clauseIndex', () => {
@@ -284,7 +275,7 @@ describe('TargetPath UNIT tests', () => {
                     blockRef,
                     clauseIndex
                 )
-            ).toThrow(IllegalArgumentError);
+            ).toThrow(InvalidThorestRequestError);
         });
     });
 

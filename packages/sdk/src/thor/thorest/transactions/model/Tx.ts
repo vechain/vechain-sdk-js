@@ -7,14 +7,9 @@ import {
     UInt
 } from '@common/vcdm';
 import { Clause } from '@thor/thor-client/model/transactions';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestResponseError } from '@common/errors';
 import { type ClauseJSON } from '@thor/thorest/json';
 import { type TxJSON } from '../json/TxJSON';
-
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/transactions/model/Tx.ts!';
 
 /**
  * [Tx](http://localhost:8669/doc/stoplight-ui/#/schemas/Tx)
@@ -107,7 +102,7 @@ class Tx {
      * Constructs an instance of the class using the provided JSON object.
      *
      * @param {TxJSON} json - The JSON object containing raw transaction data and metadata.
-     * @throws {IllegalArgumentError} If the input JSON cannot be parsed correctly.
+     * @throws {InvalidThorestResponseError} If the input JSON cannot be parsed correctly.
      */
     constructor(json: TxJSON) {
         try {
@@ -142,8 +137,8 @@ class Tx {
                 json.dependsOn !== null ? HexUInt32.of(json.dependsOn) : null;
             this.nonce = HexUInt.of(json.nonce).bi;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: TxJSON)`,
+            throw new InvalidThorestResponseError(
+                `Tx.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

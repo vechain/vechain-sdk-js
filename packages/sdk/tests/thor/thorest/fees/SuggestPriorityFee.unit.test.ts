@@ -1,18 +1,30 @@
 import {
     GetFeesPriorityResponse,
     type GetFeesPriorityResponseJSON,
-    SuggestPriorityFee,
-    ThorError
+    SuggestPriorityFee
 } from '@thor/thorest';
 import { expect, jest } from '@jest/globals';
 import type { HttpClient } from '@common/http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { HttpError, InvalidThorestResponseError } from '@common/errors';
 
-const mockHttpClient = <T>(response: T): HttpClient => {
-    return {
-        get: jest.fn().mockReturnValue(response)
-    } as unknown as HttpClient;
-};
+const mockHttpClient = (response: Response): HttpClient =>
+    ({
+        get: jest.fn().mockImplementation(async () => {
+            if (!response.ok) {
+                throw new HttpError(
+                    'mock',
+                    `HTTP ${response.status}`,
+                    response.status,
+                    response.statusText,
+                    await response.text(),
+                    response.url,
+                    {}
+                );
+            }
+            return response;
+        })
+    }) as unknown as HttpClient;
 
 const mockResponse = <T>(body: T, status: number): Response => {
     const init: ResponseInit = {
@@ -38,10 +50,11 @@ describe('SuggestPriorityFee UNIT tests', () => {
                 mockHttpClient(mockResponse(expected, status))
             );
             // noinspection ExceptionCaughtLocallyJS
+            console.log('DEBUG');
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(HttpError);
+            expect((error as HttpError).status).toBe(status);
         }
     });
 
@@ -57,8 +70,10 @@ describe('SuggestPriorityFee UNIT tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(InvalidThorestResponseError);
+            expect((error as InvalidThorestResponseError).message).toBe(
+                'Bad parse'
+            );
         }
     });
 

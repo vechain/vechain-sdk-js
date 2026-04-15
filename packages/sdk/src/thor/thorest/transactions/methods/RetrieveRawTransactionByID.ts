@@ -1,22 +1,15 @@
 import { type Hex, HexUInt32 } from '@common/vcdm';
 import { type HttpClient } from '@common/http';
-import { handleHttpError } from '@thor/thorest/utils';
 import { RetrieveTransactionQuery } from './RetrieveTransactionQuery';
 import { RetrieveTransactionPath } from './RetrieveTransactionPath';
 import {
     GetRawTxResponse,
-    ThorError,
     type ThorRequest,
     type ThorResponse
 } from '@thor/thorest';
 import { type GetRawTxResponseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/transactions/methods/SendTransaction.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * [Retrieve a transaction by ID](http://localhost:8669/doc/stoplight-ui/#/paths/transactions-id/get).
@@ -55,37 +48,27 @@ class RetrieveRawTransactionByID implements ThorRequest<
      * @param {HttpClient} httpClient - The HTTP client used to send the request.
      * @return {Promise<ThorResponse<RetrieveRawTransactionByID, GetRawTxResponse | null>>}
      * A promise that resolves with the ThorResponse object containing the requested raw transaction, or null if the response is not valid.
-     * @throws {ThorError} Throws a ThorError in case of an invalid or unsuccessful response.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<
         ThorResponse<RetrieveRawTransactionByID, GetRawTxResponse | null>
     > {
-        const fqp = `${FQP}askTo(httpClient: HttpClient): Promise<ThorResponse<RetrieveRawTransactionByID, GetRawTxResponse|null>>`;
-        try {
-            const response = await httpClient.get(this.path, this.query);
-            const json = (await response.json()) as GetRawTxResponseJSON | null;
-            try {
-                return {
-                    request: this,
-                    response: json === null ? null : new GetRawTxResponse(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: json
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } catch (error) {
-            throw handleHttpError(fqp, error);
-        }
+        const fqp = 'RetrieveRawTransactionByID.askTo';
+        // do http get request - this will throw an error if the request fails
+        const response = await httpClient.get(this.path, this.query);
+
+        // parse the nullable response - this will throw an error if the response cannot be parsed
+        const rawTxResponse = await parseResponseHandler<
+            GetRawTxResponse,
+            GetRawTxResponseJSON
+        >(fqp, response, GetRawTxResponse);
+
+        // return the response
+        return {
+            request: this,
+            response: rawTxResponse
+        };
     }
 
     /**
@@ -93,7 +76,7 @@ class RetrieveRawTransactionByID implements ThorRequest<
      *
      * @param {Hex} txId - The hexadecimal transaction ID used to retrieve the raw transaction.
      * @return {RetrieveRawTransactionByID} An instance of RetrieveRawTransactionByID created using the given transaction ID.
-     * @throws {IllegalArgumentError} If the transaction ID is invalid or an error occurs during processing.
+     * @throws {InvalidThorestRequestError} If the transaction ID is invalid or an error occurs during processing.
      */
     static of(txId: Hex): RetrieveRawTransactionByID {
         try {
@@ -102,8 +85,8 @@ class RetrieveRawTransactionByID implements ThorRequest<
                 new Query(undefined, false)
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}of(txId: Hex): RetrieveRawTransactionByID`,
+            throw new InvalidThorestRequestError(
+                `RetrieveRawTransactionByID.of`,
                 'Invalid transaction ID.',
                 {
                     txId
@@ -118,7 +101,7 @@ class RetrieveRawTransactionByID implements ThorRequest<
      *
      * @param {Hex} [head] - The head value to use for querying. Optional.
      * @return {RetrieveRawTransactionByID} - A new instance of RetrieveRawTransactionByID with the updated query.
-     * @throws {ThorError} - Throws an error if the `head` value is invalid.
+     * @throws {InvalidThorestRequestError} - Throws an error if the `head` value is invalid.
      */
     withHead(head?: Hex): RetrieveRawTransactionByID {
         try {
@@ -127,8 +110,8 @@ class RetrieveRawTransactionByID implements ThorRequest<
                 new Query(head, this.query.pending)
             );
         } catch (error) {
-            throw new ThorError(
-                `${FQP}withHead(head?: Hex): RetrieveRawTransactionByID`,
+            throw new InvalidThorestRequestError(
+                `RetrieveRawTransactionByID.withHead`,
                 'Invalid head value.',
                 {
                     head

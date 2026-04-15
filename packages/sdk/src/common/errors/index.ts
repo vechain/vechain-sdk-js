@@ -12,3 +12,7 @@ export * from './VeChainSDKError';
 export * from './TimeoutError';
 export * from './ABIDecodeError';
 export * from './VIP191Error';
+
+export * from './thorest';
+export * from './http';
+export * from './rlp';

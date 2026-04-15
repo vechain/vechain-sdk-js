@@ -20,7 +20,7 @@ import {
     RetrieveTransactionReceipt,
     SendTransaction
 } from '@thor/thorest';
-import { TransactionRequestRLPCodec } from '../rlp/TransactionRequestRLPCodec';
+import { TransactionBodyDecoder } from '@common/encoding/rlp/TransactionBodyDecoder';
 import { type TransactionRequest } from '@thor/thor-client/model/transactions/TransactionRequest';
 import { IllegalArgumentError, TimeoutError } from '@common/errors';
 import { waitUntil, type WaitUntilOptions } from '@common/utils/poller';
@@ -134,7 +134,7 @@ class TransactionsModule extends AbstractThorModule {
      */
     public async sendRawTransaction(rawTx: Hex): Promise<Hex> {
         // Decode the raw transaction to check if it is valid
-        TransactionRequestRLPCodec.decode(rawTx.bytes);
+        TransactionBodyDecoder.decode(rawTx);
         // Send the transaction to the network
         const method = SendTransaction.of(rawTx.bytes);
         const thorResponse = await method.askTo(this.httpClient);
@@ -149,7 +149,7 @@ class TransactionsModule extends AbstractThorModule {
      */
     public async sendTransaction(txRequest: TransactionRequest): Promise<Hex> {
         // encode the transaction request
-        const encoded = TransactionRequestRLPCodec.encode(txRequest);
+        const { encoded } = txRequest;
         const encodedHex = Hex.of(encoded);
         // send the transaction to the network
         return await this.sendRawTransaction(encodedHex);

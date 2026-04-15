@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { FetchHttpClient } from '@common/http';
-import { ThorError, TraceCall } from '@thor/thorest';
+import { HttpError } from '@common/errors';
+import { TraceCall } from '@thor/thorest';
 import { Hex, Revision } from '@common/vcdm';
 import { type PostDebugTracerCallRequestJSON } from '@thor/thorest/json';
 import { ThorNetworks } from '@thor/utils/const/network';
@@ -31,10 +32,10 @@ describe('TraceCall SOLO tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
+            expect(error).toBeInstanceOf(HttpError);
             // Now we expect status 0 for network errors (when server is not running)
             // or status 400 for HTTP errors (when server is running but bad revision)
-            const thorError = error as ThorError;
+            const thorError = error as HttpError;
             expect([0, 400]).toContain(thorError.status);
         }
     });

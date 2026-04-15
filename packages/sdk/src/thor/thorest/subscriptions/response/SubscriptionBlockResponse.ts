@@ -1,12 +1,6 @@
+import { InvalidThorestResponseError } from '@common/errors';
 import { Address, type Hex, HexUInt, HexUInt32, UInt } from '@common/vcdm';
 import { type SubscriptionBlockResponseJSON } from '@thor/thorest/subscriptions';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/subscriptions/response/SubscriptionBlockResponse.ts!';
 
 /**
  * [SubscriptionBlockResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/SubscriptionBlockResponse)
@@ -109,7 +103,7 @@ class SubscriptionBlockResponse {
      * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {SubscriptionBlockResponseJSON} json - The JSON object containing block response data.
-     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponseError} If the parsing of the JSON object fails.
      */
     constructor(json: SubscriptionBlockResponseJSON) {
         try {
@@ -137,8 +131,8 @@ class SubscriptionBlockResponse {
                 (txId: string): Hex => HexUInt32.of(txId)
             );
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: SubscriptionBlockResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `SubscriptionBlockResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

@@ -1,5 +1,5 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { HexUInt } from '@common/vcdm';
+import { HexUInt } from '../../vcdm/HexUInt';
 import {
     IllegalArgumentError,
     InvalidMessageHashError,

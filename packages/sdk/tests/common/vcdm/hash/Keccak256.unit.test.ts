@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, Keccak256 } from '@common/vcdm';
+import { Hex } from '@common/vcdm';
+import { Keccak256 } from '@common/cryptography/hash';
 import { IllegalArgumentError } from '@common/errors';
 import { CONTENT, NO_CONTENT } from './fixture';
 

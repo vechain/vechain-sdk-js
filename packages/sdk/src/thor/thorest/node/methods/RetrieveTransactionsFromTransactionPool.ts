@@ -1,18 +1,12 @@
 import { type HttpClient, type HttpPath, type HttpQuery } from '@common/http';
 import { type Address } from '@common/vcdm';
 import {
-    ThorError,
     type ThorRequest,
     type ThorResponse,
     TransactionsIDs
 } from '@thor/thorest';
 import { type TransactionsIDsJSON } from '@thor/thorest/json';
-
-/**
- * Full-Qualified-Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/node/methods/GetTxPoolStatus.ts/RetrieveTransactionsFromTransactionPool.ts!';
+import { parseResponseHandler } from '@thor/thorest/utils/ParseResponseHandler';
 
 /**
  * [Retrieve transactions from transactions pool](http://localhost:8669/doc/stoplight-ui/#/paths/node-txpool/get)
@@ -44,48 +38,29 @@ class RetrieveTransactionsFromTransactionPool implements ThorRequest<
      *
      * @param {HttpClient} httpClient - An HTTP client instance used to send the request.
      * @return {Promise<ThorResponse<RetrieveTransactionsFromTransactionPool, TransactionsIDs>>} A promise that resolves to a ThorResponse containing the retrieved transactions data or a related error.
-     * @throws ThorError if the request fails or returns an error response.
+     * @throws HttpError if the request fails or returns an error response.
      */
     async askTo(
         httpClient: HttpClient
     ): Promise<
         ThorResponse<RetrieveTransactionsFromTransactionPool, TransactionsIDs>
     > {
-        const fqp = `${FQP}ask(httpClient: HttpClient): ThorResponse<RetrieveTransactionsFromTransactionPool, TransactionsIDs>`;
+        const fqp = `RetrieveTransactionsFromTransactionPool.askTo`;
+        // http request - this will throw HttpError if the request fails
         const response = await httpClient.get(
             RetrieveTransactionsFromTransactionPool.PATH,
             this.query
         );
-        if (response.ok) {
-            try {
-                const json = (await response.json()) as TransactionsIDsJSON;
-                return {
-                    request: this,
-                    response: new TransactionsIDs(json)
-                };
-            } catch (error) {
-                throw new ThorError(
-                    fqp,
-                    error instanceof Error ? error.message : 'Bad response.',
-                    {
-                        url: response.url,
-                        body: await response.text()
-                    },
-                    error instanceof Error ? error : undefined,
-                    response.status
-                );
-            }
-        } else {
-            throw new ThorError(
-                fqp,
-                await response.text(),
-                {
-                    url: response.url
-                },
-                undefined,
-                response.status
-            );
-        }
+        // parse the not nullable response - this will throw InvalidThorestResponseError if the response cannot be parsed
+        const transactionsIDs = await parseResponseHandler<
+            TransactionsIDs,
+            TransactionsIDsJSON
+        >(fqp, response, TransactionsIDs, false);
+        // return a thor response
+        return {
+            request: this,
+            response: transactionsIDs
+        };
     }
 
     /**

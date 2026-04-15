@@ -2,12 +2,9 @@ import { expect, jest } from '@jest/globals';
 import { Revision } from '@common/vcdm';
 import { type HttpClient } from '@common/http';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import {
-    RegularBlockResponse,
-    RetrieveRegularBlock,
-    ThorError
-} from '@thor/thorest';
+import { RegularBlockResponse, RetrieveRegularBlock } from '@thor/thorest';
 import { type RegularBlockResponseJSON } from '@thor/thorest/json';
+import { InvalidThorestResponseError } from '@common/errors/thorest';
 
 const mockHttpClient = <T>(response: T): HttpClient => {
     return {
@@ -43,8 +40,10 @@ describe('RetrieveRegularBlock UNIT tests', () => {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Should not reach here.');
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(InvalidThorestResponseError);
+            expect((error as InvalidThorestResponseError).message).toBe(
+                'Bad parse'
+            );
         }
     });
 
@@ -64,8 +63,10 @@ describe('RetrieveRegularBlock UNIT tests', () => {
                 )
             );
         } catch (error) {
-            expect(error).toBeInstanceOf(ThorError);
-            expect((error as ThorError).status).toBe(status);
+            expect(error).toBeInstanceOf(InvalidThorestResponseError);
+            expect((error as InvalidThorestResponseError).message).toBe(
+                'Bad parse'
+            );
         }
     });
 

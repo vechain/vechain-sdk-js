@@ -1,11 +1,6 @@
 import { type Hex, HexUInt32, UInt } from '@common/vcdm';
 import { type TxMetaJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP = 'packages/sdk/src/thor/thorest/transactions/model/TxMeta.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [TxMeta](http://localhost:8669/doc/stoplight-ui/#/schemas/TxMeta)
@@ -32,7 +27,7 @@ class TxMetaResponse {
      * Constructs an instance of the class using the provided JSON object.
      *
      * @param {TxMetaJSON} json - The JSON object containing the transaction metadata.
-     * @throws {IllegalArgumentError} If the provided JSON object cannot be parsed or is invalid.
+     * @throws {InvalidThorestResponseError} If the provided JSON object cannot be parsed or is invalid.
      */
     constructor(json: TxMetaJSON) {
         try {
@@ -40,8 +35,8 @@ class TxMetaResponse {
             this.blockNumber = UInt.of(json.blockNumber).valueOf();
             this.blockTimestamp = UInt.of(json.blockTimestamp).valueOf();
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: ClauseJSON)`,
+            throw new InvalidThorestResponseError(
+                `TxMetaResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

@@ -1,13 +1,7 @@
 import { Address, HexUInt } from '@common/vcdm';
 import { type SubscriptionTransferResponseJSON } from '@thor/thorest/subscriptions';
-import { IllegalArgumentError } from '@common/errors';
 import { LogMetaResponse } from '@thor/thorest';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/subscriptions/response/SubscriptionTransferResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 /**
  * [SubscriptionTransferResponse](http://localhost:8669/doc/stoplight-ui/#/schemas/SubscriptionTransferResponse)
@@ -44,7 +38,7 @@ class SubscriptionTransferResponse {
      * Constructs a new instance of the class by parsing the provided JSON object.
      *
      * @param {SubscriptionTransferResponseJSON} json - The JSON object containing transfer response data.
-     * @throws {IllegalArgumentError} If the parsing of the JSON object fails.
+     * @throws {InvalidThorestResponseError} If the parsing of the JSON object fails.
      */
     constructor(json: SubscriptionTransferResponseJSON) {
         try {
@@ -54,8 +48,8 @@ class SubscriptionTransferResponse {
             this.obsolete = json.obsolete;
             this.meta = new LogMetaResponse(json.meta);
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: SubscriptionTransferResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `SubscriptionTransferResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

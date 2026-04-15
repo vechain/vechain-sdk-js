@@ -1,4 +1,5 @@
-import { Address, Blake2b256, BlockRef, HexUInt } from '@common/vcdm';
+import { Address, BlockRef, HexUInt } from '@common/vcdm';
+import { Blake2b256 } from '@common/cryptography/hash';
 import { ClauseBuilder } from '@thor/thor-client/transactions';
 import { PrivateKeySigner } from '@thor';
 import { Secp256k1 } from '@common/cryptography/secp256k1';

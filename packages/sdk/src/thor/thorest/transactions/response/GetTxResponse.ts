@@ -1,12 +1,6 @@
 import { Tx, TxMetaResponse } from '@thor/thorest/transactions/model';
 import { type GetTxResponseJSON } from '@thor/thorest/json';
-import { IllegalArgumentError } from '@common/errors';
-
-/**
- * Full-Qualified Path
- */
-const FQP =
-    'packages/sdk/src/thor/thorest/transactions/response/GetTxResponse.ts!';
+import { InvalidThorestResponseError } from '@common/errors';
 
 class GetTxResponse extends Tx {
     /**
@@ -18,7 +12,7 @@ class GetTxResponse extends Tx {
      * Constructs an instance of the class using the provided JSON object.
      *
      * @param {GetTxResponseJSON} json - The JSON object containing raw transaction data and metadata.
-     * @throws {IllegalArgumentError} If the input JSON cannot be parsed correctly.
+     * @throws {InvalidThorestResponseError} If the input JSON cannot be parsed correctly.
      */
     constructor(json: GetTxResponseJSON) {
         try {
@@ -26,8 +20,8 @@ class GetTxResponse extends Tx {
             this.meta =
                 json.meta !== null ? new TxMetaResponse(json.meta) : null;
         } catch (error) {
-            throw new IllegalArgumentError(
-                `${FQP}constructor(json: GetTxResponseJSON)`,
+            throw new InvalidThorestResponseError(
+                `GetTxResponse.constructor`,
                 'Bad parse',
                 { json },
                 error instanceof Error ? error : undefined

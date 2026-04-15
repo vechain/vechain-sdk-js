@@ -1,16 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import { ExecuteCodesRequest, InspectClauses } from '@thor/thorest';
-import {
-    type ExecuteCodeResponseJSON,
-    type ExecuteCodesRequestJSON
-} from '@thor/thorest/json';
+import { type ExecuteCodeResponseJSON } from '@thor/thorest/json';
 import { Address, BlockRef, Hex, HexUInt } from '@common/vcdm';
 import { mockHttpClient } from '../../../MockHttpClient';
 import {
     Clause,
     type SimulateTransactionOptions
 } from '@thor/thor-client/model/transactions';
-import { IllegalArgumentError } from '@common/errors';
+import { InvalidThorestRequestError } from '@common/errors';
 
 /**
  * VeChain inspect clauses - unit
@@ -95,13 +92,11 @@ describe('InspectClauses unit tests', () => {
         ];
 
         // Execute the test
-        const response = (
-            await InspectClauses.of(
-                new ExecuteCodesRequest(clauses, options)
-            ).askTo(
-                mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
-            )
-        ).response;
+        const { response } = await InspectClauses.of(
+            new ExecuteCodesRequest(clauses, options)
+        ).askTo(
+            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
+        );
 
         // Verify the response
         expect(response.items).toBeInstanceOf(Array);
@@ -168,13 +163,11 @@ describe('InspectClauses unit tests', () => {
         ];
 
         // Execute the test
-        const response = (
-            await InspectClauses.of(
-                new ExecuteCodesRequest(clauses, options)
-            ).askTo(
-                mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
-            )
-        ).response;
+        const { response } = await InspectClauses.of(
+            new ExecuteCodesRequest(clauses, options)
+        ).askTo(
+            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
+        );
 
         // Verify the response
         const output = response.items[0];
@@ -198,7 +191,7 @@ describe('InspectClauses unit tests', () => {
             InspectClauses.of(new ExecuteCodesRequest(clauses, options)).askTo(
                 mockHttpClient<ExecuteCodeResponseJSON[]>([], 'post')
             )
-        ).rejects.toThrow(IllegalArgumentError);
+        ).rejects.toThrow(InvalidThorestRequestError);
     });
 
     test('should handle out of gas scenario', async () => {
@@ -231,13 +224,11 @@ describe('InspectClauses unit tests', () => {
         ];
 
         // Execute the test
-        const response = (
-            await InspectClauses.of(
-                new ExecuteCodesRequest(clauses, options)
-            ).askTo(
-                mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
-            )
-        ).response;
+        const { response } = await InspectClauses.of(
+            new ExecuteCodesRequest(clauses, options)
+        ).askTo(
+            mockHttpClient<ExecuteCodeResponseJSON[]>(mockResponse, 'post')
+        );
 
         // Verify the response
         const output = response.items[0];
