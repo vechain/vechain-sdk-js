@@ -38,7 +38,7 @@
     "test:solo": "(yarn start-thor-solo && yarn seed-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@nomicfoundation/hardhat-ethers": "^3.1.0",
+    "@nomicfoundation/hardhat-ethers": "^3.1.2",
     "@vechain/sdk-core": "2.0.7",
     "@vechain/sdk-errors": "2.0.7",
     "@vechain/sdk-ethers-adapter": "2.0.7",
