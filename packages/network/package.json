@@ -59,6 +59,6 @@
     "@vechain/vebetterdao-contracts": "^4.1.0",
     "jest-fetch-mock": "^3.0.3",
     "whatwg-fetch": "^3.6.20",
-    "ws": "^8.18.1"
+    "ws": "^8.20.1"
   }
 }
