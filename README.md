@@ -132,7 +132,7 @@ There are two ways to run tests:
 
 #### Running tests in a browser-like environment
 
-The SDK fully support execution in a browser environment. To run the tests in a browser-like environment, you can use the `yarn test:browser` command. This command requires a local thor-solo node to be running.
+The SDK fully supports execution in a browser environment. To run the tests in a browser-like environment, you can use the `yarn test:browser` command. This command requires a local thor-solo node to be running.
 Alternatively, you can run the tests with thor-solo by using the `yarn test:browser:solo` command. This command will start thor-solo, run the tests, and stop thor-solo at the end.
 
 
