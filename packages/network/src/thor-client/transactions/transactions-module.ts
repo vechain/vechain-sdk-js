@@ -42,6 +42,7 @@ import type {
 import { type CallNameReturnType, type DebugModule } from '../debug';
 import { type ForkDetector } from '../fork';
 import { type GasModule } from '../gas';
+import { allocateExecutionGas } from '../gas/helpers/allocate-execution-gas';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import type { EstimateGasOptions, EstimateGasResult } from '../gas/types';
 import { type LogsModule } from '../logs';
@@ -874,6 +875,12 @@ class TransactionsModule {
     /**
      * Estimates the amount of gas required to execute a set of transaction clauses.
      *
+     * Contract-interaction estimates convert simulated `gasUsed` into an
+     * EIP-150-aware allocation (`max(gasUsed + 15000, ceil(gasUsed * 64/63))`)
+     * so nested CALL/DELEGATECALL boundaries (e.g. UUPS proxies) do not run
+     * out of gas when the reported consumption exceeds the historical 15k
+     * absolute buffer.
+     *
      * @param {SimulateTransactionClause[]} clauses - An array of clauses to be simulated. Must contain at least one clause.
      * @param {string} [caller] - The address initiating the transaction. Optional.
      * @param {EstimateGasOptions} [options] - Additional options for the estimation, including gas padding.
@@ -881,6 +888,7 @@ class TransactionsModule {
      * @throws {InvalidDataType} - If clauses array is empty or if gas padding is not within the range (0, 1].
      *
      * @see {@link TransactionsModule#simulateTransaction}
+     * @see {@link allocateExecutionGas}
      */
     public async estimateGas(
         clauses: (SimulateTransactionClause | ContractClause)[],
@@ -946,13 +954,17 @@ class TransactionsModule {
             return sum + simulation.gasUsed;
         }, 0);
 
-        // The total gas of the transaction
-        // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
+        // Convert simulated consumption into an EIP-150-aware allocation.
+        // Simulation reports gas *used*; nested CALL/DELEGATECALL boundaries
+        // retain 1/64 of available gas, so the tx gas limit must reserve more
+        // than the reported consumption for high-gas contract calls
+        // (e.g. UUPS proxy → implementation). See allocateExecutionGas().
+        const executionGas = allocateExecutionGas(totalSimulatedGas);
+
+        // The total gas of the transaction (optional gasPadding on top)
         const totalGas = Math.ceil(
-            (intrinsicGas +
-                (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
-                (1 + (options?.gasPadding ?? 0))
-        ); // Add gasPadding if it is defined
+            (intrinsicGas + executionGas) * (1 + (options?.gasPadding ?? 0))
+        );
         return isReverted
             ? {
                   totalGas,
