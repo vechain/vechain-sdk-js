@@ -55,6 +55,19 @@ class Transaction {
     };
 
     /**
+     * The maximum gas limit a single transaction is allowed to declare.
+     *
+     * @remarks
+     * `2^24` (16,777,216), the transaction gas limit cap introduced by
+     * {@link https://eips.ethereum.org/EIPS/eip-7825 | EIP-7825} and adopted by
+     * VeChainThor with the *Interstellar* hard fork. From that fork onwards a node
+     * rejects any transaction whose `gas` field is greater than this value.
+     *
+     * @see {@link Transaction.isValidGasLimit}
+     */
+    public static readonly MAX_GAS_LIMIT = 16_777_216;
+
+    /**
      * Represents the prefix for raw EIP-1559 transaction type.
      */
     private static readonly EIP1559_TX_TYPE_PREFIX = 0x51;
@@ -539,6 +552,35 @@ class Transaction {
             Transaction.GAS_CONSTANTS.TX_GAS +
                 Transaction.GAS_CONSTANTS.CLAUSE_GAS,
             Units.wei
+        );
+    }
+
+    /**
+     * Checks whether a transaction gas limit fits the EIP-7825 cap.
+     *
+     * @remarks
+     * This is deliberately kept out of {@link Transaction.isValidBody} so that
+     * {@link Transaction.decode} keeps working for transactions that were valid before
+     * the *Interstellar* hard fork introduced the cap. Callers that are about to build
+     * and broadcast a new transaction should use this method to fail early.
+     *
+     * @param {string | number | bigint} gas - The gas limit to check. Decimal and `0x`
+     * prefixed hexadecimal strings are both accepted.
+     * @return {boolean} `true` if `gas` is a non-negative integer not greater than
+     * {@link Transaction.MAX_GAS_LIMIT}, `false` otherwise.
+     *
+     * @example
+     * ```
+     * Transaction.isValidGasLimit(21000); // true
+     * Transaction.isValidGasLimit(16_777_217); // false
+     * ```
+     */
+    public static isValidGasLimit(gas: string | number | bigint): boolean {
+        const value = Number(gas);
+        return (
+            Number.isInteger(value) &&
+            value >= 0 &&
+            value <= Transaction.MAX_GAS_LIMIT
         );
     }
 

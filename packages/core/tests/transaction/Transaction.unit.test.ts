@@ -977,4 +977,52 @@ describe('Transaction parameter validation', () => {
     });
 });
 
+describe('Transaction gas limit cap (EIP-7825)', () => {
+    test('MAX_GAS_LIMIT <- is 2^24', () => {
+        expect(Transaction.MAX_GAS_LIMIT).toBe(2 ** 24);
+        expect(Transaction.MAX_GAS_LIMIT).toBe(16777216);
+    });
+
+    test('true <- isValidGasLimit with gas below the cap', () => {
+        expect(Transaction.isValidGasLimit(0)).toBe(true);
+        expect(Transaction.isValidGasLimit(21000)).toBe(true);
+        expect(Transaction.isValidGasLimit('0x5208')).toBe(true);
+        expect(Transaction.isValidGasLimit('21000')).toBe(true);
+        expect(Transaction.isValidGasLimit(21000n)).toBe(true);
+    });
+
+    test('true <- isValidGasLimit with gas exactly at the cap', () => {
+        expect(Transaction.isValidGasLimit(Transaction.MAX_GAS_LIMIT)).toBe(
+            true
+        );
+        expect(Transaction.isValidGasLimit('0x1000000')).toBe(true);
+    });
+
+    test('false <- isValidGasLimit with gas above the cap', () => {
+        expect(Transaction.isValidGasLimit(Transaction.MAX_GAS_LIMIT + 1)).toBe(
+            false
+        );
+        expect(Transaction.isValidGasLimit('0x1000001')).toBe(false);
+        expect(Transaction.isValidGasLimit(100000000n)).toBe(false);
+    });
+
+    test('false <- isValidGasLimit with a non-integer or negative gas', () => {
+        expect(Transaction.isValidGasLimit(-1)).toBe(false);
+        expect(Transaction.isValidGasLimit(21000.5)).toBe(false);
+        expect(Transaction.isValidGasLimit('not a number')).toBe(false);
+    });
+
+    test('Transaction <- of does not enforce the cap, so past transactions still decode', () => {
+        const aboveCapBody: TransactionBody = {
+            ...TxLegacyBodyFix,
+            gas: Transaction.MAX_GAS_LIMIT + 1
+        };
+        const tx = Transaction.of(aboveCapBody);
+        expect(tx.body.gas).toBe(Transaction.MAX_GAS_LIMIT + 1);
+        expect(Transaction.decode(tx.encoded, false).body.gas).toBe(
+            Transaction.MAX_GAS_LIMIT + 1
+        );
+    });
+});
+
 export { LegacyTransactionFixture as TransactionFixture };
