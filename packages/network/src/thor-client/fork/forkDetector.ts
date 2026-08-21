@@ -2,7 +2,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import { buildQuery, thorest } from '../../utils';
 import { type BlockDetail } from '../blocks/types';
 import { type AccountData } from '../accounts';
-import { Revision } from '@vechain/sdk-core';
+import { BlockId, Revision } from '@vechain/sdk-core';
 import { type HttpClient, HttpMethod } from '../../http';
 
 /**
@@ -111,6 +111,9 @@ class ForkDetector {
      * - the EIP-2935 History Storage account has code (deployed at the Interstellar
      *   fork block).
      *
+     * Moving revisions (`best`, `finalized`, a block number) are resolved to a
+     * concrete block ID before caching, so a later head cannot reuse a stale result.
+     *
      * @param revision Block number or ID (e.g., 'best', 'finalized', or numeric).
      * @returns `true` if Interstellar-forked, otherwise `false`.
      * @throws {InvalidDataType} If the revision is invalid.
@@ -118,6 +121,24 @@ class ForkDetector {
     public async isInterstellarForked(
         revision?: string | number
     ): Promise<boolean> {
+        if (interstellarForkDetected) {
+            return true;
+        }
+
+        revision ??= 'best';
+        if (!Revision.isValid(revision)) {
+            throw new InvalidDataType(
+                'ForkDetector.isInterstellarForked()',
+                'Invalid revision. Must be a valid block number or ID.',
+                { revision }
+            );
+        }
+
+        const blockId = await this.resolveToBlockId(revision);
+        if (blockId === null) {
+            return false;
+        }
+
         return await lookupCachedFork(
             interstellarForkCache,
             () => interstellarForkDetected,
@@ -125,21 +146,38 @@ class ForkDetector {
                 interstellarForkDetected = true;
             },
             'ForkDetector.isInterstellarForked()',
-            async (rev) => {
+            async (pinnedRevision) => {
                 const account = (await this.httpClient.http(
                     HttpMethod.GET,
                     thorest.accounts.get.ACCOUNT_DETAIL(
                         INTERSTELLAR_HISTORY_STORAGE_ADDRESS
                     ),
                     {
-                        query: buildQuery({ revision: String(rev) })
+                        query: buildQuery({
+                            revision: String(pinnedRevision)
+                        })
                     }
                 )) as AccountData | null;
 
                 return account?.hasCode === true;
             },
-            revision
+            blockId
         );
+    }
+
+    private async resolveToBlockId(
+        revision: string | number
+    ): Promise<string | null> {
+        if (typeof revision === 'string' && BlockId.isValid0x(revision)) {
+            return revision;
+        }
+
+        const block = (await this.httpClient.http(
+            HttpMethod.GET,
+            thorest.blocks.get.BLOCK_DETAIL(revision)
+        )) as BlockDetail | null;
+
+        return block?.id ?? null;
     }
 
     /**
