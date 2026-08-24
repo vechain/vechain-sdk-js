@@ -351,12 +351,37 @@ class TransactionsModule {
      * @returns A promise that resolves to the transaction body.
      *
      * @throws an error if the genesis block or the latest block cannot be retrieved.
+     * @throws {InvalidTransactionField} if the network is Interstellar-forked and
+     *         the resolved gas exceeds the EIP-7825 transaction gas limit cap,
+     *         see {@link Transaction.MAX_GAS_LIMIT}.
      */
     public async buildTransactionBody(
         clauses: TransactionClause[] | Clause[] | ContractClause['clause'],
         gas: number,
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
+        const gasLimit = options?.gas !== undefined ? Number(options.gas) : gas;
+
+        // EIP-7825 (Interstellar hard fork) caps the gas limit of a single
+        // transaction to `Transaction.MAX_GAS_LIMIT`. Enforce only after the
+        // fork so this remains a non-breaking change on current networks.
+        if (
+            !Transaction.isValidGasLimit(gasLimit) &&
+            (await this.forkDetector.isInterstellarForked('best'))
+        ) {
+            throw new InvalidTransactionField(
+                'TransactionsModule.buildTransactionBody()',
+                `Error while building transaction body: gas must be an integer between 0 and ${Transaction.MAX_GAS_LIMIT} (EIP-7825 transaction gas limit cap).`,
+                {
+                    fieldName: 'gas',
+                    gas: gasLimit,
+                    maxGasLimit: Transaction.MAX_GAS_LIMIT,
+                    clauses,
+                    options
+                }
+            );
+        }
+
         // Get the genesis block to get the chainTag
         const genesisBlock = await this.blocksModule.getBlockCompressed(0);
         if (genesisBlock === null)
@@ -407,7 +432,7 @@ class TransactionsModule {
             clauses: await this.resolveNamesInClauses(processedClauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
-            gas: options?.gas !== undefined ? Number(options.gas) : gas,
+            gas: gasLimit,
             gasPriceCoef: filledOptions?.gasPriceCoef,
             maxFeePerGas: filledOptions?.maxFeePerGas,
             maxPriorityFeePerGas: filledOptions?.maxPriorityFeePerGas,
