@@ -5,8 +5,33 @@ import * as path from 'path';
 
 const exec = util.promisify(child_process.exec);
 
-// variable packages should be all the child folders in the packages folder
-const packages = fs.readdirSync(path.resolve(__dirname, '../packages'));
+const writeJson = (filePath: string, data: unknown): void => {
+    fs.writeFileSync(filePath, `${JSON.stringify(data, null, 2)}\n`);
+};
+
+const bumpWorkspaceDeps = (
+    pkgJson: { dependencies?: Record<string, string>; devDependencies?: Record<string, string> },
+    packageNames: string[],
+    version: string
+): void => {
+    for (const field of ['dependencies', 'devDependencies'] as const) {
+        const deps = pkgJson[field];
+        if (deps == null) {
+            continue;
+        }
+        for (const dep of Object.keys(deps)) {
+            if (packageNames.includes(dep)) {
+                deps[dep] = version;
+            }
+        }
+    }
+};
+
+const packages = fs
+    .readdirSync(path.resolve(__dirname, '../packages'))
+    .filter((pkg) =>
+        fs.existsSync(path.resolve(__dirname, `../packages/${pkg}/package.json`))
+    );
 
 const updatePackageVersions = (version: string): void => {
     const packageNames = [];
@@ -17,66 +42,38 @@ const updatePackageVersions = (version: string): void => {
         const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'));
         pkgJson.version = version;
         packageNames.push(pkgJson.name);
-        fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2));
+        writeJson(pkgJsonPath, pkgJson);
     }
 
-    // if a package json contains a dependency on another package in this repo, update it to the new version
     for (const pkg of packages) {
         const pkgPath = path.resolve(__dirname, `../packages/${pkg}`);
         const pkgJsonPath = path.resolve(pkgPath, './package.json');
         const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'));
-
-        if (pkgJson.dependencies != null) {
-            for (const dep of Object.keys(pkgJson.dependencies)) {
-                if (packageNames.includes(dep)) {
-                    pkgJson.dependencies[dep] = version;
-                }
-            }
-        }
-
-        fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2));
+        bumpWorkspaceDeps(pkgJson, packageNames, version);
+        writeJson(pkgJsonPath, pkgJson);
     }
 
-    // Update versions in the docs directory
-    const docsPath = path.resolve(__dirname, `../docs`);
-    const docsJsonPath = path.resolve(docsPath, './package.json');
+    const docsJsonPath = path.resolve(__dirname, '../docs/package.json');
     const docsJson = JSON.parse(fs.readFileSync(docsJsonPath, 'utf8'));
     docsJson.version = version;
-    fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
+    bumpWorkspaceDeps(docsJson, packageNames, version);
+    writeJson(docsJsonPath, docsJson);
 
-    if (docsJson.dependencies != null) {
-        for (const dep of Object.keys(docsJson.dependencies)) {
-            if (packageNames.includes(dep)) {
-                docsJson.dependencies[dep] = version;
-            }
-        }
-    }
-
-    fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
-
-    // Update versions on sample apps
     const appsPath = path.resolve(__dirname, '../apps');
-    const appPackages = fs.readdirSync(appsPath);
+    const appPackages = fs
+        .readdirSync(appsPath)
+        .filter((app) =>
+            fs.existsSync(path.resolve(appsPath, app, 'package.json'))
+        );
 
     for (const app of appPackages) {
-        const appPath = path.resolve(appsPath, app);
-        const appPackageJsonPath = path.resolve(appPath, './package.json');
+        const appPackageJsonPath = path.resolve(appsPath, app, 'package.json');
         const appPackageJson = JSON.parse(
             fs.readFileSync(appPackageJsonPath, 'utf8')
         );
         appPackageJson.version = version;
-        fs.writeFileSync(appPackageJsonPath, JSON.stringify(appPackageJson, null, 2));
-
-        for (const dep of Object.keys(appPackageJson.dependencies)) {
-            if (packageNames.includes(dep)) {
-                appPackageJson.dependencies[dep] = version;
-            }
-        }
-
-        fs.writeFileSync(
-            appPackageJsonPath,
-            JSON.stringify(appPackageJson, null, 2)
-        );
+        bumpWorkspaceDeps(appPackageJson, packageNames, version);
+        writeJson(appPackageJsonPath, appPackageJson);
     }
 };
 
@@ -89,6 +86,14 @@ const preparePackages = async () => {
             `🚨 You must specify a semantic version as the first argument  🚨`
         );
         process.exit(1);
+    }
+
+    if (process.argv.includes('--version-only')) {
+        console.log(' Version:');
+        console.log(`\t- 🏷 Updating package versions to ${version}...`);
+        updatePackageVersions(version);
+        console.log('\t- ✅  Updated!');
+        return;
     }
 
     console.log(' Install:');
