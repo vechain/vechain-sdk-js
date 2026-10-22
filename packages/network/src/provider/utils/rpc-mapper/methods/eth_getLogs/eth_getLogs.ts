@@ -97,7 +97,8 @@ const ethGetLogs = async (
                 params: stringifyData(params),
                 url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
-            }
+            },
+            e
         );
     }
 };

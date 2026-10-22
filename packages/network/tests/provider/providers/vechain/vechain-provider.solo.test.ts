@@ -349,15 +349,22 @@ describe('VeChain provider tests - solo', () => {
 
                 // Collect and assert log events
                 let results: SubscriptionEvent[] = [];
-                const eventPromise = new Promise((resolve) => {
+                // Time out so a missed event fails this attempt instead of the whole test.
+                const eventPromise = new Promise((resolve, reject) => {
+                    const timeoutId = setTimeout(() => {
+                        reject(new Error('Timed out waiting for log events'));
+                    }, 30000);
                     provider.on('message', (message: SubscriptionEvent) => {
                         results.push(message);
                         if (results.length >= 2) {
+                            clearTimeout(timeoutId);
                             provider.destroy();
                             resolve(results);
                         }
                     });
                 });
+                // Avoid an unhandled rejection if the timeout fires before the promise is awaited.
+                eventPromise.catch(() => undefined);
 
                 // Execute transactions that should emit events
                 await thorClient.contracts.executeTransaction(
@@ -425,6 +432,7 @@ describe('VeChain provider tests - solo', () => {
             } catch (error) {
                 lastError = error as Error;
                 console.log(`Attempt ${attempt} failed:`, error);
+                provider.removeAllListeners('message');
                 if (attempt < 5) {
                     // Wait longer between retries for complex test
                     await new Promise((resolve) => setTimeout(resolve, 10000));
