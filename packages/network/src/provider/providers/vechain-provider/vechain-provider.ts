@@ -1,8 +1,10 @@
 import { HexInt } from '@vechain/sdk-core';
 import {
     HttpNetworkError,
+    InvalidHTTPRequest,
     JSONRPCMethodNotFound,
-    JSONRPCMethodNotImplemented
+    JSONRPCMethodNotImplemented,
+    VechainSDKError
 } from '@vechain/sdk-errors';
 import { EventEmitter } from 'events';
 import { type VeChainSigner } from '../../../signer';
@@ -29,6 +31,37 @@ import {
 } from './types';
 
 /**
+ * Checks whether a subscription polling error is transient: a network failure,
+ * a request timeout, an HTTP 429 or an HTTP 5xx response, possibly wrapped by
+ * RPC method errors.
+ *
+ * @param error - The error thrown while polling.
+ * @returns True if the poll should be retried on the next tick.
+ */
+const isTransientPollingError = (error: unknown): boolean => {
+    let current: unknown = error;
+    while (current instanceof VechainSDKError) {
+        if (current instanceof HttpNetworkError) {
+            return true;
+        }
+        if (current instanceof InvalidHTTPRequest) {
+            const inner = current.innerError as
+                | { name?: unknown; cause?: { status?: unknown } }
+                | undefined;
+            if (inner?.name === 'AbortError') {
+                return true;
+            }
+            const status = inner?.cause?.status;
+            return (
+                typeof status === 'number' && (status === 429 || status >= 500)
+            );
+        }
+        current = current.innerError;
+    }
+    return false;
+};
+
+/**
  * Our core provider class for VeChain
  */
 class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
@@ -43,6 +76,14 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
      * @private
      */
     private pollInstance?: EventPoll<SubscriptionEvent[]>;
+
+    /**
+     * True while a subscription poll is running. Ticks that fire meanwhile are
+     * skipped so the current block number is never read by two polls at once.
+     *
+     * @private
+     */
+    private isPolling = false;
 
     /**
      * Constructor for VeChainProvider
@@ -132,34 +173,54 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 async () => {
                     const data: SubscriptionEvent[] = [];
 
-                    const currentBlock = await this.getCurrentBlock();
-
-                    if (currentBlock !== null) {
-                        if (
-                            this.subscriptionManager.newHeadsSubscription !==
-                            undefined
-                        ) {
-                            data.push({
-                                method: 'eth_subscription',
-                                params: {
-                                    subscription:
-                                        this.subscriptionManager
-                                            .newHeadsSubscription
-                                            .subscriptionId,
-                                    result: currentBlock
-                                }
-                            });
-                        }
-                        if (
-                            this.subscriptionManager.logSubscriptions.size > 0
-                        ) {
-                            const logs = await this.getLogsRPC();
-                            data.push(...logs);
-                        }
-
-                        this.subscriptionManager.currentBlockNumber++;
+                    if (this.isPolling) {
+                        return data;
                     }
-                    return data;
+                    this.isPolling = true;
+
+                    try {
+                        const currentBlock = await this.getCurrentBlock();
+
+                        if (currentBlock !== null) {
+                            if (
+                                this.subscriptionManager
+                                    .newHeadsSubscription !== undefined
+                            ) {
+                                data.push({
+                                    method: 'eth_subscription',
+                                    params: {
+                                        subscription:
+                                            this.subscriptionManager
+                                                .newHeadsSubscription
+                                                .subscriptionId,
+                                        result: currentBlock
+                                    }
+                                });
+                            }
+                            if (
+                                this.subscriptionManager.logSubscriptions.size >
+                                0
+                            ) {
+                                const logs = await this.getLogsRPC();
+                                data.push(...logs);
+                            }
+
+                            this.subscriptionManager.currentBlockNumber++;
+                        }
+                        return data;
+                    } catch (error) {
+                        if (!isTransientPollingError(error)) {
+                            throw error;
+                        }
+                        // The block number was not advanced, so the same block is retried on the next tick.
+                        console.warn(
+                            'Transient error during subscription polling, retrying:',
+                            (error as Error).message
+                        );
+                        return [];
+                    } finally {
+                        this.isPolling = false;
+                    }
                 },
                 POLLING_INTERVAL,
                 false
